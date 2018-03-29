@@ -2,11 +2,13 @@ package com.sl.ue.entity;
 
 import com.sl.ue.util.Table;
 
-@Table("user")
+@Table("sl_user")
 public class User {
 
 	private Integer id;
 	private String abgv;
+	private String uhActiDes;
+	private Double yhFGA;
 	
 	public Integer getId() {
 		return id;

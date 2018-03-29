@@ -12,4 +12,6 @@ import java.lang.annotation.Target;
 public @interface Table {
 	
 	String value();
+	
+	boolean enable() default true;
 }
