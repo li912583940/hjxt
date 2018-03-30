@@ -2,14 +2,16 @@ package com.sl.ue.service;
 
 import java.util.List;
 
+import com.sl.ue.util.Page;
+
 /**
  * 说明 [持久层基础实现]
  * 
  * @author L_晓天    @2018年3月27日
  */
-public interface BaseService<T> {
+public interface BaseService<T>{
 
-	public List<T> findList(T model);
+	public List<T> findList(T model, Page page);
 	
 	public T findOne(Object... key);
 	

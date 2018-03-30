@@ -1,27 +1,112 @@
 package com.sl.ue.entity;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.springframework.jdbc.core.RowMapper;
+
 import com.sl.ue.util.Table;
 
-@Table("sl_user")
-public class User {
+@Table("sys_user")
+public class User implements RowMapper<User>{
 
-	private Integer id;
-	private String abgv;
-	private String uhActiDes;
-	private Double yhFGA;
+	private Integer webId;
+	private String userNo;
+	private String userPwd;
+	private String userDepart;
+	private String userName;
+	private String groupNo;
+	private Integer isSuper;
+	private Integer isSp;
+	private Integer isBj;
 	
-	public Integer getId() {
-		return id;
+	public User mapRow(ResultSet rs, int arg1) throws SQLException {
+		User user = new User();
+		user.setWebId(rs.getInt("web_id"));
+		user.setUserNo(rs.getString("user_no"));
+		user.setUserPwd(rs.getString("user_pws"));
+		user.setUserDepart(rs.getString("user_depart"));
+		user.setUserName(rs.getString("group_no"));
+		user.setIsSuper(rs.getInt("is_super"));
+		user.setIsSp(rs.getInt("is_sp"));
+		user.setIsBj(rs.getInt("is_bj"));
+		return null;
 	}
-	public void setId(Integer id) {
-		this.id = id;
+
+	public Integer getWebId() {
+		return webId;
 	}
-	public String getAbgv() {
-		return abgv;
+
+	public void setWebId(Integer webId) {
+		this.webId = webId;
 	}
-	public void setAbgv(String abgv) {
-		this.abgv = abgv;
+
+	public String getUserNo() {
+		return userNo;
 	}
+
+	public void setUserNo(String userNo) {
+		this.userNo = userNo;
+	}
+
+	public String getUserPwd() {
+		return userPwd;
+	}
+
+	public void setUserPwd(String userPwd) {
+		this.userPwd = userPwd;
+	}
+
+	public String getUserDepart() {
+		return userDepart;
+	}
+
+	public void setUserDepart(String userDepart) {
+		this.userDepart = userDepart;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getGroupNo() {
+		return groupNo;
+	}
+
+	public void setGroupNo(String groupNo) {
+		this.groupNo = groupNo;
+	}
+
+	public Integer getIsSuper() {
+		return isSuper;
+	}
+
+	public void setIsSuper(Integer isSuper) {
+		this.isSuper = isSuper;
+	}
+
+	public Integer getIsSp() {
+		return isSp;
+	}
+
+	public void setIsSp(Integer isSp) {
+		this.isSp = isSp;
+	}
+
+	public Integer getIsBj() {
+		return isBj;
+	}
+
+	public void setIsBj(Integer isBj) {
+		this.isBj = isBj;
+	}
+	
+
+	
 	
 	
 }
