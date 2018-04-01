@@ -22,7 +22,7 @@ public class BaseImpl<T>  implements BaseService<T>{
 	private JdbcTemplate jdbcTemplate;
 	
 	
-	public List<T> findList(T model, Page page) {
+	public List<T> baseFindList(T model, Integer pageSize, Integer pageNum) {
 		Table table = model.getClass().getAnnotation(Table.class);
 		String tableName;
 		if(table != null){
@@ -38,16 +38,18 @@ public class BaseImpl<T>  implements BaseService<T>{
 					field.setAccessible(true);
 					if(field.get(model) != null){
 						params.add(field.get(model));
-						where_fields.append(" and "+table_filed+"=? ");
+						where_fields.append(" and "+table_filed+"=?");
 					}
 				}
 			} catch (Exception e) {
 			}
-			//JSONObject json = JSONObject. 
-			int startNum = (page.getPageNum()-1)*page.getPageSize();
+			String limit = "";
+			if(pageSize != null && pageNum != null){
+				int startNum = (pageNum-1)*pageSize;
+				limit =  " limit " + startNum + "," + pageSize;
+			}
 			String table_fileds_str = StringUtil.lastComma(table_fileds.toString());
-			String sql = "select "+ table_fileds_str + " from " + " tableName where 1=1" + where_fields.toString()
-					+ "limit " + startNum + "," + page.getPageSize();
+			String sql = "select "+ table_fileds_str + " from " + tableName+"  where 1=1 " + where_fields.toString() + limit;
 			List<T> list = (List<T>) jdbcTemplate.queryForList(sql, params.toArray(), model);
 			return list;
 			
@@ -57,26 +59,37 @@ public class BaseImpl<T>  implements BaseService<T>{
 		return null;
 	}
 
-	public T findOne(Object... key) {
+
+	public T baseFindOne(Object... key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public T add(T model) {
+
+	public T baseAdd(T model) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	public T baeEdit(T model) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	public void baeDelete(T model) {
 		// TODO Auto-generated method stub
 		
-		return null;
 	}
 
-	public T edit(T model) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<T> baseFindList(T model) {
+		return baseFindList(model, null, null);
 	}
 
-	public void delete(T model) {
-		// TODO Auto-generated method stub
-		
-	}
+
+
+
 
 
 

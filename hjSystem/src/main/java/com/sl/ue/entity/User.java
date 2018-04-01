@@ -10,7 +10,7 @@ import com.sl.ue.util.Table;
 @Table("sys_user")
 public class User implements RowMapper<User>{
 
-	private Integer webId;
+	private Integer webid;
 	private String userNo;
 	private String userPwd;
 	private String userDepart;
@@ -22,7 +22,7 @@ public class User implements RowMapper<User>{
 	
 	public User mapRow(ResultSet rs, int arg1) throws SQLException {
 		User user = new User();
-		user.setWebId(rs.getInt("web_id"));
+		user.setWebid(rs.getInt("webid"));
 		user.setUserNo(rs.getString("user_no"));
 		user.setUserPwd(rs.getString("user_pws"));
 		user.setUserDepart(rs.getString("user_depart"));
@@ -30,15 +30,15 @@ public class User implements RowMapper<User>{
 		user.setIsSuper(rs.getInt("is_super"));
 		user.setIsSp(rs.getInt("is_sp"));
 		user.setIsBj(rs.getInt("is_bj"));
-		return null;
+		return user;
 	}
 
-	public Integer getWebId() {
-		return webId;
+	public Integer getWebid() {
+		return webid;
 	}
 
-	public void setWebId(Integer webId) {
-		this.webId = webId;
+	public void setWebid(Integer webid) {
+		this.webid = webid;
 	}
 
 	public String getUserNo() {

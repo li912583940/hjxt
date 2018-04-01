@@ -5,19 +5,21 @@ import java.util.List;
 import com.sl.ue.util.Page;
 
 /**
- * ËµÃ÷ [³Ö¾Ã²ã»ù´¡ÊµÏÖ]
+ * Ëµï¿½ï¿½ [ï¿½Ö¾Ã²ï¿½ï¿½Êµï¿½ï¿½]
  * 
- * @author L_ÏþÌì    @2018Äê3ÔÂ27ÈÕ
+ * @author L_ï¿½ï¿½ï¿½ï¿½    @2018ï¿½ï¿½3ï¿½ï¿½27ï¿½ï¿½
  */
 public interface BaseService<T>{
 
-	public List<T> findList(T model, Page page);
+	public List<T> baseFindList(T model);
 	
-	public T findOne(Object... key);
+	public List<T> baseFindList(T model, Integer pageSize, Integer pageNum);
 	
-	public T add(T model);
+	public T baseFindOne(Object... key);
 	
-	public T edit(T model);
+	public T baseAdd(T model);
 	
-	public void delete(T model);
+	public T baeEdit(T model);
+	
+	public void baeDelete(T model);
 }
