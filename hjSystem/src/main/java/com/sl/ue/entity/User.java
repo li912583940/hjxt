@@ -1,5 +1,6 @@
 package com.sl.ue.entity;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -8,8 +9,13 @@ import org.springframework.jdbc.core.RowMapper;
 import com.sl.ue.util.Table;
 
 @Table("sys_user")
-public class User implements RowMapper<User>{
+public class User  implements RowMapper<User>,Serializable{
 
+	/**
+	 * 说明 []
+	 * L_晓天  @2018年4月3日
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer webid;
 	private String userNo;
 	private String userPwd;
@@ -24,7 +30,7 @@ public class User implements RowMapper<User>{
 		User user = new User();
 		user.setWebid(rs.getInt("webid"));
 		user.setUserNo(rs.getString("user_no"));
-		user.setUserPwd(rs.getString("user_pws"));
+		user.setUserPwd(rs.getString("user_pwd"));
 		user.setUserDepart(rs.getString("user_depart"));
 		user.setUserName(rs.getString("group_no"));
 		user.setIsSuper(rs.getInt("is_super"));

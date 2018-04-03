@@ -49,11 +49,11 @@
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 	
-	<error-page> <!--当系统出现404错误，跳转到页面nopage.html-->  
+	<error-page> 
         <error-code>404</error-code>  
         <location>/nopage.jsp</location>  
     </error-page>  
-    <error-page> <!--当系统出现java.lang.NullPointerException，跳转到页面error.html-->  
+    <error-page> <!--当系统出现java.lang.NullPointerException，跳转到页面error-->  
         <exception-type>java.lang.NullPointerException</exception-type>  
         <location>/error.jsp</location>  
     </error-page>  
