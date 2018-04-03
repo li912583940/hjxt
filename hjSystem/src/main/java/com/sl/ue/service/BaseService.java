@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.sl.ue.util.Page;
 
+
 /**
- * ˵�� [�־ò��ʵ��]
- * 
- * @author L_����    @2018��3��27��
+ * 说明 [基本数据层封装]
+ * @author L_晓天    @2018年4月3日
  */
 public interface BaseService<T>{
 

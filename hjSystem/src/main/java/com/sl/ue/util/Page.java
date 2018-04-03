@@ -2,27 +2,33 @@ package com.sl.ue.util;
 
 import java.util.List;
 
+
 /**
- * ËµÃ÷ [·ÖÒ³¹¤¾ßÀà]
- *
- * @author L_ÏşÌì    @2018Äê3ÔÂ30ÈÕ
+ * è¯´æ˜ [åˆ†é¡µæ•°æ®]
+ * @author L_æ™“å¤©    @2018å¹´4æœˆ3æ—¥
  */
 public class Page<T> {
 
+	
 	/**
-	 * ËµÃ÷ [Ã¿Ò³´óĞ¡]
+	 * è¯´æ˜ [æ¯é¡µçš„æ•°æ®]
+	 * @author L_æ™“å¤©    @2018å¹´4æœˆ3æ—¥
 	 */
 	private Integer pageSize;
 	/**
-	 * ËµÃ÷ [µÚ¼¸Ò³]
+	 * è¯´æ˜ [é¡µæ•°]
+	 * @author L_æ™“å¤©    @2018å¹´4æœˆ3æ—¥
 	 */
 	private Integer pageNum;
 	/**
-	 * ËµÃ÷ [×ÜÊı]
+	 * è¯´æ˜ [æ€»æ•°]
+	 * @author L_æ™“å¤©    @2018å¹´4æœˆ3æ—¥
 	 */
 	private Integer count;
+
 	/**
-	 * ËµÃ÷ [·ÖÒ³Êı¾İ]
+	 * è¯´æ˜ [æ•°æ®]
+	 * @author L_æ™“å¤©    @2018å¹´4æœˆ3æ—¥
 	 */
 	private List<T> data;
 	

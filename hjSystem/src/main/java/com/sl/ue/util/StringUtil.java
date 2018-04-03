@@ -3,11 +3,10 @@ package com.sl.ue.util;
 public class StringUtil {
 
 	
+	
 	/**
-	 * ËµÃ÷: [È¥µô½áÎ²Îª¡°,¡± ]
-	 * @author LXT @2018Äê3ÔÂ30ÈÕ
-	 * @param str
-	 * @return
+	 * è¯´æ˜ [æˆªæ‰æœ€åä¸€ä¸ªâ€œ,â€]
+	 * @author L_æ™“å¤©    @2018å¹´4æœˆ3æ—¥
 	 */
 	public static String lastComma(String str){
 		if(str.endsWith(",")){

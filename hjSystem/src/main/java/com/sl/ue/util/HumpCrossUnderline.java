@@ -1,19 +1,20 @@
 package com.sl.ue.util;
 
 /**
- * ËµÃ÷ [ÍÕ·å-ÏÂ»®Ïß]
+ * Ëµï¿½ï¿½ [ï¿½Õ·ï¿½-ï¿½Â»ï¿½ï¿½ï¿½]
  *
- * @author L_ÏþÌì @2018Äê3ÔÂ29ÈÕ
+ * @author L_ï¿½ï¿½ï¿½ï¿½ @2018ï¿½ï¿½3ï¿½ï¿½29ï¿½ï¿½
  */
 public class HumpCrossUnderline {
 
 	public static final char UNDERLINE = '_';
 
 	
+	
+
 	/**
-	 * ËµÃ÷: [ÍÕ·å×ªÏÂ»®Ïß]
-	 * @param param
-	 * @return
+	 * è¯´æ˜Ž [é©¼å³°è½¬ä¸‹åˆ’çº¿]
+	 * @author L_æ™“å¤©    @2018å¹´4æœˆ3æ—¥
 	 */
 	public static String humpToUnderline(String param) {
 		if (param == null || "".equals(param.trim())) {
@@ -34,10 +35,10 @@ public class HumpCrossUnderline {
 	}
 
 
+	
 	/**
-	 * ËµÃ÷: [ÏÂ»®Ïß×ªÍÕ·å]
-	 * @param param
-	 * @return
+	 * è¯´æ˜Ž [ä¸‹åˆ’çº¿è½¬é©¼å³°]
+	 * @author L_æ™“å¤©    @2018å¹´4æœˆ3æ—¥
 	 */
 	public static String underlineToHump(String param) {
 		if (param == null || "".equals(param.trim())) {

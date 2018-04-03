@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-@Documented//说明该注解将被包含在javadoc中  
+@Documented
 public @interface Table {
 	
 	String value();
