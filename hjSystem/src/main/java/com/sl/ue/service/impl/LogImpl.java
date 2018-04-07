@@ -1,0 +1,11 @@
+package com.sl.ue.service.impl;
+
+import org.springframework.stereotype.Service;
+
+import com.sl.ue.entity.SysLog;
+import com.sl.ue.service.LogService;
+
+@Service
+public class LogImpl extends BaseImpl<SysLog> implements LogService{
+
+}
