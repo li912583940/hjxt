@@ -17,7 +17,7 @@ public interface BaseService<T>{
 	
 	public T baseFindOne(T model, Object... key);
 	
-	public T baseAdd(T model);
+	public Integer baseAdd(T model);
 	
 	public T baeEdit(T model);
 	

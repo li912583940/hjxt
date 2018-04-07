@@ -1,4 +1,4 @@
-package com.sl.ue.util;
+package com.sl.ue.util.anno;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

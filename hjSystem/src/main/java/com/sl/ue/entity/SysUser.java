@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import com.sl.ue.util.Table;
+import com.sl.ue.util.anno.Table;
 
 @Table("sys_user")
 public class SysUser  implements Serializable{

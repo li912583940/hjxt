@@ -2,7 +2,7 @@ package com.sl.ue.entity;
 
 import java.io.Serializable;
 
-import com.sl.ue.util.Table;
+import com.sl.ue.util.anno.Table;
 
 @Table("sys_log")
 public class SysLog implements Serializable{
