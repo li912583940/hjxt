@@ -19,6 +19,7 @@ import com.sl.ue.service.UserService;
  * L_晓天  @2018年4月2日
  */
 @Controller
+@RequestMapping("/user")
 public class UserWeb {
 
 	@Autowired
@@ -31,10 +32,17 @@ public class UserWeb {
 		return mv;
 	}
 	
-	@RequestMapping("/user")
+	@RequestMapping("/findList")
 	@ResponseBody
-	public String get(){
+	public String findList(){
 		List<SysUser> list = userService.baseFindList(new SysUser());
 		return JSON.toJSONString(list, SerializerFeature.WriteMapNullValue);
+	}
+	
+	@RequestMapping("/findOne")
+	@ResponseBody
+	public String findOne(){
+		SysUser user = userService.baseFindOne(1);
+		return JSON.toJSONString(user, SerializerFeature.WriteMapNullValue);
 	}
 }

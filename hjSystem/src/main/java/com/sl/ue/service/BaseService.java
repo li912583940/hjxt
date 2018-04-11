@@ -15,9 +15,9 @@ public interface BaseService<T>{
 	
 	public List<T> baseFindList(T model, Integer pageSize, Integer pageNum);
 	
-	public T baseFindOne(T model, Object... key);
+	public T baseFindOne(Object... key);
 	
-	public Integer baseAdd(T model);
+	public T baseAdd(T model);
 	
 	public T baeEdit(T model);
 	

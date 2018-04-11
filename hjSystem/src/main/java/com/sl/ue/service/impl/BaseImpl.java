@@ -27,6 +27,7 @@ import com.sl.ue.service.BaseService;
 import com.sl.ue.util.HumpCrossUnderline;
 import com.sl.ue.util.Page;
 import com.sl.ue.util.StringUtil;
+import com.sl.ue.util.anno.Id;
 import com.sl.ue.util.anno.Table;
 
 public abstract class BaseImpl<T> implements BaseService<T>{
@@ -37,18 +38,17 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 		Type superClass = getClass().getGenericSuperclass();
 		ParameterizedType type = (ParameterizedType) superClass;
 		clazz = (Class<T>) type.getActualTypeArguments()[0];
-		System.out.println("Dao实现类是：" + clazz.getName());
 	}
 	
 	/** 实际操作的实体类对象 */
 	private Class<T> clazz; 
 	
 	public List<T> baseFindList(T model, Integer pageSize, Integer pageNum) {
-		Table table = model.getClass().getAnnotation(Table.class);
+		Table table = clazz.getAnnotation(Table.class);
 		String tableName;
 		if(table != null){
 			tableName = table.value();
-			Field[] fields = model.getClass().getDeclaredFields();
+			Field[] fields = clazz.getDeclaredFields();
 			StringBuffer where_fields = new StringBuffer();
 			List<Object> params = new ArrayList<Object>();
 			try {
@@ -122,22 +122,30 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 	
 	
 
-	public T baseFindOne(T model, Object... key) {
-		Table table = model.getClass().getAnnotation(Table.class);
+	public T baseFindOne(Object... key) {
+		Table table =clazz.getAnnotation(Table.class);
 		String tableName;
 		if(table != null){
 			tableName = table.value();
-			String sql = "select * from "+tableName+" where 1=1";
+			Field[] fields = clazz.getDeclaredFields();
+			String id_field = null;
+			for(Field field : fields){
+				if(field.isAnnotationPresent(Id.class)){
+					id_field = HumpCrossUnderline.humpToUnderline(field.getName());
+				}
+			}
+			String sql = "select * from "+tableName+" where 1=1 and "+id_field+"=?";
+			Object[] obj = new Object[]{key};
 			RowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazz);
-			T t = jdbcTemplate.query(sql, rowMapper).get(0);
+			T t = jdbcTemplate.query(sql, obj, rowMapper).get(0);
 			return t;
 		}
 		return null;
 	}
 
 
-	public Integer baseAdd(T model) {
-		Table table = model.getClass().getAnnotation(Table.class);
+	public T baseAdd(T model) {
+		Table table = clazz.getAnnotation(Table.class);
 		String tableName;
 		if(table != null){
 			tableName = table.value();
@@ -145,16 +153,28 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 			StringBuffer table_field = new StringBuffer();
 			StringBuffer table_value = new StringBuffer();
 			sql.append("insert into "+tableName).append("(");
-			Field[] fields = model.getClass().getDeclaredFields();
+			List<Object> params = new ArrayList<Object>();
+			Field[] fields = clazz.getDeclaredFields();
+			boolean isInc = false;
+			Field idField = null;
 			try{
 				for(Field field: fields){
 					if(field.getName().equals("serialVersionUID"))
 						continue;
+					Id id = field.getAnnotation(Id.class);
+					if(id != null){
+						if(id.inc() == true){
+							isInc = true;
+							idField = field;
+						}
+						continue;
+					}
 					String table_filed = HumpCrossUnderline.humpToUnderline(field.getName());
 					field.setAccessible(true);
 					if(field.get(model) != null){
 						table_field.append(table_filed+",");
-						table_value.append(field.get(model)+",");
+						table_value.append("?,");
+						params.add(field.get(model));
 					}
 				}
 			}catch(Exception e){
@@ -164,39 +184,95 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 				.append(" values(")
 				.append(StringUtil.lastComma(table_value.toString()))
 				.append(")");
-			KeyHolder keyHolder = new GeneratedKeyHolder();
-			int id = 0;
-			final String sqlStr = sql.toString();
-			jdbcTemplate.update(new PreparedStatementCreator(){  
-				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-					 PreparedStatement ps = con.prepareStatement(sqlStr.toString(),PreparedStatement.RETURN_GENERATED_KEYS);  
-			         return ps;  
-				}  
-		    }, keyHolder);
-			id = keyHolder.getKey().intValue();
-			if(id != 0)
-				return id;
-			return null;
+			/*if(isInc == true){
+				KeyHolder keyHolder = new GeneratedKeyHolder();
+				int id = 0;
+				final String sqlStr = sql.toString();
+				jdbcTemplate.update(new PreparedStatementCreator(){  
+					public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+						 PreparedStatement ps = con.prepareStatement(sqlStr,PreparedStatement.RETURN_GENERATED_KEYS); 
+				         return ps;  
+					}  
+			    }, keyHolder);
+				id = keyHolder.getKey().intValue();
+				if(id != 0){
+					idField.setAccessible(true);
+					try {
+						idField.set(model, id);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return model;
+				}
+					
+			}else{
+				jdbcTemplate.update(sql.toString());
+				return model;
+			}*/
+			jdbcTemplate.update(sql.toString(), params.toArray());
+			return model;
 		}
 		return null;
 	}
 
 
 	public T baeEdit(T model) {
-		Table table = model.getClass().getAnnotation(Table.class);
+		Table table = clazz.getAnnotation(Table.class);
 		String tableName;
 		if(table != null){
 			tableName = table.value();
 			StringBuffer sql = new StringBuffer();
-			sql.append("update "+tableName+" set");
+			StringBuffer up_field = new StringBuffer();
+			sql.append("update "+tableName+" set ");
+			List<Object> params = new ArrayList<Object>();
+			Field[] fields = clazz.getDeclaredFields();
+			Field idField = null;
+			try {
+				for(Field field : fields){
+					if(field.getName().equals("serialVersionUID"))
+						continue;
+					if(field.isAnnotationPresent(Id.class)){
+						idField = field;
+						continue;
+					}
+					String table_filed = HumpCrossUnderline.humpToUnderline(field.getName());
+					field.setAccessible(true);
+					if(field.get(model) != null){
+						params.add(field.get(model));
+						up_field.append(table_filed+"=?,");
+					}
+				}
+				idField.setAccessible(true);
+				sql.append(StringUtil.lastComma(up_field.toString()))
+					.append(" where "+HumpCrossUnderline.humpToUnderline(idField.getName())+"=?");
+				params.add(idField.get(model));
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+			jdbcTemplate.update(sql.toString(),params.toArray());
+			return model;
 		}
 		return null;
 	}
 
 
-	public void baeDelete(T model) {
-		// TODO Auto-generated method stub
-		
+	public void baeDelete(Object key) {
+		Table table = clazz.getAnnotation(Table.class);
+		String tableName;
+		if(table != null){
+			tableName = table.value();
+			StringBuffer sql = new StringBuffer();
+			Field[] fields = clazz.getDeclaredFields();
+			String id_filed = null;
+			for(Field field : fields){
+				if(field.isAnnotationPresent(Id.class)){
+					id_filed = HumpCrossUnderline.humpToUnderline(field.getName());
+				}
+			}
+			sql.append("delete from "+tableName+" where "+id_filed+"=?");
+			Object obj = new Object[]{key};
+			jdbcTemplate.update(sql.toString(), obj);
+		}
 	}
 
 	public List<T> baseFindList(T model) {

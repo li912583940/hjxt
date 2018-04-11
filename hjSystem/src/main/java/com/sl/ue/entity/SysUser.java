@@ -6,17 +6,16 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
+import com.sl.ue.util.anno.Id;
 import com.sl.ue.util.anno.Table;
 
 @Table("sys_user")
 public class SysUser  implements Serializable{
 //public class User  implements RowMapper<User>,Serializable{
 
-	/**
-	 * 说明 []
-	 * L_晓天  @2018年4月3日
-	 */
 	private static final long serialVersionUID = 1L;
+	
+	@Id
 	private Integer webid;
 	private String userNo;
 	private String userPwd;

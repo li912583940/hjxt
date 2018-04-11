@@ -17,9 +17,9 @@ public class LogWeb {
 	@Autowired
 	private LogService logService;
 	
-	@RequestMapping(value="/getOne")
+	@RequestMapping(value="/findOne")
 	@ResponseBody
-	public String getOne(){
+	public String findOne(){
 		SysLog log = logService.baseFindOne(new SysLog(),"1");
 		return JSON.toJSONString(log, SerializerFeature.WriteMapNullValue);
 	}
