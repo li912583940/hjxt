@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.sl.ue.entity.SysUser;
+import com.sl.ue.entity.sys.SysUser;
 import com.sl.ue.service.UserService;
 
 /**

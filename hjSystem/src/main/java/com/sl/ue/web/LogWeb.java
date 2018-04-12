@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.sl.ue.entity.SysLog;
+import com.sl.ue.entity.sys.SysLog;
 import com.sl.ue.service.LogService;
 
 @Controller

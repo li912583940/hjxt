@@ -22,11 +22,12 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
-import com.sl.ue.entity.SysUser;
+import com.sl.ue.entity.sys.SysUser;
 import com.sl.ue.service.BaseService;
 import com.sl.ue.util.HumpCrossUnderline;
 import com.sl.ue.util.Page;
 import com.sl.ue.util.StringUtil;
+import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
 import com.sl.ue.util.anno.Table;
 
@@ -94,8 +95,8 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 				for(Field field : fields){
 					if(field.getName().equals("serialVersionUID"))
 						continue;
-					String table_filed = HumpCrossUnderline.humpToUnderline(field.getName());
-					//table_fileds.append(table_filed+" AS "+field.getName()+",");
+					//String table_filed = HumpCrossUnderline.humpToUnderline(field.getName());
+					String table_filed = field.getAnnotation(DbField.class).value();
 					table_fileds.append(table_filed+",");
 					field.setAccessible(true);
 					if(field.get(model) != null){
@@ -131,7 +132,7 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 			String id_field = null;
 			for(Field field : fields){
 				if(field.isAnnotationPresent(Id.class)){
-					id_field = HumpCrossUnderline.humpToUnderline(field.getName());
+					id_field = field.getAnnotation(DbField.class).value();
 				}
 			}
 			String sql = "select * from "+tableName+" where 1=1 and "+id_field+"=?";
@@ -169,7 +170,7 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 						}
 						continue;
 					}
-					String table_filed = HumpCrossUnderline.humpToUnderline(field.getName());
+					String table_filed = field.getAnnotation(DbField.class).value();
 					field.setAccessible(true);
 					if(field.get(model) != null){
 						table_field.append(table_filed+",");
@@ -235,7 +236,7 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 						idField = field;
 						continue;
 					}
-					String table_filed = HumpCrossUnderline.humpToUnderline(field.getName());
+					String table_filed = field.getAnnotation(DbField.class).value();
 					field.setAccessible(true);
 					if(field.get(model) != null){
 						params.add(field.get(model));
@@ -266,7 +267,7 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 			String id_filed = null;
 			for(Field field : fields){
 				if(field.isAnnotationPresent(Id.class)){
-					id_filed = HumpCrossUnderline.humpToUnderline(field.getName());
+					id_filed = field.getAnnotation(DbField.class).value();
 				}
 			}
 			sql.append("delete from "+tableName+" where "+id_filed+"=?");

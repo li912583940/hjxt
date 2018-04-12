@@ -1,4 +1,4 @@
-package com.sl.ue.entity;
+package com.sl.ue.entity.sys;
 
 import java.io.Serializable;
 import java.sql.ResultSet;
@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
+import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
 import com.sl.ue.util.anno.Table;
 
@@ -16,14 +17,23 @@ public class SysUser  implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	@DbField("WebID")
 	private Integer webid;
+	@DbField("User_No")
 	private String userNo;
+	@DbField("User_Pwd")
 	private String userPwd;
+	@DbField("User_Depart")
 	private String userDepart;
+	@DbField("User_Name")
 	private String userName;
+	@DbField("Group_No")
 	private String groupNo;
+	@DbField("Is_Super")
 	private Integer isSuper;
+	@DbField("Is_Sp")
 	private Integer isSp;
+	@DbField("Is_Bj")
 	private Integer isBj;
 	
 //	public User mapRow(ResultSet rs, int arg1) throws SQLException {

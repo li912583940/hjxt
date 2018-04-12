@@ -2,6 +2,7 @@ package com.sl.ue.entity;
 
 import java.lang.reflect.Field;
 
+import com.sl.ue.entity.sys.SysUser;
 import com.sl.ue.util.anno.Id;
 
 public class Testa {

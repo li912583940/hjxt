@@ -1,4 +1,4 @@
-package com.sl.ue.entity;
+package com.sl.ue.entity.sys;
 
 import java.io.Serializable;
 
