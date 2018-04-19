@@ -123,7 +123,7 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 	
 	
 
-	public T baseFindOne(Object... key) {
+	public T baseFindOne(Object key) {
 		Table table =clazz.getAnnotation(Table.class);
 		String tableName;
 		if(table != null){
