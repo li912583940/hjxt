@@ -44,6 +44,8 @@
     <bean id="multipartResolver"     
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver"     
           p:defaultEncoding="utf-8" /> 
+    
+    <mvc:default-servlet-handler/>
             
    	<!--start:使用Jackson 2.x的配置，需要导入的jar包：jackson-core-xxx.jar、jackson-annotations-xxx.jar、jackson-databind-xxx.jar-->
 	<!--通过处理器映射DefaultAnnotationHandlerMapping来开启支持@Controller注解-->
