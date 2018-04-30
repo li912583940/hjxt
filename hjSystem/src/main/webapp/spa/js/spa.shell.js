@@ -26,6 +26,9 @@ spa.shell = (function(){
 	
 	initModule = function($container){
 		stateMap.$container = $container;
-		$container.html(configMap)
+		$container.html(configMap.main_html);
+		setJqueryMap();
 	}
+	
+	return { initModule : initModule };
 }());
