@@ -191,6 +191,10 @@ spa.shell = (function(){
 		$.uriAnchor.configModule({
 			schema_map: configMap.anchor_shema_map
 		});
+		
+		spa.chat.configModule({});
+		spa.chat.initModule( jqueryMap.$chat );
+		
 		/** 绑定hashchage事件处理程序并立即触发它，这样模块在初始加载时就会处理书签*/
 		$(window)
 			.bind('hashchange', onHashchange)
