@@ -79,14 +79,14 @@ spa.shell = (function(){
 	onHashchange = function(event){
 		var anchor_map_previous = copyAnchorMap();
 		anchor_map_proposed,
-		_s_chat_previous, _s_chat_propesed,
+		_s_chat_previous, _s_chat_proposed,
 		s_chat_proposed;
 		try{anchor_map_proposed = $.uriAnchor.makeAnchorMap(); }
 		catch(error){
 			$.uriAnchor.setAnchor(anchor_map_previous, null, true);
 			return false;
 		}
-		stateMap.anchor_map = anchor_map_propsed;
+		stateMap.anchor_map = anchor_map_proposed;
 		
 		_s_chat_previous = anchor_map_previous._s_chat;
 		_s_chat_proposed = anchor_map_proposed._s_chat;
