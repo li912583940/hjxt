@@ -2,12 +2,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sl.ue</groupId>
-  <artifactId>hjSystem</artifactId>
+  <artifactId>HjSystem</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>hjSystem</name>
+  <name>HjSystem Maven Webapp</name>
   <url>http://maven.apache.org</url>
-  <dependencies>
+   <dependencies>
     <!-- <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -111,6 +111,6 @@
     
   </dependencies>
   <build>
-    <finalName>hjSystem</finalName>
+    <finalName>HjSystem</finalName>
   </build>
 </project>
