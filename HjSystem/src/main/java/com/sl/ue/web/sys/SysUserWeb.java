@@ -3,9 +3,8 @@ package com.sl.ue.web.sys;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -17,15 +16,14 @@ import com.sl.ue.util.http.Result;
  * 说明 [用户]
  * @author lxt
  */
-@Controller
-@RequestMapping("/sysUser")
+@RestController
+@RequestMapping("/user")
 public class SysUserWeb {
 
 	@Autowired
 	private SysUserService sysUserService;
 	
 	@RequestMapping("/findOne")
-	@ResponseBody
 	public String findOne(){
 		List<SysUser> list = sysUserService.baseFindList(new SysUser());
 		return JSON.toJSONString(list, SerializerFeature.WriteMapNullValue);
@@ -35,6 +33,7 @@ public class SysUserWeb {
 	 * 说明 [登录]
 	 * @author lxt
 	 */
+	@RequestMapping("/login")
 	public String login(String userNo, String userPwd){
 		Result result = new Result();
 		SysUser model = new SysUser();
