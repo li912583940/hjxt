@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -50,13 +51,15 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 		if(table != null){
 			tableName = table.value();
 			Field[] fields = clazz.getDeclaredFields();
+			StringBuffer table_fileds = new StringBuffer();
 			StringBuffer where_fields = new StringBuffer();
 			List<Object> params = new ArrayList<Object>();
 			try {
 				for(Field field : fields){
 					if(field.getName().equals("serialVersionUID"))
 						continue;
-					String table_filed = HumpCrossUnderline.humpToUnderline(field.getName());
+					String table_filed = field.getAnnotation(DbField.class).value();
+					table_fileds.append(table_filed+",");
 					field.setAccessible(true);
 					if(field.get(model) != null){
 						params.add(field.get(model));
@@ -70,7 +73,12 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 				int startNum = (pageNum-1)*pageSize;
 				limit =  " limit " + startNum + "," + pageSize;
 			}
-			String sql = "select * from " + tableName+"  where 1=1 " + where_fields.toString() + limit;
+			String table_fileds_str = StringUtil.lastComma(table_fileds.toString());
+			//如果属性上没有字段注解，sql查询字段就设置为*
+			if(StringUtils.isBlank(table_fileds_str)){
+				table_fileds_str = "*";
+			}
+			String sql = "select "+ table_fileds_str + " from " + tableName+"  where 1=1 " + where_fields.toString() + limit;
 			RowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazz);
 			List<T> list = (List<T>)jdbcTemplate.query(sql, params.toArray(), rowMapper);
 			return list;

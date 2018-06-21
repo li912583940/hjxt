@@ -1,3 +1,0 @@
-spa.model = (function(){
-	return {};
-}());
