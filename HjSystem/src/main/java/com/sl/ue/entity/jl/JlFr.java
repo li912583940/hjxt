@@ -2,56 +2,103 @@ package com.sl.ue.entity.jl;
 
 import java.sql.Timestamp;
 
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
+
 /**
  * JlFr entity. @author MyEclipse Persistence Tools
  */
-
+@Table("JL_FR")
 public class JlFr implements java.io.Serializable {
 
 	// Fields
-
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("FR_No")
 	private String frNo;
+	@DbField("FR_Name")
 	private String frName;
+	@DbField("FR_Card")
 	private String frCard;
+	@DbField("JY")
 	private String jy;
+	@DbField("JQ")
 	private String jq;
+	@DbField("JB_No")
 	private String jbNo;
+	@DbField("JB_SetTime")
 	private Integer jbSetTime;
+	@DbField("JB_SetType")
 	private Integer jbSetType;
+	@DbField("QQ_JB")
 	private Integer qqJb;
+	@DbField("QQ_Use")
 	private Integer qqUse;
+	@DbField("QQ_Left")
 	private Integer qqLeft;
+	@DbField("QQ_YE")
 	private Integer qqYe;
+	@DbField("QQ_ZH")
 	private String qqZh;
+	@DbField("QQ_MM")
 	private String qqMm;
+	@DbField("HJ_JB")
 	private Integer hjJb;
+	@DbField("HJ_Use")
 	private Integer hjUse;
+	@DbField("HJ_Left")
 	private Integer hjLeft;
+	@DbField("HJ_Last_Time")
 	private Timestamp hjLastTime;
+	@DbField("Monitor_Flag")
 	private String monitorFlag;
+	@DbField("State")
 	private Integer state;
+	@DbField("OutTime")
 	private Timestamp outTime;
+	@DbField("SP_State")
 	private Integer spState;
+	@DbField("SP_UserNo")
 	private String spUserNo;
+	@DbField("SP_Time")
 	private Timestamp spTime;
+	@DbField("SP_Info")
 	private String spInfo;
+	@DbField("SP_Mon")
 	private String spMon;
+	@DbField("Info_RJSJ")
 	private String infoRjsj;
+	@DbField("Info_JG")
 	private String infoJg;
+	@DbField("Info_ZM")
 	private String infoZm;
+	@DbField("Info_XQ")
 	private String infoXq;
+	@DbField("Info_DQ")
 	private String infoDq;
+	@DbField("Info_ZDZF")
 	private String infoZdzf;
+	@DbField("Info_CSRQ")
 	private String infoCsrq;
+	@DbField("info_home")
 	private String infoHome;
+	@DbField("ZP")
 	private byte[] zp;
+	@DbField("Former_JQ_Name")
 	private String formerJQName;
+	@DbField("FR_DAH")
 	private String frDah;
+	@DbField("State_ZDZF")
 	private Integer stateZdzf;
+	@DbField("ZDZF_Type")
 	private String zdzfType;
+	@DbField("FR_GJ")
 	private String frGj;
+	@DbField("HJ_STOP_TIME")
 	private Timestamp hjStopTime;
+	@DbField("HJ_STOP_SM")
 	private String hjStopSM;
 
 	// Constructors
