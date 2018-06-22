@@ -54,15 +54,16 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: '国际化'
   },
-  criminal: {//服刑
-  	number: '编号',
-  	name: '姓名',
-  	sex: '性别',
-  	age: '年龄',
-  	prisonArea: '监区',
-  	nativePlace: '籍贯',
-  	entryTime: '入监时间',
-  	numberOfRelatives: '亲人个数',
+  /* 服刑 */
+  criminal: {
+    number: '编号',
+    name: '姓名',
+    sex: '性别',
+    age: '年龄',
+    prisonArea: '监区',
+    nativePlace: '籍贯',
+    entryTime: '入监时间',
+    numberOfRelatives: '亲人个数',
     dynamicTips1: '固定表头, 按照表头顺序排序',
     dynamicTips2: '不固定表头, 按照点击顺序排序',
     dragTips1: '默认顺序',

@@ -72,12 +72,6 @@
       <el-table-column align="center" :label="$t('criminal.actions')" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
-          <!--<el-button v-if="scope.row.status!='published'" size="mini" type="success" @click="handleModifyStatus(scope.row,'published')">{{$t('criminal.publish')}}
-          </el-button>
-          <el-button v-if="scope.row.status!='draft'" size="mini" @click="handleModifyStatus(scope.row,'draft')">{{$t('criminal.draft')}}
-          </el-button>
-          <el-button v-if="scope.row.status!='deleted'" size="mini" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{$t('criminal.delete')}}
-          </el-button>-->
           <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{$t('criminal.delete')}}
           </el-button>
         </template>
@@ -91,6 +85,10 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="70px" style='width: 400px; margin-left:50px;'>
+        <el-form-item :label="$t('criminal.name')" prop="name">
+          <el-input v-model="temp.name"></el-input>
+        </el-form-item>
+        
         <el-form-item :label="$t('criminal.type')" prop="type">
           <el-select class="filter-item" v-model="temp.type" placeholder="Please select">
             <el-option v-for="item in  calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key">
@@ -182,9 +180,11 @@ export default {
       showReviewer: false,
       temp: {
         id: undefined,
+        name: '',
+        sex: 1,
         importance: 1,
         remark: '',
-        timestamp: new Date(),
+        entryTime: new Date(),
         title: '',
         type: '',
         status: 'published'
@@ -198,8 +198,9 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
+        name: [{ required: true, message: this.$t('criminal.name'), trigger: 'blur' }],
+        sex: [{ required: true, message: this.$t('criminal.sex'), trigger: 'change' }],
+        entryTime: [{ type: 'date', required: true, message: this.$t('criminal.entryTime'), trigger: 'change' }],
         title: [{ required: true, message: 'title is required', trigger: 'blur' }]
       },
       downloadLoading: false

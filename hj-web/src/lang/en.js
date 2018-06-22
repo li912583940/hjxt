@@ -54,15 +54,16 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: 'I18n'
   },
-  criminal: {//服刑
-  	number: 'Number',
-  	name: 'Name',
-  	sex: 'Aex',
-  	age: 'Age',
-  	prisonArea: 'PrisonArea',
-  	nativePlace: 'NativePlace',
-  	entryTime: 'EntryTime',
-  	numberOfRelatives: 'NumberOfRelatives',
+  /* 服刑 */
+  criminal: {
+    number: 'Number',
+    name: 'Name',
+    sex: 'Aex',
+    age: 'Age',
+    prisonArea: 'PrisonArea',
+    nativePlace: 'NativePlace',
+    entryTime: 'EntryTime',
+    numberOfRelatives: 'NumberOfRelatives',
     dynamicTips1: 'Fixed header, sorted by header order',
     dynamicTips2: 'Not fixed header, sorted by click order',
     dragTips1: 'The default order',

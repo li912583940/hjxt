@@ -9,18 +9,18 @@ import zhLocale from './zh'
 Vue.use(VueI18n)
 
 const messages = {
-  en: {
-    ...enLocale,
-    ...elementEnLocale
-  },
   zh: {
     ...zhLocale,
     ...elementZhLocale
+  },
+  en: {
+    ...enLocale,
+    ...elementEnLocale
   }
 }
 
 const i18n = new VueI18n({
-  locale: Cookies.get('language') || 'en', // set locale
+  locale: Cookies.get('language') || 'zh', // set locale
   messages // set locale messages
 })
 
