@@ -3,35 +3,26 @@ package com.sl.ue.service.impl;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONArray;
-import com.sl.ue.entity.sys.SysUser;
 import com.sl.ue.service.BaseService;
 import com.sl.ue.util.HumpCrossUnderline;
-import com.sl.ue.util.Page;
 import com.sl.ue.util.StringUtil;
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
 import com.sl.ue.util.anno.Table;
 
+/**
+ * 说明 [持久层 基本实现类 MySql]
+ * @author lxt
+ */
 public abstract class BaseImpl<T> implements BaseService<T>{
 	@Autowired
 	protected JdbcTemplate jdbcTemplate;

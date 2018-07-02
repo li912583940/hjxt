@@ -10,16 +10,10 @@ import com.sl.ue.util.http.Result;
 public class Test {
 
 	public static void main(String[] args){
-		Result rs = new Result();
-//		rs.setState(0);
-//		rs.setMessage("你好");
-		
-		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
-		Map<String,Object> map = new HashMap<String, Object>();
-		map.put("aa", 111);
-		map.put("bb", "你好啊");
-		list.add(map);
-		rs.setData(list);
-		System.out.println(rs.toString());
+		if(55214%2 == 0){
+			System.out.println("是偶数");
+		}else{
+			System.out.println("是奇数");
+		}
 	}
 }

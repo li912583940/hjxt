@@ -53,7 +53,7 @@
        <artifactId>spring-boot-starter-jdbc</artifactId>
    </dependency>
      <!-- mysql -->
-    <dependency>
+    <!-- <dependency>
         <groupId>mysql</groupId>
         <artifactId>mysql-connector-java</artifactId>
         <version>5.1.35</version>
@@ -62,7 +62,16 @@
 	    <groupId>com.alibaba</groupId>
 	    <artifactId>druid</artifactId>
 	    <version>1.1.6</version>
+	</dependency> -->
+
+	<!-- SQL Server -->
+	<dependency>
+	    <groupId>com.microsoft.sqlserver</groupId>
+	    <artifactId>sqljdbc4</artifactId>
+	    <version>4.0</version>
+	    <scope>test</scope>
 	</dependency>
+
 
     <!-- json -->
     <dependency>
