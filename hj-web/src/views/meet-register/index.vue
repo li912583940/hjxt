@@ -1,17 +1,18 @@
+<!-- 会见登记 -->
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" :placeholder="$t('criminal.title')" v-model="listQuery.title">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" :placeholder="$t('criminal.title')" v-model="frListQuery.title">
       </el-input>
-      <el-select clearable style="width: 90px" class="filter-item" v-model="listQuery.importance" :placeholder="$t('criminal.importance')">
+      <el-select clearable style="width: 90px" class="filter-item" v-model="frListQuery.importance" :placeholder="$t('criminal.importance')">
         <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
-      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.type" :placeholder="$t('criminal.type')">
+      <el-select clearable class="filter-item" style="width: 130px" v-model="frListQuery.type" :placeholder="$t('criminal.type')">
         <el-option v-for="item in  calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
         </el-option>
       </el-select>
-      <el-select @change='handleFilter' style="width: 140px" class="filter-item" v-model="listQuery.sort">
+      <el-select @change='handleFilter' style="width: 140px" class="filter-item" v-model="frListQuery.sort">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key">
         </el-option>
       </el-select>
@@ -21,7 +22,8 @@
       <el-checkbox class="filter-item" style='margin-left:15px;' @change='tableKey=tableKey+1' v-model="showReviewer">{{$t('criminal.reviewer')}}</el-checkbox>
     </div>
 
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
+	<!-- 服刑人员开始 -->
+    <el-table :key='frTableKey' :data="frList" v-loading="frListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
       style="width: 100%">
       <el-table-column align="center" :label="$t('criminal.id')" width="65">
         <template slot-scope="scope">
@@ -79,10 +81,75 @@
     </el-table>
 
     <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="frListQuery.page" :page-sizes="[5,10]" :page-size="frListQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="frTotal">
       </el-pagination>
     </div>
+	<!-- 服刑人员结束 -->
+	
+	<!-- 亲属开始 -->
+    <el-table :key='qsTableKey' :data="qsList" v-loading="qsListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
+      style="width: 100%">
+      <el-table-column align="center" :label="$t('criminal.id')" width="65">
+        <template slot-scope="scope">
+          <span>{{scope.row.id}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="110px" align="center" :label="$t('currency.number')">
+        <template slot-scope="scope">
+          <span>{{scope.row.author}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="160px" align="center" :label="$t('currency.fullName')">
+        <template slot-scope="scope">
+          <span>{{scope.row.author}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="110px" align="center" :label="$t('criminal.sex')">
+        <template slot-scope="scope">
+          <span>{{scope.row.author}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="110px" align="center" :label="$t('criminal.age')">
+        <template slot-scope="scope">
+          <span>{{scope.row.author}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="110px" align="center" :label="$t('criminal.prisonArea')">
+        <template slot-scope="scope">
+          <span>{{scope.row.author}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="160" align="center" :label="$t('criminal.nativePlace')">
+        <template slot-scope="scope">
+          <span>{{scope.row.author}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="150px" align="center" :label="$t('criminal.entryTime')">
+        <template slot-scope="scope">
+          <span>{{scope.row.author}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="110px" align="center" :label="$t('criminal.numberOfRelatives')">
+        <template slot-scope="scope">
+          <span>{{scope.row.author}}</span>
+        </template>
+      </el-table-column>
 
+      <el-table-column align="center" :label="$t('criminal.actions')" width="230" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
+          <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{$t('criminal.delete')}}
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <div class="pagination-container">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="qsListQuery.page" :page-sizes="[5,10]" :page-size="qsListQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="qsTotal">
+      </el-pagination>
+    </div>
+    <!-- 亲属结束 -->
+    
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="70px" style='width: 400px; margin-left:50px;'>
         <el-form-item :label="$t('criminal.name')" prop="name">
@@ -161,18 +228,32 @@ export default {
   },
   data() {
     return {
-      tableKey: 0,
-      list: null,
-      total: null,
-      listLoading: true,
-      listQuery: {
+      frTableKey: 0,
+      frList: null,
+      frTotal: null,
+      frListLoading: true,
+      frListQuery: {
         page: 1,
-        limit: 20,
+        limit: 5,
         importance: undefined,
         title: undefined,
         type: undefined,
         sort: '+id'
       },
+      
+      qsTableKey: 0,
+      qsList: null,
+      qsTotal: null,
+      qsListLoading: true,
+      qsListQuery: {
+        page: 1,
+        limit: 5,
+        importance: undefined,
+        title: undefined,
+        type: undefined,
+        sort: '+id'
+      },
+      
       importanceOptions: [1, 2, 3],
       calendarTypeOptions,
       sortOptions: [{ label: 'ID升序', key: '+id' }, { label: 'ID降序', key: '-id' }],
@@ -220,15 +301,27 @@ export default {
     }
   },
   created() {
-    this.getList()
+   
+  },
+  mounted(){
+      this.getFrList();
+      this.getQsFrList();
   },
   methods: {
-    getList() {
-      this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
-        this.listLoading = false
+    getFrList() {
+      this.frListLoading = true
+      fetchList(this.frListQuery).then(response => {
+        this.frList = response.data.items
+        this.frTotal = response.data.total
+        this.frListLoading = false
+      })
+    },
+    getQsFrList() {
+      this.qsListLoading = true
+      fetchList(this.qsListQuery).then(response => {
+        this.qsList = response.data.items
+        this.qsTotal = response.data.total
+        this.qsListLoading = false
       })
     },
     handleFilter() {

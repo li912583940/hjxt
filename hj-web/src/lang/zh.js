@@ -4,6 +4,10 @@ export default {
     introduction: '简述',
     documentation: '文档',
     guide: '引导页',
+    criminalManage: '无所谓管理',
+    criminal: '服刑',
+    relatives: '亲属',
+    meetRegister: '会见登记',
     permission: '权限测试页',
     pagePermission: '页面权限',
     directivePermission: '指令权限',
@@ -54,6 +58,12 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: '国际化'
   },
+  /* 通用 */
+  currency: {
+    number: '编号',
+    name: '名称',
+    fullName: '姓名'
+  },
   /* 服刑 */
   criminal: {
     number: '编号',
@@ -89,6 +99,9 @@ export default {
     delete: '删除',
     cancel: '取 消',
     confirm: '确 定'
+  },
+  meetRegister: {
+  	
   },
   navbar: {
     logOut: '退出登录',

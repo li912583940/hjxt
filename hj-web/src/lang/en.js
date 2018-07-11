@@ -4,6 +4,10 @@ export default {
     introduction: 'Introduction',
     documentation: 'Documentation',
     guide: 'Guide',
+    criminalManage: 'Criminal Manage',
+    criminal: 'Criminal',
+    relatives: 'Relatives',
+    meetRegister: 'Meet Register',
     permission: 'Permission',
     pagePermission: 'Page Permission',
     directivePermission: 'Directive Permission',
@@ -54,6 +58,12 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: 'I18n'
   },
+  /* 通用 */
+  currency: {
+  	number: 'Number',
+    name: 'Name',
+    fullName: 'FullName'
+  },
   /* 服刑 */
   criminal: {
     number: 'Number',
@@ -89,6 +99,9 @@ export default {
     delete: 'Delete',
     cancel: 'Cancel',
     confirm: 'Confirm'
+  },
+  meetRegister: {
+  	
   },
   navbar: {
     logOut: 'Log Out',
