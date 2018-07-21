@@ -10,10 +10,10 @@ import com.sl.ue.util.http.Result;
 public class Test {
 
 	public static void main(String[] args){
-		if(55214%2 == 0){
-			System.out.println("是偶数");
-		}else{
-			System.out.println("是奇数");
+		double x=0;
+		for(int i=1; i<=20; i++){
+			x=x+((double)1/i);
+			System.out.println(x);
 		}
 	}
 }
