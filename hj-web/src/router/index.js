@@ -74,16 +74,27 @@ export const asyncRouterMap = [
   {
     path: '/criminal',
     component: Layout,
-    redirect: '/criminal/criminal',
-    name: 'criminal',
+    redirect: '/criminal',
+    name: 'criminalManage',
     meta: {
-      title: '无所畏惧',
+      title: 'criminalManage',
       icon: 'table'
     },
     children: [
-      { path: 'criminal', component: () => import('@/views/criminal/criminal'), name: 'criminal', meta: { title: '无所畏惧' }},
-      { path: 'custom-tree-table', component: () => import('@/views/table/treeTable/customTreeTable'), name: 'relatives', meta: { title: '亲人' }}
+      { path: 'criminal', component: () => import('@/views/criminal/criminal'), name: 'criminal', meta: { title: 'criminal' }},
+      { path: 'relatives', component: () => import('@/views/criminal/relatives'), name: 'relatives', meta: { title: 'relatives' }}
     ]
+  },
+
+  {
+    path: '/meetRegister',
+    component: Layout,
+    children: [{
+      path: 'index',
+      component: () => import('@/views/meet-register/index'),
+      name: 'meetRegister',
+      meta: { title: 'meetRegister', icon: 'table' }
+    }]
   },
 
   {
