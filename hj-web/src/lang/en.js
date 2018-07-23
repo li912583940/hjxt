@@ -8,6 +8,8 @@ export default {
     criminal: 'Criminal',
     relatives: 'Relatives',
     meetRegister: 'Meet Register',
+    meetRecord: 'Meet Record',
+    meetSign: 'Meet Sign',
     permission: 'Permission',
     pagePermission: 'Page Permission',
     directivePermission: 'Directive Permission',

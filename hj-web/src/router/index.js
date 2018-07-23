@@ -71,7 +71,7 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
-  {
+  { // 服刑人员管理
     path: '/criminal',
     component: Layout,
     redirect: '/criminal',
@@ -86,8 +86,8 @@ export const asyncRouterMap = [
     ]
   },
 
-  {
-    path: '/meetRegister',
+  { // 会见登记
+    path: '/meetRegister', 
     component: Layout,
     children: [{
       path: 'index',
@@ -96,7 +96,29 @@ export const asyncRouterMap = [
       meta: { title: 'meetRegister', icon: 'table' }
     }]
   },
-
+	
+  { // 会见记录
+    path: '/meetRecord', 
+    component: Layout,
+    children: [{
+      path: 'index',
+      component: () => import('@/views/meet-record/index'),
+      name: 'meetRecord',
+      meta: { title: 'meetRecord', icon: 'table' }
+    }]
+  },
+  
+  { // 会见签到
+    path: '/meetSign', 
+    component: Layout,
+    children: [{
+      path: 'index',
+      component: () => import('@/views/meet-sign/index'),
+      name: 'meetSign',
+      meta: { title: 'meetSign', icon: 'table' }
+    }]
+  },
+  
   {
     path: '/permission',
     component: Layout,

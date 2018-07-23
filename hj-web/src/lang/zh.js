@@ -8,6 +8,8 @@ export default {
     criminal: '服刑',
     relatives: '亲属',
     meetRegister: '会见登记',
+    meetRecord: '会见记录',
+    meetSign: '会见签到',
     permission: '权限测试页',
     pagePermission: '页面权限',
     directivePermission: '指令权限',
