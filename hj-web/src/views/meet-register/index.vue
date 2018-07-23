@@ -17,189 +17,144 @@
         </el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
-      <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
       <el-checkbox class="filter-item" style='margin-left:15px;' @change='tableKey=tableKey+1' v-model="showReviewer">{{$t('criminal.reviewer')}}</el-checkbox>
     </div>
 
-	<!-- 服刑人员开始 -->
-    <el-table :key='frTableKey' :data="frList" v-loading="frListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 100%">
-      <el-table-column align="center" :label="$t('criminal.id')" width="65">
-        <template slot-scope="scope">
-          <span>{{scope.row.id}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('currency.number')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="160px" align="center" :label="$t('currency.fullName')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('criminal.sex')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('criminal.age')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('criminal.prisonArea')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="160" align="center" :label="$t('criminal.nativePlace')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="150px" align="center" :label="$t('criminal.entryTime')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('criminal.numberOfRelatives')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" :label="$t('criminal.actions')" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
-          <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{$t('criminal.delete')}}
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="frListQuery.page" :page-sizes="[5,10]" :page-size="frListQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="frTotal">
-      </el-pagination>
-    </div>
-	<!-- 服刑人员结束 -->
+		<!-- 服刑人员开始 -->
+		<el-card class="box-card">
+	    <el-table :key='frTableKey' ref="frMultipleTable" :data="frList" v-loading="frListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
+	       @row-click="frRowClick" @select="frSelectionChang" @select-all="frAllSelectionChang" style="width: 100%">
+	      <el-table-column align="center" :label="$t('currency.select')" type="selection" width="65">
+	      </el-table-column>
+	      <el-table-column align="center" :label="$t('criminal.id')" width="65">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.id}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="110px" align="center" :label="$t('currency.number')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="160px" align="center" :label="$t('currency.fullName')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="110px" align="center" :label="$t('criminal.sex')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="110px" align="center" :label="$t('criminal.age')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="110px" align="center" :label="$t('criminal.prisonArea')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="160" align="center" :label="$t('criminal.nativePlace')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="150px" align="center" :label="$t('criminal.entryTime')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="110px" align="center" :label="$t('criminal.numberOfRelatives')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
 	
-	<!-- 亲属开始 -->
-    <el-table :key='qsTableKey' :data="qsList" v-loading="qsListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 100%">
-      <el-table-column align="center" :label="$t('criminal.id')" width="65">
-        <template slot-scope="scope">
-          <span>{{scope.row.id}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('currency.number')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="160px" align="center" :label="$t('currency.fullName')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('criminal.sex')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('criminal.age')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('criminal.prisonArea')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="160" align="center" :label="$t('criminal.nativePlace')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="150px" align="center" :label="$t('criminal.entryTime')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('criminal.numberOfRelatives')">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" :label="$t('criminal.actions')" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
-          <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{$t('criminal.delete')}}
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <div class="pagination-container">
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="qsListQuery.page" :page-sizes="[5,10]" :page-size="qsListQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="qsTotal">
-      </el-pagination>
-    </div>
+	      <el-table-column align="center" :label="$t('criminal.actions')" width="230" class-name="small-padding fixed-width">
+	        <template slot-scope="scope">
+	          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
+	          <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{$t('criminal.delete')}}
+	          </el-button>
+	        </template>
+	      </el-table-column>
+	    </el-table>
+	
+	    <div class="pagination-container">
+	      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="frListQuery.page" :page-sizes="[5,10]" :page-size="frListQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="frTotal">
+	      </el-pagination>
+	    </div>
+	  </el-card>
+		<!-- 服刑人员结束 -->
+	
+		<!-- 亲属开始 -->
+		<el-card class="box-card">
+	    <el-table :key='qsTableKey' ref="qsMultipleTable" :data="qsList" v-loading="qsListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
+	      @selection-change="qsAllSelectionChange" @row-click="qsRowClick" style="width: 100%">
+	      <el-table-column align="center" type="selection" :label="$t('currency.select')" width="65">
+	      </el-table-column>
+	      <el-table-column align="center" :label="$t('criminal.id')" width="65">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.id}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="110px" align="center" :label="$t('currency.number')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="160px" align="center" :label="$t('currency.fullName')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="110px" align="center" :label="$t('criminal.sex')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="110px" align="center" :label="$t('criminal.age')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="110px" align="center" :label="$t('criminal.prisonArea')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="160" align="center" :label="$t('criminal.nativePlace')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="150px" align="center" :label="$t('criminal.entryTime')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="110px" align="center" :label="$t('criminal.numberOfRelatives')">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.author}}</span>
+	        </template>
+	      </el-table-column>
+	
+	      <el-table-column align="center" :label="$t('criminal.actions')" width="230" class-name="small-padding fixed-width">
+	        <template slot-scope="scope">
+	          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
+	          <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{$t('criminal.delete')}}
+	          </el-button>
+	        </template>
+	      </el-table-column>
+	    </el-table>
+	
+	    <div class="pagination-container">
+	      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="qsListQuery.page" :page-sizes="[5,10]" :page-size="qsListQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="qsTotal">
+	      </el-pagination>
+	    </div>
+	  </el-card>
     <!-- 亲属结束 -->
-    
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="70px" style='width: 400px; margin-left:50px;'>
-        <el-form-item :label="$t('criminal.name')" prop="name">
-          <el-input v-model="temp.name"></el-input>
-        </el-form-item>
-        
-        <el-form-item :label="$t('criminal.type')" prop="type">
-          <el-select class="filter-item" v-model="temp.type" placeholder="Please select">
-            <el-option v-for="item in  calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('criminal.date')" prop="timestamp">
-          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item :label="$t('criminal.title')" prop="title">
-          <el-input v-model="temp.title"></el-input>
-        </el-form-item>
-        <el-form-item :label="$t('criminal.status')">
-          <el-select class="filter-item" v-model="temp.status" placeholder="Please select">
-            <el-option v-for="item in  statusOptions" :key="item" :label="item" :value="item">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="$t('criminal.importance')">
-          <el-rate style="margin-top:8px;" v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max='3'></el-rate>
-        </el-form-item>
-        <el-form-item :label="$t('criminal.remark')">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.remark">
-          </el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">{{$t('criminal.cancel')}}</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">{{$t('criminal.confirm')}}</el-button>
-        <el-button v-else type="primary" @click="updateData">{{$t('criminal.confirm')}}</el-button>
-      </div>
-    </el-dialog>
-
-    <el-dialog title="Reading statistics" :visible.sync="dialogPvVisible">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel"> </el-table-column>
-        <el-table-column prop="pv" label="Pv"> </el-table-column>
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">{{$t('criminal.confirm')}}</el-button>
-      </span>
-    </el-dialog>
-
   </div>
 </template>
 
@@ -241,7 +196,7 @@ export default {
         sort: '+id'
       },
       
-      qsTableKey: 0,
+      qsTableKey: 1,
       qsList: null,
       qsTotal: null,
       qsListLoading: true,
@@ -254,37 +209,24 @@ export default {
         sort: '+id'
       },
       
+      formdata: {
+      	frSelections: [],
+      	qsSelections: [],
+      },
+      
+      
       importanceOptions: [1, 2, 3],
       calendarTypeOptions,
       sortOptions: [{ label: 'ID升序', key: '+id' }, { label: 'ID降序', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
-      temp: {
-        id: undefined,
-        name: '',
-        sex: 1,
-        importance: 1,
-        remark: '',
-        entryTime: new Date(),
-        title: '',
-        type: '',
-        status: 'published'
-      },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: 'Edit',
-        create: 'Create'
-      },
-      dialogPvVisible: false,
-      pvData: [],
+     
       rules: {
         name: [{ required: true, message: this.$t('criminal.name'), trigger: 'blur' }],
         sex: [{ required: true, message: this.$t('criminal.sex'), trigger: 'change' }],
         entryTime: [{ type: 'date', required: true, message: this.$t('criminal.entryTime'), trigger: 'change' }],
         title: [{ required: true, message: 'title is required', trigger: 'blur' }]
-      },
-      downloadLoading: false
+      }
     }
   },
   filters: {
@@ -343,106 +285,23 @@ export default {
       })
       row.status = status
     },
-    resetTemp() {
-      this.temp = {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        status: 'published',
-        type: ''
-      }
+    frSelectionChang(rows,row){
+    	this.$refs.frMultipleTable.clearSelection();
+    	this.$refs.frMultipleTable.toggleRowSelection(row);
     },
-    handleCreate() {
-      this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+    frAllSelectionChang(){
+    	this.$refs.frMultipleTable.clearSelection();
     },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
+    frRowClick(row){
+    	this.$refs.frMultipleTable.clearSelection();
+    	this.$refs.frMultipleTable.toggleRowSelection(row);
     },
-    handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+    qsRowClick(row){ // 单击亲属表格行 多选框选中事件
+      this.$refs.qsMultipleTable.toggleRowSelection(row);
     },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
-            for (const v of this.list) {
-              if (v.id === this.temp.id) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.temp)
-                break
-              }
-            }
-            this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
-    handleDelete(row) {
-      this.$notify({
-        title: '成功',
-        message: '删除成功',
-        type: 'success',
-        duration: 2000
-      })
-      const index = this.list.indexOf(row)
-      this.list.splice(index, 1)
-    },
-    handleFetchPv(pv) {
-      fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
-      })
-    },
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-        const data = this.formatJson(filterVal, this.list)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
-      })
-    },
+  	qsAllSelectionChange(rows){ // 亲属表格 全选事件
+  		this.formdata.qsSelections = rows;
+  	},
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
         if (j === 'timestamp') {
@@ -455,3 +314,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.box-card {
+  margin: 10px;
+  }
+</style>
