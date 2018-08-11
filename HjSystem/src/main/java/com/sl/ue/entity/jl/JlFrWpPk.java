@@ -1,32 +1,25 @@
 package com.sl.ue.entity.jl;
 
-/**
- * JlFrWpPk entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_FR_WP_PK")
 public class JlFrWpPk implements java.io.Serializable {
 
+	/** */
+	private static final long serialVersionUID = 9148189772160563605L;
 	// Fields
-
+	@Id
+	@DbField("WebID")
 	private Long webId;
+	@DbField("hjid")
 	private Long hjid;
+	@DbField("wpNo")
 	private String wpNo;
+	@DbField("wpCount")
 	private Integer wpCount;
 
-	// Constructors
-
-	/** default constructor */
-	public JlFrWpPk() {
-	}
-
-	/** full constructor */
-	public JlFrWpPk(Long hjid, String wpNo, Integer wpCount) {
-		this.hjid = hjid;
-		this.wpNo = wpNo;
-		this.wpCount = wpCount;
-	}
-
-	// Property accessors
 
 	public Long getWebId() {
 		return this.webId;

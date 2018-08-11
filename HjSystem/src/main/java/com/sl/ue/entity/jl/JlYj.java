@@ -1,53 +1,37 @@
 package com.sl.ue.entity.jl;
 
-/**
- * JlYj entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_YJ")
 public class JlYj implements java.io.Serializable {
 
-	// Fields
-
+	/** */
+	private static final long serialVersionUID = 4868236344859903034L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("YJ_No")
 	private String yjNo;
+	@DbField("YJ_Name")
 	private String yjName;
+	@DbField("YJ_Card")
 	private String yjCard;
+	@DbField("JY")
 	private String jy;
+	@DbField("JQ")
 	private String jq;
+	@DbField("TeleUser")
 	private String teleUser;
+	@DbField("TelePwd")
 	private String telePwd;
+	@DbField("YJ_Num")
 	private String yjNum;
+	@DbField("Dept_Name")
 	private String deptName;
 
-	// Constructors
-
-	/** default constructor */
-	public JlYj() {
-	}
-
-	/** minimal constructor */
-	public JlYj(String yjNo, String jy, String jq) {
-		this.yjNo = yjNo;
-		this.jy = jy;
-		this.jq = jq;
-	}
-
-	/** full constructor */
-	public JlYj(String yjNo, String yjName, String yjCard, String jy,
-			String jq, String teleUser, String telePwd, String yjNum,
-			String deptName) {
-		this.yjNo = yjNo;
-		this.yjName = yjName;
-		this.yjCard = yjCard;
-		this.jy = jy;
-		this.jq = jq;
-		this.teleUser = teleUser;
-		this.telePwd = telePwd;
-		this.yjNum = yjNum;
-		this.deptName = deptName;
-	}
-
-	// Property accessors
+	
 
 	public Integer getWebId() {
 		return this.webId;

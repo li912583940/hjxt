@@ -1,104 +1,74 @@
 package com.sl.ue.entity.sys;
 
-/**
- * SysHjLine entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("SYS_HJ_LINE")
 public class SysHjLine implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = 8687800148612877092L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("Line_No")
 	private Integer lineNo;
+	@DbField("JY")
 	private String jy;
+	@DbField("Line_Type")
 	private Integer lineType;
+	@DbField("ZW")
 	private String zw;
+	@DbField("Board")
 	private String board;
+	@DbField("Line")
 	private Integer line;
+	@DbField("BoardJs")
 	private String boardJs;
+	@DbField("LineJs")
 	private Integer lineJs;
+	@DbField("BoardMon")
 	private String boardMon;
+	@DbField("LineMon")
 	private Integer lineMon;
+	@DbField("DKQ")
 	private String dkq;
+	@DbField("State")
 	private Integer state;
+	@DbField("HJState")
 	private Integer hjstate;
+	@DbField("HJID")
 	private Long hjid;
+	@DbField("AcdBH")
 	private Integer acdBh;
+	@DbField("AcdFr")
 	private String acdFr;
+	@DbField("Monitor_State")
 	private String monitorState;
+	@DbField("Monitor_JQ")
 	private String monitorJq;
+	@DbField("Monitor_FR")
 	private String monitorFr;
+	@DbField("Monitor_QS")
 	private String monitorQs;
+	@DbField("Monitor_YJ")
 	private String monitorYj;
+	@DbField("Monitor_Time")
 	private String monitorTime;
+	@DbField("Monitor_JKBZ")
 	private String monitorJkbz;
+	@DbField("Monitor_CallID")
 	private String monitorCallId;
+	@DbField("VideoChan1_Server")
 	private String videoChan1Server;
+	@DbField("VideoChan1_No")
 	private Integer videoChan1No;
+	@DbField("VideoChan2_Server")
 	private String videoChan2Server;
+	@DbField("VideoChan2_No")
 	private Integer videoChan2No;
-	// Constructors
-
-	/** default constructor */
-	public SysHjLine() {
-	}
-
-	/** minimal constructor */
-	public SysHjLine(Integer lineNo, String jy, Integer lineType, String zw,
-			String board, Integer line, Integer lineJs, Integer lineMon,
-			Integer state, Integer hjstate) {
-		this.lineNo = lineNo;
-		this.jy = jy;
-		this.lineType = lineType;
-		this.zw = zw;
-		this.board = board;
-		this.line = line;
-		this.lineJs = lineJs;
-		this.lineMon = lineMon;
-		this.state = state;
-		this.hjstate = hjstate;
-	}
-
-	/** full constructor */
-	public SysHjLine(Integer lineNo, String jy, Integer lineType, String zw,
-			String board, Integer line, String boardJs, Integer lineJs,
-			String boardMon, Integer lineMon, String dkq, Integer state,
-			Integer hjstate, Long hjid, Integer acdBh, String acdFr,
-			String monitorState, String monitorJq, String monitorFr,
-			String monitorQs, String monitorYj, String monitorTime,
-			String monitorJkbz, String monitorCallId, String videoChan1Server,
-			Integer videoChan1No, String videoChan2Server, Integer videoChan2No) {
-		this.lineNo = lineNo;
-		this.jy = jy;
-		this.lineType = lineType;
-		this.zw = zw;
-		this.board = board;
-		this.line = line;
-		this.boardJs = boardJs;
-		this.lineJs = lineJs;
-		this.boardMon = boardMon;
-		this.lineMon = lineMon;
-		this.dkq = dkq;
-		this.state = state;
-		this.hjstate = hjstate;
-		this.hjid = hjid;
-		this.acdBh = acdBh;
-		this.acdFr = acdFr;
-		this.monitorState = monitorState;
-		this.monitorJq = monitorJq;
-		this.monitorFr = monitorFr;
-		this.monitorQs = monitorQs;
-		this.monitorYj = monitorYj;
-		this.monitorTime = monitorTime;
-		this.monitorJkbz = monitorJkbz;
-		this.monitorCallId = monitorCallId;
-		this.videoChan1Server = videoChan1Server;
-		this.videoChan1No = videoChan1No;
-		this.videoChan2Server = videoChan2Server;
-		this.videoChan2No = videoChan2No;
-	}
-
-	// Property accessors
 
 	public Integer getWebId() {
 		return this.webId;

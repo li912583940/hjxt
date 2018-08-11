@@ -1,44 +1,31 @@
 package com.sl.ue.entity.sys;
 
-/**
- * SysParam entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("SYS_PARAM")
 public class SysParam implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = 6454277832136999422L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("Param_Name")
 	private String paramName;
+	@DbField("Param_Data1")
 	private String paramData1;
+	@DbField("Param_Data2")
 	private String paramData2;
+	@DbField("Param_Data")
 	private String paramData3;
+	@DbField("Param_Data4")
 	private String paramData4;
+	@DbField("Param_Data5")
 	private String paramData5;
 
-	// Constructors
-
-	/** default constructor */
-	public SysParam() {
-	}
-
-	/** minimal constructor */
-	public SysParam(String paramName) {
-		this.paramName = paramName;
-	}
-
-	/** full constructor */
-	public SysParam(String paramName, String paramData1, String paramData2,
-			String paramData3, String paramData4, String paramData5) {
-		this.paramName = paramName;
-		this.paramData1 = paramData1;
-		this.paramData2 = paramData2;
-		this.paramData3 = paramData3;
-		this.paramData4 = paramData4;
-		this.paramData5 = paramData5;
-	}
-
-	// Property accessors
 
 	public Integer getWebId() {
 		return this.webId;

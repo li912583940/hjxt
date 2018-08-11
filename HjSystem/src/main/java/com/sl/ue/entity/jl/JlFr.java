@@ -6,13 +6,11 @@ import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
 import com.sl.ue.util.anno.Table;
 
-/**
- * JlFr entity. @author MyEclipse Persistence Tools
- */
 @Table("JL_FR")
 public class JlFr implements java.io.Serializable {
 
-	// Fields
+	/** */
+	private static final long serialVersionUID = 4783478966584103124L;
 	@Id
 	@DbField("WebID")
 	private Integer webId;
@@ -101,92 +99,6 @@ public class JlFr implements java.io.Serializable {
 	@DbField("HJ_STOP_SM")
 	private String hjStopSM;
 
-	// Constructors
-
-	
-
-	/** default constructor */
-	public JlFr() {
-	}
-
-	/** minimal constructor */
-	public JlFr(String frNo, String jy, String jq, String jbNo, Integer qqJb,
-			Integer qqUse, Integer qqLeft, Integer hjJb, Integer hjUse,
-			Integer hjLeft, String monitorFlag, Integer state, Integer spState,String formerJQName,String frDah) {
-		this.frNo = frNo;
-		this.jy = jy;
-		this.jq = jq;
-		this.jbNo = jbNo;
-		this.qqJb = qqJb;
-		this.qqUse = qqUse;
-		this.qqLeft = qqLeft;
-		this.hjJb = hjJb;
-		this.hjUse = hjUse;
-		this.hjLeft = hjLeft;
-		this.monitorFlag = monitorFlag;
-		this.state = state;
-		this.spState = spState;
-		this.formerJQName = formerJQName;
-		this.frDah=frDah;
-	}
-
-	/** full constructor */
-	public JlFr(String frNo, String frName, String frCard, String jy,
-			String jq, String jbNo, Integer jbSetTime, Integer jbSetType,
-			Integer qqJb, Integer qqUse, Integer qqLeft, Integer qqYe,
-			String qqZh, String qqMm, Integer hjJb, Integer hjUse,
-			Integer hjLeft, Timestamp hjLastTime, String monitorFlag,
-			Integer state, Timestamp outTime, Integer spState, String spUserNo,
-			Timestamp spTime, String spInfo, String spMon, String infoRjsj,
-			String infoJg, String infoZm, String infoXq, String infoDq,
-			String infoZdzf, String infoCsrq, String infoHome,byte[] zp,
-			String formerJQName,String frDah,Integer stateZdzf,String zdzfType,
-			String frGj,Timestamp hjStopTime,String hjStopSM) {
-		this.frNo = frNo;
-		this.frName = frName;
-		this.frCard = frCard;
-		this.jy = jy;
-		this.jq = jq;
-		this.jbNo = jbNo;
-		this.jbSetTime = jbSetTime;
-		this.jbSetType = jbSetType;
-		this.qqJb = qqJb;
-		this.qqUse = qqUse;
-		this.qqLeft = qqLeft;
-		this.qqYe = qqYe;
-		this.qqZh = qqZh;
-		this.qqMm = qqMm;
-		this.hjJb = hjJb;
-		this.hjUse = hjUse;
-		this.hjLeft = hjLeft;
-		this.hjLastTime = hjLastTime;
-		this.monitorFlag = monitorFlag;
-		this.state = state;
-		this.outTime = outTime;
-		this.spState = spState;
-		this.spUserNo = spUserNo;
-		this.spTime = spTime;
-		this.spInfo = spInfo;
-		this.spMon = spMon;
-		this.infoRjsj = infoRjsj;
-		this.infoJg = infoJg;
-		this.infoZm = infoZm;
-		this.infoXq = infoXq;
-		this.infoDq = infoDq;
-		this.infoZdzf = infoZdzf;
-		this.infoCsrq = infoCsrq;
-		this.infoHome = infoHome;
-		this.zp=zp;
-		this.formerJQName=formerJQName;
-		this.frDah=frDah;
-		this.stateZdzf=stateZdzf;
-		this.zdzfType=zdzfType;
-		this.frGj=frGj;
-		this.hjStopTime=hjStopTime;
-		this.hjStopSM=hjStopSM;
-	}
-
-	// Property accessors
 	
 	public Integer getWebId() {
 		return this.webId;

@@ -1,13 +1,11 @@
 package com.sl.ue.entity.jl;
 
-/**
- * JlSpMxId entity. @author MyEclipse Persistence Tools
- */
 
 public class JlSpMxId implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = -7863157188573954531L;
 	private String sqid;
 	private Integer xh;
 

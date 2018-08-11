@@ -1,35 +1,22 @@
 package com.sl.ue.entity.jl;
 
-/**
- * JlMonitorVoc entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_MONITOR_VOC")
 public class JlMonitorVoc implements java.io.Serializable {
 
-	// Fields
-
+	/** */
+	private static final long serialVersionUID = -4073620127524360795L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("Voc_ID")
 	private Integer vocId;
+	@DbField("Voc_Info")
 	private String vocInfo;
 
-	// Constructors
-
-	/** default constructor */
-	public JlMonitorVoc() {
-	}
-
-	/** minimal constructor */
-	public JlMonitorVoc(Integer vocId) {
-		this.vocId = vocId;
-	}
-
-	/** full constructor */
-	public JlMonitorVoc(Integer vocId, String vocInfo) {
-		this.vocId = vocId;
-		this.vocInfo = vocInfo;
-	}
-
-	// Property accessors
 
 	public Integer getWebId() {
 		return this.webId;

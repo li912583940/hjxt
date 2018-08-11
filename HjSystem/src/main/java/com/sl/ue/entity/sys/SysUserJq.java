@@ -1,32 +1,25 @@
 package com.sl.ue.entity.sys;
 
-/**
- * SysUserJq entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("SYS_USER_JQ")
 public class SysUserJq implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = -3407824329436972903L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("Group_No")
 	private String groupNo;
+	@DbField("JY")
 	private String jy;
+	@DbField("JQ_No")
 	private String jqNo;
 
-	// Constructors
-
-	/** default constructor */
-	public SysUserJq() {
-	}
-
-	/** full constructor */
-	public SysUserJq(String groupNo, String jy, String jqNo) {
-		this.groupNo = groupNo;
-		this.jy = jy;
-		this.jqNo = jqNo;
-	}
-
-	// Property accessors
 
 	public Integer getWebId() {
 		return this.webId;

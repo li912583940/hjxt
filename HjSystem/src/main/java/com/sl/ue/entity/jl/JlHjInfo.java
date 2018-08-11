@@ -1,19 +1,29 @@
 package com.sl.ue.entity.jl;
 
-/**
- * JlHjInfo entity. @author MyEclipse Persistence Tools
- */
+import java.util.Date;
 
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
+
+@Table("JL_HJ_INFO")
 public class JlHjInfo implements java.io.Serializable {
 
-	// Fields
-
+	/** */
+	private static final long serialVersionUID = 4995860796334374987L;
+	@Id
+	@DbField("WebID")
 	private Long webId;
+	@DbField("Call_ID")
 	private String callId;
+	@DbField("User_No")
 	private String userNo;
+	@DbField("Write_Txt")
 	private String writeTxt;
+	@DbField("User_Name")
 	private String userName;
-
+	@DbField("Create_Time")
+	private Date createTime;
 	// Constructors
 
 	/** default constructor */
@@ -74,6 +84,14 @@ public class JlHjInfo implements java.io.Serializable {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 }

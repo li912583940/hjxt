@@ -2,54 +2,37 @@ package com.sl.ue.entity.jl;
 
 import java.sql.Timestamp;
 
-/**
- * JlTradeCardInfo entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+
+@Table("JL_TRADE_CARD_INFO")
 public class JlTradeCardInfo implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = -8286389908494362535L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("SJ")
 	private Timestamp sj;
+	@DbField("CardNum")
 	private String cardNum;
+	@DbField("FR_No")
 	private String frNo;
+	@DbField("FR_Name")
 	private String frName;
+	@DbField("Qs_Name")
 	private String qsName;
+	@DbField("OP_Name")
 	private String opName;
+	@DbField("JQ_Name")
 	private String jqName;
+	@DbField("QS_ID")
 	private Integer qsId;
 
-	// Constructors
-
-	/** default constructor */
-	public JlTradeCardInfo() {
-	}
-
-	/** minimal constructor */
-	public JlTradeCardInfo(Timestamp sj, String cardNum, String frNo,
-			Integer qsId) {
-		this.sj = sj;
-		this.cardNum = cardNum;
-		this.frNo = frNo;
-		this.qsId = qsId;
-	}
-
-	/** full constructor */
-	public JlTradeCardInfo(Timestamp sj, String cardNum, String frNo,
-			String frName, String qsName, String opName, String jqName,
-			Integer qsId) {
-		this.sj = sj;
-		this.cardNum = cardNum;
-		this.frNo = frNo;
-		this.frName = frName;
-		this.qsName = qsName;
-		this.opName = opName;
-		this.jqName = jqName;
-		this.qsId = qsId;
-	}
-
-	// Property accessors
 
 	public Integer getWebId() {
 		return this.webId;

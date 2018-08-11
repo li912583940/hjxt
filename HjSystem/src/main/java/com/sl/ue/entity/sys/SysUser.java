@@ -10,11 +10,12 @@ import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
 import com.sl.ue.util.anno.Table;
 
-@Table("sys_user")
+@Table("SYS_USER")
 public class SysUser  implements Serializable{
 //public class User  implements RowMapper<User>,Serializable{
 
-	private static final long serialVersionUID = 1L;
+	/** */
+	private static final long serialVersionUID = 8693624485480715358L;
 	
 	@Id
 	@DbField("WebID")
@@ -36,18 +37,6 @@ public class SysUser  implements Serializable{
 	@DbField("Is_Bj")
 	private Integer isBj;
 	
-//	public User mapRow(ResultSet rs, int arg1) throws SQLException {
-//		User user = new User();
-//		user.setWebid(rs.getInt("webid"));
-//		user.setUserNo(rs.getString("user_no"));
-//		user.setUserPwd(rs.getString("user_pwd"));
-//		user.setUserDepart(rs.getString("user_depart"));
-//		user.setUserName(rs.getString("group_no"));
-//		user.setIsSuper(rs.getInt("is_super"));
-//		user.setIsSp(rs.getInt("is_sp"));
-//		user.setIsBj(rs.getInt("is_bj"));
-//		return user;
-//	}
 
 	public Integer getWebid() {
 		return webid;

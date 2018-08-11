@@ -2,6 +2,9 @@ package com.sl.ue.entity.hj;
 
 import java.sql.Timestamp;
 
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+
 
 /**
  * HjdjAcdLogId entity. @author MyEclipse Persistence Tools
@@ -10,33 +13,22 @@ import java.sql.Timestamp;
 public class HjdjAcdLogId  implements java.io.Serializable {
 
 
-    // Fields    
+    /** */
+	private static final long serialVersionUID = 4634215906816070486L;
+	// Fields    
+	 @Id
+	 @DbField("LogID")
+	 private Long logId;
+	 @DbField("LogType")
+	 private Integer logType;
+	 @DbField("LogTime")
+	 private Timestamp logTime;
+	 @DbField("AcdNo")
+	 private Integer acdNo;
+	 @DbField("AcdIndex")
+	 private Integer acdIndex;
 
-     private Long logId;
-     private Integer logType;
-     private Timestamp logTime;
-     private Integer acdNo;
-     private Integer acdIndex;
 
-
-    // Constructors
-
-    /** default constructor */
-    public HjdjAcdLogId() {
-    }
-
-    
-    /** full constructor */
-    public HjdjAcdLogId(Long logId, Integer logType, Timestamp logTime, Integer acdNo, Integer acdIndex) {
-        this.logId = logId;
-        this.logType = logType;
-        this.logTime = logTime;
-        this.acdNo = acdNo;
-        this.acdIndex = acdIndex;
-    }
-
-   
-    // Property accessors
 
     public Long getLogId() {
         return this.logId;

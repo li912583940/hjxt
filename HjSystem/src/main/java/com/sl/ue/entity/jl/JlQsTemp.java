@@ -1,55 +1,45 @@
 package com.sl.ue.entity.jl;
 
-/**
- * JlQsTemp entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_QS_TEMP")
 public class JlQsTemp implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = -783340985763536113L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("relCriNumb")
 	private String relCriNumb;
+	@DbField("UnitCode")
 	private String unitCode;
+	@DbField("relName")
 	private String relName;
+	@DbField("relSex")
 	private String relSex;
+	@DbField("relNation")
 	private String relNation;
+	@DbField("relBirthday")
 	private String relBirthday;
+	@DbField("relIdNumb")
 	private String relIdNumb;
+	@DbField("relAddr")
 	private String relAddr;
+	@DbField("relUnit")
 	private String relUnit;
+	@DbField("relTel")
 	private String relTel;
+	@DbField("relPolity")
 	private String relPolity;
+	@DbField("relOccup")
 	private String relOccup;
+	@DbField("relSpecial")
 	private String relSpecial;
 
-	// Constructors
-
-	/** default constructor */
-	public JlQsTemp() {
-	}
-
-	/** full constructor */
-	public JlQsTemp(String relCriNumb, String unitCode, String relName,
-			String relSex, String relNation, String relBirthday,
-			String relIdNumb, String relAddr, String relUnit, String relTel,
-			String relPolity, String relOccup, String relSpecial) {
-		this.relCriNumb = relCriNumb;
-		this.unitCode = unitCode;
-		this.relName = relName;
-		this.relSex = relSex;
-		this.relNation = relNation;
-		this.relBirthday = relBirthday;
-		this.relIdNumb = relIdNumb;
-		this.relAddr = relAddr;
-		this.relUnit = relUnit;
-		this.relTel = relTel;
-		this.relPolity = relPolity;
-		this.relOccup = relOccup;
-		this.relSpecial = relSpecial;
-	}
-
-	// Property accessors
 
 	public Integer getWebId() {
 		return this.webId;

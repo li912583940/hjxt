@@ -2,50 +2,32 @@ package com.sl.ue.entity.jl;
 
 import java.sql.Timestamp;
 
-/**
- * JlJq entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_JQ")
 public class JlJq implements java.io.Serializable {
 
-	// Fields
-
+	/** */
+	private static final long serialVersionUID = 7864514060046268897L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("JQ_No")
 	private String jqNo;
+	@DbField("JY")
 	private String jy;
+	@DbField("JQ_Name")
 	private String jqName;
+	@DbField("Is_Ts")
 	private Integer isTs;
+	@DbField("Pwd")
 	private String pwd;
+	@DbField("UseTimeLen")
 	private Integer useTimeLen;
+	@DbField("LastTime")
 	private Timestamp lastTime;
-
-	// Constructors
-
-	/** default constructor */
-	public JlJq() {
-	}
-
-	/** minimal constructor */
-	public JlJq(String jqNo, String jy, String jqName, Integer isTs) {
-		this.jqNo = jqNo;
-		this.jy = jy;
-		this.jqName = jqName;
-		this.isTs = isTs;
-	}
-
-	/** full constructor */
-	public JlJq(String jqNo, String jy, String jqName, Integer isTs,
-			String pwd, Integer useTimeLen, Timestamp lastTime) {
-		this.jqNo = jqNo;
-		this.jy = jy;
-		this.jqName = jqName;
-		this.isTs = isTs;
-		this.pwd = pwd;
-		this.useTimeLen = useTimeLen;
-		this.lastTime = lastTime;
-	}
-
-	// Property accessors
 
 	public Integer getWebId() {
 		return this.webId;

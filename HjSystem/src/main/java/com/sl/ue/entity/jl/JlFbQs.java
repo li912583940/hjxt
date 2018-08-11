@@ -2,70 +2,55 @@ package com.sl.ue.entity.jl;
 
 import java.sql.Timestamp;
 
-/**
- * JlFbQs entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_FB_QS")
 public class JlFbQs implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = -245587633565417112L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("FR_No")
 	private String frNo;
+	@DbField("QS_SFZ")
 	private String qsSfz;
+	@DbField("QS_Name")
 	private String qsName;
+	@DbField("QS_Card")
 	private String qsCard;
+	@DbField("GX")
 	private String gx;
+	@DbField("XB")
 	private String xb;
+	@DbField("DZ")
 	private String dz;
+	@DbField("TELE")
 	private String tele;
+	@DbField("SW")
 	private Integer sw;
+	@DbField("ZP")
 	private byte[] zp;
+	@DbField("JZ")
 	private byte[] jz;
+	@DbField("SP_State")
 	private Integer spState;
+	@DbField("SP_UserNo")
 	private String spUserNo;
+	@DbField("SP_Time")
 	private Timestamp spTime;
+	@DbField("SP_Info")
 	private String spInfo;
+	@DbField("SP_Mon")
 	private String spMon;
+	@DbField("QS_ZJLB")
 	private Integer qsZjlb;
 
-	// Constructors
 
-	/** default constructor */
-	public JlFbQs() {
-	}
-
-	/** minimal constructor */
-	public JlFbQs(String frNo, Integer spState) {
-		this.frNo = frNo;
-		this.spState = spState;
-	}
-
-	/** full constructor */
-	public JlFbQs(String frNo, String qsSfz, String qsName, String qsCard,
-			String gx, String xb, String dz, String tele, Integer sw,
-			byte[] zp, byte[] jz, Integer spState, String spUserNo,
-			Timestamp spTime, String spInfo, String spMon,Integer qsZjlb) {
-		this.frNo = frNo;
-		this.qsSfz = qsSfz;
-		this.qsName = qsName;
-		this.qsCard = qsCard;
-		this.gx = gx;
-		this.xb = xb;
-		this.dz = dz;
-		this.tele = tele;
-		this.sw = sw;
-		this.zp = zp;
-		this.jz = jz;
-		this.spState = spState;
-		this.spUserNo = spUserNo;
-		this.spTime = spTime;
-		this.spInfo = spInfo;
-		this.spMon = spMon;
-		this.qsZjlb = qsZjlb;
-	}
-
-	// Property accessors
 
 	public Integer getWebId() {
 		return this.webId;

@@ -1,32 +1,24 @@
 package com.sl.ue.entity.jl;
 
-/**
- * JlHjJqWeek entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_HJ_JQ_WEEK")
 public class JlHjJqWeek implements java.io.Serializable {
 
-	// Fields
-
+	/** */
+	private static final long serialVersionUID = -7883676699643925610L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("JQ_No")
 	private String jqNo;
+	@DbField("JY")
 	private String jy;
+	@DbField("JQ_Week")
 	private Integer jqWeek;
-
-	// Constructors
-
-	/** default constructor */
-	public JlHjJqWeek() {
-	}
-
-	/** full constructor */
-	public JlHjJqWeek(String jqNo, String jy, Integer jqWeek) {
-		this.jqNo = jqNo;
-		this.jy = jy;
-		this.jqWeek = jqWeek;
-	}
-
-	// Property accessors
+	
 
 	public Integer getWebId() {
 		return this.webId;

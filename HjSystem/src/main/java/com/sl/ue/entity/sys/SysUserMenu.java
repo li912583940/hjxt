@@ -1,30 +1,24 @@
 package com.sl.ue.entity.sys;
 
-/**
- * SysUserMenu entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+
+@Table("SYS_USER_MENU")
 public class SysUserMenu implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = 6960358963682787876L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("Group_No")
 	private String groupNo;
+	@DbField("Menu_No")
 	private String menuNo;
 
-	// Constructors
-
-	/** default constructor */
-	public SysUserMenu() {
-	}
-
-	/** full constructor */
-	public SysUserMenu(String groupNo, String menuNo) {
-		this.groupNo = groupNo;
-		this.menuNo = menuNo;
-	}
-
-	// Property accessors
 
 	public Integer getWebId() {
 		return this.webId;

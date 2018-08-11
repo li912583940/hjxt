@@ -2,45 +2,30 @@ package com.sl.ue.entity.jl;
 
 import java.sql.Timestamp;
 
-/**
- * JlHjInfo entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_HJ_REC_RATING_INFO")
 public class JlHjRecRatingInfo implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = 6886781203715886997L;
+	@Id
+	@DbField("WebID")
 	private Long webId;
+	@DbField("Call_ID")
 	private String callId;
+	@DbField("User_No")
 	private String userNo;
+	@DbField("User_Name")
 	private String userName;
+	@DbField("Write_Txt")
 	private String writeTxt;
+	@DbField("Create_Time")
 	private Timestamp createTime;
 
-	// Constructors
-
-	/** default constructor */
-	public JlHjRecRatingInfo() {
-	}
-
-	/** minimal constructor */
-	public JlHjRecRatingInfo(String callId, String userNo, String writeTxt,Timestamp createTime) {
-		this.callId = callId;
-		this.userNo = userNo;
-		this.createTime = createTime;
-		this.writeTxt = writeTxt;
-	}
-
-	/** full constructor */
-	public JlHjRecRatingInfo(String callId, String userNo, String userName, String writeTxt,Timestamp createTime) {
-		this.callId = callId;
-		this.userNo = userNo;
-		this.writeTxt = writeTxt;
-		this.userName = userName;
-		this.createTime = createTime;
-	}
-
-	// Property accessors
 
 	public Long getWebId() {
 		return this.webId;

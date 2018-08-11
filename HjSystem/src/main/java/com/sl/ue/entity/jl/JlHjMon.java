@@ -1,46 +1,33 @@
 package com.sl.ue.entity.jl;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
-/**
- * JlHjMon entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_HJ_MON")
 public class JlHjMon implements java.io.Serializable {
 
-	// Fields
-
+	/** */
+	private static final long serialVersionUID = 5756057605314195817L;
+	@Id
+	@DbField("WebID")
 	private Long webId;
+	@DbField("Call_ID")
 	private String callId;
+	@DbField("User_No")
 	private String userNo;
+	@DbField("User_Name")
 	private String userName;
+	@DbField("Write_Txt")
 	private String writeTxt;
+	@DbField("Write_Txt_Lx")
 	private String writeTxtLx;
+	@DbField("Create_Time")
+	private Date createTime;
 
-	// Constructors
-
-	/** default constructor */
-	public JlHjMon() {
-	}
-
-	/** minimal constructor */
-	public JlHjMon(String callId, String userNo) {
-		this.callId = callId;
-		this.userNo = userNo;
-	}
-
-	/** full constructor */
-	public JlHjMon(String callId, String userNod, String userNo, String userName, String writeTxt, String writeTxtLx) {
-		this.callId = callId;
-		this.userNo = userNo;
-		this.userName = userName;
-		this.writeTxt = writeTxt;
-		this.writeTxtLx = writeTxtLx;
-
-	}
-
-	// Property accessors
-
+	
 	public Long getWebId() {
 		return this.webId;
 	}
@@ -87,6 +74,14 @@ public class JlHjMon implements java.io.Serializable {
 
 	public void setWriteTxtLx(String writeTxtLx) {
 		this.writeTxtLx = writeTxtLx;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 

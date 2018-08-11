@@ -1,39 +1,32 @@
 package com.sl.ue.entity.sys;
 
-/**
- * SysUserGroup entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("SYS_USER_GROUP")
 public class SysUserGroup implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = -1913118304670514119L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("Group_No")
 	private String groupNo;
+	@DbField("Group_Name")
 	private String groupName;
+	@DbField("Is_Admin")
 	private Integer isAdmin;
+	@DbField("User_Depart")
 	private String userDepart;
+	@DbField("Is_SP_Depart")
 	private Integer isSpDept;
+	@DbField("SP_QX_JB")
 	private Integer spQxJb;
 //	private Integer isSuper;
-	// Constructors
 
-	/** default constructor */
-	public SysUserGroup() {
-	}
-
-	/** full constructor */
-	public SysUserGroup(String groupNo, String groupName, Integer isAdmin,String userDepart,Integer isSpDept,Integer spQxJb) {
-		this.groupNo = groupNo;
-		this.groupName = groupName;
-		this.isAdmin = isAdmin;
-		this.userDepart = userDepart;
-		this.isSpDept = isSpDept;
-		this.isAdmin = isAdmin;
-//		this.isSuper = isSuper;
-	}
-
-	// Property accessors
 
 	public Integer getWebId() {
 		return this.webId;

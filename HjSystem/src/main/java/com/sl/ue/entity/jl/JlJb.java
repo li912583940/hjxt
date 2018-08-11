@@ -1,62 +1,40 @@
 package com.sl.ue.entity.jl;
 
-/**
- * JlJb entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_JB")
 public class JlJb implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = -7785962855203180609L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("JB_No")
 	private String jbNo;
+	@DbField("JB_Name")
 	private String jbName;
+	@DbField("QQ_Count")
 	private Integer qqCount;
+	@DbField("QQ_Time")
 	private Integer qqTime;
+	@DbField("HJ_Count")
 	private Integer hjCount;
+	@DbField("HJ_Time")
 	private Integer hjTime;
+	@DbField("Auto_Down")
 	private Integer autoDown;
+	@DbField("Down_Time")
 	private Integer downTime;
+	@DbField("Down_JB")
 	private String downJb;
+	@DbField("HJ_QY")
 	private int hjQy;
+	@DbField("Record_OverTime")
 	private int recordOverTime;
-	// Constructors
-
-	/** default constructor */
-	public JlJb() {
-	}
-
-	/** minimal constructor */
-	public JlJb(String jbNo, String jbName, Integer qqCount, Integer qqTime,
-			Integer hjCount, Integer hjTime, Integer autoDown, Integer downTime) {
-		this.jbNo = jbNo;
-		this.jbName = jbName;
-		this.qqCount = qqCount;
-		this.qqTime = qqTime;
-		this.hjCount = hjCount;
-		this.hjTime = hjTime;
-		this.autoDown = autoDown;
-		this.downTime = downTime;
-	}
-
-	/** full constructor */
-	public JlJb(String jbNo, String jbName, Integer qqCount, Integer qqTime,
-			Integer hjCount, Integer hjTime, Integer autoDown,
-			Integer downTime, String downJb,int recordOverTime) {
-		this.jbNo = jbNo;
-		this.jbName = jbName;
-		this.qqCount = qqCount;
-		this.qqTime = qqTime;
-		this.hjCount = hjCount;
-		this.hjTime = hjTime;
-		this.autoDown = autoDown;
-		this.downTime = downTime;
-		this.downJb = downJb;
-		this.recordOverTime = recordOverTime;
-	}
-
-	// Property accessors
-	
 	public Integer getWebId() {
 		return this.webId;
 	}

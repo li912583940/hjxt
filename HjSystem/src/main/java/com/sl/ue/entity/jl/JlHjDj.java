@@ -1,92 +1,182 @@
 package com.sl.ue.entity.jl;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
-/**
- * JlHjDj entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_HJ_DJ")
 public class JlHjDj implements java.io.Serializable {
 
+	/** */
+	private static final long serialVersionUID = 4904000068528047567L;
 	// Fields
-
+	@Id
+	@DbField("HJID")
 	private Long hjid;
+	@DbField("JY")
 	private String jy;
+	@DbField("JQ_No")
 	private String jqNo;
+	@DbField("JQ_Name")
 	private String jqName;
+	@DbField("FR_No")
 	private String frNo;
+	@DbField("FR_Name")
 	private String frName;
+	@DbField("QS_Info1")
 	private String qsInfo1;
+	@DbField("QS_Info2")
 	private String qsInfo2;
+	@DbField("QS_Info3")
 	private String qsInfo3;
+	@DbField("QS_Info4")
 	private String qsInfo4;
+	@DbField("QS_Info5")
 	private String qsInfo5;
+	@DbField("QS_Info6")
 	private String qsInfo6;
+	@DbField("QS_Info7")
 	private String qsInfo7;
+	@DbField("QS_Info8")
 	private String qsInfo8;
+	@DbField("QS_Info9")
 	private String qsInfo9;
+	@DbField("HJ_Time")
 	private Integer hjTime;
+	@DbField("HJ_Info")
 	private String hjInfo;
+	@DbField("HJ_Type")
 	private Integer hjType;
+	@DbField("Monitor_Flag")
 	private String monitorFlag;
+	@DbField("DJ_Type")
 	private Integer djType;
+	@DbField("DJ_User")
 	private String djUser;
+	@DbField("DJ_Time")
 	private Timestamp djTime;
+	@DbField("YJ_No")
 	private String yjNo;
+	@DbField("YJ_Name")
 	private String yjName;
+	@DbField("FR_In_User")
 	private String frInUser;
+	@DbField("FR_In_Time")
 	private Timestamp frInTime;
+	@DbField("FR_Out_User")
 	private String frOutUser;
+	@DbField("FR_Out_Time")
 	private Timestamp frOutTime;
+	@DbField("QS_In_User")
 	private String qsInUser;
+	@DbField("QS_In_Time")
 	private Timestamp qsInTime;
+	@DbField("QS_Out_User")
 	private String qsOutUser;
+	@DbField("QS_Out_Time")
 	private Timestamp qsOutTime;
+	@DbField("HJ_Order")
 	private Integer hjOrder;
+	@DbField("FP_Flag")
 	private Integer fpFlag;
+	@DbField("FP_Line_No")
 	private Integer fpLineNo;
+	@DbField("FP_Time")
 	private Timestamp fpTime;
+	@DbField("FP_TZFR_Flag")
 	private Integer fpTzfrFlag;
+	@DbField("FP_TZQS_Flag")
 	private Integer fpTzqsFlag;
+	@DbField("HJ_Index")
 	private Long hjIndex;
+	@DbField("TP_Info")
 	private String tpInfo;
+	@DbField("SP_Info")
 	private String spInfo;
+	@DbField("SP_Time")
 	private Timestamp spTime;
+	@DbField("SP_User")
 	private String spUser;
+	@DbField("state")
 	private Integer state;
+	@DbField("Cancel_Info")
 	private String cancelInfo;
+	@DbField("Call_ID")
 	private String callId;
+	@DbField("Import_Flag")
 	private Integer importFlag;
+	@DbField("Import_Time")
 	private Timestamp importTime;
+	@DbField("Info_Wp")
 	private int infoWp;
+	@DbField("QS_Card1")
 	private String qsCard1;
+	@DbField("QS_Card2")
 	private String qsCard2;
+	@DbField("QS_Card3")
 	private String qsCard3;
+	@DbField("QS_Card4")
 	private String qsCard4;
+	@DbField("QS_Card5")
 	private String qsCard5;
+	@DbField("QS_Card6")
 	private String qsCard6;
+	@DbField("QS_Card7")
 	private String qsCard7;
+	@DbField("QS_Card8")
 	private String qsCard8;
+	@DbField("QS_Card9")
 	private String qsCard9;
+	@DbField("QS_ZP1")
 	private byte[] qsZp1;
+	@DbField("QS_ZP2")
 	private byte[] qsZp2;
+	@DbField("QS_ZP3")
 	private byte[] qsZp3;
+	@DbField("QS_ZP4")
 	private byte[] qsZp4;
+	@DbField("QS_ZP5")
 	private byte[] qsZp5;
+	@DbField("QS_ZP6")
 	private byte[] qsZp6;
+	@DbField("QS_ZP7")
 	private byte[] qsZp7;
+	@DbField("QS_ZP8")
 	private byte[] qsZp8;
+	@DbField("QS_ZP9")
 	private byte[] qsZp9;
+	@DbField("WP_DjTime")
 	private Timestamp wpDjTime;
+	@DbField("WP_DJR")
 	private String wpDjr;
+	@DbField("Qs_Last_Time")
+	private Date qsLastTime;
+	@DbField("Qs_Last_Count")
+	private Integer qsLastCount;
+	@DbField("page_tz_state")
 	private Integer pageTzState;
+	@DbField("Fr_Last_Count")
+	private Integer frLastCount;
+	@DbField("Fr_Last_Time")
+	private Date frLastTime;
+	@DbField("TP_QS_Num")
 	private Integer tpQsNum;
+	@DbField("QZ_SP")
 	private Integer qzSp;
+	@DbField("FR_DAH")
 	private String frDah;
+	@DbField("page_tz_UserNo")
 	private String pageTzUserNo;
+	@DbField("page_tz_UserName")
 	private String pageTzUserName;
+	@DbField("page_tz_Time")
 	private Timestamp pageTzTime;
+	@DbField("FP_Time_FR")
 	private Timestamp fpTimeFr;
+	@DbField("FP_Time_QS")
 	private Timestamp fpTimeQs;
 	// Constructors
 
@@ -816,6 +906,38 @@ public class JlHjDj implements java.io.Serializable {
 
 	public void setFpTimeQs(Timestamp fpTimeQs) {
 		this.fpTimeQs = fpTimeQs;
+	}
+
+	public Date getQsLastTime() {
+		return qsLastTime;
+	}
+
+	public void setQsLastTime(Date qsLastTime) {
+		this.qsLastTime = qsLastTime;
+	}
+
+	public Integer getQsLastCount() {
+		return qsLastCount;
+	}
+
+	public void setQsLastCount(Integer qsLastCount) {
+		this.qsLastCount = qsLastCount;
+	}
+
+	public Integer getFrLastCount() {
+		return frLastCount;
+	}
+
+	public void setFrLastCount(Integer frLastCount) {
+		this.frLastCount = frLastCount;
+	}
+
+	public Date getFrLastTime() {
+		return frLastTime;
+	}
+
+	public void setFrLastTime(Date frLastTime) {
+		this.frLastTime = frLastTime;
 	}
 
 }

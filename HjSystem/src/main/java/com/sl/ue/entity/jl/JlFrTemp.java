@@ -1,69 +1,59 @@
 package com.sl.ue.entity.jl;
 
-/**
- * JlFrTemp entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_FR_TEMP")
 public class JlFrTemp implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = -8761334227226396105L;
+	@Id
+	@DbField("ryid")
 	private Long ryid;
+	@DbField("bm")
 	private String bm;
+	@DbField("xm")
 	private String xm;
+	@DbField("xb")
 	private String xb;
+	@DbField("mz")
 	private String mz;
+	@DbField("csrq")
 	private String csrq;
+	@DbField("dw")
 	private String dw;
+	@DbField("zzm")
 	private String zzm;
+	@DbField("jg")
 	private String jg;
+	@DbField("jtzzcs")
 	private String jtzzcs;
+	@DbField("jtzz")
 	private String jtzz;
+	@DbField("rjrq")
 	private String rjrq;
+	@DbField("syrq")
 	private String syrq;
+	@DbField("pjxq")
 	private String pjxq;
+	@DbField("pjqr")
 	private String pjqr;
+	@DbField("pjzr")
 	private String pjzr;
+	@DbField("zxxq")
 	private String zxxq;
+	@DbField("zxxqqr")
 	private String zxxqqr;
+	@DbField("zxxqzr")
 	private String zxxqzr;
+	@DbField("jb")
 	private String jb;
+	@DbField("dah")
 	private String dah;
 
-	// Constructors
-
-	/** default constructor */
-	public JlFrTemp() {
-	}
-
-	/** full constructor */
-	public JlFrTemp(String bm, String xm, String xb, String mz, String csrq,
-			String dw, String zzm, String jg, String jtzzcs, String jtzz,
-			String rjrq, String syrq, String pjxq, String pjqr, String pjzr,
-			String zxxq, String zxxqqr, String zxxqzr, String jb,String dah) {
-		this.bm = bm;
-		this.xm = xm;
-		this.xb = xb;
-		this.mz = mz;
-		this.csrq = csrq;
-		this.dw = dw;
-		this.zzm = zzm;
-		this.jg = jg;
-		this.jtzzcs = jtzzcs;
-		this.jtzz = jtzz;
-		this.rjrq = rjrq;
-		this.syrq = syrq;
-		this.pjxq = pjxq;
-		this.pjqr = pjqr;
-		this.pjzr = pjzr;
-		this.zxxq = zxxq;
-		this.zxxqqr = zxxqqr;
-		this.zxxqzr = zxxqzr;
-		this.jb = jb;
-		this.dah = dah;
-	}
-
-	// Property accessors
 	
 	public Long getRyid() {
 		return this.ryid;

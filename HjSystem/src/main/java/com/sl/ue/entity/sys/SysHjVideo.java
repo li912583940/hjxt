@@ -1,46 +1,32 @@
 package com.sl.ue.entity.sys;
 
-/**
- * SysHjVideo entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("SYS_HJ_VIDEO")
 public class SysHjVideo implements java.io.Serializable {
 
 	// Fields
 
+	/** */
+	private static final long serialVersionUID = -3523168568384178895L;
+	@Id
+	@DbField("Server_Name")
 	private String serverName;
+	@DbField("IP")
 	private String ip;
+	@DbField("Port")
 	private Integer port;
+	@DbField("LoginUser")
 	private String loginUser;
+	@DbField("LoginPwd")
 	private String loginPwd;
+	@DbField("VideoPath")
 	private String videoPath;
+	@DbField("VideoUrl")
 	private String videoUrl;
 
-	// Constructors
-
-	/** default constructor */
-	public SysHjVideo() {
-	}
-
-	/** minimal constructor */
-	public SysHjVideo(String ip, Integer port, String videoPath) {
-		this.ip = ip;
-		this.port = port;
-		this.videoPath = videoPath;
-	}
-
-	/** full constructor */
-	public SysHjVideo(String ip, Integer port, String loginUser,
-			String loginPwd, String videoPath, String videoUrl) {
-		this.ip = ip;
-		this.port = port;
-		this.loginUser = loginUser;
-		this.loginPwd = loginPwd;
-		this.videoPath = videoPath;
-		this.videoUrl = videoUrl;
-	}
-
-	// Property accessors
 
 	public String getServerName() {
 		return this.serverName;

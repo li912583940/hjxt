@@ -2,37 +2,34 @@ package com.sl.ue.entity.jl;
 
 import java.sql.Timestamp;
 
-/**
- * JlQs entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_HJ_MONITOR_TIME_ADD")
 public class JlHjMonitorTimeAdd implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = 2814204021074507066L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("Call_ID")
 	private String callId;
+	@DbField("Line_No")
 	private Integer lineNo;
+	@DbField("JY")
 	private String jy;
+	@DbField("Add_Time")
 	private Integer addTime;
+	@DbField("State")
 	private Integer state;
+	@DbField("Create_Time")
 	private Timestamp createTime;
 	
 
-	// Constructors
-
-	/** default constructor */
-	public JlHjMonitorTimeAdd() {
-	}
 	
-	/** full constructor */
-	public JlHjMonitorTimeAdd(String callId, Integer lineNo, String jy, Integer addTime, Integer state) {
-		this.callId = callId;
-		this.lineNo = lineNo;
-		this.jy = jy;
-		this.addTime = addTime;
-		this.state = state;
-	}
 
 	public Integer getWebId() {
 		return webId;

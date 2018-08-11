@@ -2,167 +2,126 @@ package com.sl.ue.entity.jl;
 
 import java.sql.Timestamp;
 
-/**
- * JlHjRec entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_HJ_REC")
 public class JlHjRec implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = -5508517096804292358L;
+	@Id
+	@DbField("WebID")
 	private Long webId;
+	@DbField("Call_ID")
 	private String callId;
+	@DbField("Line_No")
 	private Integer lineNo;
+	@DbField("ZW")
 	private String zw;
+	@DbField("Board")
 	private String board;
+	@DbField("Line")
 	private Integer line;
+	@DbField("BoardJs")
 	private String boardJs;
+	@DbField("LineJs")
 	private Integer lineJs;
+	@DbField("JY")
 	private String jy;
+	@DbField("JQ_No")
 	private String jqNo;
+	@DbField("JQ_Name")
 	private String jqName;
+	@DbField("FR_No")
 	private String frNo;
+	@DbField("FR_Name")
 	private String frName;
+	@DbField("QS_Info")
 	private String qsInfo1;
+	@DbField("QS_Info2")
 	private String qsInfo2;
+	@DbField("QS_Info3")
 	private String qsInfo3;
+	@DbField("QS_Info4")
 	private String qsInfo4;
+	@DbField("QS_Info5")
 	private String qsInfo5;
+	@DbField("QS_Info6")
 	private String qsInfo6;
+	@DbField("QS_Info7")
 	private String qsInfo7;
+	@DbField("QS_Info8")
 	private String qsInfo8;
+	@DbField("QS_Info9")
 	private String qsInfo9;
+	@DbField("YJ_No")
 	private String yjNo;
+	@DbField("YJ_Name")
 	private String yjName;
+	@DbField("Monitor_Flag")
 	private String monitorFlag;
+	@DbField("HJ_Info")
 	private String hjInfo;
+	@DbField("HJ_Type")
 	private Integer hjType;
+	@DbField("DJ_Type")
 	private Integer djType;
+	@DbField("Call_Time_Start")
 	private String callTimeStart;
+	@DbField("Call_Time_End")
 	private String callTimeEnd;
+	@DbField("Call_Time_Len")
 	private Integer callTimeLen;
+	@DbField("Call_RecFile")
 	private String callRecFile;
+	@DbField("Call_VideoFile1")
 	private String callVideoFile1;
+	@DbField("Call_VideoFile2")
 	private String callVideoFile2;
+	@DbField("Down_Video_Count")
 	private Integer downVideoCount;
+	@DbField("Delete_Flag")
 	private Integer deleteFlag;
+	@DbField("DJ_User")
 	private String djUser;
+	@DbField("DJ_Time")
 	private Timestamp djTime;
+	@DbField("FR_In_User")
 	private String frInUser;
+	@DbField("FR_In_Time")
 	private Timestamp frInTime;
+	@DbField("FR_Out_User")
 	private String frOutUser;
+	@DbField("FR_Out_Time")
 	private Timestamp frOutTime;
+	@DbField("QS_In_User")
 	private String qsInUser;
+	@DbField("QS_In_Time")
 	private Timestamp qsInTime;
+	@DbField("QS_Out_User")
 	private String qsOutUser;
+	@DbField("QS_Out_Time")
 	private Timestamp qsOutTime;
+	@DbField("TP_Info")
 	private String tpInfo;
+	@DbField("SP_Info")
 	private String spInfo;
+	@DbField("SP_Time")
 	private Timestamp spTime;
+	@DbField("SP_User")
 	private String spUser;
+	@DbField("HJID")
 	private Long hjid;
+	@DbField("Import_Flag")
 	private Integer importFlag;
+	@DbField("Rec_Rating_State")
 	private Integer recRatingState;
+	@DbField("Rec_Assessment_State")
 	private Integer recAssessmentState;
-	// Constructors
-
-	/** default constructor */
-	public JlHjRec() {
-	}
-
-	/** minimal constructor */
-	public JlHjRec(String callId, Integer lineNo, String zw, String board,
-			Integer line, Integer lineJs, String jy, String jqNo, String frNo,
-			Integer hjType, Integer djType, Integer downVideoCount,
-			Integer deleteFlag,Integer recRatingState,Integer recAssessmentState) {
-		this.callId = callId;
-		this.lineNo = lineNo;
-		this.zw = zw;
-		this.board = board;
-		this.line = line;
-		this.lineJs = lineJs;
-		this.jy = jy;
-		this.jqNo = jqNo;
-		this.frNo = frNo;
-		this.hjType = hjType;
-		this.djType = djType;
-		this.downVideoCount = downVideoCount;
-		this.deleteFlag = deleteFlag;
-		this.recRatingState = recRatingState;
-		this.recAssessmentState = recAssessmentState;
-	}
-
-	/** full constructor */
-	public JlHjRec(String callId, Integer lineNo, String zw, String board,
-			Integer line, String boardJs, Integer lineJs, String jy,
-			String jqNo, String jqName, String frNo, String frName,
-			String qsInfo1, String qsInfo2, String qsInfo3, String qsInfo4,
-			String qsInfo5, String qsInfo6, String qsInfo7, String qsInfo8,
-			String qsInfo9, String yjNo, String yjName, String monitorFlag,
-			String hjInfo, Integer hjType, Integer djType,
-			String callTimeStart, String callTimeEnd, Integer callTimeLen,
-			String callRecFile, String callVideoFile1, String callVideoFile2,
-			Integer downVideoCount, Integer deleteFlag, String djUser,
-			Timestamp djTime, String frInUser, Timestamp frInTime,
-			String frOutUser, Timestamp frOutTime, String qsInUser,
-			Timestamp qsInTime, String qsOutUser, Timestamp qsOutTime,
-			String tpInfo, String spInfo, Timestamp spTime, String spUser,
-			Long hjid,Integer recRatingState,Integer recAssessmentState) {
-		this.callId = callId;
-		this.lineNo = lineNo;
-		this.zw = zw;
-		this.board = board;
-		this.line = line;
-		this.boardJs = boardJs;
-		this.lineJs = lineJs;
-		this.jy = jy;
-		this.jqNo = jqNo;
-		this.jqName = jqName;
-		this.frNo = frNo;
-		this.frName = frName;
-		this.qsInfo1 = qsInfo1;
-		this.qsInfo2 = qsInfo2;
-		this.qsInfo3 = qsInfo3;
-		this.qsInfo4 = qsInfo4;
-		this.qsInfo5 = qsInfo5;
-		this.qsInfo6 = qsInfo6;
-		this.qsInfo7 = qsInfo7;
-		this.qsInfo8 = qsInfo8;
-		this.qsInfo9 = qsInfo9;
-		this.yjNo = yjNo;
-		this.yjName = yjName;
-		this.monitorFlag = monitorFlag;
-		this.hjInfo = hjInfo;
-		this.hjType = hjType;
-		this.djType = djType;
-		this.callTimeStart = callTimeStart;
-		this.callTimeEnd = callTimeEnd;
-		this.callTimeLen = callTimeLen;
-		this.callRecFile = callRecFile;
-		this.callVideoFile1 = callVideoFile1;
-		this.callVideoFile2 = callVideoFile2;
-		this.downVideoCount = downVideoCount;
-		this.deleteFlag = deleteFlag;
-		this.djUser = djUser;
-		this.djTime = djTime;
-		this.frInUser = frInUser;
-		this.frInTime = frInTime;
-		this.frOutUser = frOutUser;
-		this.frOutTime = frOutTime;
-		this.qsInUser = qsInUser;
-		this.qsInTime = qsInTime;
-		this.qsOutUser = qsOutUser;
-		this.qsOutTime = qsOutTime;
-		this.tpInfo = tpInfo;
-		this.spInfo = spInfo;
-		this.spTime = spTime;
-		this.spUser = spUser;
-		this.hjid = hjid;
-		this.recRatingState = recRatingState;
-		this.recAssessmentState = recAssessmentState;
-	}
-
-	// Property accessors
+	
 	
 	public Long getWebId() {
 		return this.webId;

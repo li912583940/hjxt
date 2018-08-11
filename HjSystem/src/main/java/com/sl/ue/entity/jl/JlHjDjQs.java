@@ -1,29 +1,46 @@
 package com.sl.ue.entity.jl;
 
-import java.sql.Timestamp;
 
-/**
- * JlQs entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_HJ_DJ_QS")
 public class JlHjDjQs implements java.io.Serializable {
 
+	/** */
+	private static final long serialVersionUID = 5939221614805498854L;
 	// Fields
-
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("HJID")
 	private Long hjId;
+	@DbField("QSID")
 	private Integer qsId;
+	@DbField("FR_No")
 	private String frNo;
+	@DbField("QS_ZJLB")
 	private Integer qsZjlb;
+	@DbField("QS_SFZ")
 	private String qsSfz;
+	@DbField("QS_Name")
 	private String qsName;
+	@DbField("QS_Card")
 	private String qsCard;
+	@DbField("GX")
 	private String gx;
+	@DbField("XB")
 	private String xb;
+	@DbField("DZ")
 	private String dz;
+	@DbField("TELE")
 	private String tele;
+	@DbField("ZP")
 	private byte[] zp;
+	@DbField("JZ")
 	private byte[] jz;
+	@DbField("QS_SFZ_WLH")
 	private String qsSfzWlh;
 	
 

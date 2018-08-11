@@ -2,51 +2,38 @@ package com.sl.ue.entity.jl;
 
 import java.sql.Timestamp;
 
-/**
- * SysHjServer entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_HJ_ACCESS_CONTROL_INFO")
 public class JlHjAccessControlInfo implements java.io.Serializable {
 
-	// Fields
-
+	/** */
+	private static final long serialVersionUID = 6780927106507499731L;
+	@DbField("HJID")
 	private Long hjid;
+	@DbField("IP")
 	private String ip;
+	@DbField("KzqAddress")
 	private String kzqAddress;
+	@DbField("DianAddress")
 	private String dianAddress;
+	@DbField("Card")
 	private String card;
+	@DbField("Card_QH")
+	private String cardQH;
+	@DbField("InTime")
 	private Timestamp inTime;
+	@DbField("OutTime")
 	private Timestamp outTime;
+	@DbField("state")
 	private Integer state;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
 
-	// Constructors
-
-	/** default constructor */
-	public JlHjAccessControlInfo() {
-	}
-
-	/** minimal constructor */
-	public JlHjAccessControlInfo(Long hjid, String ip, String kzqAddress,
-			String dianAddress) {
-		this.hjid = hjid;
-		this.ip = ip;
-		this.kzqAddress = kzqAddress;
-		this.dianAddress = dianAddress;
-	}
-
-	/** full constructor */
-	public JlHjAccessControlInfo(Long hjid, String ip, String kzqAddress,
-			String dianAddress,String card,Timestamp inTime,Timestamp outTime,Integer state) {
-		this.hjid = hjid;
-		this.ip = ip;
-		this.kzqAddress = kzqAddress;
-		this.dianAddress = dianAddress;
-		this.card = card;
-		this.inTime = inTime;
-		this.outTime = outTime;
-		this.state = state;
-	}
+	
 
 	public Long getHjid() {
 		return hjid;
@@ -86,6 +73,14 @@ public class JlHjAccessControlInfo implements java.io.Serializable {
 
 	public void setCard(String card) {
 		this.card = card;
+	}
+
+	public String getCardQH() {
+		return cardQH;
+	}
+
+	public void setCardQH(String cardQH) {
+		this.cardQH = cardQH;
 	}
 
 	public Timestamp getInTime() {

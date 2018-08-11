@@ -1,53 +1,35 @@
 package com.sl.ue.entity.sys;
 
-/**
- * SysHjServer entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("SYS_HJ_SERVER")
 public class SysHjServer implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = 295095947898628049L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("Server_Name")
 	private String serverName;
+	@DbField("IP")
 	private String ip;
+	@DbField("Port")
 	private Integer port;
+	@DbField("AudioPort")
 	private Integer audioPort;
+	@DbField("RecUrl")
 	private String recUrl;
+	@DbField("HjIndexDate")
 	private Integer hjIndexDate;
+	@DbField("HjIndexCount")
 	private Integer hjIndexCount;
+	@DbField("ZwIndex")
 	private Integer zwIndex;
 
-	// Constructors
-
-	/** default constructor */
-	public SysHjServer() {
-	}
-
-	/** minimal constructor */
-	public SysHjServer(String serverName, String ip, Integer port,
-			Integer audioPort) {
-		this.serverName = serverName;
-		this.ip = ip;
-		this.port = port;
-		this.audioPort = audioPort;
-	}
-
-	/** full constructor */
-	public SysHjServer(String serverName, String ip, Integer port,
-			Integer audioPort, String recUrl, Integer hjIndexDate,
-			Integer hjIndexCount, Integer zwIndex) {
-		this.serverName = serverName;
-		this.ip = ip;
-		this.port = port;
-		this.audioPort = audioPort;
-		this.recUrl = recUrl;
-		this.hjIndexDate = hjIndexDate;
-		this.hjIndexCount = hjIndexCount;
-		this.zwIndex = zwIndex;
-	}
-
-	// Property accessors
 
 	public Integer getWebId() {
 		return this.webId;

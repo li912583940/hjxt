@@ -2,88 +2,71 @@ package com.sl.ue.entity.jl;
 
 import java.sql.Timestamp;
 
-/**
- * JlQs entity. @author MyEclipse Persistence Tools
- */
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 
+@Table("JL_QS")
 public class JlQs implements java.io.Serializable {
 
-	// Fields
 
+	/** */
+	private static final long serialVersionUID = 2069344982939357038L;
+	@Id
+	@DbField("WebID")
 	private Integer webId;
+	@DbField("FR_No")
 	private String frNo;
+	@DbField("QS_ZJLB")
 	private Integer qsZjlb;
+	@DbField("QS_SFZ")
 	private String qsSfz;
+	@DbField("QS_Name")
 	private String qsName;
+	@DbField("QS_Card")
 	private String qsCard;
+	@DbField("GX")
 	private String gx;
+	@DbField("XB")
 	private String xb;
+	@DbField("DZ")
 	private String dz;
+	@DbField("TELE")
 	private String tele;
+	@DbField("SW")
 	private Integer sw;
+	@DbField("ZP")
 	private byte[] zp;
+	@DbField("JZ")
 	private byte[] jz;
+	@DbField("SP_State")
 	private Integer spState;
+	@DbField("SP_UserNo")
 	private String spUserNo;
+	@DbField("SP_Time")
 	private Timestamp spTime;
+	@DbField("SP_Info")
 	private String spInfo;
+	@DbField("SP_Mon")
 	private String spMon;
+	@DbField("CreateTime")
 	private Timestamp createTime;
+	@DbField("Face_ZP")
 	private byte[] faceZp;
+	@DbField("Face_State")
 	private Integer faceState;
+	@DbField("Face_ID")
 	private Long faceId;
+	@DbField("QS_SFZ_WLH")
 	private String qsSfzWlh;
+	@DbField("BZ")
 	private String bz;
+	@DbField("HJ_STOP_TIME")
 	private Timestamp hjStopTime;
+	@DbField("ZP_URL")
 	private String zpUrl;
 
-	// Constructors
-
-	/** default constructor */
-	public JlQs() {
-	}
-
-	/** minimal constructor */
-	public JlQs(String frNo, Integer spState) {
-		this.frNo = frNo;
-		this.spState = spState;
-	}
-
-	/** full constructor */
-	public JlQs(String frNo, String qsSfz, String qsName, String qsCard,
-			String gx, String xb, String dz, String tele, Integer sw,
-			byte[] zp, byte[] jz, Integer spState, String spUserNo,
-			Timestamp spTime, String spInfo, String spMon, Timestamp createTime,
-			byte[] faceZp,Integer faceState,Long faceId,Integer qsZjlb,
-			String qsSfzWlh,String bz,Timestamp hjStopTime, String zpUrl) {
-		this.frNo = frNo;
-		this.qsSfz = qsSfz;
-		this.qsName = qsName;
-		this.qsCard = qsCard;
-		this.gx = gx;
-		this.xb = xb;
-		this.dz = dz;
-		this.tele = tele;
-		this.sw = sw;
-		this.zp = zp;
-		this.jz = jz;
-		this.spState = spState;
-		this.spUserNo = spUserNo;
-		this.spTime = spTime;
-		this.spInfo = spInfo;
-		this.spMon = spMon;
-		this.createTime = createTime;
-		this.faceZp = faceZp;
-		this.faceState = faceState;
-		this.faceId = faceId;
-		this.qsZjlb = qsZjlb;
-		this.qsSfzWlh = qsSfzWlh;
-		this.bz = bz;
-		this.hjStopTime=hjStopTime;
-		this.zpUrl = zpUrl;
-	}
-
-	// Property accessors
+	
 
 	public Integer getWebId() {
 		return this.webId;
