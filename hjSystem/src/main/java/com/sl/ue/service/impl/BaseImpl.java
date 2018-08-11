@@ -36,7 +36,7 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 	/** 实际操作的实体类对象 */
 	private Class<T> clazz; 
 	
-	public List<T> baseFindList(T model, Integer pageSize, Integer pageNum) {
+	public List<T> baseFindList(T model, Integer pageNum, Integer pageSize) {
 		Table table = clazz.getAnnotation(Table.class);
 		String tableName;
 		if(table != null){
@@ -81,7 +81,7 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 	 * 说明 [弃用的方法]
 	 * @author L_晓天    @2018年4月7日
 	 */
-	private List<T> baseFindList1(T model, Integer pageSize, Integer pageNum) {
+	private List<T> baseFindList1(T model, Integer pageNum, Integer pageSize) {
 		Table table = model.getClass().getAnnotation(Table.class);
 		String tableName;
 		if(table != null){
@@ -216,25 +216,29 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 	}
 
 
-	public T baeEdit(T model) {
+	public T baseEdit(T model) {
 		Table table = clazz.getAnnotation(Table.class);
 		String tableName;
 		if(table != null){
 			tableName = table.value();
 			StringBuffer sql = new StringBuffer();
-			StringBuffer up_field = new StringBuffer();
+			StringBuffer up_field = new StringBuffer(); // SQL update 字段-值
 			sql.append("update "+tableName+" set ");
-			List<Object> params = new ArrayList<Object>();
+			List<Object> params = new ArrayList<Object>(); // 占位符--实际值
 			Field[] fields = clazz.getDeclaredFields();
-			Field idField = null;
+			Field idField = null; // 实体类 主键属性字段 用来获取属性值的
+			String id_field = null; // SQL 主键字段
 			try {
 				for(Field field : fields){
 					if(field.getName().equals("serialVersionUID"))
 						continue;
+					// 获取 主键
 					if(field.isAnnotationPresent(Id.class)){
 						idField = field;
+						id_field = field.getAnnotation(DbField.class).value();
 						continue;
 					}
+					// 封装  SQL update 字段-值
 					String table_filed = field.getAnnotation(DbField.class).value();
 					field.setAccessible(true);
 					if(field.get(model) != null){
@@ -242,9 +246,11 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 						up_field.append(table_filed+"=?,");
 					}
 				}
+				// 封装 SQL where 条件 
 				idField.setAccessible(true);
 				sql.append(StringUtil.lastComma(up_field.toString()))
-					.append(" where "+HumpCrossUnderline.humpToUnderline(idField.getName())+"=?");
+					.append(" where "+id_field+"=?");
+				// 封装 SQL where 条件占位值
 				params.add(idField.get(model));
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -256,7 +262,7 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 	}
 
 
-	public void baeDelete(Object key) {
+	public void baseDeleteKey(Object key) {
 		Table table = clazz.getAnnotation(Table.class);
 		String tableName;
 		if(table != null){
@@ -275,6 +281,34 @@ public abstract class BaseImpl<T> implements BaseService<T>{
 		}
 	}
 
+	public void baseDelete(T model){
+		Table table = clazz.getAnnotation(Table.class);
+		String tableName;
+		if(table != null){
+			tableName = table.value();
+			StringBuffer sql = new StringBuffer();
+			StringBuffer where_field = new StringBuffer();
+			List<Object> params = new ArrayList<Object>();
+			Field[] fields = clazz.getDeclaredFields();
+			for(Field field : fields){
+				if(field.getName().equals("serialVersionUID"))
+					continue;
+				String table_filed = field.getAnnotation(DbField.class).value();
+				field.setAccessible(true);
+				try {
+					if(field.get(model) != null){
+						params.add(field.get(model));
+						where_field.append(table_filed+"=?,");
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				} 
+			}
+			sql.append("delete from "+tableName+" where "+StringUtil.lastComma(where_field.toString()));
+			
+			jdbcTemplate.update(sql.toString(), params.toArray());
+		}
+	}
 	public List<T> baseFindList(T model) {
 		return baseFindList(model, null, null);
 	}

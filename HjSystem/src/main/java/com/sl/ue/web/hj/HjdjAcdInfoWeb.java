@@ -17,13 +17,13 @@ import com.sl.ue.service.hj.HjdjAcdInfoService;
 public class HjdjAcdInfoWeb {
 
 	@Autowired
-	private HjdjAcdInfoService hjdjAcdInfoService;
+	private HjdjAcdInfoService hjdjAcdInfoSQL;
 	
 	@RequestMapping("/findList")
 	@ResponseBody
 	public String findList(){
 		HjdjAcdInfo model = new HjdjAcdInfo();
-		List<HjdjAcdInfo> list = hjdjAcdInfoService.baseFindList(model);
+		List<HjdjAcdInfo> list = hjdjAcdInfoSQL.baseFindList(model);
 		return JSON.toJSONString(list, SerializerFeature.WriteMapNullValue);
 	}
 }

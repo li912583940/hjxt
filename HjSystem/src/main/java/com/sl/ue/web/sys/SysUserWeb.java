@@ -21,11 +21,11 @@ import com.sl.ue.util.http.Result;
 public class SysUserWeb {
 
 	@Autowired
-	private SysUserService sysUserService;
+	private SysUserService sysUserSQL;
 	
 	@RequestMapping("/findOne")
 	public String findOne(){
-		List<SysUser> list = sysUserService.baseFindList(new SysUser());
+		List<SysUser> list = sysUserSQL.baseFindList(new SysUser());
 		return JSON.toJSONString(list, SerializerFeature.WriteMapNullValue);
 	}
 	
@@ -39,7 +39,7 @@ public class SysUserWeb {
 		SysUser model = new SysUser();
 		model.setUserNo(userNo);
 		model.setUserPwd(userPwd);
-		List<SysUser> list = sysUserService.baseFindList(model);
+		List<SysUser> list = sysUserSQL.baseFindList(model);
 		//账号密码正确 允许登录，并返回相应数据
 		if(list.size()>0){
 			SysUser t = list.get(0);
