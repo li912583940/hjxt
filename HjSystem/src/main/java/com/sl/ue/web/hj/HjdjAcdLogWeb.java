@@ -6,49 +6,49 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sl.ue.entity.hj.HjdjAcdInfo;
-import com.sl.ue.service.hj.HjdjAcdInfoService;
+import com.sl.ue.entity.hj.HjdjAcdLog;
+import com.sl.ue.service.hj.HjdjAcdLogService;
 import com.sl.ue.util.http.Result;
 
 @RestController
-@RequestMapping("/hjdjAcdInfo")
-public class HjdjAcdInfoWeb extends Result{
+@RequestMapping("/hjdjAcdLog")
+public class HjdjAcdLogWeb extends Result{
 
     @Autowired
-    private HjdjAcdInfoService HjdjAcdInfoSQL;
+    private HjdjAcdLogService HjdjAcdLogSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
-        HjdjAcdInfo model = new HjdjAcdInfo();
-        List<HjdjAcdInfo> list = HjdjAcdInfoSQL.baseFindList(model, pageSize, pageNum);
+        HjdjAcdLog model = new HjdjAcdLog();
+        List<HjdjAcdLog> list = HjdjAcdLogSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toString();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        HjdjAcdInfo model = HjdjAcdInfoSQL.baseFindOne(id);
+        HjdjAcdLog model = HjdjAcdLogSQL.baseFindOne(id);
         this.putJson(model);
         return this.toString();
     }
 
     @RequestMapping("/add")
-    public String add(HjdjAcdInfo model){
-        HjdjAcdInfoSQL.baseAdd(model);
+    public String add(HjdjAcdLog model){
+        HjdjAcdLogSQL.baseAdd(model);
         succes();
         return this.toString();
     }
 
     @RequestMapping("/edit")
-    public String edit(HjdjAcdInfo model){
-        HjdjAcdInfoSQL.baseEdit(model);
+    public String edit(HjdjAcdLog model){
+        HjdjAcdLogSQL.baseEdit(model);
         succes();
         return this.toString();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        HjdjAcdInfoSQL.baseDeleteKey(id);
+        HjdjAcdLogSQL.baseDeleteKey(id);
         succes();
         return this.toString();
     }

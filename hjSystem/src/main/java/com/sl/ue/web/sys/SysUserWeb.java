@@ -46,10 +46,8 @@ public class SysUserWeb {
 			SysUser resultUser = new SysUser();
 			resultUser.setUserNo(userNo);
 			resultUser.setUserName(t.getUserName());
-			result.setData(resultUser);
 			return result.toString();
 		}
-		result.setState("error");
 		return result.toString();
 	
 	}
