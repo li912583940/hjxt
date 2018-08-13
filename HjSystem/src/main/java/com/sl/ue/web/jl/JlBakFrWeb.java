@@ -22,35 +22,32 @@ public class JlBakFrWeb extends Result{
         JlBakFr model = new JlBakFr();
         List<JlBakFr> list = JlBakFrSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
         JlBakFr model = JlBakFrSQL.baseFindOne(id);
         this.putJson(model);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(JlBakFr model){
         JlBakFrSQL.baseAdd(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlBakFr model){
         JlBakFrSQL.baseEdit(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
         JlBakFrSQL.baseDeleteKey(id);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
 }

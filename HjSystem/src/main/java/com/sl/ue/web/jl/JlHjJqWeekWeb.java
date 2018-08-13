@@ -22,35 +22,32 @@ public class JlHjJqWeekWeb extends Result{
         JlHjJqWeek model = new JlHjJqWeek();
         List<JlHjJqWeek> list = JlHjJqWeekSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
         JlHjJqWeek model = JlHjJqWeekSQL.baseFindOne(id);
         this.putJson(model);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(JlHjJqWeek model){
         JlHjJqWeekSQL.baseAdd(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlHjJqWeek model){
         JlHjJqWeekSQL.baseEdit(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
         JlHjJqWeekSQL.baseDeleteKey(id);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
 }

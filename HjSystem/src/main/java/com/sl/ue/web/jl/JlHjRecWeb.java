@@ -22,35 +22,32 @@ public class JlHjRecWeb extends Result{
         JlHjRec model = new JlHjRec();
         List<JlHjRec> list = JlHjRecSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
         JlHjRec model = JlHjRecSQL.baseFindOne(id);
         this.putJson(model);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(JlHjRec model){
         JlHjRecSQL.baseAdd(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlHjRec model){
         JlHjRecSQL.baseEdit(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
         JlHjRecSQL.baseDeleteKey(id);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
 }

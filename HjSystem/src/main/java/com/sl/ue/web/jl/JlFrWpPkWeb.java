@@ -22,35 +22,32 @@ public class JlFrWpPkWeb extends Result{
         JlFrWpPk model = new JlFrWpPk();
         List<JlFrWpPk> list = JlFrWpPkSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
         JlFrWpPk model = JlFrWpPkSQL.baseFindOne(id);
         this.putJson(model);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(JlFrWpPk model){
         JlFrWpPkSQL.baseAdd(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlFrWpPk model){
         JlFrWpPkSQL.baseEdit(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
         JlFrWpPkSQL.baseDeleteKey(id);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
 }

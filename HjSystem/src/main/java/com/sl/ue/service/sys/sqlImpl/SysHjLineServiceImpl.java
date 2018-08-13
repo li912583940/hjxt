@@ -6,7 +6,7 @@ import com.sl.ue.entity.sys.SysHjLine;
 import com.sl.ue.service.impl.BaseSqlImpl;
 import com.sl.ue.service.sys.SysHjLineService;
 
-@Service("sysHjLineSQL")
+@Service("SysHjLineSQL")
 public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLine> implements SysHjLineService{
 
 }

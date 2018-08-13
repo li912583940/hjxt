@@ -6,7 +6,7 @@ import com.sl.ue.entity.sys.SysUserJq;
 import com.sl.ue.service.impl.BaseSqlImpl;
 import com.sl.ue.service.sys.SysUserJqService;
 
-@Service("sysUserJqSQL")
+@Service("SysUserJqSQL")
 public class SysUserJqServiceImpl extends BaseSqlImpl<SysUserJq> implements SysUserJqService{
 
 }

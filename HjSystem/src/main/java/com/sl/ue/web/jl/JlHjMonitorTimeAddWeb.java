@@ -22,35 +22,32 @@ public class JlHjMonitorTimeAddWeb extends Result{
         JlHjMonitorTimeAdd model = new JlHjMonitorTimeAdd();
         List<JlHjMonitorTimeAdd> list = JlHjMonitorTimeAddSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
         JlHjMonitorTimeAdd model = JlHjMonitorTimeAddSQL.baseFindOne(id);
         this.putJson(model);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(JlHjMonitorTimeAdd model){
         JlHjMonitorTimeAddSQL.baseAdd(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlHjMonitorTimeAdd model){
         JlHjMonitorTimeAddSQL.baseEdit(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
         JlHjMonitorTimeAddSQL.baseDeleteKey(id);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
 }

@@ -22,35 +22,32 @@ public class HjdjAcdWindowsInfoWeb extends Result{
         HjdjAcdWindowsInfo model = new HjdjAcdWindowsInfo();
         List<HjdjAcdWindowsInfo> list = HjdjAcdWindowsInfoSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
         HjdjAcdWindowsInfo model = HjdjAcdWindowsInfoSQL.baseFindOne(id);
         this.putJson(model);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(HjdjAcdWindowsInfo model){
         HjdjAcdWindowsInfoSQL.baseAdd(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(HjdjAcdWindowsInfo model){
         HjdjAcdWindowsInfoSQL.baseEdit(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
         HjdjAcdWindowsInfoSQL.baseDeleteKey(id);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
 }

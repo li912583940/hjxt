@@ -22,35 +22,32 @@ public class JlTradeCardInfoWeb extends Result{
         JlTradeCardInfo model = new JlTradeCardInfo();
         List<JlTradeCardInfo> list = JlTradeCardInfoSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
         JlTradeCardInfo model = JlTradeCardInfoSQL.baseFindOne(id);
         this.putJson(model);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(JlTradeCardInfo model){
         JlTradeCardInfoSQL.baseAdd(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlTradeCardInfo model){
         JlTradeCardInfoSQL.baseEdit(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
         JlTradeCardInfoSQL.baseDeleteKey(id);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
 }

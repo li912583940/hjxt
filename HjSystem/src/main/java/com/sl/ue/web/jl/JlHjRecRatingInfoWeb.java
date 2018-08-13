@@ -22,35 +22,32 @@ public class JlHjRecRatingInfoWeb extends Result{
         JlHjRecRatingInfo model = new JlHjRecRatingInfo();
         List<JlHjRecRatingInfo> list = JlHjRecRatingInfoSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
         JlHjRecRatingInfo model = JlHjRecRatingInfoSQL.baseFindOne(id);
         this.putJson(model);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(JlHjRecRatingInfo model){
         JlHjRecRatingInfoSQL.baseAdd(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlHjRecRatingInfo model){
         JlHjRecRatingInfoSQL.baseEdit(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
         JlHjRecRatingInfoSQL.baseDeleteKey(id);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
 }

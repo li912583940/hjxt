@@ -22,35 +22,32 @@ public class JlHjRecAssessmentInfoWeb extends Result{
         JlHjRecAssessmentInfo model = new JlHjRecAssessmentInfo();
         List<JlHjRecAssessmentInfo> list = JlHjRecAssessmentInfoSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
         JlHjRecAssessmentInfo model = JlHjRecAssessmentInfoSQL.baseFindOne(id);
         this.putJson(model);
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(JlHjRecAssessmentInfo model){
         JlHjRecAssessmentInfoSQL.baseAdd(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlHjRecAssessmentInfo model){
         JlHjRecAssessmentInfoSQL.baseEdit(model);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
         JlHjRecAssessmentInfoSQL.baseDeleteKey(id);
-        succes();
-        return this.toString();
+        return this.toResult();
     }
 
 }

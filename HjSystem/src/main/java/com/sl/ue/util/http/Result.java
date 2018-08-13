@@ -14,63 +14,77 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
  * 说明 [数据返回封装结果集]
  * @author lxt
  */
-public class Result {
-	public static String error_100 = "正确";
-	public static String error_101 = "系统异常";
-	public static String error_102 = "参数错误";
+public abstract class Result {
+	public final static Integer error_0 = 0; // "正确"
+	public final static Integer error_100 = 100; // "系统异常"
+	public final static Integer error_101 = 101; // 
+	public final static Integer error_102 = 102; // "参数错误"
 	
+	final static Map<Integer, String> confMap = new HashMap<>(); // 状态码
 	
-	/** 状态  succes or error */
-	private String state = "succes";
-	
-	/** 状态码 */
-	private Integer code = 1;
-	
-	/** 消息提示 */
-	private String msg = "正确";
-	
-	/** 数据 */
-	private Object data;
-
-	public Result(){
-		map.put("state", this.state);
-		map.put("code", this.code);
-		map.put("msg", this.msg);
-		map.put("code", this.code);
+	static{
+		confMap.put(0, "正确");
+		confMap.put(100, "系统异常");
+		confMap.put(101, "");
+		confMap.put(102, "参数错误");
 	}
-	Map<String, Object> map = new HashMap<String, Object>();
+	JSONObject json = new JSONObject(); //返回数据
+	public Result(){
+		json.put("code", error_0);
+		json.put("msg", confMap.get(0));
+	}
 	
+	
+	/** 数据开始 */
 	public void putJson(String name, Object value){
 		if(StringUtils.isNotBlank(name)){
-			map.put(name, value);
+			json.put(name, value);
 		}else{
 			this.putJson(value);
 		}
 	}
 	
 	public void putJson(Object value){
-		map.put("data", value);
+		json.put("data", value);
+	}
+	
+	public void putData(String name, Object value){
+		if(StringUtils.isNotBlank(name)){
+			json.put(name, value);
+		}else{
+			this.putData(value);
+		}
 	}
 	
 	public void putData(Object value){
-		map.put("list", value);
+		json.put("list", value);
+	}
+	/** 数据结束 */
+	
+	/** 消息开始 */
+	public void error(Integer error_){
+		json.put("code", error_);
+		json.put("msg", confMap.get(error_));
 	}
 	
-	public void error(String code){
-		map.put("code", code);
+	public void error(Integer error_, String msg){
+		json.put("code", error_);
+		json.put("msg", msg);
 	}
 	
 	public void msg(String msg){
-		map.put("msg", msg);
-		map.put("code", this.code);
+		json.put("msg", msg);
+		json.put("code", confMap.get(0));
 	}
 	
-	public void succes(){
-		map.put("msg", this.msg);
-		map.put("code", this.code);
-	}
-	public String toString(){
-		return JSON.toJSONString(this.map, SerializerFeature.WriteMapNullValue);
+	/** 消息结束  */
+	
+	public String toResult(){
+		JSONObject newJson = (JSONObject) this.json.clone();
+		json.clear();
+		json.put("code", error_0);
+		json.put("msg", confMap.get(0));
+		return JSON.toJSONString(newJson, SerializerFeature.WriteMapNullValue);
 	}
 	
 	

@@ -2,6 +2,10 @@ package com.sl.ue.hj.web;
 
 import java.io.File;
 
+/**
+ * 说明 [读取实体类 并写入web]
+ * @author lxt
+ */
 public class EntityBean {
 
 	private String path ="G:\\声联项目\\hjxt\\HjSystem\\src\\main\\java\\com\\sl\\ue\\entity";
@@ -24,7 +28,8 @@ public class EntityBean {
 			for(String str : strs){
 				System.out.println(str);
 				WebBean webBean = new WebBean();
-				webBean.hj(str);
+				String[] s = str.split("\\.");
+				webBean.execute(s[0], "hj");
 			}
 		}
 	}
@@ -37,7 +42,8 @@ public class EntityBean {
 			for(String str : strs){
 				System.out.println(str);
 				WebBean webBean = new WebBean();
-				webBean.jl(str);
+				String[] s = str.split("\\.");
+				webBean.execute(s[0], "jl");
 			}
 		}
 	}
@@ -50,7 +56,8 @@ public class EntityBean {
 			for(String str : strs){
 				System.out.println(str);
 				WebBean webBean = new WebBean();
-				webBean.sys(str);
+				String[] s = str.split("\\.");
+				webBean.execute(s[0], "sys");
 			}
 		}
 	}
