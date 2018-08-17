@@ -108,7 +108,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY "+id_field+" DESC) AS rowid,* from "+tableName+" ) t"
 						+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
 			}
-			System.out.println("执行查询list语句: "+sql);
+			System.out.println("执行查询list语句: [ "+sql+" ]");
 			System.out.println("参数："+params);
 			RowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazz);
 			List<T> list = (List<T>)jdbcTemplate.query(sql, params.toArray(), rowMapper);
@@ -134,9 +134,8 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			List<Object> params = new ArrayList<>();
 			params.add(key);
 			RowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazz);
-			System.out.println("执行查询key语句："+sql);
+			System.out.println("执行查询单条记录语句：[ "+sql+" ]");
 			System.out.println("参数："+params);
-			//T t = jdbcTemplate.query(sql, obj, rowMapper).get(0);
 			T t = jdbcTemplate.queryForObject(sql, params.toArray(), rowMapper);
 			return t;
 		}
@@ -209,7 +208,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				jdbcTemplate.update(sql.toString());
 				return model;
 			}*/
-			System.out.println("执行新增语句："+sql);
+			System.out.println("执行新增语句：[ "+sql+" ]");
 			System.out.println("参数："+params);
 			jdbcTemplate.update(sql.toString(), params.toArray());
 			return model;
@@ -251,7 +250,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			System.out.println("执行update语句："+sql);
+			System.out.println("执行update语句：["+sql+" ]");
 			System.out.println("参数："+params);
 			jdbcTemplate.update(sql.toString(),params.toArray());
 			return model;
@@ -276,7 +275,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			List<Object> params = new ArrayList<>();
 			params.add(key);
 			sql.append("delete from "+tableName+" where "+id_filed+"=?");
-			System.out.println("执行删除语句："+sql);
+			System.out.println("执行删除语句：[ "+sql+" ]");
 			System.out.println("参数："+params);
 			jdbcTemplate.update(sql.toString(), params.toArray());
 		}
@@ -306,7 +305,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				} 
 			}
 			sql.append("delete from "+tableName+" where "+StringUtil.lastComma(where_field.toString()));
-			System.out.println("执行删除语句： "+ sql);
+			System.out.println("执行删除语句：[ "+ sql+" ]");
 			System.out.println("参数："+params);
 			jdbcTemplate.update(sql.toString(), params.toArray());
 		}

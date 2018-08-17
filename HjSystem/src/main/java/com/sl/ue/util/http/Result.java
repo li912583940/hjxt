@@ -80,11 +80,11 @@ public abstract class Result {
 	/** 消息结束  */
 	
 	public String toResult(){
-		JSONObject newJson = (JSONObject) this.json.clone();
+		String result = JSON.toJSONString(json, SerializerFeature.WriteMapNullValue);
 		json.clear();
 		json.put("code", error_0);
 		json.put("msg", confMap.get(0));
-		return JSON.toJSONString(newJson, SerializerFeature.WriteMapNullValue);
+		return result;
 	}
 	
 	
