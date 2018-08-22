@@ -30,8 +30,8 @@ public abstract class Result {
 	}
 	JSONObject json = new JSONObject(); //返回数据
 	public Result(){
-		json.put("code", error_0);
-		json.put("msg", confMap.get(0));
+		json.put("errCode", error_0);
+		json.put("errMsg", confMap.get(0));
 	}
 	
 	
@@ -63,18 +63,18 @@ public abstract class Result {
 	
 	/** 消息开始 */
 	public void error(Integer error_){
-		json.put("code", error_);
-		json.put("msg", confMap.get(error_));
+		json.put("errCode", error_);
+		json.put("errMsg", confMap.get(error_));
 	}
 	
 	public void error(Integer error_, String msg){
-		json.put("code", error_);
-		json.put("msg", msg);
+		json.put("errCode", error_);
+		json.put("errMsg", msg);
 	}
 	
 	public void msg(String msg){
-		json.put("msg", msg);
-		json.put("code", confMap.get(0));
+		json.put("errMsg", msg);
+		json.put("errCode", confMap.get(0));
 	}
 	
 	/** 消息结束  */
@@ -82,8 +82,8 @@ public abstract class Result {
 	public String toResult(){
 		String result = JSON.toJSONString(json, SerializerFeature.WriteMapNullValue);
 		json.clear();
-		json.put("code", error_0);
-		json.put("msg", confMap.get(0));
+		json.put("errCode", error_0);
+		json.put("errMsg", confMap.get(0));
 		return result;
 	}
 	
