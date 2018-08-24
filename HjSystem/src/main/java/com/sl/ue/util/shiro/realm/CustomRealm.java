@@ -14,7 +14,9 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sl.ue.entity.sys.SysUser;
+import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.hj.HjdjAcdInfoService;
 import com.sl.ue.service.sys.SysUserService;
 import com.sl.ue.util.SpringTool;
@@ -33,21 +35,19 @@ public class CustomRealm extends AuthorizingRealm{
 		System.out.println("-- "+username);
 		// 从 token 中获取用户密码
 		
-		char[] ca = (char[]) token.getCredentials();
-		String password =new String(ca);
-		System.out.println("-- "+password);
+//		char[] ca = (char[]) token.getCredentials();
+//		String password =new String(ca);
 		
 		// 通过 username 从数据库中查询
-		HjdjAcdInfoService HjdjAcdInfoSQL = (HjdjAcdInfoService) SpringTool.getBean("hjdjAcdInfoSQL");
-		HjdjAcdInfoSQL.baseFindOne(0);
 		SysUser model = new SysUser();
 		model.setUserName(username);
 		List<SysUser> userList = SysUserSQL.baseFindList(model);
 		if(userList.size() == 0){ // 如果查询不到用户信息
 			return null;
 		}
+		SysUser user = userList.get(0);
 		//返回认证信息由父类 AuthenticatingRealm 进行认证
-		SimpleAuthenticationInfo simple = new SimpleAuthenticationInfo(username, password, getName());
+		SimpleAuthenticationInfo simple = new SimpleAuthenticationInfo(username, null, getName());
 		return simple;
 	}
 	

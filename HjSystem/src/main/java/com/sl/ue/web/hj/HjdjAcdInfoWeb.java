@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.sl.ue.entity.hj.HjdjAcdInfo;
+import com.sl.ue.entity.hj.vo.HjdjAcdInfoVO;
 import com.sl.ue.service.hj.HjdjAcdInfoService;
 import com.sl.ue.util.http.Result;
 
@@ -19,8 +20,8 @@ public class HjdjAcdInfoWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
-        HjdjAcdInfo model = new HjdjAcdInfo();
-        List<HjdjAcdInfo> list = hjdjAcdInfoSQL.baseFindList(model, pageSize, pageNum);
+    	HjdjAcdInfoVO model = new HjdjAcdInfoVO();
+        List<HjdjAcdInfoVO> list = hjdjAcdInfoSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
@@ -33,13 +34,13 @@ public class HjdjAcdInfoWeb extends Result{
     }
 
     @RequestMapping("/add")
-    public String add(HjdjAcdInfo model){
+    public String add(HjdjAcdInfoVO model){
         hjdjAcdInfoSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
-    public String edit(HjdjAcdInfo model){
+    public String edit(HjdjAcdInfoVO model){
         hjdjAcdInfoSQL.baseEdit(model);
         return this.toResult();
     }

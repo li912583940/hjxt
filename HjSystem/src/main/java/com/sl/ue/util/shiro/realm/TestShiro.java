@@ -7,6 +7,9 @@ import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.Factory;
 
+import com.sl.ue.service.hj.HjdjAcdInfoService;
+import com.sl.ue.util.SpringTool;
+
 public class TestShiro {
 
 	public static void main(String[] args) {
