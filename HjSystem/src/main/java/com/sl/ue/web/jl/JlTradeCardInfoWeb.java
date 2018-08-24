@@ -15,38 +15,38 @@ import com.sl.ue.util.http.Result;
 public class JlTradeCardInfoWeb extends Result{
 
     @Autowired
-    private JlTradeCardInfoService JlTradeCardInfoSQL;
+    private JlTradeCardInfoService jlTradeCardInfoSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
         JlTradeCardInfo model = new JlTradeCardInfo();
-        List<JlTradeCardInfo> list = JlTradeCardInfoSQL.baseFindList(model, pageSize, pageNum);
+        List<JlTradeCardInfo> list = jlTradeCardInfoSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        JlTradeCardInfo model = JlTradeCardInfoSQL.baseFindOne(id);
+        JlTradeCardInfo model = jlTradeCardInfoSQL.baseFindOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(JlTradeCardInfo model){
-        JlTradeCardInfoSQL.baseAdd(model);
+        jlTradeCardInfoSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlTradeCardInfo model){
-        JlTradeCardInfoSQL.baseEdit(model);
+        jlTradeCardInfoSQL.baseEdit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        JlTradeCardInfoSQL.baseDeleteKey(id);
+        jlTradeCardInfoSQL.baseDeleteKey(id);
         return this.toResult();
     }
 

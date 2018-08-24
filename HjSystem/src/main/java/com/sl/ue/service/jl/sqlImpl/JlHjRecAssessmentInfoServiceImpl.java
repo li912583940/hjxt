@@ -6,7 +6,7 @@ import com.sl.ue.entity.jl.JlHjRecAssessmentInfo;
 import com.sl.ue.service.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlHjRecAssessmentInfoService;
 
-@Service("JlHjRecAssessmentInfoSQL")
+@Service("jlHjRecAssessmentInfoSQL")
 public class JlHjRecAssessmentInfoServiceImpl extends BaseSqlImpl<JlHjRecAssessmentInfo> implements JlHjRecAssessmentInfoService{
 
 }

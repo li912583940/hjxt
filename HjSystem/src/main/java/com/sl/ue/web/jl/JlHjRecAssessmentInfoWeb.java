@@ -15,38 +15,38 @@ import com.sl.ue.util.http.Result;
 public class JlHjRecAssessmentInfoWeb extends Result{
 
     @Autowired
-    private JlHjRecAssessmentInfoService JlHjRecAssessmentInfoSQL;
+    private JlHjRecAssessmentInfoService jlHjRecAssessmentInfoSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
         JlHjRecAssessmentInfo model = new JlHjRecAssessmentInfo();
-        List<JlHjRecAssessmentInfo> list = JlHjRecAssessmentInfoSQL.baseFindList(model, pageSize, pageNum);
+        List<JlHjRecAssessmentInfo> list = jlHjRecAssessmentInfoSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        JlHjRecAssessmentInfo model = JlHjRecAssessmentInfoSQL.baseFindOne(id);
+        JlHjRecAssessmentInfo model = jlHjRecAssessmentInfoSQL.baseFindOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(JlHjRecAssessmentInfo model){
-        JlHjRecAssessmentInfoSQL.baseAdd(model);
+        jlHjRecAssessmentInfoSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlHjRecAssessmentInfo model){
-        JlHjRecAssessmentInfoSQL.baseEdit(model);
+        jlHjRecAssessmentInfoSQL.baseEdit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        JlHjRecAssessmentInfoSQL.baseDeleteKey(id);
+        jlHjRecAssessmentInfoSQL.baseDeleteKey(id);
         return this.toResult();
     }
 

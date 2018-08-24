@@ -6,7 +6,7 @@ import com.sl.ue.entity.hj.HjdjFaceInfo;
 import com.sl.ue.service.impl.BaseSqlImpl;
 import com.sl.ue.service.hj.HjdjFaceInfoService;
 
-@Service("HjdjFaceInfoSQL")
+@Service("hjdjFaceInfoSQL")
 public class HjdjFaceInfoServiceImpl extends BaseSqlImpl<HjdjFaceInfo> implements HjdjFaceInfoService{
 
 }

@@ -15,38 +15,38 @@ import com.sl.ue.util.http.Result;
 public class SysParamWeb extends Result{
 
     @Autowired
-    private SysParamService SysParamSQL;
+    private SysParamService sysParamSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
         SysParam model = new SysParam();
-        List<SysParam> list = SysParamSQL.baseFindList(model, pageSize, pageNum);
+        List<SysParam> list = sysParamSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        SysParam model = SysParamSQL.baseFindOne(id);
+        SysParam model = sysParamSQL.baseFindOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(SysParam model){
-        SysParamSQL.baseAdd(model);
+        sysParamSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(SysParam model){
-        SysParamSQL.baseEdit(model);
+        sysParamSQL.baseEdit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        SysParamSQL.baseDeleteKey(id);
+        sysParamSQL.baseDeleteKey(id);
         return this.toResult();
     }
 

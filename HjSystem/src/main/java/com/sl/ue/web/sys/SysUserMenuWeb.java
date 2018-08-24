@@ -15,38 +15,38 @@ import com.sl.ue.util.http.Result;
 public class SysUserMenuWeb extends Result{
 
     @Autowired
-    private SysUserMenuService SysUserMenuSQL;
+    private SysUserMenuService sysUserMenuSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
         SysUserMenu model = new SysUserMenu();
-        List<SysUserMenu> list = SysUserMenuSQL.baseFindList(model, pageSize, pageNum);
+        List<SysUserMenu> list = sysUserMenuSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        SysUserMenu model = SysUserMenuSQL.baseFindOne(id);
+        SysUserMenu model = sysUserMenuSQL.baseFindOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(SysUserMenu model){
-        SysUserMenuSQL.baseAdd(model);
+        sysUserMenuSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(SysUserMenu model){
-        SysUserMenuSQL.baseEdit(model);
+        sysUserMenuSQL.baseEdit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        SysUserMenuSQL.baseDeleteKey(id);
+        sysUserMenuSQL.baseDeleteKey(id);
         return this.toResult();
     }
 

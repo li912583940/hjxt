@@ -6,7 +6,7 @@ import com.sl.ue.entity.jl.JlYj;
 import com.sl.ue.service.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlYjService;
 
-@Service("JlYjSQL")
+@Service("jlYjSQL")
 public class JlYjServiceImpl extends BaseSqlImpl<JlYj> implements JlYjService{
 
 }

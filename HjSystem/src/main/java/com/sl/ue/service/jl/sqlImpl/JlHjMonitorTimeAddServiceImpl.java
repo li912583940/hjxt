@@ -6,7 +6,7 @@ import com.sl.ue.entity.jl.JlHjMonitorTimeAdd;
 import com.sl.ue.service.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlHjMonitorTimeAddService;
 
-@Service("JlHjMonitorTimeAddSQL")
+@Service("jlHjMonitorTimeAddSQL")
 public class JlHjMonitorTimeAddServiceImpl extends BaseSqlImpl<JlHjMonitorTimeAdd> implements JlHjMonitorTimeAddService{
 
 }

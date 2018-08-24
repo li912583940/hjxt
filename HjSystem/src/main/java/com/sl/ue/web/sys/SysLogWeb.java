@@ -15,38 +15,38 @@ import com.sl.ue.util.http.Result;
 public class SysLogWeb extends Result{
 
     @Autowired
-    private SysLogService SysLogSQL;
+    private SysLogService sysLogSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
         SysLog model = new SysLog();
-        List<SysLog> list = SysLogSQL.baseFindList(model, pageSize, pageNum);
+        List<SysLog> list = sysLogSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        SysLog model = SysLogSQL.baseFindOne(id);
+        SysLog model = sysLogSQL.baseFindOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(SysLog model){
-        SysLogSQL.baseAdd(model);
+        sysLogSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(SysLog model){
-        SysLogSQL.baseEdit(model);
+        sysLogSQL.baseEdit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        SysLogSQL.baseDeleteKey(id);
+        sysLogSQL.baseDeleteKey(id);
         return this.toResult();
     }
 

@@ -6,7 +6,7 @@ import com.sl.ue.entity.sys.SysMenu;
 import com.sl.ue.service.impl.BaseSqlImpl;
 import com.sl.ue.service.sys.SysMenuService;
 
-@Service("SysMenuSQL")
+@Service("sysMenuSQL")
 public class SysMenuServiceImpl extends BaseSqlImpl<SysMenu> implements SysMenuService{
 
 }

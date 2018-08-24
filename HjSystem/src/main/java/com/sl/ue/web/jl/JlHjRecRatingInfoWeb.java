@@ -15,38 +15,38 @@ import com.sl.ue.util.http.Result;
 public class JlHjRecRatingInfoWeb extends Result{
 
     @Autowired
-    private JlHjRecRatingInfoService JlHjRecRatingInfoSQL;
+    private JlHjRecRatingInfoService jlHjRecRatingInfoSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
         JlHjRecRatingInfo model = new JlHjRecRatingInfo();
-        List<JlHjRecRatingInfo> list = JlHjRecRatingInfoSQL.baseFindList(model, pageSize, pageNum);
+        List<JlHjRecRatingInfo> list = jlHjRecRatingInfoSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        JlHjRecRatingInfo model = JlHjRecRatingInfoSQL.baseFindOne(id);
+        JlHjRecRatingInfo model = jlHjRecRatingInfoSQL.baseFindOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(JlHjRecRatingInfo model){
-        JlHjRecRatingInfoSQL.baseAdd(model);
+        jlHjRecRatingInfoSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlHjRecRatingInfo model){
-        JlHjRecRatingInfoSQL.baseEdit(model);
+        jlHjRecRatingInfoSQL.baseEdit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        JlHjRecRatingInfoSQL.baseDeleteKey(id);
+        jlHjRecRatingInfoSQL.baseDeleteKey(id);
         return this.toResult();
     }
 

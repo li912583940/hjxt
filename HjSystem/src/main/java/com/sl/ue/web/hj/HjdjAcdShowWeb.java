@@ -15,38 +15,38 @@ import com.sl.ue.util.http.Result;
 public class HjdjAcdShowWeb extends Result{
 
     @Autowired
-    private HjdjAcdShowService HjdjAcdShowSQL;
+    private HjdjAcdShowService hjdjAcdShowSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
         HjdjAcdShow model = new HjdjAcdShow();
-        List<HjdjAcdShow> list = HjdjAcdShowSQL.baseFindList(model, pageSize, pageNum);
+        List<HjdjAcdShow> list = hjdjAcdShowSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        HjdjAcdShow model = HjdjAcdShowSQL.baseFindOne(id);
+        HjdjAcdShow model = hjdjAcdShowSQL.baseFindOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(HjdjAcdShow model){
-        HjdjAcdShowSQL.baseAdd(model);
+        hjdjAcdShowSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(HjdjAcdShow model){
-        HjdjAcdShowSQL.baseEdit(model);
+        hjdjAcdShowSQL.baseEdit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        HjdjAcdShowSQL.baseDeleteKey(id);
+        hjdjAcdShowSQL.baseDeleteKey(id);
         return this.toResult();
     }
 

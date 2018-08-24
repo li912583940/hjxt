@@ -6,7 +6,7 @@ import com.sl.ue.entity.hj.HjdjAcdShow;
 import com.sl.ue.service.impl.BaseSqlImpl;
 import com.sl.ue.service.hj.HjdjAcdShowService;
 
-@Service("HjdjAcdShowSQL")
+@Service("hjdjAcdShowSQL")
 public class HjdjAcdShowServiceImpl extends BaseSqlImpl<HjdjAcdShow> implements HjdjAcdShowService{
 
 }

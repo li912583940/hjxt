@@ -15,38 +15,38 @@ import com.sl.ue.util.http.Result;
 public class JlHjMonitorTimeAddWeb extends Result{
 
     @Autowired
-    private JlHjMonitorTimeAddService JlHjMonitorTimeAddSQL;
+    private JlHjMonitorTimeAddService jlHjMonitorTimeAddSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
         JlHjMonitorTimeAdd model = new JlHjMonitorTimeAdd();
-        List<JlHjMonitorTimeAdd> list = JlHjMonitorTimeAddSQL.baseFindList(model, pageSize, pageNum);
+        List<JlHjMonitorTimeAdd> list = jlHjMonitorTimeAddSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        JlHjMonitorTimeAdd model = JlHjMonitorTimeAddSQL.baseFindOne(id);
+        JlHjMonitorTimeAdd model = jlHjMonitorTimeAddSQL.baseFindOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(JlHjMonitorTimeAdd model){
-        JlHjMonitorTimeAddSQL.baseAdd(model);
+        jlHjMonitorTimeAddSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlHjMonitorTimeAdd model){
-        JlHjMonitorTimeAddSQL.baseEdit(model);
+        jlHjMonitorTimeAddSQL.baseEdit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        JlHjMonitorTimeAddSQL.baseDeleteKey(id);
+        jlHjMonitorTimeAddSQL.baseDeleteKey(id);
         return this.toResult();
     }
 

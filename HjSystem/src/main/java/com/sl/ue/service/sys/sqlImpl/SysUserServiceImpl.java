@@ -6,7 +6,7 @@ import com.sl.ue.entity.sys.SysUser;
 import com.sl.ue.service.impl.BaseSqlImpl;
 import com.sl.ue.service.sys.SysUserService;
 
-@Service("SysUserSQL")
+@Service("sysUserSQL")
 public class SysUserServiceImpl extends BaseSqlImpl<SysUser> implements SysUserService{
 
 }

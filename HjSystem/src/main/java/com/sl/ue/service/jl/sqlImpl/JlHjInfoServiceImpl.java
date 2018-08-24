@@ -6,7 +6,7 @@ import com.sl.ue.entity.jl.JlHjInfo;
 import com.sl.ue.service.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlHjInfoService;
 
-@Service("JlHjInfoSQL")
+@Service("jlHjInfoSQL")
 public class JlHjInfoServiceImpl extends BaseSqlImpl<JlHjInfo> implements JlHjInfoService{
 
 }

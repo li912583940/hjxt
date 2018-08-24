@@ -6,7 +6,7 @@ import com.sl.ue.entity.sys.SysUserGroup;
 import com.sl.ue.service.impl.BaseSqlImpl;
 import com.sl.ue.service.sys.SysUserGroupService;
 
-@Service("SysUserGroupSQL")
+@Service("sysUserGroupSQL")
 public class SysUserGroupServiceImpl extends BaseSqlImpl<SysUserGroup> implements SysUserGroupService{
 
 }

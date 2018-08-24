@@ -15,38 +15,38 @@ import com.sl.ue.util.http.Result;
 public class SysUserJqWeb extends Result{
 
     @Autowired
-    private SysUserJqService SysUserJqSQL;
+    private SysUserJqService sysUserJqSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
         SysUserJq model = new SysUserJq();
-        List<SysUserJq> list = SysUserJqSQL.baseFindList(model, pageSize, pageNum);
+        List<SysUserJq> list = sysUserJqSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        SysUserJq model = SysUserJqSQL.baseFindOne(id);
+        SysUserJq model = sysUserJqSQL.baseFindOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(SysUserJq model){
-        SysUserJqSQL.baseAdd(model);
+        sysUserJqSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(SysUserJq model){
-        SysUserJqSQL.baseEdit(model);
+        sysUserJqSQL.baseEdit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        SysUserJqSQL.baseDeleteKey(id);
+        sysUserJqSQL.baseDeleteKey(id);
         return this.toResult();
     }
 

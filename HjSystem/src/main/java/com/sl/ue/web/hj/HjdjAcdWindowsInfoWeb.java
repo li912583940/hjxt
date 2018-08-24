@@ -15,38 +15,38 @@ import com.sl.ue.util.http.Result;
 public class HjdjAcdWindowsInfoWeb extends Result{
 
     @Autowired
-    private HjdjAcdWindowsInfoService HjdjAcdWindowsInfoSQL;
+    private HjdjAcdWindowsInfoService hjdjAcdWindowsInfoSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
         HjdjAcdWindowsInfo model = new HjdjAcdWindowsInfo();
-        List<HjdjAcdWindowsInfo> list = HjdjAcdWindowsInfoSQL.baseFindList(model, pageSize, pageNum);
+        List<HjdjAcdWindowsInfo> list = hjdjAcdWindowsInfoSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        HjdjAcdWindowsInfo model = HjdjAcdWindowsInfoSQL.baseFindOne(id);
+        HjdjAcdWindowsInfo model = hjdjAcdWindowsInfoSQL.baseFindOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(HjdjAcdWindowsInfo model){
-        HjdjAcdWindowsInfoSQL.baseAdd(model);
+        hjdjAcdWindowsInfoSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(HjdjAcdWindowsInfo model){
-        HjdjAcdWindowsInfoSQL.baseEdit(model);
+        hjdjAcdWindowsInfoSQL.baseEdit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        HjdjAcdWindowsInfoSQL.baseDeleteKey(id);
+        hjdjAcdWindowsInfoSQL.baseDeleteKey(id);
         return this.toResult();
     }
 

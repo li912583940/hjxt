@@ -15,38 +15,38 @@ import com.sl.ue.util.http.Result;
 public class JlYjABDoorWeb extends Result{
 
     @Autowired
-    private JlYjABDoorService JlYjABDoorSQL;
+    private JlYjABDoorService jlYjABDoorSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
         JlYjABDoor model = new JlYjABDoor();
-        List<JlYjABDoor> list = JlYjABDoorSQL.baseFindList(model, pageSize, pageNum);
+        List<JlYjABDoor> list = jlYjABDoorSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        JlYjABDoor model = JlYjABDoorSQL.baseFindOne(id);
+        JlYjABDoor model = jlYjABDoorSQL.baseFindOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(JlYjABDoor model){
-        JlYjABDoorSQL.baseAdd(model);
+        jlYjABDoorSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlYjABDoor model){
-        JlYjABDoorSQL.baseEdit(model);
+        jlYjABDoorSQL.baseEdit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        JlYjABDoorSQL.baseDeleteKey(id);
+        jlYjABDoorSQL.baseDeleteKey(id);
         return this.toResult();
     }
 

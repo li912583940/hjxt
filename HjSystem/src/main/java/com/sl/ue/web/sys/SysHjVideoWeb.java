@@ -15,38 +15,38 @@ import com.sl.ue.util.http.Result;
 public class SysHjVideoWeb extends Result{
 
     @Autowired
-    private SysHjVideoService SysHjVideoSQL;
+    private SysHjVideoService sysHjVideoSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
         SysHjVideo model = new SysHjVideo();
-        List<SysHjVideo> list = SysHjVideoSQL.baseFindList(model, pageSize, pageNum);
+        List<SysHjVideo> list = sysHjVideoSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        SysHjVideo model = SysHjVideoSQL.baseFindOne(id);
+        SysHjVideo model = sysHjVideoSQL.baseFindOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(SysHjVideo model){
-        SysHjVideoSQL.baseAdd(model);
+        sysHjVideoSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(SysHjVideo model){
-        SysHjVideoSQL.baseEdit(model);
+        sysHjVideoSQL.baseEdit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        SysHjVideoSQL.baseDeleteKey(id);
+        sysHjVideoSQL.baseDeleteKey(id);
         return this.toResult();
     }
 

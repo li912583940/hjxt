@@ -15,38 +15,38 @@ import com.sl.ue.util.http.Result;
 public class SysUserGroupWeb extends Result{
 
     @Autowired
-    private SysUserGroupService SysUserGroupSQL;
+    private SysUserGroupService sysUserGroupSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
         SysUserGroup model = new SysUserGroup();
-        List<SysUserGroup> list = SysUserGroupSQL.baseFindList(model, pageSize, pageNum);
+        List<SysUserGroup> list = sysUserGroupSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        SysUserGroup model = SysUserGroupSQL.baseFindOne(id);
+        SysUserGroup model = sysUserGroupSQL.baseFindOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(SysUserGroup model){
-        SysUserGroupSQL.baseAdd(model);
+        sysUserGroupSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(SysUserGroup model){
-        SysUserGroupSQL.baseEdit(model);
+        sysUserGroupSQL.baseEdit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        SysUserGroupSQL.baseDeleteKey(id);
+        sysUserGroupSQL.baseDeleteKey(id);
         return this.toResult();
     }
 

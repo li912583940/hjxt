@@ -6,7 +6,7 @@ import com.sl.ue.entity.jl.JlTradeCardInfo;
 import com.sl.ue.service.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlTradeCardInfoService;
 
-@Service("JlTradeCardInfoSQL")
+@Service("jlTradeCardInfoSQL")
 public class JlTradeCardInfoServiceImpl extends BaseSqlImpl<JlTradeCardInfo> implements JlTradeCardInfoService{
 
 }

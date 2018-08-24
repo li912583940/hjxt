@@ -15,38 +15,38 @@ import com.sl.ue.util.http.Result;
 public class JlMonitorVocWeb extends Result{
 
     @Autowired
-    private JlMonitorVocService JlMonitorVocSQL;
+    private JlMonitorVocService jlMonitorVocSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
         JlMonitorVoc model = new JlMonitorVoc();
-        List<JlMonitorVoc> list = JlMonitorVocSQL.baseFindList(model, pageSize, pageNum);
+        List<JlMonitorVoc> list = jlMonitorVocSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        JlMonitorVoc model = JlMonitorVocSQL.baseFindOne(id);
+        JlMonitorVoc model = jlMonitorVocSQL.baseFindOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(JlMonitorVoc model){
-        JlMonitorVocSQL.baseAdd(model);
+        jlMonitorVocSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlMonitorVoc model){
-        JlMonitorVocSQL.baseEdit(model);
+        jlMonitorVocSQL.baseEdit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        JlMonitorVocSQL.baseDeleteKey(id);
+        jlMonitorVocSQL.baseDeleteKey(id);
         return this.toResult();
     }
 

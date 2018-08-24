@@ -15,38 +15,38 @@ import com.sl.ue.util.http.Result;
 public class JlJqWeb extends Result{
 
     @Autowired
-    private JlJqService JlJqSQL;
+    private JlJqService jlJqSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
         JlJq model = new JlJq();
-        List<JlJq> list = JlJqSQL.baseFindList(model, pageSize, pageNum);
+        List<JlJq> list = jlJqSQL.baseFindList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        JlJq model = JlJqSQL.baseFindOne(id);
+        JlJq model = jlJqSQL.baseFindOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
     public String add(JlJq model){
-        JlJqSQL.baseAdd(model);
+        jlJqSQL.baseAdd(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlJq model){
-        JlJqSQL.baseEdit(model);
+        jlJqSQL.baseEdit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        JlJqSQL.baseDeleteKey(id);
+        jlJqSQL.baseDeleteKey(id);
         return this.toResult();
     }
 
