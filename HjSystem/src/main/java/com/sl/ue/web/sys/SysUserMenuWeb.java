@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sl.ue.entity.sys.SysUserMenu;
+import com.sl.ue.entity.sys.vo.SysUserMenuVO;
 import com.sl.ue.service.sys.SysUserMenuService;
 import com.sl.ue.util.http.Result;
 
@@ -19,34 +19,34 @@ public class SysUserMenuWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
-        SysUserMenu model = new SysUserMenu();
-        List<SysUserMenu> list = sysUserMenuSQL.baseFindList(model, pageSize, pageNum);
+        SysUserMenuVO model = new SysUserMenuVO();
+        List<SysUserMenuVO> list = sysUserMenuSQL.findList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        SysUserMenu model = sysUserMenuSQL.baseFindOne(id);
+        SysUserMenuVO model = sysUserMenuSQL.findOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
-    public String add(SysUserMenu model){
-        sysUserMenuSQL.baseAdd(model);
+    public String add(SysUserMenuVO model){
+        sysUserMenuSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
-    public String edit(SysUserMenu model){
-        sysUserMenuSQL.baseEdit(model);
+    public String edit(SysUserMenuVO model){
+        sysUserMenuSQL.edit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        sysUserMenuSQL.baseDeleteKey(id);
+        sysUserMenuSQL.deleteKey(id);
         return this.toResult();
     }
 

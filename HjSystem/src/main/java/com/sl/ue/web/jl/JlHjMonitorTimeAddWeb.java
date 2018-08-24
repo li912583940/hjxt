@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sl.ue.entity.jl.JlHjMonitorTimeAdd;
+import com.sl.ue.entity.jl.vo.JlHjMonitorTimeAddVO;
 import com.sl.ue.service.jl.JlHjMonitorTimeAddService;
 import com.sl.ue.util.http.Result;
 
@@ -19,34 +19,34 @@ public class JlHjMonitorTimeAddWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
-        JlHjMonitorTimeAdd model = new JlHjMonitorTimeAdd();
-        List<JlHjMonitorTimeAdd> list = jlHjMonitorTimeAddSQL.baseFindList(model, pageSize, pageNum);
+        JlHjMonitorTimeAddVO model = new JlHjMonitorTimeAddVO();
+        List<JlHjMonitorTimeAddVO> list = jlHjMonitorTimeAddSQL.findList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        JlHjMonitorTimeAdd model = jlHjMonitorTimeAddSQL.baseFindOne(id);
+        JlHjMonitorTimeAddVO model = jlHjMonitorTimeAddSQL.findOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
-    public String add(JlHjMonitorTimeAdd model){
-        jlHjMonitorTimeAddSQL.baseAdd(model);
+    public String add(JlHjMonitorTimeAddVO model){
+        jlHjMonitorTimeAddSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
-    public String edit(JlHjMonitorTimeAdd model){
-        jlHjMonitorTimeAddSQL.baseEdit(model);
+    public String edit(JlHjMonitorTimeAddVO model){
+        jlHjMonitorTimeAddSQL.edit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        jlHjMonitorTimeAddSQL.baseDeleteKey(id);
+        jlHjMonitorTimeAddSQL.deleteKey(id);
         return this.toResult();
     }
 

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sl.ue.entity.sys.SysHjServer;
+import com.sl.ue.entity.sys.vo.SysHjServerVO;
 import com.sl.ue.service.sys.SysHjServerService;
 import com.sl.ue.util.http.Result;
 
@@ -19,34 +19,34 @@ public class SysHjServerWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
-        SysHjServer model = new SysHjServer();
-        List<SysHjServer> list = sysHjServerSQL.baseFindList(model, pageSize, pageNum);
+        SysHjServerVO model = new SysHjServerVO();
+        List<SysHjServerVO> list = sysHjServerSQL.findList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        SysHjServer model = sysHjServerSQL.baseFindOne(id);
+        SysHjServerVO model = sysHjServerSQL.findOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
-    public String add(SysHjServer model){
-        sysHjServerSQL.baseAdd(model);
+    public String add(SysHjServerVO model){
+        sysHjServerSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
-    public String edit(SysHjServer model){
-        sysHjServerSQL.baseEdit(model);
+    public String edit(SysHjServerVO model){
+        sysHjServerSQL.edit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        sysHjServerSQL.baseDeleteKey(id);
+        sysHjServerSQL.deleteKey(id);
         return this.toResult();
     }
 

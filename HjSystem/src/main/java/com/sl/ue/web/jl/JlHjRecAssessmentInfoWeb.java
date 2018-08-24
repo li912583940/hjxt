@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sl.ue.entity.jl.JlHjRecAssessmentInfo;
+import com.sl.ue.entity.jl.vo.JlHjRecAssessmentInfoVO;
 import com.sl.ue.service.jl.JlHjRecAssessmentInfoService;
 import com.sl.ue.util.http.Result;
 
@@ -19,34 +19,34 @@ public class JlHjRecAssessmentInfoWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
-        JlHjRecAssessmentInfo model = new JlHjRecAssessmentInfo();
-        List<JlHjRecAssessmentInfo> list = jlHjRecAssessmentInfoSQL.baseFindList(model, pageSize, pageNum);
+        JlHjRecAssessmentInfoVO model = new JlHjRecAssessmentInfoVO();
+        List<JlHjRecAssessmentInfoVO> list = jlHjRecAssessmentInfoSQL.findList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        JlHjRecAssessmentInfo model = jlHjRecAssessmentInfoSQL.baseFindOne(id);
+        JlHjRecAssessmentInfoVO model = jlHjRecAssessmentInfoSQL.findOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
-    public String add(JlHjRecAssessmentInfo model){
-        jlHjRecAssessmentInfoSQL.baseAdd(model);
+    public String add(JlHjRecAssessmentInfoVO model){
+        jlHjRecAssessmentInfoSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
-    public String edit(JlHjRecAssessmentInfo model){
-        jlHjRecAssessmentInfoSQL.baseEdit(model);
+    public String edit(JlHjRecAssessmentInfoVO model){
+        jlHjRecAssessmentInfoSQL.edit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        jlHjRecAssessmentInfoSQL.baseDeleteKey(id);
+        jlHjRecAssessmentInfoSQL.deleteKey(id);
         return this.toResult();
     }
 

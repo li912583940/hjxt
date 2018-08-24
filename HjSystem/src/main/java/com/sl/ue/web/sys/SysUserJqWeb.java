@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sl.ue.entity.sys.SysUserJq;
+import com.sl.ue.entity.sys.vo.SysUserJqVO;
 import com.sl.ue.service.sys.SysUserJqService;
 import com.sl.ue.util.http.Result;
 
@@ -19,34 +19,34 @@ public class SysUserJqWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
-        SysUserJq model = new SysUserJq();
-        List<SysUserJq> list = sysUserJqSQL.baseFindList(model, pageSize, pageNum);
+        SysUserJqVO model = new SysUserJqVO();
+        List<SysUserJqVO> list = sysUserJqSQL.findList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        SysUserJq model = sysUserJqSQL.baseFindOne(id);
+        SysUserJqVO model = sysUserJqSQL.findOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
-    public String add(SysUserJq model){
-        sysUserJqSQL.baseAdd(model);
+    public String add(SysUserJqVO model){
+        sysUserJqSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
-    public String edit(SysUserJq model){
-        sysUserJqSQL.baseEdit(model);
+    public String edit(SysUserJqVO model){
+        sysUserJqSQL.edit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        sysUserJqSQL.baseDeleteKey(id);
+        sysUserJqSQL.deleteKey(id);
         return this.toResult();
     }
 

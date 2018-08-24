@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sl.ue.entity.hj.HjdjFaceInfo;
+import com.sl.ue.entity.hj.vo.HjdjFaceInfoVO;
 import com.sl.ue.service.hj.HjdjFaceInfoService;
 import com.sl.ue.util.http.Result;
 
@@ -19,34 +19,34 @@ public class HjdjFaceInfoWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
-        HjdjFaceInfo model = new HjdjFaceInfo();
-        List<HjdjFaceInfo> list = hjdjFaceInfoSQL.baseFindList(model, pageSize, pageNum);
+        HjdjFaceInfoVO model = new HjdjFaceInfoVO();
+        List<HjdjFaceInfoVO> list = hjdjFaceInfoSQL.findList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        HjdjFaceInfo model = hjdjFaceInfoSQL.baseFindOne(id);
+        HjdjFaceInfoVO model = hjdjFaceInfoSQL.findOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
-    public String add(HjdjFaceInfo model){
-        hjdjFaceInfoSQL.baseAdd(model);
+    public String add(HjdjFaceInfoVO model){
+        hjdjFaceInfoSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
-    public String edit(HjdjFaceInfo model){
-        hjdjFaceInfoSQL.baseEdit(model);
+    public String edit(HjdjFaceInfoVO model){
+        hjdjFaceInfoSQL.edit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        hjdjFaceInfoSQL.baseDeleteKey(id);
+        hjdjFaceInfoSQL.deleteKey(id);
         return this.toResult();
     }
 

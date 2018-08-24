@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sl.ue.entity.jl.JlHjSpQs;
+import com.sl.ue.entity.jl.vo.JlHjSpQsVO;
 import com.sl.ue.service.jl.JlHjSpQsService;
 import com.sl.ue.util.http.Result;
 
@@ -19,34 +19,34 @@ public class JlHjSpQsWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
-        JlHjSpQs model = new JlHjSpQs();
-        List<JlHjSpQs> list = jlHjSpQsSQL.baseFindList(model, pageSize, pageNum);
+        JlHjSpQsVO model = new JlHjSpQsVO();
+        List<JlHjSpQsVO> list = jlHjSpQsSQL.findList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        JlHjSpQs model = jlHjSpQsSQL.baseFindOne(id);
+        JlHjSpQsVO model = jlHjSpQsSQL.findOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
-    public String add(JlHjSpQs model){
-        jlHjSpQsSQL.baseAdd(model);
+    public String add(JlHjSpQsVO model){
+        jlHjSpQsSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
-    public String edit(JlHjSpQs model){
-        jlHjSpQsSQL.baseEdit(model);
+    public String edit(JlHjSpQsVO model){
+        jlHjSpQsSQL.edit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        jlHjSpQsSQL.baseDeleteKey(id);
+        jlHjSpQsSQL.deleteKey(id);
         return this.toResult();
     }
 

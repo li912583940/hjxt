@@ -39,9 +39,9 @@ public class CustomRealm extends AuthorizingRealm{
 //		String password =new String(ca);
 		
 		// 通过 username 从数据库中查询
-		SysUser model = new SysUser();
+		SysUserVO model = new SysUserVO();
 		model.setUserName(username);
-		List<SysUser> userList = SysUserSQL.baseFindList(model);
+		List<SysUserVO> userList = SysUserSQL.findList(model);
 		if(userList.size() == 0){ // 如果查询不到用户信息
 			return null;
 		}

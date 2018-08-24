@@ -1,8 +1,8 @@
 package com.sl.ue.service.jl;
 
-import com.sl.ue.entity.jl.JlQs;
+import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.service.base.BaseService;
 
-public interface JlQsService extends BaseService<JlQs>{
+public interface JlQsService extends BaseService<JlQsVO>{
 
 }

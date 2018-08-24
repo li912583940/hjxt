@@ -1,6 +1,5 @@
 package com.sl.ue.service.hj;
 
-import com.sl.ue.entity.hj.HjdjAcdInfo;
 import com.sl.ue.entity.hj.vo.HjdjAcdInfoVO;
 import com.sl.ue.service.base.BaseService;
 

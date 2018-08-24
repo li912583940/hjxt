@@ -4,8 +4,7 @@ import com.sl.ue.entity.sys.SysUser;
 
 public class SysUserVO extends SysUser{
 
-	/** */
-	private static final long serialVersionUID = -3118641977426180794L;
+    /** 序列化 */
+    private static final long serialVersionUID = 1L;
 
-	
 }

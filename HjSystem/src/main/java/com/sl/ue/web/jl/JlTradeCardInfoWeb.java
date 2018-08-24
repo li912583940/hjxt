@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sl.ue.entity.jl.JlTradeCardInfo;
+import com.sl.ue.entity.jl.vo.JlTradeCardInfoVO;
 import com.sl.ue.service.jl.JlTradeCardInfoService;
 import com.sl.ue.util.http.Result;
 
@@ -19,34 +19,34 @@ public class JlTradeCardInfoWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
-        JlTradeCardInfo model = new JlTradeCardInfo();
-        List<JlTradeCardInfo> list = jlTradeCardInfoSQL.baseFindList(model, pageSize, pageNum);
+        JlTradeCardInfoVO model = new JlTradeCardInfoVO();
+        List<JlTradeCardInfoVO> list = jlTradeCardInfoSQL.findList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        JlTradeCardInfo model = jlTradeCardInfoSQL.baseFindOne(id);
+        JlTradeCardInfoVO model = jlTradeCardInfoSQL.findOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
-    public String add(JlTradeCardInfo model){
-        jlTradeCardInfoSQL.baseAdd(model);
+    public String add(JlTradeCardInfoVO model){
+        jlTradeCardInfoSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
-    public String edit(JlTradeCardInfo model){
-        jlTradeCardInfoSQL.baseEdit(model);
+    public String edit(JlTradeCardInfoVO model){
+        jlTradeCardInfoSQL.edit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        jlTradeCardInfoSQL.baseDeleteKey(id);
+        jlTradeCardInfoSQL.deleteKey(id);
         return this.toResult();
     }
 

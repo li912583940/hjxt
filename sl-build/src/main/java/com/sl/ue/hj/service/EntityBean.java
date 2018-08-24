@@ -3,6 +3,7 @@ package com.sl.ue.hj.service;
 import java.io.File;
 
 import com.sl.ue.hj.service.ServiceBean;
+import com.sl.ue.hj.web.WebBean;
 
 /**
  * 说明 [读取实体类 并写入service]
@@ -26,12 +27,15 @@ public class EntityBean {
 		System.out.println("读取文件夹： "+path+hj);
 		File file = new File(path+hj);
 		if(file.exists()){
-			String[] strs = file.list();
-			for(String str : strs){
-				System.out.println(str);
-				ServiceBean serviceBean = new ServiceBean();
-				String[] s = str.split("\\.");
-				serviceBean.execute(s[0], "hj");
+			File[] files = file.listFiles();
+			for(File f : files){
+				if(f.isFile()){
+					String filename = f.getName();
+					System.out.println(filename);
+					ServiceBean serviceBean = new ServiceBean();
+					String[] s = filename.split("\\.");
+					serviceBean.execute(s[0], "hj");
+				}
 			}
 		}
 	}
@@ -40,12 +44,15 @@ public class EntityBean {
 		System.out.println("读取文件夹： "+path+jl);
 		File file = new File(path+jl);
 		if(file.exists()){
-			String[] strs = file.list();
-			for(String str : strs){
-				System.out.println(str);
-				ServiceBean serviceBean = new ServiceBean();
-				String[] s = str.split("\\.");
-				serviceBean.execute(s[0], "jl");
+			File[] files = file.listFiles();
+			for(File f : files){
+				if(f.isFile()){
+					String filename = f.getName();
+					System.out.println(filename);
+					ServiceBean serviceBean = new ServiceBean();
+					String[] s = filename.split("\\.");
+					serviceBean.execute(s[0], "jl");
+				}
 			}
 		}
 	}
@@ -54,12 +61,15 @@ public class EntityBean {
 		System.out.println("读取文件夹： "+path+sys);
 		File file = new File(path+sys);
 		if(file.exists()){
-			String[] strs = file.list();
-			for(String str : strs){
-				System.out.println(str);
-				ServiceBean serviceBean = new ServiceBean();
-				String[] s = str.split("\\.");
-				serviceBean.execute(s[0], "sys");
+			File[] files = file.listFiles();
+			for(File f : files){
+				if(f.isFile()){
+					String filename = f.getName();
+					System.out.println(filename);
+					ServiceBean serviceBean = new ServiceBean();
+					String[] s = filename.split("\\.");
+					serviceBean.execute(s[0], "sys");
+				}
 			}
 		}
 	}

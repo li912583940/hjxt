@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sl.ue.entity.hj.HjdjAcdWindowsInfo;
+import com.sl.ue.entity.hj.vo.HjdjAcdWindowsInfoVO;
 import com.sl.ue.service.hj.HjdjAcdWindowsInfoService;
 import com.sl.ue.util.http.Result;
 
@@ -19,34 +19,34 @@ public class HjdjAcdWindowsInfoWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
-        HjdjAcdWindowsInfo model = new HjdjAcdWindowsInfo();
-        List<HjdjAcdWindowsInfo> list = hjdjAcdWindowsInfoSQL.baseFindList(model, pageSize, pageNum);
+        HjdjAcdWindowsInfoVO model = new HjdjAcdWindowsInfoVO();
+        List<HjdjAcdWindowsInfoVO> list = hjdjAcdWindowsInfoSQL.findList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        HjdjAcdWindowsInfo model = hjdjAcdWindowsInfoSQL.baseFindOne(id);
+        HjdjAcdWindowsInfoVO model = hjdjAcdWindowsInfoSQL.findOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
-    public String add(HjdjAcdWindowsInfo model){
-        hjdjAcdWindowsInfoSQL.baseAdd(model);
+    public String add(HjdjAcdWindowsInfoVO model){
+        hjdjAcdWindowsInfoSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
-    public String edit(HjdjAcdWindowsInfo model){
-        hjdjAcdWindowsInfoSQL.baseEdit(model);
+    public String edit(HjdjAcdWindowsInfoVO model){
+        hjdjAcdWindowsInfoSQL.edit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        hjdjAcdWindowsInfoSQL.baseDeleteKey(id);
+        hjdjAcdWindowsInfoSQL.deleteKey(id);
         return this.toResult();
     }
 

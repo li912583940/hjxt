@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sl.ue.entity.sys.SysUserGroup;
+import com.sl.ue.entity.sys.vo.SysUserGroupVO;
 import com.sl.ue.service.sys.SysUserGroupService;
 import com.sl.ue.util.http.Result;
 
@@ -19,34 +19,34 @@ public class SysUserGroupWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
-        SysUserGroup model = new SysUserGroup();
-        List<SysUserGroup> list = sysUserGroupSQL.baseFindList(model, pageSize, pageNum);
+        SysUserGroupVO model = new SysUserGroupVO();
+        List<SysUserGroupVO> list = sysUserGroupSQL.findList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        SysUserGroup model = sysUserGroupSQL.baseFindOne(id);
+        SysUserGroupVO model = sysUserGroupSQL.findOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
-    public String add(SysUserGroup model){
-        sysUserGroupSQL.baseAdd(model);
+    public String add(SysUserGroupVO model){
+        sysUserGroupSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
-    public String edit(SysUserGroup model){
-        sysUserGroupSQL.baseEdit(model);
+    public String edit(SysUserGroupVO model){
+        sysUserGroupSQL.edit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        sysUserGroupSQL.baseDeleteKey(id);
+        sysUserGroupSQL.deleteKey(id);
         return this.toResult();
     }
 

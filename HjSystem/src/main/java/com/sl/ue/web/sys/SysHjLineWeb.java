@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sl.ue.entity.sys.SysHjLine;
+import com.sl.ue.entity.sys.vo.SysHjLineVO;
 import com.sl.ue.service.sys.SysHjLineService;
 import com.sl.ue.util.http.Result;
 
@@ -19,34 +19,34 @@ public class SysHjLineWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
-        SysHjLine model = new SysHjLine();
-        List<SysHjLine> list = sysHjLineSQL.baseFindList(model, pageSize, pageNum);
+        SysHjLineVO model = new SysHjLineVO();
+        List<SysHjLineVO> list = sysHjLineSQL.findList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        SysHjLine model = sysHjLineSQL.baseFindOne(id);
+        SysHjLineVO model = sysHjLineSQL.findOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
-    public String add(SysHjLine model){
-        sysHjLineSQL.baseAdd(model);
+    public String add(SysHjLineVO model){
+        sysHjLineSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
-    public String edit(SysHjLine model){
-        sysHjLineSQL.baseEdit(model);
+    public String edit(SysHjLineVO model){
+        sysHjLineSQL.edit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        sysHjLineSQL.baseDeleteKey(id);
+        sysHjLineSQL.deleteKey(id);
         return this.toResult();
     }
 
