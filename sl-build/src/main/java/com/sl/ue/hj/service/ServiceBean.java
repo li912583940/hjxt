@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import com.sl.ue.hj.StringUtil;
+
 
 public class ServiceBean {
 
@@ -104,7 +106,7 @@ public class ServiceBean {
 			sb.append("import com.sl.ue.service.impl.BaseSqlImpl;").append("\r\n");
 			sb.append("import com.sl.ue.service"+_pack+"."+fileName+"Service;").append("\r\n");
 			sb.append("\r\n");
-			sb.append("@Service(\""+fileName+"SQL\")").append("\r\n");
+			sb.append("@Service(\""+StringUtil.toLower(fileName)+"SQL\")").append("\r\n");
 			sb.append("public class "+fileName+"ServiceImpl extends BaseSqlImpl<"+fileName+"> implements "+fileName+"Service{").append("\r\n");
 			sb.append("\r\n");
 			sb.append("}").append("\r\n");
