@@ -6,8 +6,8 @@
   <artifactId>HjSystem</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>HjSystem Maven Webapp</name>
-  <url>http://maven.apache.org</url>
+  <!-- <name>HjSystem Maven Webapp</name>
+  <url>http://maven.apache.org</url> -->
   
   
     <!-- 继承父包 -->
@@ -34,14 +34,29 @@
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-web</artifactId>
-         <!--  移除內嵌的tomcat
+         <!--  移除內嵌的tomcat -->
          <exclusions>
              <exclusion>
                  <groupId>org.springframework.boot</groupId>
                  <artifactId>spring-boot-starter-tomcat</artifactId>
              </exclusion>
-         </exclusions>-->
+         </exclusions>
      </dependency>
+     
+     <!-- 运行在Tomcat中需要的 -->
+     <dependency>
+	     <groupId>org.springframework.boot</groupId>
+	     <artifactId>spring-boot-starter-tomcat</artifactId>
+	     <scope>provided</scope>
+     </dependency>
+     
+	<dependency>
+	    <groupId>javax.servlet</groupId>
+	    <artifactId>servlet-api</artifactId>
+	    <version>3.0-alpha-1</version>
+	</dependency>
+     
+     
      <!-- jdbcTemplate 
      <dependency>
 	    <groupId>org.springframework</groupId>
@@ -103,6 +118,13 @@
 	    <artifactId>shiro-core</artifactId>
 	    <version>1.4.0</version>
 	</dependency>
+    
+    <dependency>
+	    <groupId>org.apache.shiro</groupId>
+	    <artifactId>shiro-web</artifactId>
+	    <version>1.4.0</version>
+	</dependency>
+    
     
     <!-- String 工具类 -->
     <dependency>
