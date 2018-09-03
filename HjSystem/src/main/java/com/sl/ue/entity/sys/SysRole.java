@@ -1,63 +1,81 @@
 package com.sl.ue.entity.sys;
 
-import java.io.Serializable;
-
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
 import com.sl.ue.util.anno.Table;
+import java.util.Date;
 
-/**
- * 说明 [系统角色表]
- * @author lxt
- */
 @Table("sys_role")
-public class SysRole implements Serializable{
+public class SysRole implements java.io.Serializable{
 
-	
-	/** */
-	private static final long serialVersionUID = -2872034496477600447L;
+    /** 序列化 */
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@DbField("id")
-	private Integer id;
-	
-	/** 角色标识符 */
-	@DbField("role")
-	private String role;
-	
-	/** 角色描述 */
-	@DbField("description")
-	private String description;
-	
-	/** 是否可用，1：可用，0：不可用 */
-	@DbField("useble")
-	private Integer useble;
-	
-	
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	public String getRole() {
-		return role;
-	}
-	public void setRole(String role) {
-		this.role = role;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public Integer getUseble() {
-		return useble;
-	}
-	public void setUseble(Integer useble) {
-		this.useble = useble;
-	}
-	
-	
+    /**  */
+    @Id
+    @DbField("id")
+    private Integer id;
+
+    /** 名称 */
+    @DbField("name")
+    private String name;
+
+    /** 描述 */
+    @DbField("description")
+    private String description;
+
+    /** 是否可用 1：可用， 0：不可用 */
+    @DbField("useble")
+    private Integer useble;
+
+    /** 创建时间 */
+    @DbField("create_time")
+    private Date createTime;
+
+    /** 创建人id */
+    @DbField("create_user_id")
+    private Integer createUserId;
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    public Integer getUseble() {
+        return this.useble;
+    }
+
+    public void setUseble(Integer useble) {
+        this.useble = useble;
+    }
+    public Date getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+    public Integer getCreateUserId() {
+        return this.createUserId;
+    }
+
+    public void setCreateUserId(Integer createUserId) {
+        this.createUserId = createUserId;
+    }
 }

@@ -36,7 +36,6 @@ public class HjdjAcdInfo implements java.io.Serializable {
 	@DbField("ACDurl")
 	private String acdurl;
 	
-	
 	public Integer getAcdindex() {
 		return acdindex;
 	}
