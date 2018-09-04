@@ -1,4 +1,4 @@
-package com.sl.ue.util;
+package com.sl.ue.util.component;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

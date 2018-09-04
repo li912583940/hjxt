@@ -17,7 +17,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import com.sl.ue.entity.sys.SysUser;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.sys.SysUserService;
-import com.sl.ue.util.SpringTool;
+import com.sl.ue.util.component.SpringTool;
 
 public class CustomRealm extends AuthorizingRealm{
 

@@ -1,7 +1,7 @@
 package com.sl.ue.util.http;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -17,16 +17,18 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 public abstract class Result {
 	public final static Integer error_0 = 0; // "正确"
 	public final static Integer error_100 = 100; // "系统异常"
-	public final static Integer error_101 = 101; // 
+	public final static Integer error_101 = 101; // 无效token
 	public final static Integer error_102 = 102; // "参数错误"
+	public final static Integer error_103 = 103; // 业务错误
 	
-	final static Map<Integer, String> confMap = new HashMap<>(); // 状态码
+	final static Map<Integer, String> confMap = new ConcurrentHashMap<>(); // 状态码
 	
 	static{
 		confMap.put(0, "正确");
 		confMap.put(100, "系统异常");
-		confMap.put(101, "");
+		confMap.put(101, "无效token");
 		confMap.put(102, "参数错误");
+		confMap.put(103, "业务错误");
 	}
 	JSONObject json = new JSONObject(); //返回数据
 	public Result(){

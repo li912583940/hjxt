@@ -8,7 +8,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.Factory;
 
 import com.sl.ue.service.hj.HjdjAcdInfoService;
-import com.sl.ue.util.SpringTool;
+import com.sl.ue.util.component.SpringTool;
 
 public class TestShiro {
 
