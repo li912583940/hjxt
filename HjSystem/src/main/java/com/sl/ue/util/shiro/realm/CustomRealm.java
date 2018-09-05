@@ -59,8 +59,8 @@ public class CustomRealm extends AuthorizingRealm{
 		
 		// 将权限信息封闭为AuthorizationInfo
 		SimpleAuthorizationInfo simple = new SimpleAuthorizationInfo();
-		simple.setRoles(sysUserSQL.findRoles(username));
-		simple.setStringPermissions(sysUserSQL.findPermissions(username));
+//		simple.setRoles(sysUserSQL.findRoles(username));
+//		simple.setStringPermissions(sysUserSQL.findPermissions(username));
 		return simple;
 	}
 
