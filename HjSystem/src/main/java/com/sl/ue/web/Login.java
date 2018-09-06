@@ -37,7 +37,7 @@ public class Login extends Result{
 			return this.toResult();
 		}
 		SysUserVO user = new SysUserVO();
-		user.setUserName(username);
+		user.setUserNo(username);
 		user.setUserPwd(password);
 		List<SysUserVO> list = sysUserSQL.findList(user);
 		if(list.size()>0){

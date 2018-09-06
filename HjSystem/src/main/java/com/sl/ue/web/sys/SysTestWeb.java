@@ -6,48 +6,47 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.sl.ue.entity.sys.vo.SysHjLineVO;
-import com.sl.ue.service.sys.SysHjLineService;
-import com.sl.ue.util.anno.IgnoreSecurity;
+import com.sl.ue.entity.sys.vo.SysTestVO;
+import com.sl.ue.service.sys.SysTestService;
 import com.sl.ue.util.http.Result;
 
 @RestController
-@RequestMapping("/sysHjLine")
-public class SysHjLineWeb extends Result{
+@RequestMapping("/sysTest")
+public class SysTestWeb extends Result{
 
     @Autowired
-    private SysHjLineService sysHjLineSQL;
+    private SysTestService sysTestSQL;
 
     @RequestMapping("/findList")
     public String findList(Integer pageSize, Integer pageNum){
-        SysHjLineVO model = new SysHjLineVO();
-        List<SysHjLineVO> list = sysHjLineSQL.findList(model, pageSize, pageNum);
+        SysTestVO model = new SysTestVO();
+        List<SysTestVO> list = sysTestSQL.findList(model, pageSize, pageNum);
         this.putData(list);
         return this.toResult();
     }
 
     @RequestMapping("/findOne")
     public String findOne(Integer id){
-        SysHjLineVO model = sysHjLineSQL.findOne(id);
+        SysTestVO model = sysTestSQL.findOne(id);
         this.putJson(model);
         return this.toResult();
     }
 
     @RequestMapping("/add")
-    public String add(SysHjLineVO model){
-        sysHjLineSQL.add(model);
+    public String add(SysTestVO model){
+        sysTestSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
-    public String edit(SysHjLineVO model){
-        sysHjLineSQL.edit(model);
+    public String edit(SysTestVO model){
+        sysTestSQL.edit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
-        sysHjLineSQL.deleteKey(id);
+        sysTestSQL.deleteKey(id);
         return this.toResult();
     }
 

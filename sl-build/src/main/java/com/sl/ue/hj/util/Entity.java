@@ -17,6 +17,8 @@ public class Entity {
 		enMap.put("sys_resource", "SysResource");
 		enMap.put("sys_user_role", "SysUserRole");
 		enMap.put("sys_role_resource", "SysRoleResource");
+		
+		enMap.put("sys_test", "SysTest");
 	}
 	
 	
