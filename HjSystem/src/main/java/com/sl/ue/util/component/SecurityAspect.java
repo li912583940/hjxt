@@ -2,6 +2,8 @@ package com.sl.ue.util.component;
 
 import java.lang.reflect.Method;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -33,7 +35,6 @@ public class SecurityAspect extends Result{
 		if (method.isAnnotationPresent(IgnoreSecurity.class)) {
 			return pjp.proceed();
 		}
-
 		// 从 request header 中获取当前 token
 		String token = WebContextUtil.getRequest().getHeader(
 				Constants.TOKEN_NAME);

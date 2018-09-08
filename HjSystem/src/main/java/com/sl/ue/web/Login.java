@@ -46,8 +46,10 @@ public class Login extends Result{
 			
 			TokenManager tokenManager = new TokenManager();
 			String token = tokenManager.createToken(username);
+			System.out.println("token: "+token);
 			Cookie cookie = new Cookie(Constants.TOKEN_NAME, token);
 			response.addCookie(cookie);
+//			response.addHeader(Constants.TOKEN_NAME, token);
 			this.putJson(loginUser);
 			return this.toResult();
 		}
