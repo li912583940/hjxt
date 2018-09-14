@@ -51,6 +51,7 @@
 import { isvalidUsername } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './socialsignin'
+import { requestLogin } from '@/api/login';
 
 export default {
   components: { LangSelect, SocialSign },
@@ -58,13 +59,14 @@ export default {
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!isvalidUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+        //callback(new Error('Please enter the correct user name'))
+        callback()
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
+      if (value.length < 5) {
         callback(new Error('The password can not be less than 6 digits'))
       } else {
         callback()
@@ -72,8 +74,8 @@ export default {
     }
     return {
       loginForm: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: 'admin'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -95,13 +97,23 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
-            this.loading = false
-            this.$router.push({ path: '/' })
-          }).catch(() => {
-            this.loading = false
-          })
+        	const self = this;
+          this.loading = true;
+          requestLogin(this.loginForm).then((res) => {
+						this.loading = false;
+						setToken(res.token);
+						this.$router.push('dashboard')
+					})
+          .catch(() => {
+            this.loading = false;
+          });
+				
+//        this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
+//          this.loading = false
+//          this.$router.push({ path: '/' })
+//        }).catch(() => {
+//          this.loading = false
+//        })
         } else {
           console.log('error submit!!')
           return false

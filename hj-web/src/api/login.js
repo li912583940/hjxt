@@ -6,7 +6,7 @@ export function loginByUsername(username, password) {
     password
   }
   return request({
-    url: '/login/login',
+    url: '/login',
     method: 'post',
     data
   })
@@ -27,3 +27,4 @@ export function getUserInfo(token) {
   })
 }
 
+export const requestLogin = params => { return request.post('/login', params).then(res => res.data.data); };
