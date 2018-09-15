@@ -52,6 +52,8 @@ import { isvalidUsername } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './socialsignin'
 import { requestLogin } from '@/api/login';
+import { setToken } from '@/utils/auth'
+
 
 export default {
   components: { LangSelect, SocialSign },

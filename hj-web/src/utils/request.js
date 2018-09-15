@@ -132,7 +132,7 @@ service.interceptors.response.use(
           type: 'success',
           duration: 5 * 1000
         });
-         return response;
+         return response.data;
       }
     },
     

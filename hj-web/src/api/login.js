@@ -27,4 +27,4 @@ export function getUserInfo(token) {
   })
 }
 
-export const requestLogin = params => { return request.post('/login', params).then(res => res.data.data); };
+export const requestLogin = params => { return request.post('/login', params).then(res => res.data); };
