@@ -3,7 +3,6 @@ package com.sl.ue.web;
 
 import java.util.List;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -47,8 +46,9 @@ public class Login extends Result{
 			TokenManager tokenManager = new TokenManager();
 			String token = tokenManager.createToken(username);
 			System.out.println("token: "+token);
-			Cookie cookie = new Cookie(Constants.TOKEN_NAME, token);
-			response.addCookie(cookie);
+			loginUser.setToken(token);
+//			Cookie cookie = new Cookie(Constants.TOKEN_NAME, token);
+//			response.addCookie(cookie);
 //			response.addHeader(Constants.TOKEN_NAME, token);
 			this.putJson(loginUser);
 			return this.toResult();

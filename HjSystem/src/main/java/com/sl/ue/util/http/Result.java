@@ -76,7 +76,7 @@ public abstract class Result {
 	
 	public void msg(String msg){
 		json.put("errMsg", msg);
-		json.put("errCode", confMap.get(0));
+		json.put("errCode", error_0);
 	}
 	
 	/** 消息结束  */
