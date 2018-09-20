@@ -134,7 +134,7 @@ export default {
 					requestLogin(this.loginForm).then((res) => {
 						this.loading = false;
 						setToken(res.token);
-						this.$router.push('dashboard')
+						this.$router.push({ path: this.redirect || '/' })
 					})
           .catch(() => {
             this.loading = false;
