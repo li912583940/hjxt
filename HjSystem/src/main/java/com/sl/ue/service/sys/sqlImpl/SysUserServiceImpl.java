@@ -46,6 +46,11 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 		List<Integer>  roleIdList = jdbcTemplate.queryForList(sql_roleId, Integer.class, sysUser.getWebid());
 		
 		// 根据角色id查询资源
+		Object[] obj = roleIdList.toArray();
+		String sql_per = "select b.* from sys_role_resource a, sys_resource b "+
+				"where a.resource_id=b.id AND a.role_id in (?) AND b.useble=1";
+		 jdbcTemplate.queryForList(sql_per, SysResourceVO.class, obj);
+		
 		return null;
 	}
 
