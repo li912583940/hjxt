@@ -45,15 +45,14 @@ const user = {
 
   actions: {
     // 用户名登录
-    LoginByUsername({ commit }, userInfo) {
-      const username = userInfo.username.trim()
+    RequestLogin({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
-        loginByUsername(username, userInfo.password).then(response => {
-          const data = response.data
-          commit('SET_TOKEN', data.token)
-          setToken(response.data.token)
-          resolve()
-        }).catch(error => {
+      	requestLogin(userInfo).then((res) => {
+      		commit('SET_TOKEN', res.token)
+					setToken(res.token);
+					resolve()
+				})
+       .catch(error => {
           reject(error)
         })
       })
