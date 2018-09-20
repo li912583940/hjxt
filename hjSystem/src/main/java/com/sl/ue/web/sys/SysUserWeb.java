@@ -50,4 +50,10 @@ public class SysUserWeb extends Result{
         return this.toResult();
     }
 
+    @RequestMapping("/getRoles")
+    public String getRoles(String token){
+    	List<String> roles = sysUserSQL.getRoles(token);
+    	this.putJson(roles);
+    	return this.toResult();
+    }
 }

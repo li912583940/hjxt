@@ -1,4 +1,4 @@
-package com.sl.ue.util;
+package com.sl.ue.util.http;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,4 +22,5 @@ public class WebContextUtil {
 				.getRequestAttributes()).getRequest();
 		return request;
 	}
+	
 }
