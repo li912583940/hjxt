@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,9 @@ import com.sl.ue.service.sys.SysUserService;
 import com.sl.ue.util.Constants;
 import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
+import com.sl.ue.util.http.WebContextUtil;
 import com.sl.ue.util.http.token.TokenManager;
+import com.sl.ue.util.http.token.TokenSession;
 
 @RestController
 public class Login extends Result{
@@ -41,12 +45,15 @@ public class Login extends Result{
 		List<SysUserVO> list = sysUserSQL.findList(user);
 		if(list.size()>0){
 			SysUserVO loginUser = list.get(0);
-			Constants.sysUser = loginUser; //需要测试是否存在BUG
-			
 			TokenManager tokenManager = new TokenManager();
 			String token = tokenManager.createToken(username);
 			System.out.println("token: "+token);
 			loginUser.setToken(token);
+			
+			// 保存 token与user
+			TokenSession tokenSession = new TokenSession();
+			tokenSession.setTokenUser(token, loginUser);
+			
 //			Cookie cookie = new Cookie(Constants.TOKEN_NAME, token);
 //			response.addCookie(cookie);
 //			response.addHeader(Constants.TOKEN_NAME, token);

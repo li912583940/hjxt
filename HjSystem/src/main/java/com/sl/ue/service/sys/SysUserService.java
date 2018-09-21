@@ -21,4 +21,10 @@ public interface SysUserService extends BaseService<SysUserVO>{
 	 * @author lxt
 	 */
 	public List<SysResourceVO> findResource(String username);
+	
+	/**
+	 * 说明 [查询用户角色]
+	 * L_晓天  @2018年9月20日
+	 */
+	public List<String> getRoles(String token);
 }

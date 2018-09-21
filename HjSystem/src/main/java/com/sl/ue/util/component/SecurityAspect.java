@@ -11,9 +11,9 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 import com.sl.ue.util.Constants;
-import com.sl.ue.util.WebContextUtil;
 import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
+import com.sl.ue.util.http.WebContextUtil;
 import com.sl.ue.util.http.token.TokenManager;
 
 /**

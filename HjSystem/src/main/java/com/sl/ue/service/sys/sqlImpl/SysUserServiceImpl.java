@@ -9,6 +9,7 @@ import com.sl.ue.entity.sys.vo.SysRoleVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.sys.SysUserService;
+import com.sl.ue.util.http.token.TokenSession;
 
 @Service("sysUserSQL")
 public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUserService{
@@ -31,6 +32,26 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 		String sql_per = "select b.* from sys_role_resource a, sys_resource b "+
 				"where a.resource_id=b.id AND a.role_id in (?) AND b.useble=1";
 		return jdbcTemplate.queryForList(sql_per, SysResourceVO.class, obj);
+	}
+
+	@Override
+	public List<String> getRoles(String token) {
+		TokenSession tokenSession = new TokenSession();
+		SysUserVO sysUser = tokenSession.getUser(token);
+		
+		// 根据用户id 查询出角色id
+		// 先查询出 roleid
+		String sql_roleId = "select b.role_id AS roleId from SYS_USER a, sys_user_role b "+
+				"where a.WebID=? and a.WebID=b.user_id";
+		List<Integer>  roleIdList = jdbcTemplate.queryForList(sql_roleId, Integer.class, sysUser.getWebid());
+		
+		// 根据角色id查询资源
+		Object[] obj = roleIdList.toArray();
+		String sql_per = "select b.* from sys_role_resource a, sys_resource b "+
+				"where a.resource_id=b.id AND a.role_id in (?) AND b.useble=1";
+		 jdbcTemplate.queryForList(sql_per, SysResourceVO.class, obj);
+		
+		return null;
 	}
 
 }

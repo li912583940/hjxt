@@ -1,8 +1,8 @@
 <template>
-  <div class="tinymce-container editor-container" :class="{fullscreen:fullscreen}">
-    <textarea class="tinymce-textarea" :id="tinymceId"></textarea>
+  <div :class="{fullscreen:fullscreen}" class="tinymce-container editor-container">
+    <textarea :id="tinymceId" class="tinymce-textarea"/>
     <div class="editor-custom-btn-container">
-      <editorImage color="#1890ff" class="editor-upload-btn" @successCBK="imageSuccessCBK"></editorImage>
+      <editorImage color="#1890ff" class="editor-upload-btn" @successCBK="imageSuccessCBK"/>
     </div>
   </div>
 </template>
@@ -13,11 +13,14 @@ import plugins from './plugins'
 import toolbar from './toolbar'
 
 export default {
-  name: 'tinymce',
+  name: 'Tinymce',
   components: { editorImage },
   props: {
     id: {
-      type: String
+      type: String,
+      default: function() {
+        return 'vue-tinymce-' + +new Date() + ((Math.random() * 1000).toFixed(0) + '')
+      }
     },
     value: {
       type: String,
@@ -31,6 +34,7 @@ export default {
       }
     },
     menubar: {
+      type: String,
       default: 'file edit insert view format table'
     },
     height: {
@@ -43,8 +47,17 @@ export default {
     return {
       hasChange: false,
       hasInit: false,
-      tinymceId: this.id || 'vue-tinymce-' + +new Date(),
-      fullscreen: false
+      tinymceId: this.id,
+      fullscreen: false,
+      languageTypeList: {
+        'en': 'en',
+        'zh': 'zh_CN'
+      }
+    }
+  },
+  computed: {
+    language() {
+      return this.languageTypeList[this.$store.getters.language]
     }
   },
   watch: {
@@ -53,6 +66,10 @@ export default {
         this.$nextTick(() =>
           window.tinymce.get(this.tinymceId).setContent(val || ''))
       }
+    },
+    language() {
+      this.destroyTinymce()
+      this.$nextTick(() => this.initTinymce())
     }
   },
   mounted() {
@@ -64,10 +81,14 @@ export default {
   deactivated() {
     this.destroyTinymce()
   },
+  destroyed() {
+    this.destroyTinymce()
+  },
   methods: {
     initTinymce() {
       const _this = this
       window.tinymce.init({
+        language: this.language,
         selector: `#${this.tinymceId}`,
         height: this.height,
         body_class: 'panel-body ',
@@ -84,6 +105,7 @@ export default {
         imagetools_cors_hosts: ['www.tinymce.com', 'codepen.io'],
         default_link_target: '_blank',
         link_title: false,
+        nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
         init_instance_callback: editor => {
           if (_this.value) {
             editor.setContent(_this.value)
@@ -151,9 +173,6 @@ export default {
         window.tinymce.get(_this.tinymceId).insertContent(`<img class="wscnph" src="${v.url}" >`)
       })
     }
-  },
-  destroyed() {
-    this.destroyTinymce()
   }
 }
 </script>
