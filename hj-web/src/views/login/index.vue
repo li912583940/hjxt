@@ -99,23 +99,22 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-        	const self = this;
           this.loading = true;
-          requestLogin(this.loginForm).then((res) => {
-						this.loading = false;
-						setToken(res.token);
-						this.$router.push('dashboard')
-					})
-          .catch(() => {
-            this.loading = false;
-          });
+//        requestLogin(this.loginForm).then((res) => {
+//						this.loading = false;
+//						setToken(res.token);
+//						this.$router.push('dashboard')
+//					})
+//        .catch(() => {
+//          this.loading = false;
+//        });
 				
-//        this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
-//          this.loading = false
-//          this.$router.push({ path: '/' })
-//        }).catch(() => {
-//          this.loading = false
-//        })
+          this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
+            this.loading = false
+            this.$router.push({ path: '/404' })
+          }).catch(() => {
+            this.loading = false
+          })
         } else {
           console.log('error submit!!')
           return false
