@@ -129,24 +129,7 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-<<<<<<< HEAD
-          this.loading = true;
-//        requestLogin(this.loginForm).then((res) => {
-//						this.loading = false;
-//						setToken(res.token);
-//						this.$router.push('dashboard')
-//					})
-//        .catch(() => {
-//          this.loading = false;
-//        });
-				
-          this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
-            this.loading = false
-            this.$router.push({ path: '/404' })
-          }).catch(() => {
-            this.loading = false
-          })
-=======
+					console.log(111)
           this.loading = true
 	        this.$store.dispatch('RequestLogin', this.loginForm).then(() => {
 	          this.loading = false
@@ -154,7 +137,7 @@ export default {
 	        }).catch(() => {
 	          this.loading = false
 	        })
->>>>>>> bc1311e7efad4f87d55f6595d964eaa892f077c9
+
         } else {
           console.log('error submit!!')
           return false

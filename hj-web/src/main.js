@@ -17,11 +17,7 @@ import i18n from './lang' // Internationalization
 import './icons' // icon
 import './errorLog' // error log
 import './permission' // permission control
-<<<<<<< HEAD
-import './mock' // simulation data
-=======
 // import './mock' // simulation data
->>>>>>> bc1311e7efad4f87d55f6595d964eaa892f077c9
 
 import * as filters from './filters' // global filters
 

@@ -1,5 +1,6 @@
 package com.sl.ue.service.sys.sqlImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -36,22 +37,25 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 
 	@Override
 	public List<String> getRoles(String token) {
-		TokenSession tokenSession = new TokenSession();
-		SysUserVO sysUser = tokenSession.getUser(token);
+//		TokenSession tokenSession = new TokenSession();
+//		SysUserVO sysUser = tokenSession.getUser(token);
+//		
+//		// 根据用户id 查询出角色id
+//		// 先查询出 roleid
+//		String sql_roleId = "select b.role_id AS roleId from SYS_USER a, sys_user_role b "+
+//				"where a.WebID=? and a.WebID=b.user_id";
+//		List<Integer>  roleIdList = jdbcTemplate.queryForList(sql_roleId, Integer.class, sysUser.getWebid());
+//		
+//		// 根据角色id查询资源
+//		Object[] obj = roleIdList.toArray();
+//		String sql_per = "select b.* from sys_role_resource a, sys_resource b "+
+//				"where a.resource_id=b.id AND a.role_id in (?) AND b.useble=1";
+//		jdbcTemplate.queryForList(sql_per, SysResourceVO.class, obj);
 		
-		// 根据用户id 查询出角色id
-		// 先查询出 roleid
-		String sql_roleId = "select b.role_id AS roleId from SYS_USER a, sys_user_role b "+
-				"where a.WebID=? and a.WebID=b.user_id";
-		List<Integer>  roleIdList = jdbcTemplate.queryForList(sql_roleId, Integer.class, sysUser.getWebid());
-		
-		// 根据角色id查询资源
-		Object[] obj = roleIdList.toArray();
-		String sql_per = "select b.* from sys_role_resource a, sys_resource b "+
-				"where a.resource_id=b.id AND a.role_id in (?) AND b.useble=1";
-		 jdbcTemplate.queryForList(sql_per, SysResourceVO.class, obj);
-		
-		return null;
+		List<String> roles = new ArrayList<String>();
+		roles.add("admin");
+		 
+		return roles;
 	}
 
 }

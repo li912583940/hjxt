@@ -9,7 +9,6 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-<<<<<<< HEAD
     proxyTable: {
 //  	'/api': {
 //	    		target: 'http://localhost:8080/HjSystem',
@@ -19,9 +18,7 @@ module.exports = {
 //	        }
 //  	}
     },
-=======
-    proxyTable: {},
->>>>>>> bc1311e7efad4f87d55f6595d964eaa892f077c9
+
 
     // Various Dev Server settings
 
