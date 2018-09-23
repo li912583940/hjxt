@@ -4,12 +4,28 @@ export default {
     introduction: 'Introduction',
     documentation: 'Documentation',
     guide: 'Guide',
-    criminalManage: 'Criminal Manage',
-    criminal: 'Criminal',
-    relatives: 'Relatives',
-    meetRegister: 'Meet Register',
-    meetRecord: 'Meet Record',
-    meetSign: 'Meet Sign',
+    criminalManage: 'Criminal Manage', // 服刑人员管理
+    criminal: 'Criminal', // 服刑人员
+    criminalLevel: 'Criminal Level', // 服刑人员级别
+    relatives: 'Relatives', // 亲属
+    meetRegister: 'Meet Register', // 会见登记
+    meetSign: 'Meet Sign', // 会见签到
+    meetNotice: 'Meet Notice', // 会见通知
+    meetMonitor: 'Meet Monitor', // 会见监控
+    meetSp: 'Meet Sp', // 会见审批
+    yjMessage: 'Yj Message', // 警察信息
+    logRecord: 'Log Record', //日志记录
+    meetRecord: 'Meet Record', // 会见记录
+    meetReport: 'Meet Report', // 会见报表
+    operationLog: 'Operation Log', // 操作日志
+    registerLog: 'Register Log', // 登记记录
+    entranceGuard: 'Entrance Guard', // 门禁记录
+    systemSet: 'System Set', // 系统设置
+    sysUser: 'Sys User', // 系统用户
+    sysRoles: 'Sys Roles', // 系统权限配置
+    jqSet: 'Jq Set', // 监区设置
+    lineSet: 'Line Set', // 线路设置
+    sysParam: 'sys Param', // 系统参数
     permission: 'Permission',
     pagePermission: 'Page Permission',
     directivePermission: 'Directive Permission',

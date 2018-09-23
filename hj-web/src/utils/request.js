@@ -18,17 +18,21 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(config => {
 	config.headers['Accept'] = 'text/plain';
-  config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+  //config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+	config.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+	
+	
   // Do something before request is sent
-//if (store.getters.token) {
-//  // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-//  config.headers['X-Token'] = getToken()
-//}
+if (store.getters.token) {
+    // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
+    config.headers['X-Token'] = getToken()
+}
 
 	//对于/auth/**的请求路径，默认不添加token认证
-	if (config.url.indexOf("/login") <0 && store.getters.token) {
-	    config.headers['X-Token'] = getToken();
-	}
+//	if (config.url.indexOf("/login") <0 && store.getters.token) {
+//	    config.headers['X-Token'] = getToken();
+//	}
+
 	if (config.method == 'post') {
 	    config.data = {
 	        ...config.data
