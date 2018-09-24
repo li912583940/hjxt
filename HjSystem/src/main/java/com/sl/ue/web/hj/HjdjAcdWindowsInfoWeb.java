@@ -1,6 +1,7 @@
 package com.sl.ue.web.hj;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,10 +19,23 @@ public class HjdjAcdWindowsInfoWeb extends Result{
     private HjdjAcdWindowsInfoService hjdjAcdWindowsInfoSQL;
 
     @RequestMapping("/findList")
-    public String findList(Integer pageSize, Integer pageNum){
-        HjdjAcdWindowsInfoVO model = new HjdjAcdWindowsInfoVO();
+    public String findList(HjdjAcdWindowsInfoVO model,Integer pageSize, Integer pageNum){
         List<HjdjAcdWindowsInfoVO> list = hjdjAcdWindowsInfoSQL.findList(model, pageSize, pageNum);
         this.putData(list);
+        return this.toResult();
+    }
+
+    @RequestMapping("/findPojo")
+    public String findPojo(HjdjAcdWindowsInfoVO model, Integer pageSize, Integer pageNum){
+        Map<String, Object> map = hjdjAcdWindowsInfoSQL.findPojo(model, pageSize, pageNum);
+        this.putPojo(map);
+        return this.toResult();
+    }
+
+    @RequestMapping("/findCount")
+    public String findCount(HjdjAcdWindowsInfoVO model){
+        Integer count = hjdjAcdWindowsInfoSQL.count(model);
+        this.putJson("count", count);
         return this.toResult();
     }
 

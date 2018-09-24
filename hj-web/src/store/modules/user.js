@@ -48,8 +48,8 @@ const user = {
     RequestLogin({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
       	requestLogin(userInfo).then((res) => {
-      		commit('SET_TOKEN', res.token)
-					setToken(res.token);
+      		commit('SET_TOKEN', res.data.token)
+					setToken(res.data.token);
 					resolve()
 				})
        .catch(error => {
@@ -65,8 +65,8 @@ const user = {
 					token:state.token
 				}
       	getRoles(para).then((res) => {
-      		if (res && res.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', res)
+      		if (res.data && res.data.length > 0) { // 验证返回的roles是否是一个非空数组
+            commit('SET_ROLES', res.data)
           } else {
             reject('getInfo: roles must be a non-null array !')
           }

@@ -119,7 +119,6 @@ export const asyncRouterMap = [
     },
     children: [
       { path: 'criminal', component: () => import('@/views/criminal/criminal'), name: 'criminal', meta: { title: 'criminal', icon: 'peoples' }}, //服刑人员
-      { path: 'criminalLevel', component: () => import('@/views/criminal/criminalLevel'), name: 'criminalLevel', meta: { title: 'criminalLevel', icon: 'tree' }}, //服刑人员级别
       { path: 'relatives', component: () => import('@/views/criminal/relatives'), name: 'relatives', meta: { title: 'relatives', icon: 'peoples'}} // 亲属
     ]
   },
@@ -192,6 +191,28 @@ export const asyncRouterMap = [
     }]
   },
   
+  { // 会见记录
+    path: '/meetRecord',
+    component: Layout,
+    children: [{
+      path: 'index',
+      component: () => import('@/views/log-record/meetRecord'),
+      name: 'meetRecord',
+      meta: { title: 'meetRecord', icon: 'form' }
+    }]
+  },
+  
+  { // 会见报表
+    path: '/meetReport',
+    component: Layout,
+    children: [{
+      path: 'index',
+      component: () => import('@/views/log-record/meetReport'),
+      name: 'meetReport',
+      meta: { title: 'meetReport', icon: 'chart' }
+    }]
+  },
+  
   { // 日志记录
     path: '/logRecord',
     component: Layout,
@@ -202,8 +223,6 @@ export const asyncRouterMap = [
       icon: 'clipboard'
     },
     children: [
-      { path: 'meetRecord', component: () => import('@/views/log-record/meetRecord'), name: 'meetRecord', meta: { title: 'meetRecord', icon: 'form' }}, // 会见记录
-      { path: 'meetReport', component: () => import('@/views/log-record/meetReport'), name: 'meetReport', meta: { title: 'meetReport', icon: 'chart' }}, //会见报表
       { path: 'operationLog', component: () => import('@/views/log-record/operationLog'), name: 'operationLog', meta: { title: 'operationLog', icon: 'form' }}, //操作日志
       { path: 'registerLog', component: () => import('@/views/log-record/registerLog'), name: 'registerLog', meta: { title: 'registerLog' , icon: 'form'}}, //登记记录
       { path: 'entranceGuard', component: () => import('@/views/log-record/entranceGuard'), name: 'entranceGuard', meta: { title: 'entranceGuard', icon: 'form' }} // 门禁记录
@@ -224,6 +243,7 @@ export const asyncRouterMap = [
     children: [
       { path: 'sysUser', component: () => import('@/views/system-set/sysUser'), name: 'sysUser', meta: { title: 'sysUser', icon: 'user' }}, //系统用户管理
       { path: 'sysRoles', component: () => import('@/views/system-set/sysRoles'), name: 'sysRoles', meta: { title: 'sysRoles', icon: 'user'}}, //系统权限配置
+      { path: 'criminalLevel', component: () => import('@/views/system-set/criminalLevel'), name: 'criminalLevel', meta: { title: 'criminalLevel', icon: 'tree' }}, //服刑人员级别
       { path: 'jqSet', component: () => import('@/views/system-set/jqSet'), name: 'jqSet', meta: { title: 'jqSet', icon: 'tab' }}, //监区设置
       { path: 'lineSet', component: () => import('@/views/system-set/lineSet'), name: 'lineSet', meta: { title: 'lineSet', icon: 'tab' }}, // 线路设置
       { path: 'sysParam', component: () => import('@/views/system-set/sysParam'), name: 'sysParam', meta: { title: 'sysParam', icon: 'tab' }} // 系统参数

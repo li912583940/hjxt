@@ -1,6 +1,7 @@
 package com.sl.ue.web.sys;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,10 +19,23 @@ public class SysUserJqWeb extends Result{
     private SysUserJqService sysUserJqSQL;
 
     @RequestMapping("/findList")
-    public String findList(Integer pageSize, Integer pageNum){
-        SysUserJqVO model = new SysUserJqVO();
+    public String findList(SysUserJqVO model,Integer pageSize, Integer pageNum){
         List<SysUserJqVO> list = sysUserJqSQL.findList(model, pageSize, pageNum);
         this.putData(list);
+        return this.toResult();
+    }
+
+    @RequestMapping("/findPojo")
+    public String findPojo(SysUserJqVO model, Integer pageSize, Integer pageNum){
+        Map<String, Object> map = sysUserJqSQL.findPojo(model, pageSize, pageNum);
+        this.putPojo(map);
+        return this.toResult();
+    }
+
+    @RequestMapping("/findCount")
+    public String findCount(SysUserJqVO model){
+        Integer count = sysUserJqSQL.count(model);
+        this.putJson("count", count);
         return this.toResult();
     }
 

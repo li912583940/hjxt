@@ -1,6 +1,7 @@
 package com.sl.ue.web.jl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,10 +19,23 @@ public class JlBakQsWeb extends Result{
     private JlBakQsService jlBakQsSQL;
 
     @RequestMapping("/findList")
-    public String findList(Integer pageSize, Integer pageNum){
-        JlBakQsVO model = new JlBakQsVO();
+    public String findList(JlBakQsVO model,Integer pageSize, Integer pageNum){
         List<JlBakQsVO> list = jlBakQsSQL.findList(model, pageSize, pageNum);
         this.putData(list);
+        return this.toResult();
+    }
+
+    @RequestMapping("/findPojo")
+    public String findPojo(JlBakQsVO model, Integer pageSize, Integer pageNum){
+        Map<String, Object> map = jlBakQsSQL.findPojo(model, pageSize, pageNum);
+        this.putPojo(map);
+        return this.toResult();
+    }
+
+    @RequestMapping("/findCount")
+    public String findCount(JlBakQsVO model){
+        Integer count = jlBakQsSQL.count(model);
+        this.putJson("count", count);
         return this.toResult();
     }
 

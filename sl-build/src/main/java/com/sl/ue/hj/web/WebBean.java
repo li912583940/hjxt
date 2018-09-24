@@ -13,7 +13,7 @@ import com.sl.ue.hj.util.StringUtil;
  */
 public class WebBean {
 
-	private String path ="G:\\声联项目\\hjxt\\HjSystem\\src\\main\\java\\com\\sl\\ue\\web";
+	private String path ="D:\\声联项目\\hjxt\\HjSystem\\src\\main\\java\\com\\sl\\ue\\web";
 	
 	public void execute(String fileName,  String pick){
 		String startPath = path+"\\"+pick;
@@ -40,6 +40,7 @@ public class WebBean {
 			sb.append("package com.sl.ue.web"+_pack+";").append("\r\n");
 			sb.append("\r\n");
 			sb.append("import java.util.List;").append("\r\n");
+			sb.append("import java.util.Map;").append("\r\n");
 			sb.append("\r\n");
 			sb.append("import org.springframework.beans.factory.annotation.Autowired;").append("\r\n");
 			sb.append("import org.springframework.web.bind.annotation.RestController;").append("\r\n");
@@ -57,13 +58,29 @@ public class WebBean {
 			sb.append("    private "+fileName+"Service "+StringUtil.toLower(fileName)+"SQL;").append("\r\n");
 			sb.append("\r\n");
 			sb.append("    @RequestMapping(\"/findList\")").append("\r\n");
-			sb.append("    public String findList(Integer pageSize, Integer pageNum){").append("\r\n");
-			sb.append("        "+fileName+"VO model = new "+fileName+"VO();").append("\r\n");
+			sb.append("    public String findList("+fileName+"VO model,Integer pageSize, Integer pageNum){").append("\r\n");
 			sb.append("        List<"+fileName+"VO> list = "+StringUtil.toLower(fileName)+"SQL.findList(model, pageSize, pageNum);").append("\r\n");
 			sb.append("        this.putData(list);").append("\r\n");
 			sb.append("        return this.toResult();").append("\r\n");
 			sb.append("    }").append("\r\n");
 			sb.append("\r\n");
+			
+			sb.append("    @RequestMapping(\"/findPojo\")").append("\r\n");
+			sb.append("    public String findPojo("+fileName+"VO model, Integer pageSize, Integer pageNum){").append("\r\n");
+			sb.append("        Map<String, Object> map = "+StringUtil.toLower(fileName)+"SQL.findPojo(model, pageSize, pageNum);").append("\r\n");
+			sb.append("        this.putPojo(map);").append("\r\n");
+			sb.append("        return this.toResult();").append("\r\n");
+			sb.append("    }").append("\r\n");
+			sb.append("\r\n");
+			
+			sb.append("    @RequestMapping(\"/findCount\")").append("\r\n");
+			sb.append("    public String findCount("+fileName+"VO model){").append("\r\n");
+			sb.append("        Integer count = "+StringUtil.toLower(fileName)+"SQL.count(model);").append("\r\n");
+			sb.append("        this.putJson(\"count\", count);").append("\r\n");
+			sb.append("        return this.toResult();").append("\r\n");
+			sb.append("    }").append("\r\n");
+			sb.append("\r\n");
+			
 			sb.append("    @RequestMapping(\"/findOne\")").append("\r\n");
 			sb.append("    public String findOne(Integer id){").append("\r\n");
 			sb.append("        "+fileName+"VO model = "+StringUtil.toLower(fileName)+"SQL.findOne(id);").append("\r\n");

@@ -61,6 +61,18 @@ public abstract class Result {
 	public void putData(Object value){
 		json.put("list", value);
 	}
+	
+	public void putPojo(String name, Object value) {
+		if(StringUtils.isNotBlank(name)){
+			json.put(name, value);
+		}else {
+			this.putPojo(value);
+		}
+	}
+	
+	public void putPojo(Object value) {
+		json.put("pojo", value);
+	}
 	/** 数据结束 */
 	
 	/** 消息开始 */

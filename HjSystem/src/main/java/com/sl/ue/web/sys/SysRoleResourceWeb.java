@@ -1,6 +1,7 @@
 package com.sl.ue.web.sys;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,10 +19,23 @@ public class SysRoleResourceWeb extends Result{
     private SysRoleResourceService sysRoleResourceSQL;
 
     @RequestMapping("/findList")
-    public String findList(Integer pageSize, Integer pageNum){
-        SysRoleResourceVO model = new SysRoleResourceVO();
+    public String findList(SysRoleResourceVO model,Integer pageSize, Integer pageNum){
         List<SysRoleResourceVO> list = sysRoleResourceSQL.findList(model, pageSize, pageNum);
         this.putData(list);
+        return this.toResult();
+    }
+
+    @RequestMapping("/findPojo")
+    public String findPojo(SysRoleResourceVO model, Integer pageSize, Integer pageNum){
+        Map<String, Object> map = sysRoleResourceSQL.findPojo(model, pageSize, pageNum);
+        this.putPojo(map);
+        return this.toResult();
+    }
+
+    @RequestMapping("/findCount")
+    public String findCount(SysRoleResourceVO model){
+        Integer count = sysRoleResourceSQL.count(model);
+        this.putJson("count", count);
         return this.toResult();
     }
 

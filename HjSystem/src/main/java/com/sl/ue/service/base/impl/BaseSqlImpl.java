@@ -4,13 +4,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import com.sl.ue.service.base.BaseService;
 import com.sl.ue.util.HumpCrossUnderline;
@@ -119,6 +122,146 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 		return null;
 	}
 
+	/**
+	 * 说明 [分页查询,带记录总数(count)]
+	 * @作者 LXT @2018年9月24日
+	 */
+	public Map<String, Object> findPojo(T model){
+		return findPojo(model, null, null);
+	}
+	
+	/**
+	 * 说明 [分页查询,带记录总数(count)]
+	 * @作者 LXT @2018年9月24日
+	 */
+	public Map<String, Object> findPojo(T model, Integer pageNum, Integer pageSize){
+		Table table = clazz.getAnnotation(Table.class); // 自定义注解 表
+		String tableName;
+		if(table != null){
+			Map<String, Object> resultMap = new HashMap<>(); // 封装结果集
+			
+			tableName = table.value(); // 数据库表名
+			Field[] fields = clazz.getDeclaredFields(); // 实体类的属性字段
+			StringBuffer table_fileds = new StringBuffer(); // SQL字段
+			StringBuffer where_fields = new StringBuffer(); // SQL的条件
+			List<Object> params = new ArrayList<Object>(); // jdbc 需要的条件参数值
+			String id_field = ""; // 主键
+			String id_fields = ""; // 复合主键
+			String d_id_field = ""; // 如果表没有主键就用这个
+			try {
+				for(Field field : fields){
+					if(field.getName().equals("serialVersionUID"))
+						continue;
+					String table_filed = field.getAnnotation(DbField.class).value();
+					// 处理主键  区分单个主键 和 复合 主键
+					if(field.isAnnotationPresent(Id.class)){
+						id_field = table_filed;
+						if(StringUtils.isBlank(id_fields)){
+							id_fields=table_filed;
+						}else{
+							id_fields = id_fields+"+"+table_filed;
+						}
+						
+					}
+					if(StringUtils.isBlank(d_id_field)){
+						d_id_field = table_filed;
+					}
+					// 拼接SQL字段
+					table_fileds.append(table_filed+",");
+					// 处理SQL where条件
+					field.setAccessible(true);
+					if(field.get(model) != null){
+						params.add(field.get(model));
+						where_fields.append(" and "+table_filed+"=?");
+					}
+				}
+			} catch (Exception e) {
+			}
+			// 如果是复合主键
+			if(id_fields.length()>id_field.length()){
+				// TODO 暂时不用
+				id_fields = "("+id_fields+")";
+			}
+			// 最特殊情况  表中没有主键  --没有主键的表不能称之为表了
+			if(StringUtils.isBlank(id_field)){
+				//随便取一个字段
+				id_field = d_id_field;
+			}
+			String table_fileds_str = StringUtil.lastComma(table_fileds.toString());
+			//如果属性上没有字段注解，sql查询字段就设置为*
+			if(StringUtils.isBlank(table_fileds_str)){
+				table_fileds_str = "*";
+			}
+			String sql = "select "+ table_fileds_str + " from " + tableName+"  where 1=1 " + where_fields.toString();
+			if(pageSize != null && pageNum != null){
+				int startNum = (pageNum-1)*pageSize;
+				int endNum = pageNum*pageSize;
+				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY "+id_field+" DESC) AS rowid,* from "+tableName+" ) t"
+						+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
+			}
+			System.out.println("执行查询list语句: [ "+sql+" ]");
+			System.out.println("参数："+params);
+			RowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazzVO);
+			List<T> list = (List<T>)jdbcTemplate.query(sql, params.toArray(), rowMapper);
+			resultMap.put("list", list);
+		
+			
+			String countSql = "select count(*) AS count from " + tableName+"  where 1=1 " + where_fields.toString();
+			System.out.println("执行查询count语句: [ "+countSql+" ]");
+			System.out.println("参数："+params);
+			SqlRowSet rowSet = jdbcTemplate.queryForRowSet(countSql, params.toArray());
+			Integer count = 0 ;
+			while(rowSet.next()) {
+				count = rowSet.getInt("count");
+			}
+			resultMap.put("count", count);
+			return resultMap;
+		}
+		return null;
+	}
+	
+	/**
+	 * 说明 [查询记录数]
+	 * @作者 LXT @2018年9月24日
+	 */
+	public Integer count(T model) {
+
+		Table table = clazz.getAnnotation(Table.class); // 自定义注解 表
+		String tableName;
+		if(table != null){
+			tableName = table.value(); // 数据库表名
+			Field[] fields = clazz.getDeclaredFields(); // 实体类的属性字段
+			StringBuffer where_fields = new StringBuffer(); // SQL的条件
+			List<Object> params = new ArrayList<Object>(); // jdbc 需要的条件参数值
+			try {
+				for(Field field : fields){
+					if(field.getName().equals("serialVersionUID"))
+						continue;
+					String table_filed = field.getAnnotation(DbField.class).value();
+					// 处理SQL where条件
+					field.setAccessible(true);
+					if(field.get(model) != null){
+						params.add(field.get(model));
+						where_fields.append(" and "+table_filed+"=?");
+					}
+				}
+			} catch (Exception e) {
+			}
+			
+			String countSql = "select count(*) AS count from " + tableName+"  where 1=1 " + where_fields.toString();
+			System.out.println("执行查询count语句: [ "+countSql+" ]");
+			System.out.println("参数："+params);
+			SqlRowSet rowSet = jdbcTemplate.queryForRowSet(countSql, params.toArray());
+			Integer count = 0 ;
+			while(rowSet.next()) {
+				count = rowSet.getInt("count");
+			}
+			return count;
+		}
+		return null;
+	
+	}
+	
 	@Override
 	public T findOne(Object key) {
 		Table table =clazz.getAnnotation(Table.class);

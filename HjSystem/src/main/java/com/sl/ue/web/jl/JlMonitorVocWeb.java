@@ -1,6 +1,7 @@
 package com.sl.ue.web.jl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,10 +19,23 @@ public class JlMonitorVocWeb extends Result{
     private JlMonitorVocService jlMonitorVocSQL;
 
     @RequestMapping("/findList")
-    public String findList(Integer pageSize, Integer pageNum){
-        JlMonitorVocVO model = new JlMonitorVocVO();
+    public String findList(JlMonitorVocVO model,Integer pageSize, Integer pageNum){
         List<JlMonitorVocVO> list = jlMonitorVocSQL.findList(model, pageSize, pageNum);
         this.putData(list);
+        return this.toResult();
+    }
+
+    @RequestMapping("/findPojo")
+    public String findPojo(JlMonitorVocVO model, Integer pageSize, Integer pageNum){
+        Map<String, Object> map = jlMonitorVocSQL.findPojo(model, pageSize, pageNum);
+        this.putPojo(map);
+        return this.toResult();
+    }
+
+    @RequestMapping("/findCount")
+    public String findCount(JlMonitorVocVO model){
+        Integer count = jlMonitorVocSQL.count(model);
+        this.putJson("count", count);
         return this.toResult();
     }
 

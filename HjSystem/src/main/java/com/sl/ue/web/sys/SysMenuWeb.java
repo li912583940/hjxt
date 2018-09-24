@@ -1,6 +1,7 @@
 package com.sl.ue.web.sys;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,10 +19,23 @@ public class SysMenuWeb extends Result{
     private SysMenuService sysMenuSQL;
 
     @RequestMapping("/findList")
-    public String findList(Integer pageSize, Integer pageNum){
-        SysMenuVO model = new SysMenuVO();
+    public String findList(SysMenuVO model,Integer pageSize, Integer pageNum){
         List<SysMenuVO> list = sysMenuSQL.findList(model, pageSize, pageNum);
         this.putData(list);
+        return this.toResult();
+    }
+
+    @RequestMapping("/findPojo")
+    public String findPojo(SysMenuVO model, Integer pageSize, Integer pageNum){
+        Map<String, Object> map = sysMenuSQL.findPojo(model, pageSize, pageNum);
+        this.putPojo(map);
+        return this.toResult();
+    }
+
+    @RequestMapping("/findCount")
+    public String findCount(SysMenuVO model){
+        Integer count = sysMenuSQL.count(model);
+        this.putJson("count", count);
         return this.toResult();
     }
 

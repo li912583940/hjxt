@@ -20,6 +20,6 @@ export function logout() {
 }
 
 
-export const requestLogin = params => { return request.post('/login', params).then(res => res.data) }
+export const requestLogin = params => { return request.post('/login', params).then(res => res) }
 
-export const getRoles = params => { return request.get('/sysUser/getRoles', { params: params }).then(res => res.data); };
+export const getRoles = params => { return request.get('/sysUser/getRoles', { params: params }).then(res => res); };

@@ -1,6 +1,7 @@
 package com.sl.ue.web.sys;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.sl.ue.entity.sys.vo.SysHjLineVO;
 import com.sl.ue.service.sys.SysHjLineService;
-import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
 
 @RestController
@@ -19,10 +19,23 @@ public class SysHjLineWeb extends Result{
     private SysHjLineService sysHjLineSQL;
 
     @RequestMapping("/findList")
-    public String findList(Integer pageSize, Integer pageNum){
-        SysHjLineVO model = new SysHjLineVO();
+    public String findList(SysHjLineVO model,Integer pageSize, Integer pageNum){
         List<SysHjLineVO> list = sysHjLineSQL.findList(model, pageSize, pageNum);
         this.putData(list);
+        return this.toResult();
+    }
+
+    @RequestMapping("/findPojo")
+    public String findPojo(SysHjLineVO model, Integer pageSize, Integer pageNum){
+        Map<String, Object> map = sysHjLineSQL.findPojo(model, pageSize, pageNum);
+        this.putPojo(map);
+        return this.toResult();
+    }
+
+    @RequestMapping("/findCount")
+    public String findCount(SysHjLineVO model){
+        Integer count = sysHjLineSQL.count(model);
+        this.putJson("count", count);
         return this.toResult();
     }
 

@@ -25,17 +25,22 @@
       style="width: 100%">
       <el-table-column align="center" :label="$t('criminal.id')" width="65">
         <template slot-scope="scope">
-          <span>{{scope.row.id}}</span>
+          <span>{{scope.row.webId}}</span>
         </template>
       </el-table-column>
       <el-table-column width="110px" align="center" :label="$t('currency.number')">
         <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
+          <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
       <el-table-column width="160px" align="center" :label="$t('currency.fullName')">
         <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
+          <span>{{scope.row.frName}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="110px" align="center" :label="$t('criminal.prisonArea')">
+        <template slot-scope="scope">
+          <span>{{scope.row.jq}}</span>
         </template>
       </el-table-column>
       <el-table-column width="110px" align="center" :label="$t('criminal.sex')">
@@ -69,7 +74,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" :label="$t('criminal.actions')" width="230" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('criminal.actions')" width="430" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
           <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{$t('criminal.delete')}}
@@ -78,6 +83,7 @@
       </el-table-column>
     </el-table>
 
+		<!-- 分页 -->
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
@@ -138,6 +144,9 @@
 
 <script>
 import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
+import { findPojo } from '@/api/criminal'
+
+
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
 
@@ -166,8 +175,8 @@ export default {
       total: null,
       listLoading: true,
       listQuery: {
-        page: 1,
-        limit: 20,
+        pageNum: 1,
+        pageSize: 20,
         importance: undefined,
         title: undefined,
         type: undefined,
@@ -225,10 +234,12 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
-        this.listLoading = false
+      findPojo(this.listQuery).then((res) => {
+      	 this.list = res.pojo.list
+      	 this.total = res.pojo.count
+      	 this.listLoading = false
+      }).catch(error => {
+          this.listLoading = false
       })
     },
     handleFilter() {

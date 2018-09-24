@@ -1,6 +1,7 @@
 package com.sl.ue.service.base;
 
 import java.util.List;
+import java.util.Map;
 
 import com.sl.ue.util.Page;
 
@@ -13,7 +14,30 @@ public interface BaseService<T>{
 
 	public List<T> findList(T model);
 	
+	/**
+	 * 说明 [分页查询,不带记录总数(count)]
+	 * @作者 LXT @2018年9月24日
+	 */
 	public List<T> findList(T model, Integer pageNum, Integer pageSize);
+	
+	
+	/**
+	 * 说明 [分页查询,带记录总数(count)]
+	 * @作者 LXT @2018年9月24日
+	 */
+	public Map<String, Object> findPojo(T model);
+	
+	/**
+	 * 说明 [分页查询,带记录总数(count)]
+	 * @作者 LXT @2018年9月24日
+	 */
+	public Map<String, Object> findPojo(T model, Integer pageNum, Integer pageSize);
+	
+	/**
+	 * 说明 [查询记录数]
+	 * @作者 LXT @2018年9月24日
+	 */
+	public Integer count(T model);
 	
 	/**
 	 * 说明 [查询单条记录]

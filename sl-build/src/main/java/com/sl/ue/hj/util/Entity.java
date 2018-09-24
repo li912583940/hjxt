@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class Entity {
 
-	static final String url = "G:\\声联项目\\hjxt\\HjSystem";
+	static final String url = "D:\\声联项目\\hjxt\\HjSystem";
 	// key:表名, value:类名
 	static final Map<String, String> enMap = new HashMap<String, String>();
 	static{
