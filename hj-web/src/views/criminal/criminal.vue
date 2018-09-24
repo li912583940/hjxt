@@ -1,16 +1,6 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" :placeholder="$t('criminal.title')" v-model="listQuery.title">
-      </el-input>
-      <el-select clearable style="width: 90px" class="filter-item" v-model="listQuery.importance" :placeholder="$t('criminal.importance')">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item">
-        </el-option>
-      </el-select>
-      <el-select clearable class="filter-item" style="width: 130px" v-model="listQuery.type" :placeholder="$t('criminal.type')">
-        <el-option v-for="item in  calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key">
-        </el-option>
-      </el-select>
       <el-select @change='handleFilter' style="width: 140px" class="filter-item" v-model="listQuery.sort">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key">
         </el-option>
@@ -43,34 +33,34 @@
           <span>{{scope.row.jq}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('criminal.sex')">
+      <el-table-column width="110px" align="center" label="级别">
         <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
+          <span>{{scope.row.jbNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('criminal.age')">
+      <el-table-column width="110px" align="center" label="当月会见次数">
         <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
+          <span>{{scope.row.hjUse}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('criminal.prisonArea')">
+      <el-table-column width="110px" align="center" label="当月剩余次数">
         <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
+          <span>{{scope.row.hjLeft}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" :label="$t('criminal.nativePlace')">
+      <el-table-column width="160" align="center" label="重点罪犯">
         <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
+          <span>{{scope.row.infoZdzf}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="150px" align="center" :label="$t('criminal.entryTime')">
+      <el-table-column width="150px" align="center" label="入监时间">
         <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
+          <span>{{scope.row.infoRjsj}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('criminal.numberOfRelatives')">
+      <el-table-column width="110px" align="center" label="会见级别">
         <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
+          <span>{{scope.row.hjJb}}</span>
         </template>
       </el-table-column>
 
@@ -90,42 +80,69 @@
     </div>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" ref="dataForm" :model="temp" label-position="right" label-width="70px" style='width: 400px; margin-left:50px;'>
-        <el-form-item :label="$t('criminal.name')" prop="name">
+      <el-form :rules="rules" ref="dataForm" label-position="right" label-width="70px" style='width: 400px; margin-left:50px;'>
+        <el-form-item label="编号" prop="frNo">
+          <el-input v-model="temp.frNo"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名" prop="name">
           <el-input v-model="temp.name"></el-input>
         </el-form-item>
-        
-        <el-form-item :label="$t('criminal.type')" prop="type">
-          <el-select class="filter-item" v-model="temp.type" placeholder="Please select">
-            <el-option v-for="item in  calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key">
+        <el-form-item label="IC卡号" prop="frCard">
+          <el-input v-model="temp.frCard"></el-input>
+        </el-form-item>
+        <el-form-item label="监区" prop="jq">
+          <el-select class="filter-item" v-model="temp.jq" placeholder="请选择">
+            <el-option v-for="item in  jqs" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('criminal.date')" prop="timestamp">
-          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date">
+        <el-form-item label="犯人级别" prop="jbNo">
+          <el-input v-model="temp.jbNo"></el-input>
+        </el-form-item>
+        <el-form-item label="会见级别" prop="hjJb">
+          <el-select class="filter-item" v-model="temp.hjJb" placeholder="请选择">
+            <el-option v-for="item in  hjJbs" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        
+        <el-form-item label="入监时间" prop="infoRjsj">
+          <el-date-picker v-model="temp.infoRjsj" type="datetime" placeholder="请选取时间">
           </el-date-picker>
         </el-form-item>
-        <el-form-item :label="$t('criminal.title')" prop="title">
-          <el-input v-model="temp.title"></el-input>
+        <el-form-item label="罪名" prop="infoZm">
+          <el-input v-model="temp.infoZm"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('criminal.status')">
-          <el-select class="filter-item" v-model="temp.status" placeholder="Please select">
-            <el-option v-for="item in  statusOptions" :key="item" :label="item" :value="item">
-            </el-option>
-          </el-select>
+        <el-form-item label="刑期" prop="infoXq">
+          <el-input v-model="temp.infoXq"></el-input>
         </el-form-item>
-        <el-form-item :label="$t('criminal.importance')">
-          <el-rate style="margin-top:8px;" v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max='3'></el-rate>
+        <el-form-item label="出生日期" prop="infoCsrq">
+          <el-date-picker v-model="temp.infoCsrq" type="datetime" placeholder="请选取时间">
+          </el-date-picker>
         </el-form-item>
-        <el-form-item :label="$t('criminal.remark')">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" v-model="temp.remark">
-          </el-input>
+        <el-form-item label="住址" prop="infoHome">
+          <el-input v-model="temp.infoHome"></el-input>
+        </el-form-item>
+        <el-form-item label="重点监控" >
+        	<el-radio-group v-model="temp.monitorFlag">
+				    <el-radio :label="0">否</el-radio>
+				    <el-radio :label="1">是</el-radio>
+				  </el-radio-group>
+        </el-form-item>
+        <el-form-item label="重点罪犯">
+        	<el-radio-group v-model="temp.stateZdzf">
+				    <el-radio :label="0">否</el-radio>
+				    <el-radio :label="1">是</el-radio>
+				  </el-radio-group>
+        </el-form-item>
+        <el-form-item label="备注" prop="zdzfType">
+          <el-input v-model="temp.zdzfType"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">{{$t('criminal.cancel')}}</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">{{$t('criminal.confirm')}}</el-button>
-        <el-button v-else type="primary" @click="updateData">{{$t('criminal.confirm')}}</el-button>
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">确 定</el-button>
+        <el-button v-else type="primary" @click="updateData">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -150,18 +167,6 @@ import { findPojo } from '@/api/criminal'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
 
-const calendarTypeOptions = [
-  { key: 'CN', display_name: 'China' },
-  { key: 'US', display_name: 'USA' },
-  { key: 'JP', display_name: 'Japan' },
-  { key: 'EU', display_name: 'Eurozone' }
-]
-
-// arr to obj ,such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
 
 export default {
   name: 'criminal',
@@ -177,56 +182,62 @@ export default {
       listQuery: {
         pageNum: 1,
         pageSize: 20,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
         sort: '+id'
       },
-      importanceOptions: [1, 2, 3],
-      calendarTypeOptions,
       sortOptions: [{ label: 'ID升序', key: '+id' }, { label: 'ID降序', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
-      temp: {
+      // 新增或编辑弹窗
+      temp: { 
         id: undefined,
         name: '',
-        sex: 1,
-        importance: 1,
-        remark: '',
-        entryTime: new Date(),
-        title: '',
-        type: '',
-        status: 'published'
+        frNo: '1313',
+        frCard: '',
+        jq: '',
+        jbNo: undefined,
+        hjJb: '',
+        infoRjsj: undefined,
+        infoZm: '',
+        infoXq: '',
+        infoCsrq: undefined,
+        infoHome: '',
+        monitorFlag: 0,
+        stateZdzf: 1
       },
+      jqs: [ // 监区下拉选框
+      	{
+      		id: -1,
+      		name: '未分配监区'
+      	}
+      ],
+      hjJbs: [
+        {
+        	id: 1,
+        	name: '正常'
+        },
+      	{
+      		id: -1,
+      		name: '禁止'
+      	}
+      ],
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        update: '编 辑',
+        create: '新 增'
       },
       dialogPvVisible: false,
       pvData: [],
       rules: {
         name: [{ required: true, message: this.$t('criminal.name'), trigger: 'blur' }],
         sex: [{ required: true, message: this.$t('criminal.sex'), trigger: 'change' }],
-        entryTime: [{ type: 'date', required: true, message: this.$t('criminal.entryTime'), trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        entryTime: [{ type: 'date', required: true, message: this.$t('criminal.entryTime'), trigger: 'change' }]
       },
       downloadLoading: false
     }
   },
   filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    },
-    typeFilter(type) {
-      return calendarTypeKeyValue[type]
-    }
+    
   },
   created() {
     this.getList()
@@ -264,11 +275,7 @@ export default {
     resetTemp() {
       this.temp = {
         id: undefined,
-        importance: 1,
-        remark: '',
         timestamp: new Date(),
-        title: '',
-        status: 'published',
         type: ''
       }
     },
@@ -350,8 +357,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
+        const tHeader = ['timestamp']
+        const filterVal = ['timestamp']
         const data = this.formatJson(filterVal, this.list)
         excel.export_json_to_excel({
           header: tHeader,
