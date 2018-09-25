@@ -13,12 +13,12 @@
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
       style="width: 100%">
-      <el-table-column align="center" :label="$t('criminal.id')" width="65">
+      <el-table-column align="center" :label="$t('criminal.id')" width="80">
         <template slot-scope="scope">
           <span>{{scope.row.webId}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('currency.number')">
+      <el-table-column width="140px" align="center" :label="$t('currency.number')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
@@ -28,27 +28,27 @@
           <span>{{scope.row.frName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="110px" align="center" :label="$t('criminal.prisonArea')">
+      <el-table-column width="140px" align="center" :label="$t('criminal.prisonArea')">
         <template slot-scope="scope">
           <span>{{scope.row.jq}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="110px" align="center" label="级别">
+      <el-table-column width="140px" align="center" label="级别">
         <template slot-scope="scope">
           <span>{{scope.row.jbNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="110px" align="center" label="当月会见次数">
+      <el-table-column width="140px" align="center" label="当月会见次数">
         <template slot-scope="scope">
           <span>{{scope.row.hjUse}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="110px" align="center" label="当月剩余次数">
+      <el-table-column width="140px" align="center" label="当月剩余次数">
         <template slot-scope="scope">
           <span>{{scope.row.hjLeft}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" label="重点罪犯">
+      <el-table-column width="140" align="center" label="重点罪犯">
         <template slot-scope="scope">
           <span>{{scope.row.infoZdzf}}</span>
         </template>
@@ -58,13 +58,13 @@
           <span>{{scope.row.infoRjsj}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="110px" align="center" label="会见级别">
+      <el-table-column width="140px" align="center" label="会见级别">
         <template slot-scope="scope">
           <span>{{scope.row.hjJb}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" :label="$t('criminal.actions')" width="430" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('criminal.actions')" width="" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
           <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{$t('criminal.delete')}}
@@ -79,64 +79,65 @@
       </el-pagination>
     </div>
 
+    <!-- 新增或编辑 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" ref="dataForm" label-position="right" label-width="70px" style='width: 400px; margin-left:50px;'>
+      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="70px" style='width: 400px; margin-left:50px;'>
         <el-form-item label="编号" prop="frNo">
-          <el-input v-model="temp.frNo"></el-input>
+          <el-input v-model="dataForm.frNo"></el-input>
         </el-form-item>
         <el-form-item label="姓名" prop="name">
-          <el-input v-model="temp.name"></el-input>
+          <el-input v-model="dataForm.name"></el-input>
         </el-form-item>
         <el-form-item label="IC卡号" prop="frCard">
-          <el-input v-model="temp.frCard"></el-input>
+          <el-input v-model="dataForm.frCard"></el-input>
         </el-form-item>
         <el-form-item label="监区" prop="jq">
-          <el-select class="filter-item" v-model="temp.jq" placeholder="请选择">
-            <el-option v-for="item in  jqs" :key="item.id" :label="item.name" :value="item.id">
+          <el-select class="filter-item" v-model="dataForm.jq" placeholder="请选择">
+            <el-option v-for="item in  jqs" :key="dataForm.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="犯人级别" prop="jbNo">
-          <el-input v-model="temp.jbNo"></el-input>
+          <el-input v-model="dataForm.jbNo"></el-input>
         </el-form-item>
         <el-form-item label="会见级别" prop="hjJb">
-          <el-select class="filter-item" v-model="temp.hjJb" placeholder="请选择">
+          <el-select class="filter-item" v-model="dataForm.hjJb" placeholder="请选择">
             <el-option v-for="item in  hjJbs" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
         
         <el-form-item label="入监时间" prop="infoRjsj">
-          <el-date-picker v-model="temp.infoRjsj" type="datetime" placeholder="请选取时间">
+          <el-date-picker v-model="dataForm.infoRjsj" type="datetime" placeholder="请选取时间">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="罪名" prop="infoZm">
-          <el-input v-model="temp.infoZm"></el-input>
+          <el-input v-model="dataForm.infoZm"></el-input>
         </el-form-item>
         <el-form-item label="刑期" prop="infoXq">
-          <el-input v-model="temp.infoXq"></el-input>
+          <el-input v-model="dataForm.infoXq"></el-input>
         </el-form-item>
         <el-form-item label="出生日期" prop="infoCsrq">
-          <el-date-picker v-model="temp.infoCsrq" type="datetime" placeholder="请选取时间">
+          <el-date-picker v-model="dataForm.infoCsrq" type="datetime" placeholder="请选取时间">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="住址" prop="infoHome">
-          <el-input v-model="temp.infoHome"></el-input>
+          <el-input v-model="dataForm.infoHome"></el-input>
         </el-form-item>
         <el-form-item label="重点监控" >
-        	<el-radio-group v-model="temp.monitorFlag">
+        	<el-radio-group v-model="dataForm.monitorFlag">
 				    <el-radio :label="0">否</el-radio>
 				    <el-radio :label="1">是</el-radio>
 				  </el-radio-group>
         </el-form-item>
-        <el-form-item label="重点罪犯">
-        	<el-radio-group v-model="temp.stateZdzf">
+        <el-form-item label="重点罪犯" >
+        	<el-radio-group v-model="dataForm.stateZdzf">
 				    <el-radio :label="0">否</el-radio>
 				    <el-radio :label="1">是</el-radio>
 				  </el-radio-group>
         </el-form-item>
         <el-form-item label="备注" prop="zdzfType">
-          <el-input v-model="temp.zdzfType"></el-input>
+          <el-input v-model="dataForm.zdzfType"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -161,7 +162,7 @@
 
 <script>
 import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
-import { findPojo } from '@/api/criminal'
+import { findPojo, RequestAdd } from '@/api/criminal'
 
 
 import waves from '@/directive/waves' // 水波纹指令
@@ -188,19 +189,20 @@ export default {
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       // 新增或编辑弹窗
-      temp: { 
-        id: undefined,
-        name: '',
-        frNo: '1313',
-        frCard: '',
-        jq: '',
+      dataForm: { 
+        webId: undefined,
+        name: undefined,
+        frNo: '',
+        frCard: undefined,
+        jy: '测试监狱',
+        jq: undefined,
         jbNo: undefined,
-        hjJb: '',
+        hjJb: undefined,
         infoRjsj: undefined,
-        infoZm: '',
-        infoXq: '',
+        infoZm: undefined,
+        infoXq: undefined,
         infoCsrq: undefined,
-        infoHome: '',
+        infoHome: undefined,
         monitorFlag: 0,
         stateZdzf: 1
       },
@@ -272,42 +274,41 @@ export default {
       })
       row.status = status
     },
-    resetTemp() {
-      this.temp = {
-        id: undefined,
-        timestamp: new Date(),
-        type: ''
-      }
-    },
+    //重置表单
+		resetForm(formName) {
+			if(this.$refs[formName] !== undefined){
+				this.$refs[formName].resetFields();
+			}
+	  },
     handleCreate() {
-      this.resetTemp()
       this.dialogStatus = 'create'
+      this.resetForm('dataForm')
       this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+//    this.$nextTick(() => {
+//      this.$refs['dataForm'].clearValidate()
+//    })
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp)
+          RequestAdd(this.dataForm).then(() => {
             this.dialogFormVisible = false
+            this.getList()
             this.$notify({
               title: '成功',
               message: '创建成功',
               type: 'success',
               duration: 2000
             })
-          })
+          }).catch(error => {
+		        this.dialogFormVisible = false
+		      })
         }
       })
     },
     handleUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
+      this.dataForm = Object.assign({}, row) // copy obj
+      this.dataForm.timestamp = new Date(this.dataForm.timestamp)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -317,13 +318,13 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp)
+          const tempData = Object.assign({}, this.dataForm)
           tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
           updateArticle(tempData).then(() => {
             for (const v of this.list) {
-              if (v.id === this.temp.id) {
+              if (v.id === this.dataForm.id) {
                 const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.temp)
+                this.list.splice(index, 1, this.dataForm)
                 break
               }
             }
