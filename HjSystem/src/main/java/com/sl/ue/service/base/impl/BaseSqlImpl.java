@@ -62,28 +62,28 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			String id_field = ""; // 主键
 			String id_fields = ""; // 复合主键
 			String d_id_field = ""; // 如果表没有主键就用这个
-			String joinField = ""; // 关联表字段
-			String joinTable = ""; // 关联表
-			String joinWhere = ""; // 关联表条件
+			String leftJoinField = ""; // 关联表字段
+			String leftJoinTable = ""; // 关联表
+			String leftJoinWhere = ""; // 关联表条件
 			try {
 				Field[] voFields = clazzVO.getDeclaredFields();
 				for(Field field : voFields) {
-					if(field.getName().equals("joinField")) {
+					if(field.getName().equals("leftJoinField")) {
 						if(field.get(model) != null) {
-							joinField = field.get(model).toString();
+							leftJoinField = field.get(model).toString();
 						}
 						continue;
 					}
-					if(field.getName().equals("joinTable")) {
+					if(field.getName().equals("leftJoinTable")) {
 						if(field.get(model) != null) {
-							joinTable = field.get(model).toString();
+							leftJoinTable = field.get(model).toString();
 						}
 						continue;
 					}
-					if(field.getName().equals("joinWhere")) {
+					if(field.getName().equals("leftJoinWhere")) {
 						field.setAccessible(true);
 						if(field.get(model) != null) {
-							joinWhere = field.get(model).toString();
+							leftJoinWhere = field.get(model).toString();
 						}
 						continue;
 					}
@@ -134,11 +134,11 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			if(StringUtils.isBlank(table_fileds_str)){
 				table_fileds_str = "*";
 			}
-			String sql = "select a.*"+joinField+" from " + tableName+" a "+joinTable+" where 1=1 " + where_fields.toString()+" "+joinWhere;
+			String sql = "select a.*"+leftJoinField+" from " + tableName+" a "+leftJoinTable+" where 1=1 " + where_fields.toString()+" "+leftJoinWhere;
 			if(pageSize != null && pageNum != null){
 				int startNum = (pageNum-1)*pageSize;
 				int endNum = pageNum*pageSize;
-				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" DESC) AS rowid,a.*"+joinField+" from "+tableName+" a "+joinTable+" where 1=1 "+where_fields.toString()+" "+joinWhere+" ) t"
+				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" DESC) AS rowid,a.*"+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
 						+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
 			}
 			System.out.println("执行查询list语句: [ "+sql+" ]");
@@ -176,30 +176,30 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			String id_field = ""; // 主键
 			String id_fields = ""; // 复合主键
 			String d_id_field = ""; // 如果表没有主键就用这个
-			String joinField = ""; // 关联表字段
-			String joinTable = ""; // 关联表
-			String joinWhere = ""; // 关联表条件
+			String leftJoinField = ""; // 关联表字段
+			String leftJoinTable = ""; // 关联表
+			String leftJoinWhere = ""; // 关联表条件
 			try {
 				Field[] voFields = clazzVO.getDeclaredFields();
 				for(Field field : voFields) {
-					if(field.getName().equals("joinField")) {
+					if(field.getName().equals("leftJoinField")) {
 						field.setAccessible(true);
 						if(field.get(model) != null) {
-							joinField = field.get(model).toString();
+							leftJoinField = field.get(model).toString();
 						}
 						continue;
 					}
-					if(field.getName().equals("joinTable")) {
+					if(field.getName().equals("leftJoinTable")) {
 						field.setAccessible(true);
 						if(field.get(model) != null) {
-							joinTable = field.get(model).toString();
+							leftJoinTable = field.get(model).toString();
 						}
 						continue;
 					}
-					if(field.getName().equals("joinWhere")) {
+					if(field.getName().equals("leftJoinWhere")) {
 						field.setAccessible(true);
 						if(field.get(model) != null) {
-							joinWhere = field.get(model).toString();
+							leftJoinWhere = field.get(model).toString();
 						}
 						continue;
 					}
@@ -252,11 +252,11 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				table_fileds_str = "*";
 			}
 			
-			String sql = "select a.*"+joinField+" from " + tableName+" a "+joinTable+" where 1=1 " + where_fields.toString()+" "+joinWhere;
+			String sql = "select a.*"+leftJoinField+" from " + tableName+" a "+leftJoinTable+" where 1=1 " + where_fields.toString()+" "+leftJoinWhere;
 			if(pageSize != null && pageNum != null){
 				int startNum = (pageNum-1)*pageSize;
 				int endNum = pageNum*pageSize;
-				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" DESC) AS rowid,a.*"+joinField+" from "+tableName+" a "+joinTable+" where 1=1 "+where_fields.toString()+" "+joinWhere+" ) t"
+				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" DESC) AS rowid,a.*"+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
 						+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
 			}
 			System.out.println("执行查询pojo语句: [ "+sql+" ]");

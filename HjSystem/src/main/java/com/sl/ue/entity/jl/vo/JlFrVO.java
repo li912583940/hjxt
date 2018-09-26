@@ -23,35 +23,37 @@ public class JlFrVO extends JlFr{
 	
 	/*---------------------------  处理关联表  -----------------------------*/
 	
-	private String joinField; // 字段
+	private String leftJoinField; // 关联表字段
     
-    private String joinTable;
+    private String leftJoinTable; // 关联表
     
-    private String joinWhere;
+    private String leftJoinWhere; // 关联表条件
 
-	public String getJoinField() {
-		return joinField;
+	public String getLeftJoinField() {
+		return leftJoinField;
 	}
 
-	public void setJoinField(String joinField) {
-		this.joinField = joinField;
+	public void setLeftJoinField(String leftJoinField) {
+		this.leftJoinField = leftJoinField;
 	}
 
-	public String getJoinTable() {
-		return joinTable;
+	public String getLeftJoinTable() {
+		return leftJoinTable;
 	}
 
-	public void setJoinTable(String joinTable) {
-		this.joinTable = joinTable;
+	public void setLeftJoinTable(String leftJoinTable) {
+		this.leftJoinTable = leftJoinTable;
 	}
 
-	public String getJoinWhere() {
-		return joinWhere;
+	public String getLeftJoinWhere() {
+		return leftJoinWhere;
 	}
 
-	public void setJoinWhere(String joinWhere) {
-		this.joinWhere = joinWhere;
+	public void setLeftJoinWhere(String leftJoinWhere) {
+		this.leftJoinWhere = leftJoinWhere;
 	}
+
+
     
     
     

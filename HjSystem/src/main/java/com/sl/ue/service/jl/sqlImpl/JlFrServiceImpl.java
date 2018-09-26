@@ -18,8 +18,8 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 		
 		StringBuffer table = new StringBuffer();
 		table.append(" left join JL_JQ b ON a.JQ=b.JQ_No");
-		model.setJoinField(field.toString());
-		model.setJoinTable(table.toString());
+		model.setLeftJoinField(field.toString());
+		model.setLeftJoinTable(table.toString());
 		return this.findPojo(model, pageSize, pageNum);
 	}
 
