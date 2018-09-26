@@ -25,6 +25,7 @@ public class ExceptionAspect extends Result{
 	public String handleHttpMessageNotReadableException(
 			HttpMessageNotReadableException e) {
 		this.error(error_100);
+		e.printStackTrace();
 		return this.toResult();
 	}
 	
@@ -34,6 +35,7 @@ public class ExceptionAspect extends Result{
 	@ExceptionHandler({MethodArgumentNotValidException.class})
 	public String handleValidationException(MethodArgumentNotValidException e) {
 		this.error(error_100);
+		e.printStackTrace();
 		return this.toResult();
 	}
 	
@@ -46,6 +48,7 @@ public class ExceptionAspect extends Result{
 	public String handleHttpRequestMethodNotSupportedException(
 			HttpRequestMethodNotSupportedException e) {
 		this.error(error_100);
+		e.printStackTrace();
 		return this.toResult();
 	}
 	
@@ -56,12 +59,14 @@ public class ExceptionAspect extends Result{
 	@ExceptionHandler({ HttpMediaTypeNotSupportedException.class })
 	public String handleHttpMediaTypeNotSupportedException(Exception e) {
 		this.error(error_100);
+		e.printStackTrace();
 		return this.toResult();
 	}
 	
 	@ExceptionHandler(Exception.class)
 	public String handleException(Exception e){
 		this.error(error_100);
+		e.printStackTrace();
 		return this.toResult();
 	}
 }

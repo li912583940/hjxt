@@ -1,6 +1,6 @@
 package com.sl.ue.entity.jl;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
@@ -49,19 +49,19 @@ public class JlFr implements java.io.Serializable {
 	@DbField("HJ_Left")
 	private Integer hjLeft;
 	@DbField("HJ_Last_Time")
-	private Timestamp hjLastTime;
+	private Date hjLastTime;
 	@DbField("Monitor_Flag")
 	private String monitorFlag;
 	@DbField("State")
 	private Integer state;
 	@DbField("OutTime")
-	private Timestamp outTime;
+	private Date outTime;
 	@DbField("SP_State")
 	private Integer spState;
 	@DbField("SP_UserNo")
 	private String spUserNo;
 	@DbField("SP_Time")
-	private Timestamp spTime;
+	private Date spTime;
 	@DbField("SP_Info")
 	private String spInfo;
 	@DbField("SP_Mon")
@@ -95,7 +95,7 @@ public class JlFr implements java.io.Serializable {
 	@DbField("FR_GJ")
 	private String frGj;
 	@DbField("HJ_STOP_TIME")
-	private Timestamp hjStopTime;
+	private Date hjStopTime;
 	@DbField("HJ_STOP_SM")
 	private String hjStopSM;
 
@@ -253,11 +253,11 @@ public class JlFr implements java.io.Serializable {
 		this.hjLeft = hjLeft;
 	}
 
-	public Timestamp getHjLastTime() {
+	public Date getHjLastTime() {
 		return this.hjLastTime;
 	}
 
-	public void setHjLastTime(Timestamp hjLastTime) {
+	public void setHjLastTime(Date hjLastTime) {
 		this.hjLastTime = hjLastTime;
 	}
 
@@ -277,11 +277,11 @@ public class JlFr implements java.io.Serializable {
 		this.state = state;
 	}
 
-	public Timestamp getOutTime() {
+	public Date getOutTime() {
 		return this.outTime;
 	}
 
-	public void setOutTime(Timestamp outTime) {
+	public void setOutTime(Date outTime) {
 		this.outTime = outTime;
 	}
 
@@ -301,11 +301,11 @@ public class JlFr implements java.io.Serializable {
 		this.spUserNo = spUserNo;
 	}
 
-	public Timestamp getSpTime() {
+	public Date getSpTime() {
 		return this.spTime;
 	}
 
-	public void setSpTime(Timestamp spTime) {
+	public void setSpTime(Date spTime) {
 		this.spTime = spTime;
 	}
 
@@ -428,11 +428,11 @@ public class JlFr implements java.io.Serializable {
 		this.frGj = frGj;
 	}
 
-	public Timestamp getHjStopTime() {
+	public Date getHjStopTime() {
 		return hjStopTime;
 	}
 
-	public void setHjStopTime(Timestamp hjStopTime) {
+	public void setHjStopTime(Date hjStopTime) {
 		this.hjStopTime = hjStopTime;
 	}
 

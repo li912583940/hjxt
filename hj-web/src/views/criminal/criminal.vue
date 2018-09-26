@@ -1,8 +1,12 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select @change='handleFilter' style="width: 140px" class="filter-item" v-model="listQuery.sort">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key">
+    	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入编号" v-model="listQuery.frNo">
+      </el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入姓名" v-model="listQuery.frName">
+      </el-input>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.jq" placeholder="选择监区">
+        <el-option v-for="item in jqs" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
@@ -30,7 +34,7 @@
       </el-table-column>
       <el-table-column width="140px" align="center" :label="$t('criminal.prisonArea')">
         <template slot-scope="scope">
-          <span>{{scope.row.jq}}</span>
+          <span>{{scope.row.jqName}}</span>
         </template>
       </el-table-column>
       <el-table-column width="140px" align="center" label="级别">
@@ -53,7 +57,7 @@
           <span>{{scope.row.infoZdzf}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="150px" align="center" label="入监时间">
+      <el-table-column width="160px" align="center" label="入监时间" :formatter="dateFormat">
         <template slot-scope="scope">
           <span>{{scope.row.infoRjsj}}</span>
         </template>
@@ -67,7 +71,7 @@
       <el-table-column align="center" :label="$t('criminal.actions')" width="" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
-          <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{$t('criminal.delete')}}
+          <el-button  size="mini" type="danger" @click="handleDelete(scope.row)">{{$t('criminal.delete')}}
           </el-button>
         </template>
       </el-table-column>
@@ -81,19 +85,20 @@
 
     <!-- 新增或编辑 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="70px" style='width: 400px; margin-left:50px;'>
+      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="80px" style='width: 400px; margin-left:25%;' >
         <el-form-item label="编号" prop="frNo">
-          <el-input v-model="dataForm.frNo"></el-input>
+          <el-input v-if="dialogStatus=='create'" v-model="dataForm.frNo"></el-input>
+          <el-input v-else v-model="dataForm.frNo" :disabled="true"></el-input>
         </el-form-item>
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="dataForm.name"></el-input>
+        <el-form-item label="姓名" prop="frName">
+          <el-input v-model="dataForm.frName"></el-input>
         </el-form-item>
         <el-form-item label="IC卡号" prop="frCard">
           <el-input v-model="dataForm.frCard"></el-input>
         </el-form-item>
         <el-form-item label="监区" prop="jq">
           <el-select class="filter-item" v-model="dataForm.jq" placeholder="请选择">
-            <el-option v-for="item in  jqs" :key="dataForm.id" :label="item.name" :value="item.id">
+            <el-option v-for="item in  jqs" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -126,8 +131,8 @@
         </el-form-item>
         <el-form-item label="重点监控" >
         	<el-radio-group v-model="dataForm.monitorFlag">
-				    <el-radio :label="0">否</el-radio>
-				    <el-radio :label="1">是</el-radio>
+				    <el-radio :label="'0'">否</el-radio>
+				    <el-radio :label="'1'">是</el-radio>
 				  </el-radio-group>
         </el-form-item>
         <el-form-item label="重点罪犯" >
@@ -162,9 +167,9 @@
 
 <script>
 import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
-import { findPojo, RequestAdd } from '@/api/criminal'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete } from '@/api/criminal'
 
-
+import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
 
@@ -183,32 +188,32 @@ export default {
       listQuery: {
         pageNum: 1,
         pageSize: 20,
-        sort: '+id'
+        frNo: undefined,
+        frName: undefined
       },
-      sortOptions: [{ label: 'ID升序', key: '+id' }, { label: 'ID降序', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       // 新增或编辑弹窗
       dataForm: { 
         webId: undefined,
-        name: undefined,
+        frName: undefined,
         frNo: '',
         frCard: undefined,
         jy: '测试监狱',
-        jq: undefined,
+        jq: -1,
         jbNo: undefined,
-        hjJb: undefined,
+        hjJb: 1,
         infoRjsj: undefined,
         infoZm: undefined,
         infoXq: undefined,
         infoCsrq: undefined,
         infoHome: undefined,
-        monitorFlag: 0,
+        monitorFlag: '0',
         stateZdzf: 1
       },
       jqs: [ // 监区下拉选框
       	{
-      		id: -1,
+      		id: '-1',
       		name: '未分配监区'
       	}
       ],
@@ -231,9 +236,10 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        name: [{ required: true, message: this.$t('criminal.name'), trigger: 'blur' }],
-        sex: [{ required: true, message: this.$t('criminal.sex'), trigger: 'change' }],
-        entryTime: [{ type: 'date', required: true, message: this.$t('criminal.entryTime'), trigger: 'change' }]
+      	frNo: [{ required: true, message: '编号不能为空', trigger: 'blur'}],
+        frName: [{ required: true, message: this.$t('criminal.name'), trigger: 'blur' }],
+        jbNo: [{ required: true, message: '监区不能为空', trigger: 'change' }],
+        infoRjsj: [{ type: 'string', required: true, message: '请选择入监时间', trigger: 'change' }]
       },
       downloadLoading: false
     }
@@ -247,6 +253,9 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
+      if(!this.listQuery.frName){
+      	this.listQuery.frName = undefined
+      }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count
@@ -267,13 +276,6 @@ export default {
       this.listQuery.pageNum = val
       this.getList()
     },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作成功',
-        type: 'success'
-      })
-      row.status = status
-    },
     //重置表单
 		resetForm(formName) {
 			if(this.$refs[formName] !== undefined){
@@ -291,15 +293,15 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+        	if(this.dataForm.infoRjsj){
+        		this.dataForm.infoRjsj = this.dateFormats(this.dataForm.infoRjsj);
+        	}
+        	if(this.dataForm.infoCsrq){
+        		this.dataForm.infoCsrq = this.dateFormats(this.dataForm.infoCsrq);
+        	}
           RequestAdd(this.dataForm).then(() => {
             this.dialogFormVisible = false
             this.getList()
-            this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
-            })
           }).catch(error => {
 		        this.dialogFormVisible = false
 		      })
@@ -307,8 +309,26 @@ export default {
       })
     },
     handleUpdate(row) {
-      this.dataForm = Object.assign({}, row) // copy obj
-      this.dataForm.timestamp = new Date(this.dataForm.timestamp)
+    	let param = {
+    		webId: row.webId
+    	}
+    	findOne(param).then((res) =>{
+    		this.dataForm.webId = res.data.webId,
+        this.dataForm.frName =  res.data.frName,
+        this.dataForm.frNo = res.data.frNo,
+        this.dataForm.frCard = res.data.frCard,
+        this.dataForm.jy = res.data.jy,
+        this.dataForm.jq = res.data.jq,
+        this.dataForm.jbNo = res.data.jbNo,
+        this.dataForm.hjJb = res.data.hjJb,
+        this.dataForm.infoRjsj = res.data.infoRjsj,
+        this.dataForm.infoZm = res.data.infoZm,
+        this.dataForm.infoXq = res.data.infoXq,
+        this.dataForm.infoCsrq = res.data.infoCsrq,
+        this.dataForm.infoHome = res.data.infoHome,
+        this.dataForm.monitorFlag = res.data.monitorFlag,
+        this.dataForm.stateZdzf = res.data.stateZdzf
+    	})
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -318,37 +338,37 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.dataForm)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
-            for (const v of this.list) {
-              if (v.id === this.dataForm.id) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.dataForm)
-                break
-              }
-            }
+        	if(this.dataForm.infoRjsj){
+        		this.dataForm.infoRjsj = this.dateFormats(this.dataForm.infoRjsj);
+        	}
+        	if(this.dataForm.infoCsrq){
+        		this.dataForm.infoCsrq = this.dateFormats(this.dataForm.infoCsrq);
+        	}
+          RequestEdit(this.dataForm).then(() => {
             this.dialogFormVisible = false
-            this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
-            })
-          })
+            this.getList()
+          }).catch(error => {
+		        this.dialogFormVisible = false
+		      })
         }
       })
     },
-    handleDelete(row) {
-      this.$notify({
-        title: '成功',
-        message: '删除成功',
-        type: 'success',
-        duration: 2000
-      })
-      const index = this.list.indexOf(row)
-      this.list.splice(index, 1)
-    },
+    //删除
+		handleDelete(row) {
+			this.$confirm('确认删除该记录吗?', '提示', {
+				type: 'warning'
+			}).then(() => {
+				this.listLoading = true;
+				let param = {
+	    		webId: row.webId
+	    	}
+				RequestDelete(param).then(() => {
+	    		this.getList()
+	    	}).catch(error => {
+	        this.dialogFormVisible = false
+	      })
+			})
+		},
     handleFetchPv(pv) {
       fetchPv(pv).then(response => {
         this.pvData = response.data.pvData
@@ -377,7 +397,21 @@ export default {
           return v[j]
         }
       }))
-    }
+    },
+    dateFormat(row, column) {
+			//时间格式化  
+	    let date = row[column.property];  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+		},
+		dateFormats: function (val) {
+			if(!val){
+				return undefined
+			}
+			return moment(val).format("YYYY-MM-DD HH:mm:ss");
+		},
   }
 }
 </script>

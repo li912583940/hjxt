@@ -62,6 +62,34 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			String id_field = ""; // 主键
 			String id_fields = ""; // 复合主键
 			String d_id_field = ""; // 如果表没有主键就用这个
+			String joinField = ""; // 关联表字段
+			String joinTable = ""; // 关联表
+			String joinWhere = ""; // 关联表条件
+			try {
+				Field[] voFields = clazzVO.getDeclaredFields();
+				for(Field field : voFields) {
+					if(field.getName().equals("joinField")) {
+						if(field.get(model) != null) {
+							joinField = field.get(model).toString();
+						}
+						continue;
+					}
+					if(field.getName().equals("joinTable")) {
+						if(field.get(model) != null) {
+							joinTable = field.get(model).toString();
+						}
+						continue;
+					}
+					if(field.getName().equals("joinWhere")) {
+						field.setAccessible(true);
+						if(field.get(model) != null) {
+							joinWhere = field.get(model).toString();
+						}
+						continue;
+					}
+				}
+			} catch (Exception e) {
+			} 
 			try {
 				for(Field field : fields){
 					if(field.getName().equals("serialVersionUID"))
@@ -84,7 +112,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 					table_fileds.append(table_filed+",");
 					// 处理SQL where条件
 					field.setAccessible(true);
-					if(field.get(model) != null){
+					if(field.get(model) != null  && !"".equals(field.get(model))){
 						params.add(field.get(model));
 						where_fields.append(" and "+table_filed+"=?");
 					}
@@ -106,11 +134,11 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			if(StringUtils.isBlank(table_fileds_str)){
 				table_fileds_str = "*";
 			}
-			String sql = "select "+ table_fileds_str + " from " + tableName+"  where 1=1 " + where_fields.toString();
+			String sql = "select a.*"+joinField+" from " + tableName+" a "+joinTable+" where 1=1 " + where_fields.toString()+" "+joinWhere;
 			if(pageSize != null && pageNum != null){
 				int startNum = (pageNum-1)*pageSize;
 				int endNum = pageNum*pageSize;
-				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY "+id_field+" DESC) AS rowid,* from "+tableName+" ) t"
+				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" DESC) AS rowid,a.*"+joinField+" from "+tableName+" a "+joinTable+" where 1=1 "+where_fields.toString()+" "+joinWhere+" ) t"
 						+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
 			}
 			System.out.println("执行查询list语句: [ "+sql+" ]");
@@ -148,6 +176,37 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			String id_field = ""; // 主键
 			String id_fields = ""; // 复合主键
 			String d_id_field = ""; // 如果表没有主键就用这个
+			String joinField = ""; // 关联表字段
+			String joinTable = ""; // 关联表
+			String joinWhere = ""; // 关联表条件
+			try {
+				Field[] voFields = clazzVO.getDeclaredFields();
+				for(Field field : voFields) {
+					if(field.getName().equals("joinField")) {
+						field.setAccessible(true);
+						if(field.get(model) != null) {
+							joinField = field.get(model).toString();
+						}
+						continue;
+					}
+					if(field.getName().equals("joinTable")) {
+						field.setAccessible(true);
+						if(field.get(model) != null) {
+							joinTable = field.get(model).toString();
+						}
+						continue;
+					}
+					if(field.getName().equals("joinWhere")) {
+						field.setAccessible(true);
+						if(field.get(model) != null) {
+							joinWhere = field.get(model).toString();
+						}
+						continue;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
 			try {
 				for(Field field : fields){
 					if(field.getName().equals("serialVersionUID"))
@@ -170,9 +229,9 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 					table_fileds.append(table_filed+",");
 					// 处理SQL where条件
 					field.setAccessible(true);
-					if(field.get(model) != null){
+					if(field.get(model) != null && !"".equals(field.get(model))){
 						params.add(field.get(model));
-						where_fields.append(" and "+table_filed+"=?");
+						where_fields.append(" and a."+table_filed+"=?");
 					}
 				}
 			} catch (Exception e) {
@@ -192,21 +251,22 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			if(StringUtils.isBlank(table_fileds_str)){
 				table_fileds_str = "*";
 			}
-			String sql = "select "+ table_fileds_str + " from " + tableName+"  where 1=1 " + where_fields.toString();
+			
+			String sql = "select a.*"+joinField+" from " + tableName+" a "+joinTable+" where 1=1 " + where_fields.toString()+" "+joinWhere;
 			if(pageSize != null && pageNum != null){
 				int startNum = (pageNum-1)*pageSize;
 				int endNum = pageNum*pageSize;
-				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY "+id_field+" DESC) AS rowid,* from "+tableName+" ) t"
+				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" DESC) AS rowid,a.*"+joinField+" from "+tableName+" a "+joinTable+" where 1=1 "+where_fields.toString()+" "+joinWhere+" ) t"
 						+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
 			}
-			System.out.println("执行查询list语句: [ "+sql+" ]");
+			System.out.println("执行查询pojo语句: [ "+sql+" ]");
 			System.out.println("参数："+params);
 			RowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazzVO);
 			List<T> list = (List<T>)jdbcTemplate.query(sql, params.toArray(), rowMapper);
 			resultMap.put("list", list);
 		
 			
-			String countSql = "select count(*) AS count from " + tableName+"  where 1=1 " + where_fields.toString();
+			String countSql = "select count(*) AS count from " + tableName+" a  where 1=1 " + where_fields.toString();
 			System.out.println("执行查询count语句: [ "+countSql+" ]");
 			System.out.println("参数："+params);
 			SqlRowSet rowSet = jdbcTemplate.queryForRowSet(countSql, params.toArray());
@@ -373,12 +433,14 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			List<Object> params = new ArrayList<Object>();
 			Field[] fields = clazz.getDeclaredFields();
 			Field idField = null;
+			String id_field="";
 			try {
 				for(Field field : fields){
 					if(field.getName().equals("serialVersionUID"))
 						continue;
 					if(field.isAnnotationPresent(Id.class)){
 						idField = field;
+						id_field = field.getAnnotation(DbField.class).value();
 						continue;
 					}
 					String table_filed = field.getAnnotation(DbField.class).value();
@@ -390,7 +452,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				}
 				idField.setAccessible(true);
 				sql.append(StringUtil.lastComma(up_field.toString()))
-					.append(" where "+HumpCrossUnderline.humpToUnderline(idField.getName())+"=?");
+					.append(" where "+id_field+"=?");
 				params.add(idField.get(model));
 			} catch (Exception e) {
 				e.printStackTrace();

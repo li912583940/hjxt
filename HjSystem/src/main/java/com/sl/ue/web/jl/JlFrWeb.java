@@ -27,7 +27,7 @@ public class JlFrWeb extends Result{
 
     @RequestMapping("/findPojo")
     public String findPojo(JlFrVO model, Integer pageSize, Integer pageNum){
-        Map<String, Object> map = jlFrSQL.findPojo(model, pageSize, pageNum);
+        Map<String, Object> map = jlFrSQL.findPojoJoin(model, pageSize, pageNum);
         this.putPojo(map);
         return this.toResult();
     }
@@ -40,8 +40,8 @@ public class JlFrWeb extends Result{
     }
 
     @RequestMapping("/findOne")
-    public String findOne(Integer id){
-        JlFrVO model = jlFrSQL.findOne(id);
+    public String findOne(Integer webId){
+        JlFrVO model = jlFrSQL.findOne(webId);
         this.putJson(model);
         return this.toResult();
     }
@@ -59,8 +59,8 @@ public class JlFrWeb extends Result{
     }
 
     @RequestMapping("/delete")
-    public String del(Integer id){
-        jlFrSQL.deleteKey(id);
+    public String del(Integer webId){
+        jlFrSQL.deleteKey(webId);
         return this.toResult();
     }
 
