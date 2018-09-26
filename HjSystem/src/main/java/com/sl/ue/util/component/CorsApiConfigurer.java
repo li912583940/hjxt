@@ -4,6 +4,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * 说明 [跨域]
+ * @作者 LXT @2018年9月26日
+ */
 @Configuration
 public class CorsApiConfigurer implements WebMvcConfigurer {
 

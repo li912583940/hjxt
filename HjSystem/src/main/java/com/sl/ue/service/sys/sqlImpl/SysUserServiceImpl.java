@@ -10,7 +10,6 @@ import com.sl.ue.entity.sys.vo.SysRoleVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.sys.SysUserService;
-import com.sl.ue.util.http.token.TokenSession;
 
 @Service("sysUserSQL")
 public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUserService{

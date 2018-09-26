@@ -20,7 +20,6 @@ import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.WebContextUtil;
 import com.sl.ue.util.http.token.TokenManager;
-import com.sl.ue.util.http.token.TokenSession;
 
 @RestController
 public class Login extends Result{
@@ -49,10 +48,6 @@ public class Login extends Result{
 			String token = tokenManager.createToken(username);
 			System.out.println("token: "+token);
 			loginUser.setToken(token);
-			
-			// 保存 token与user
-			TokenSession tokenSession = new TokenSession();
-			tokenSession.setTokenUser(token, loginUser);
 			
 //			Cookie cookie = new Cookie(Constants.TOKEN_NAME, token);
 //			response.addCookie(cookie);

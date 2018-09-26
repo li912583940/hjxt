@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import com.sl.ue.util.Constants;
+import com.sl.ue.util.http.WebContextUtil;
 
 
 public class TokenManager {
@@ -25,8 +26,8 @@ public class TokenManager {
 		return token;
 	}
 
-	  
 
+	
 	/**
 	 * 说明 [检查token是否有效]
 	 * @作者 LXT @2018年9月3日
@@ -57,5 +58,7 @@ public class TokenManager {
 		tokenMap.remove(token);
 	}
 	
-	
+	public void clearToken() {
+		tokenMap.clear();
+	}
 }

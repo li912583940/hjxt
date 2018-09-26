@@ -15,9 +15,13 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 	public Map<String, Object> findPojoJoin(JlFrVO model, Integer pageSize, Integer pageNum) {
 		StringBuffer field = new StringBuffer();
 		field.append(",b.JQ_Name");
+		field.append(",c.JB_Name");
+		
 		
 		StringBuffer table = new StringBuffer();
 		table.append(" left join JL_JQ b ON a.JQ=b.JQ_No");
+		table.append(" left join JL_JB c ON a.JB_No=c.JB_No");
+		
 		model.setLeftJoinField(field.toString());
 		model.setLeftJoinTable(table.toString());
 		return this.findPojo(model, pageSize, pageNum);

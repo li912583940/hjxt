@@ -7,8 +7,9 @@ public class JlFrVO extends JlFr{
     /** 序列化 */
     private static final long serialVersionUID = 1L;
 
-    private String jqName;
+    private String jqName; // 监区名称
     
+    private String jbName; // 级别名称
     
     
     
@@ -20,9 +21,18 @@ public class JlFrVO extends JlFr{
 		this.jqName = jqName;
 	}
 
+	public String getJbName() {
+		return jbName;
+	}
+
+	public void setJbName(String jbName) {
+		this.jbName = jbName;
+	}
+	
 	
 	/*---------------------------  处理关联表  -----------------------------*/
 	
+
 	private String leftJoinField; // 关联表字段
     
     private String leftJoinTable; // 关联表

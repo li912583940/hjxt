@@ -6,6 +6,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+/**
+ * 说明 [请求拦截]
+ * @作者 LXT @2018年9月26日
+ */
 @Component
 public class LogInterceptor implements HandlerInterceptor{
 

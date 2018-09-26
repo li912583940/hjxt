@@ -39,7 +39,7 @@
       </el-table-column>
       <el-table-column width="140px" align="center" label="级别">
         <template slot-scope="scope">
-          <span>{{scope.row.jbNo}}</span>
+          <span>{{scope.row.jbName}}</span>
         </template>
       </el-table-column>
       <el-table-column width="140px" align="center" label="当月会见次数">
@@ -189,7 +189,8 @@ export default {
         pageNum: 1,
         pageSize: 20,
         frNo: undefined,
-        frName: undefined
+        frName: undefined,
+        jq: undefined
       },
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
@@ -200,7 +201,7 @@ export default {
         frNo: '',
         frCard: undefined,
         jy: '测试监狱',
-        jq: -1,
+        jq: '-1',
         jbNo: undefined,
         hjJb: 1,
         infoRjsj: undefined,
@@ -239,7 +240,7 @@ export default {
       	frNo: [{ required: true, message: '编号不能为空', trigger: 'blur'}],
         frName: [{ required: true, message: this.$t('criminal.name'), trigger: 'blur' }],
         jbNo: [{ required: true, message: '监区不能为空', trigger: 'change' }],
-        infoRjsj: [{ type: 'string', required: true, message: '请选择入监时间', trigger: 'change' }]
+        infoRjsj: [{  required: true, message: '请选择入监时间', trigger: 'change' }]
       },
       downloadLoading: false
     }
@@ -255,6 +256,12 @@ export default {
       this.listLoading = true
       if(!this.listQuery.frName){
       	this.listQuery.frName = undefined
+      }
+      if(!this.listQuery.frNo){
+      	this.listQuery.frNo = undefined
+      }
+      if(!this.listQuery.jq){
+      	this.listQuery.jq = undefined
       }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
