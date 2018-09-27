@@ -1,5 +1,7 @@
 import request from '@/utils/request'
 
+// 服刑人员
+
 export const findPojo = params => { return request.get('/jlFr/findPojo', { params: params } ).then(res => res) }
 
 export const findOne = params => { return request.get('/jlFr/findOne', { params: params } ).then(res => res) }

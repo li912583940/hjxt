@@ -48,10 +48,8 @@ public class Login extends Result{
 			String token = tokenManager.createToken(username);
 			System.out.println("token: "+token);
 			loginUser.setToken(token);
-			
-//			Cookie cookie = new Cookie(Constants.TOKEN_NAME, token);
-//			response.addCookie(cookie);
-//			response.addHeader(Constants.TOKEN_NAME, token);
+			Constants.sysUser = loginUser; //需要测试
+			System.out.println("登陆用户: "+Constants.sysUser.getUserName());
 			this.putJson(loginUser);
 			return this.toResult();
 		}
