@@ -266,7 +266,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			resultMap.put("list", list);
 		
 			
-			String countSql = "select count(*) AS count from " + tableName+" a  where 1=1 " + where_fields.toString();
+			String countSql = "select ISNULL(count(*),0) AS count from " + tableName+" a  where 1=1 " + where_fields.toString();
 			System.out.println("执行查询count语句: [ "+countSql+" ]");
 			System.out.println("参数："+params);
 			SqlRowSet rowSet = jdbcTemplate.queryForRowSet(countSql, params.toArray());
@@ -308,7 +308,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			} catch (Exception e) {
 			}
 			
-			String countSql = "select count(*) AS count from " + tableName+"  where 1=1 " + where_fields.toString();
+			String countSql = "select ISNULL(count(*),0) AS count from " + tableName+"  where 1=1 " + where_fields.toString();
 			System.out.println("执行查询count语句: [ "+countSql+" ]");
 			System.out.println("参数："+params);
 			SqlRowSet rowSet = jdbcTemplate.queryForRowSet(countSql, params.toArray());

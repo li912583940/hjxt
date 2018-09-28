@@ -1,14 +1,12 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-    	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入编号" v-model="listQuery.frNo">
+    	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员编号" v-model="listQuery.frNo">
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入姓名" v-model="listQuery.frName">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员姓名" v-model="listQuery.frName">
       </el-input>
-      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.jq" placeholder="选择监区">
-        <el-option v-for="item in jqs" :key="item.id" :label="item.name" :value="item.id">
-        </el-option>
-      </el-select>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="listQuery.qsName">
+      </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
       <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
@@ -57,7 +55,7 @@
           <span>{{scope.row.bz}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('criminal.actions')" width="180" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button  size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
@@ -73,8 +71,8 @@
 
     <!-- 新增或编辑 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="80px" style='width: 400px; margin-left:25%;' >
-      	<el-input v-model="dataForm.frNo" hidden="true"></el-input>
+      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+      	<el-input v-if="false" v-model="dataForm.frNo" ></el-input>
         <el-form-item label="服刑人员姓名" prop="frName">
           <el-input v-model="dataForm.frName"></el-input>
         </el-form-item>
@@ -103,15 +101,15 @@
         </el-form-item>
         <el-form-item label="性别" >
         	<el-radio-group v-model="dataForm.xb">
+        		<el-radio :label="'男'">男</el-radio>
 				    <el-radio :label="'女'">女</el-radio>
-				    <el-radio :label="'男'">男</el-radio>
 				  </el-radio-group>
         </el-form-item>
         <el-form-item label="电话号码" prop="tele">
           <el-input v-model="dataForm.tele"></el-input>
         </el-form-item>
         <el-form-item label="审批状态">
-          <el-tag type="success">{{dataForm.spState}}</el-tag>
+          <el-input v-model="dataForm.spState" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="备注" prop="bz">
           <el-input v-model="dataForm.bz"></el-input>
@@ -161,27 +159,25 @@ export default {
         pageSize: 20,
         frNo: undefined,
         frName: undefined,
-        jq: undefined
+        qsName: undefined
       },
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       // 新增或编辑弹窗
       dataForm: { 
         webId: undefined,
-        frName: undefined,
         frNo: '',
-        frCard: undefined,
-        jy: '测试监狱',
-        jq: '-1',
-        jbNo: undefined,
+        frName: undefined,
         qsZjlb: 1,
-        infoRjsj: undefined,
-        infoZm: undefined,
-        infoXq: undefined,
-        infoCsrq: undefined,
-        infoHome: undefined,
-        xb: '男',
-        stateZdzf: 1
+        qsSfz: undefined,
+        qsName: undefined,
+        gx: undefined,
+        qsCard: undefined,
+        dz: undefined,
+        xb: undefined,
+        tele: undefined,
+        spState: undefined,
+        bz: undefined
       },
       gxs: [ // 关系
       	
@@ -213,10 +209,7 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-      	frNo: [{ required: true, message: '编号不能为空', trigger: 'blur'}],
-        frName: [{ required: true, message: this.$t('criminal.name'), trigger: 'blur' }],
-        jbNo: [{ required: true, message: '监区不能为空', trigger: 'change' }],
-        infoRjsj: [{  required: true, message: '请选择入监时间', trigger: 'change' }]
+        qsName: [{ required: true, message: '亲属姓名不能为空', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -236,8 +229,8 @@ export default {
       if(!this.listQuery.frNo){
       	this.listQuery.frNo = undefined
       }
-      if(!this.listQuery.jq){
-      	this.listQuery.jq = undefined
+      if(!this.listQuery.qsName){
+      	this.listQuery.qsName = undefined
       }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
@@ -299,18 +292,16 @@ export default {
     		this.dataForm.webId = res.data.webId,
         this.dataForm.frName =  res.data.frName,
         this.dataForm.frNo = res.data.frNo,
-        this.dataForm.frCard = res.data.frCard,
-        this.dataForm.jy = res.data.jy,
-        this.dataForm.jq = res.data.jq,
-        this.dataForm.jbNo = res.data.jbNo,
-        this.dataForm.hjJb = res.data.hjJb,
-        this.dataForm.infoRjsj = res.data.infoRjsj,
-        this.dataForm.infoZm = res.data.infoZm,
-        this.dataForm.infoXq = res.data.infoXq,
-        this.dataForm.infoCsrq = res.data.infoCsrq,
-        this.dataForm.infoHome = res.data.infoHome,
-        this.dataForm.monitorFlag = res.data.monitorFlag,
-        this.dataForm.stateZdzf = res.data.stateZdzf
+        this.dataForm.qsZjlb = res.data.qsZjlb,
+        this.dataForm.qsSfz = res.data.qsSfz,
+        this.dataForm.qsName = res.data.qsName,
+        this.dataForm.gx = res.data.gx,
+        this.dataForm.qsCard = res.data.qsCard,
+        this.dataForm.dz = res.data.dz,
+        this.dataForm.xb = res.data.xb,
+        this.dataForm.tele = res.data.tele,
+        this.dataForm.spState = res.data.spState,
+        this.dataForm.bz = res.data.bz
     	})
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
@@ -321,12 +312,6 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-        	if(this.dataForm.infoRjsj){
-        		this.dataForm.infoRjsj = this.dateFormats(this.dataForm.infoRjsj);
-        	}
-        	if(this.dataForm.infoCsrq){
-        		this.dataForm.infoCsrq = this.dateFormats(this.dataForm.infoCsrq);
-        	}
           RequestEdit(this.dataForm).then(() => {
             this.dialogFormVisible = false
             this.getList()

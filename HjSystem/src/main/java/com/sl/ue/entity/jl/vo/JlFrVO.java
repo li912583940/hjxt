@@ -11,6 +11,7 @@ public class JlFrVO extends JlFr{
     
     private String jbName; // 级别名称
     
+    private Integer qsNum; // 亲属数量
     
     
     public String getJqName() {
@@ -28,10 +29,18 @@ public class JlFrVO extends JlFr{
 	public void setJbName(String jbName) {
 		this.jbName = jbName;
 	}
+	public Integer getQsNum() {
+		return qsNum;
+	}
+
+	public void setQsNum(Integer qsNum) {
+		this.qsNum = qsNum;
+	}
+	
+	
 	
 	
 	/*---------------------------  处理关联表  -----------------------------*/
-	
 
 	private String leftJoinField; // 关联表字段
     

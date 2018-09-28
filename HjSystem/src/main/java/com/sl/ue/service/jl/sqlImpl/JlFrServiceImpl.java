@@ -1,16 +1,22 @@
 package com.sl.ue.service.jl.sqlImpl;
 
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sl.ue.entity.jl.vo.JlFrVO;
+import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlFrService;
+import com.sl.ue.service.jl.JlQsService;
 
 @Service("jlFrSQL")
 public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
-
+	
+	@Autowired
+	private JlQsService jlQsSQL;
 	@Override
 	public Map<String, Object> findPojoJoin(JlFrVO model, Integer pageSize, Integer pageNum) {
 		StringBuffer field = new StringBuffer();
@@ -24,7 +30,18 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 		
 		model.setLeftJoinField(field.toString());
 		model.setLeftJoinTable(table.toString());
-		return this.findPojo(model, pageSize, pageNum);
+		
+		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
+		if(map.containsKey("list")) {
+			List<JlFrVO> list = (List<JlFrVO>) map.get("list");
+			for(JlFrVO jlFr : list) {
+				JlQsVO jlQs = new JlQsVO();
+				jlQs.setFrNo(jlFr.getFrNo());
+				Integer qsNum= jlQsSQL.count(jlQs);
+				jlFr.setQsNum(qsNum);
+			}
+		}
+		return map;
 	}
 
 
