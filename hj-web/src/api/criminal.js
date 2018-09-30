@@ -24,3 +24,6 @@ export const RequestQsAdd = params => { return request.post('/jlQs/add', params 
 export const RequestQsEdit = params => { return request.post('/jlQs/edit', params ).then(res => res) }
 
 export const RequestQsDelete = params => { return request.post('/jlQs/delete', params ).then(res => res) }
+
+//获取亲属关系
+export const findGxList = params => { return request.get('/jlQsGx/findList', { params: params } ).then(res => res) }

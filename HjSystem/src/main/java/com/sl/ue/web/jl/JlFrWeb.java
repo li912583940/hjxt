@@ -3,6 +3,9 @@ package com.sl.ue.web.jl;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,8 +43,8 @@ public class JlFrWeb extends Result{
     }
 
     @RequestMapping("/findOne")
-    public String findOne(Integer webId){
-        JlFrVO model = jlFrSQL.findOne(webId);
+    public String findOne(Integer id){
+        JlFrVO model = jlFrSQL.findOne(id);
         this.putJson(model);
         return this.toResult();
     }
@@ -59,9 +62,14 @@ public class JlFrWeb extends Result{
     }
 
     @RequestMapping("/delete")
-    public String del(Integer webId){
-        jlFrSQL.deleteKey(webId);
+    public String del(Integer id){
+        jlFrSQL.deleteKey(id);
         return this.toResult();
     }
 
+    @RequestMapping("/exportExcel")
+    public void exportExcel(JlFrVO model,Integer pageSize, Integer pageNum,
+    		HttpServletRequest request, HttpServletResponse response) {
+    	
+    }
 }

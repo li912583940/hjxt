@@ -13,12 +13,12 @@ public class Entity {
 	// key:表名, value:类名
 	static final Map<String, String> enMap = new HashMap<String, String>();
 	static{
-		enMap.put("sys_role", "SysRole");
-		enMap.put("sys_resource", "SysResource");
-		enMap.put("sys_user_role", "SysUserRole");
-		enMap.put("sys_role_resource", "SysRoleResource");
+//		enMap.put("sys_role", "SysRole");
+//		enMap.put("sys_resource", "SysResource");
+//		enMap.put("sys_user_role", "SysUserRole");
+//		enMap.put("sys_role_resource", "SysRoleResource");
 		
-		enMap.put("sys_test", "SysTest");
+		enMap.put("JL_QS_GX", "JlQsGx");
 	}
 	
 	

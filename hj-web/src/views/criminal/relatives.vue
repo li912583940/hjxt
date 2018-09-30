@@ -286,7 +286,7 @@ export default {
     },
     handleUpdate(row) {
     	let param = {
-    		webId: row.webId
+    		id: row.webId
     	}
     	findOne(param).then((res) =>{
     		this.dataForm.webId = res.data.webId,
@@ -328,7 +328,7 @@ export default {
 			}).then(() => {
 				this.listLoading = true;
 				let param = {
-	    		webId: row.webId
+	    		id: row.webId
 	    	}
 				RequestDelete(param).then(() => {
 	    		this.getList()

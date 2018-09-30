@@ -158,13 +158,8 @@
     </el-dialog>
 
     <!-- 亲属弹框  -->
-    <el-dialog title="管理亲属" :visible.sync="dialogQsVisible" width="70%">
+    <el-dialog :title="qs_frname" :visible.sync="dialogQsVisible" width="70%">
     	<div class="filter-container">
-	    	<el-input @keyup.enter.native="handleQsFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员编号" v-model="listQuery.frNo">
-	      </el-input>
-	      <el-input @keyup.enter.native="handleQsFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员姓名" v-model="listQuery.frName">
-	      </el-input>
-	      <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleQsFilter">{{$t('criminal.search')}}</el-button>
 	      <el-button class="filter-item" style="margin-left: 10px;" @click="handleQsCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
 	    </div>
       <el-table :key='qsTableKey' :data="qsList" v-loading="qsListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
@@ -172,11 +167,6 @@
 	      <el-table-column align="center" :label="$t('criminal.id')" width="80">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.webId}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="140" align="center" label="服刑人员姓名">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.frName}}</span>
 	        </template>
 	      </el-table-column>
 	      <el-table-column width="160" align="center" label="亲属姓名">
@@ -229,10 +219,6 @@
 		<!-- 亲属新增或编辑 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogQsFormVisible">
       <el-form :rules="rulesQs" :model="dataQsForm" ref="dataQsForm" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
-      	<el-input v-if="false" v-model="dataQsForm.frNo" ></el-input>
-        <el-form-item label="服刑人员姓名" prop="frName">
-          <el-input v-model="dataQsForm.frName"></el-input>
-        </el-form-item>
         <el-form-item label="证件类别" prop="qsZjlb">
           <el-select class="filter-item" v-model="dataQsForm.qsZjlb" placeholder="请选择">
             <el-option v-for="item in qsZjlbs" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -283,7 +269,7 @@
 
 <script>
 import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete  } from '@/api/criminal'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList  } from '@/api/criminal'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -359,6 +345,7 @@ export default {
       downloadLoading: false,
       
       // 亲属
+      qs_frname: undefined, // 亲属弹框左上角显示犯人姓名
       dialogQsFormVisible: false,
       dialogQsVisible: false,
       qsTableKey: 0,
@@ -368,21 +355,19 @@ export default {
       qsListQuery: {
         pageNum: 1,
         pageSize: 10,
-        frNo: undefined,
-        frName: undefined
+        frNo: undefined
       },
       // 新增或编辑弹窗
       dataQsForm: { 
         webId: undefined,
-        frNo: '',
-        frName: undefined,
+        frNo: undefined,
         qsZjlb: 1,
         qsSfz: undefined,
         qsName: undefined,
         gx: undefined,
         qsCard: undefined,
         dz: undefined,
-        xb: undefined,
+        xb: '男',
         tele: undefined,
         spState: undefined,
         bz: undefined
@@ -485,7 +470,7 @@ export default {
     },
     handleUpdate(row) {
     	let param = {
-    		webId: row.webId
+    		id: row.webId
     	}
     	findOne(param).then((res) =>{
     		this.dataForm.webId = res.data.webId,
@@ -535,7 +520,7 @@ export default {
 			}).then(() => {
 				this.listLoading = true;
 				let param = {
-	    		webId: row.webId
+	    		id: row.webId
 	    	}
 				RequestDelete(param).then(() => {
 	    		this.getList()
@@ -563,12 +548,6 @@ export default {
     // 亲属方法开始
     getQsList() { 
     	this.qsListLoading = true
-      if(!this.qsListQuery.frNo){
-      	this.qsListQuery.frNo = undefined
-      }
-      if(!this.qsListQuery.frName){
-      	this.qsListQuery.frName = undefined
-      }
       findQsPojo(this.qsListQuery).then((res) => {
       	 this.qsList = res.pojo.list
       	 this.qsTotal = res.pojo.count
@@ -577,13 +556,25 @@ export default {
           this.qsListLoading = false
       })
     },
-    handleQsFilter() {
-      this.qsListQuery.pageNum = 1
-      this.getQsList()
+    getGxList() {
+    	if(this.gxs.length === 0) {
+    		findGxList({}).then((res) => {
+	    		let list = res.list
+	    		for(let x of list){
+					  let value = {}
+					  value.id = x.qsGx
+					  value.name = x.qsGx
+					  this.gxs.push(value)
+					}
+	    	})
+    	}
     },
     handleQsManage(row) { //打开亲属弹框
+    	this.qsListQuery.frNo = row.frNo
+    	this.qs_frname = row.frName
 			this.dialogQsVisible = true
 			this.getQsList()
+			this.getGxList()
 		},
 		handleQsSizeChange(val) {
       this.qsListQuery.pageSize = val
@@ -607,6 +598,7 @@ export default {
     createQsData() {
       this.$refs['dataQsForm'].validate((valid) => {
         if (valid) {
+        	this.dataQsForm.frNo = this.qsListQuery.frNo
           RequestQsAdd(this.dataQsForm).then(() => {
             this.dialogQsFormVisible = false
             this.getQsList()
@@ -618,21 +610,20 @@ export default {
     },
     handleQsUpdate(row) {
     	let param = {
-    		webId: row.webId
+    		id: row.webId
     	}
     	findQsOne(param).then((res) =>{
-    		this.dataQsForm.webId = res.data.webId,
-        this.dataQsForm.frName =  res.data.frName,
-        this.dataQsForm.frNo = res.data.frNo,
-        this.dataQsForm.qsZjlb = res.data.qsZjlb,
-        this.dataQsForm.qsSfz = res.data.qsSfz,
-        this.dataQsForm.qsName = res.data.qsName,
-        this.dataQsForm.gx = res.data.gx,
-        this.dataQsForm.qsCard = res.data.qsCard,
-        this.dataQsForm.dz = res.data.dz,
-        this.dataQsForm.xb = res.data.xb,
-        this.dataQsForm.tele = res.data.tele,
-        this.dataQsForm.spState = res.data.spState,
+    		this.dataQsForm.webId = res.data.webId
+        this.dataQsForm.frNo = this.qsListQuery.frNo
+        this.dataQsForm.qsZjlb = res.data.qsZjlb
+        this.dataQsForm.qsSfz = res.data.qsSfz
+        this.dataQsForm.qsName = res.data.qsName
+        this.dataQsForm.gx = res.data.gx
+        this.dataQsForm.qsCard = res.data.qsCard
+        this.dataQsForm.dz = res.data.dz
+        this.dataQsForm.xb = res.data.xb
+        this.dataQsForm.tele = res.data.tele
+        this.dataQsForm.spState = res.data.spState
         this.dataQsForm.bz = res.data.bz
     	})
       this.dialogStatus = 'update'
@@ -660,7 +651,7 @@ export default {
 			}).then(() => {
 				this.qsListLoading = true;
 				let param = {
-	    		webId: row.webId
+	    		id: row.webId
 	    	}
 				RequestQsDelete(param).then(() => {
 	    		this.getQsList()
