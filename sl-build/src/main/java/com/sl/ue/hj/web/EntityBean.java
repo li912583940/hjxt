@@ -8,7 +8,7 @@ import java.io.File;
  */
 public class EntityBean {
 
-	private String path ="D:\\声联项目\\hjxt\\HjSystem\\src\\main\\java\\com\\sl\\ue\\entity";
+	private String path ="G:\\声联项目\\hjxt\\HjSystem\\src\\main\\java\\com\\sl\\ue\\entity";
 	private String hj = "\\hj";
 	private String jl = "\\jl";
 	private String sys = "\\sys";

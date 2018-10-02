@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 
 public class Entity3 {
 
-	private String path ="D:\\声联项目\\hjxt\\HjSystem\\src\\main\\java\\com\\sl\\ue\\entity";
+	private String path ="G:\\声联项目\\hjxt\\HjSystem\\src\\main\\java\\com\\sl\\ue\\entity";
 	
 	/** 目前直接从实体类读取的*/
 	

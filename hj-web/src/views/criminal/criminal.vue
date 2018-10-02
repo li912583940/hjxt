@@ -109,7 +109,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="犯人级别" prop="jbNo">
-          <el-input v-model="dataForm.jbNo"></el-input>
+          <el-select class="filter-item" v-model="dataForm.jbNo" placeholder="请选择">
+            <el-option v-for="item in  jbNos" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="会见级别" prop="hjJb">
           <el-select class="filter-item" v-model="dataForm.hjJb" placeholder="请选择">
@@ -269,7 +272,7 @@
 
 <script>
 import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList  } from '@/api/criminal'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, findJqList, findJbList, findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList  } from '@/api/criminal'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -315,10 +318,10 @@ export default {
         stateZdzf: 1
       },
       jqs: [ // 监区下拉选框
-      	{
-      		id: '-1',
-      		name: '未分配监区'
-      	}
+      
+      ],
+      jbNos: [ //犯人级别下拉框
+      
       ],
       hjJbs: [
         {
@@ -339,7 +342,7 @@ export default {
       rules: {
       	frNo: [{ required: true, message: '编号不能为空', trigger: 'blur'}],
         frName: [{ required: true, message: this.$t('criminal.name'), trigger: 'blur' }],
-        jbNo: [{ required: true, message: '监区不能为空', trigger: 'change' }],
+        jbNo: [{ required: true, message: '级别不能为空', trigger: 'change' }],
         infoRjsj: [{  required: true, message: '请选择入监时间', trigger: 'change' }]
       },
       downloadLoading: false,
@@ -403,9 +406,11 @@ export default {
   },
   created() {
     this.getList()
+    this.getJqList()
+    this.getJbList()
   },
   methods: {
-    getList() {
+    getList() { // 犯人列表
       this.listLoading = true
       if(!this.listQuery.frName){
       	this.listQuery.frName = undefined
@@ -424,6 +429,32 @@ export default {
           this.listLoading = false
       })
     },
+    getJqList() { //监区下拉框
+    	if(this.jqs.length === 0) {
+    		findJqList({}).then((res) => {
+	    		let list = res.list
+	    		for(let x of list){
+					  let value = {}
+					  value.id = x.jqNo
+					  value.name = x.jqName
+					  this.jqs.push(value)
+					}
+	    	})
+    	}
+    },
+    getJbList() { //犯人级别下拉框
+    	if(this.jbNos.length === 0) {
+    		findJbList({}).then((res) => {
+	    		let list = res.list
+	    		for(let x of list){
+					  let value = {}
+					  value.id = x.jbNo
+					  value.name = x.jbName
+					  this.jbNos.push(value)
+					}
+	    	})
+    	}
+    },
     handleFilter() {
       this.listQuery.pageNum = 1
       this.getList()
@@ -438,9 +469,24 @@ export default {
     },
     //重置表单
 		resetForm(formName) {
-			if(this.$refs[formName] !== undefined){
-				this.$refs[formName].resetFields();
-			}
+//			if(this.$refs[formName] !== undefined){
+//				this.$refs[formName].resetFields();
+//			}
+			this.dataForm.webId= undefined,
+	    this.dataForm.frName= undefined,
+	    this.dataForm.frNo= '',
+	    this.dataForm.frCard= undefined,
+	    this.dataForm.jy= '测试监狱',
+	    this.dataForm.jq= this.jqs.length === 0?undefined:this.jqs[0].id ,
+	    this.dataForm.jbNo= this.jbNos.length === 0?undefined:this.jbNos[0].id,
+	    this.dataForm.hjJb= 1,
+	    this.dataForm.infoRjsj= undefined,
+	    this.dataForm.infoZm= undefined,
+	    this.dataForm.infoXq= undefined,
+	    this.dataForm.infoCsrq= undefined,
+	    this.dataForm.infoHome= undefined,
+	    this.dataForm.monitorFlag= '0',
+	    this.dataForm.stateZdzf= 1
 	  },
     handleCreate() {
       this.dialogStatus = 'create'
