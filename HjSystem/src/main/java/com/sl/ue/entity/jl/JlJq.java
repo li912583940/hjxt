@@ -1,6 +1,7 @@
 package com.sl.ue.entity.jl;
 
-import java.sql.Timestamp;
+
+import java.util.Date;
 
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
@@ -27,7 +28,7 @@ public class JlJq implements java.io.Serializable {
 	@DbField("UseTimeLen")
 	private Integer useTimeLen;
 	@DbField("LastTime")
-	private Timestamp lastTime;
+	private Date lastTime;
 
 	public Integer getWebId() {
 		return this.webId;
@@ -85,11 +86,11 @@ public class JlJq implements java.io.Serializable {
 		this.useTimeLen = useTimeLen;
 	}
 
-	public Timestamp getLastTime() {
+	public Date getLastTime() {
 		return this.lastTime;
 	}
 
-	public void setLastTime(Timestamp lastTime) {
+	public void setLastTime(Date lastTime) {
 		this.lastTime = lastTime;
 	}
 

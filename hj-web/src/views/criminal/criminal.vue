@@ -272,7 +272,7 @@
 
 <script>
 import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, findJqList, findJbList, findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList  } from '@/api/criminal'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, exportExcel, findJqList, findJbList, findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList  } from '@/api/criminal'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -576,18 +576,27 @@ export default {
 			})
 		},
     handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp']
-        const filterVal = ['timestamp']
-        const data = this.formatJson(filterVal, this.list)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
-      })
+    	let param = ''
+    	if(this.listQuery.frNo != undefined) {
+    		param += 'frNo='+ this.listQuery.frNo
+    	}
+    	if(this.listQuery.frName != undefined) {
+    		param += '&frName='+this.listQuery.frName
+    	}
+    	if(this.listQuery.jq != undefined) {
+    		param += '&jq='+this.listQuery.jq
+    	}
+    	if(param === ''){
+    		location.href='/api/jlFr/exportExcel'
+    	}else{
+    		location.href='/api/jlFr/exportExcel?'+param
+    	}
+//    this.downloadLoading = true
+//    exportExcel(this.listQuery).then((res) => {
+//    	this.downloadLoading = false
+//    }).catch(error => {
+//      this.downloadLoading = false
+//    })
     },
     
     
@@ -599,7 +608,7 @@ export default {
       	 this.qsTotal = res.pojo.count
       	 this.qsListLoading = false
       }).catch(error => {
-          this.qsListLoading = false
+         this.qsListLoading = false
       })
     },
     getGxList() {

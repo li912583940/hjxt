@@ -1,6 +1,6 @@
 package com.sl.ue.entity.jl;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
@@ -22,7 +22,7 @@ public class JlHjRecAssessmentInfo implements java.io.Serializable {
 	@DbField("User_Name")
 	private String userName;
 	@DbField("Create_Time")
-	private Timestamp createTime;
+	private Date createTime;
 
 
 	public Long getWebId() {
@@ -57,11 +57,11 @@ public class JlHjRecAssessmentInfo implements java.io.Serializable {
 		this.userName = userName;
 	}
 
-	public Timestamp getCreateTime() {
+	public Date getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(Timestamp createTime) {
+	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 

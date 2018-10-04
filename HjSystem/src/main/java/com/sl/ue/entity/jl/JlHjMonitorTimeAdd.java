@@ -1,6 +1,6 @@
 package com.sl.ue.entity.jl;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
@@ -26,7 +26,7 @@ public class JlHjMonitorTimeAdd implements java.io.Serializable {
 	@DbField("State")
 	private Integer state;
 	@DbField("Create_Time")
-	private Timestamp createTime;
+	private Date createTime;
 	
 
 	
@@ -79,11 +79,11 @@ public class JlHjMonitorTimeAdd implements java.io.Serializable {
 		this.state = state;
 	}
 
-	public Timestamp getCreateTime() {
+	public Date getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(Timestamp createTime) {
+	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 

@@ -1,6 +1,6 @@
 package com.sl.ue.entity.jl;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
@@ -17,7 +17,7 @@ public class JlTradeCardInfo implements java.io.Serializable {
 	@DbField("WebID")
 	private Integer webId;
 	@DbField("SJ")
-	private Timestamp sj;
+	private Date sj;
 	@DbField("CardNum")
 	private String cardNum;
 	@DbField("FR_No")
@@ -42,11 +42,11 @@ public class JlTradeCardInfo implements java.io.Serializable {
 		this.webId = webId;
 	}
 
-	public Timestamp getSj() {
+	public Date getSj() {
 		return this.sj;
 	}
 
-	public void setSj(Timestamp sj) {
+	public void setSj(Date sj) {
 		this.sj = sj;
 	}
 

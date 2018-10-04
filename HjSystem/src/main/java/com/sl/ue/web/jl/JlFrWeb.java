@@ -68,8 +68,8 @@ public class JlFrWeb extends Result{
     }
 
     @RequestMapping("/exportExcel")
-    public void exportExcel(JlFrVO model,Integer pageSize, Integer pageNum,
+    public void exportExcel(JlFrVO model,
     		HttpServletRequest request, HttpServletResponse response) {
-    	
+    	jlFrSQL.exportExcel(model, request, response);
     }
 }

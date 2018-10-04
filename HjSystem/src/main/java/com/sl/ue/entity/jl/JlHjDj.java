@@ -1,6 +1,5 @@
 package com.sl.ue.entity.jl;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 import com.sl.ue.util.anno.DbField;
@@ -57,7 +56,7 @@ public class JlHjDj implements java.io.Serializable {
 	@DbField("DJ_User")
 	private String djUser;
 	@DbField("DJ_Time")
-	private Timestamp djTime;
+	private Date djTime;
 	@DbField("YJ_No")
 	private String yjNo;
 	@DbField("YJ_Name")
@@ -65,19 +64,19 @@ public class JlHjDj implements java.io.Serializable {
 	@DbField("FR_In_User")
 	private String frInUser;
 	@DbField("FR_In_Time")
-	private Timestamp frInTime;
+	private Date frInTime;
 	@DbField("FR_Out_User")
 	private String frOutUser;
 	@DbField("FR_Out_Time")
-	private Timestamp frOutTime;
+	private Date frOutTime;
 	@DbField("QS_In_User")
 	private String qsInUser;
 	@DbField("QS_In_Time")
-	private Timestamp qsInTime;
+	private Date qsInTime;
 	@DbField("QS_Out_User")
 	private String qsOutUser;
 	@DbField("QS_Out_Time")
-	private Timestamp qsOutTime;
+	private Date qsOutTime;
 	@DbField("HJ_Order")
 	private Integer hjOrder;
 	@DbField("FP_Flag")
@@ -85,7 +84,7 @@ public class JlHjDj implements java.io.Serializable {
 	@DbField("FP_Line_No")
 	private Integer fpLineNo;
 	@DbField("FP_Time")
-	private Timestamp fpTime;
+	private Date fpTime;
 	@DbField("FP_TZFR_Flag")
 	private Integer fpTzfrFlag;
 	@DbField("FP_TZQS_Flag")
@@ -97,7 +96,7 @@ public class JlHjDj implements java.io.Serializable {
 	@DbField("SP_Info")
 	private String spInfo;
 	@DbField("SP_Time")
-	private Timestamp spTime;
+	private Date spTime;
 	@DbField("SP_User")
 	private String spUser;
 	@DbField("state")
@@ -109,7 +108,7 @@ public class JlHjDj implements java.io.Serializable {
 	@DbField("Import_Flag")
 	private Integer importFlag;
 	@DbField("Import_Time")
-	private Timestamp importTime;
+	private Date importTime;
 	@DbField("Info_Wp")
 	private int infoWp;
 	@DbField("QS_Card1")
@@ -149,7 +148,7 @@ public class JlHjDj implements java.io.Serializable {
 	@DbField("QS_ZP9")
 	private byte[] qsZp9;
 	@DbField("WP_DjTime")
-	private Timestamp wpDjTime;
+	private Date wpDjTime;
 	@DbField("WP_DJR")
 	private String wpDjr;
 	@DbField("Qs_Last_Time")
@@ -173,11 +172,11 @@ public class JlHjDj implements java.io.Serializable {
 	@DbField("page_tz_UserName")
 	private String pageTzUserName;
 	@DbField("page_tz_Time")
-	private Timestamp pageTzTime;
+	private Date pageTzTime;
 	@DbField("FP_Time_FR")
-	private Timestamp fpTimeFr;
+	private Date fpTimeFr;
 	@DbField("FP_Time_QS")
-	private Timestamp fpTimeQs;
+	private Date fpTimeQs;
 	// Constructors
 
 	
@@ -332,9 +331,9 @@ public class JlHjDj implements java.io.Serializable {
 
 	/** minimal constructor */
 	public JlHjDj(String jy, String jqNo, String frNo, Integer hjTime,
-			Integer hjType, Integer djType, String djUser, Timestamp djTime,
+			Integer hjType, Integer djType, String djUser, Date djTime,
 			Integer fpFlag, Integer fpTzfrFlag, Integer fpTzqsFlag,
-			Integer state,String frDah,String pageTzUserNo,String pageTzUserName,Timestamp pageTzTime) {
+			Integer state,String frDah,String pageTzUserNo,String pageTzUserName,Date pageTzTime) {
 			this.jy = jy;
 			this.jqNo = jqNo;
 			this.frNo = frNo;
@@ -359,16 +358,16 @@ public class JlHjDj implements java.io.Serializable {
 			String qsInfo4, String qsInfo5, String qsInfo6, String qsInfo7,
 			String qsInfo8, String qsInfo9, Integer hjTime, String hjInfo,
 			Integer hjType, String monitorFlag, Integer djType, String djUser,
-			Timestamp djTime, String yjNo, String yjName, String frInUser,
-			Timestamp frInTime, String frOutUser, Timestamp frOutTime,
-			String qsInUser, Timestamp qsInTime, String qsOutUser,
-			Timestamp qsOutTime, Integer hjOrder, Integer fpFlag,
-			Integer fpLineNo, Timestamp fpTime, Integer fpTzfrFlag,
+			Date djTime, String yjNo, String yjName, String frInUser,
+			Date frInTime, String frOutUser, Date frOutTime,
+			String qsInUser, Date qsInTime, String qsOutUser,
+			Date qsOutTime, Integer hjOrder, Integer fpFlag,
+			Integer fpLineNo, Date fpTime, Integer fpTzfrFlag,
 			Integer fpTzqsFlag, Long hjIndex, String tpInfo, String spInfo,
-			Timestamp spTime, String spUser, Integer state, String cancelInfo,
-			String callId, Integer importFlag, Timestamp importTime,int infoWp,
-			Integer tpQsNum,Integer qzSp,String frDah,String pageTzUserNo,String pageTzUserName,Timestamp pageTzTime,
-			Timestamp fpTimeFr,Timestamp fpTimeQs) {
+			Date spTime, String spUser, Integer state, String cancelInfo,
+			String callId, Integer importFlag, Date importTime,int infoWp,
+			Integer tpQsNum,Integer qzSp,String frDah,String pageTzUserNo,String pageTzUserName,Date pageTzTime,
+			Date fpTimeFr,Date fpTimeQs) {
 		this.jy = jy;
 		this.jqNo = jqNo;
 		this.jqName = jqName;
@@ -597,11 +596,11 @@ public class JlHjDj implements java.io.Serializable {
 		this.djUser = djUser;
 	}
 
-	public Timestamp getDjTime() {
+	public Date getDjTime() {
 		return this.djTime;
 	}
 
-	public void setDjTime(Timestamp djTime) {
+	public void setDjTime(Date djTime) {
 		this.djTime = djTime;
 	}
 
@@ -629,11 +628,11 @@ public class JlHjDj implements java.io.Serializable {
 		this.frInUser = frInUser;
 	}
 
-	public Timestamp getFrInTime() {
+	public Date getFrInTime() {
 		return this.frInTime;
 	}
 
-	public void setFrInTime(Timestamp frInTime) {
+	public void setFrInTime(Date frInTime) {
 		this.frInTime = frInTime;
 	}
 
@@ -645,11 +644,11 @@ public class JlHjDj implements java.io.Serializable {
 		this.frOutUser = frOutUser;
 	}
 
-	public Timestamp getFrOutTime() {
+	public Date getFrOutTime() {
 		return this.frOutTime;
 	}
 
-	public void setFrOutTime(Timestamp frOutTime) {
+	public void setFrOutTime(Date frOutTime) {
 		this.frOutTime = frOutTime;
 	}
 
@@ -661,11 +660,11 @@ public class JlHjDj implements java.io.Serializable {
 		this.qsInUser = qsInUser;
 	}
 
-	public Timestamp getQsInTime() {
+	public Date getQsInTime() {
 		return this.qsInTime;
 	}
 
-	public void setQsInTime(Timestamp qsInTime) {
+	public void setQsInTime(Date qsInTime) {
 		this.qsInTime = qsInTime;
 	}
 
@@ -677,11 +676,11 @@ public class JlHjDj implements java.io.Serializable {
 		this.qsOutUser = qsOutUser;
 	}
 
-	public Timestamp getQsOutTime() {
+	public Date getQsOutTime() {
 		return this.qsOutTime;
 	}
 
-	public void setQsOutTime(Timestamp qsOutTime) {
+	public void setQsOutTime(Date qsOutTime) {
 		this.qsOutTime = qsOutTime;
 	}
 
@@ -709,11 +708,11 @@ public class JlHjDj implements java.io.Serializable {
 		this.fpLineNo = fpLineNo;
 	}
 
-	public Timestamp getFpTime() {
+	public Date getFpTime() {
 		return this.fpTime;
 	}
 
-	public void setFpTime(Timestamp fpTime) {
+	public void setFpTime(Date fpTime) {
 		this.fpTime = fpTime;
 	}
 
@@ -757,11 +756,11 @@ public class JlHjDj implements java.io.Serializable {
 		this.spInfo = spInfo;
 	}
 
-	public Timestamp getSpTime() {
+	public Date getSpTime() {
 		return this.spTime;
 	}
 
-	public void setSpTime(Timestamp spTime) {
+	public void setSpTime(Date spTime) {
 		this.spTime = spTime;
 	}
 
@@ -805,11 +804,11 @@ public class JlHjDj implements java.io.Serializable {
 		this.importFlag = importFlag;
 	}
 
-	public Timestamp getImportTime() {
+	public Date getImportTime() {
 		return this.importTime;
 	}
 
-	public void setImportTime(Timestamp importTime) {
+	public void setImportTime(Date importTime) {
 		this.importTime = importTime;
 	}
 
@@ -821,11 +820,11 @@ public class JlHjDj implements java.io.Serializable {
 		this.infoWp = infoWp;
 	}
 
-	public Timestamp getWpDjTime() {
+	public Date getWpDjTime() {
 		return wpDjTime;
 	}
 
-	public void setWpDjTime(Timestamp wpDjTime) {
+	public void setWpDjTime(Date wpDjTime) {
 		this.wpDjTime = wpDjTime;
 	}
 
@@ -884,27 +883,27 @@ public class JlHjDj implements java.io.Serializable {
 		this.pageTzUserName = pageTzUserName;
 	}
 
-	public Timestamp getPageTzTime() {
+	public Date getPageTzTime() {
 		return pageTzTime;
 	}
 
-	public void setPageTzTime(Timestamp pageTzTime) {
+	public void setPageTzTime(Date pageTzTime) {
 		this.pageTzTime = pageTzTime;
 	}
 
-	public Timestamp getFpTimeFr() {
+	public Date getFpTimeFr() {
 		return fpTimeFr;
 	}
 
-	public void setFpTimeFr(Timestamp fpTimeFr) {
+	public void setFpTimeFr(Date fpTimeFr) {
 		this.fpTimeFr = fpTimeFr;
 	}
 
-	public Timestamp getFpTimeQs() {
+	public Date getFpTimeQs() {
 		return fpTimeQs;
 	}
 
-	public void setFpTimeQs(Timestamp fpTimeQs) {
+	public void setFpTimeQs(Date fpTimeQs) {
 		this.fpTimeQs = fpTimeQs;
 	}
 

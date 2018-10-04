@@ -1,6 +1,6 @@
 package com.sl.ue.entity.jl;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
@@ -88,29 +88,29 @@ public class JlHjRec implements java.io.Serializable {
 	@DbField("DJ_User")
 	private String djUser;
 	@DbField("DJ_Time")
-	private Timestamp djTime;
+	private Date djTime;
 	@DbField("FR_In_User")
 	private String frInUser;
 	@DbField("FR_In_Time")
-	private Timestamp frInTime;
+	private Date frInTime;
 	@DbField("FR_Out_User")
 	private String frOutUser;
 	@DbField("FR_Out_Time")
-	private Timestamp frOutTime;
+	private Date frOutTime;
 	@DbField("QS_In_User")
 	private String qsInUser;
 	@DbField("QS_In_Time")
-	private Timestamp qsInTime;
+	private Date qsInTime;
 	@DbField("QS_Out_User")
 	private String qsOutUser;
 	@DbField("QS_Out_Time")
-	private Timestamp qsOutTime;
+	private Date qsOutTime;
 	@DbField("TP_Info")
 	private String tpInfo;
 	@DbField("SP_Info")
 	private String spInfo;
 	@DbField("SP_Time")
-	private Timestamp spTime;
+	private Date spTime;
 	@DbField("SP_User")
 	private String spUser;
 	@DbField("HJID")
@@ -427,11 +427,11 @@ public class JlHjRec implements java.io.Serializable {
 		this.djUser = djUser;
 	}
 
-	public Timestamp getDjTime() {
+	public Date getDjTime() {
 		return this.djTime;
 	}
 
-	public void setDjTime(Timestamp djTime) {
+	public void setDjTime(Date djTime) {
 		this.djTime = djTime;
 	}
 
@@ -443,11 +443,11 @@ public class JlHjRec implements java.io.Serializable {
 		this.frInUser = frInUser;
 	}
 
-	public Timestamp getFrInTime() {
+	public Date getFrInTime() {
 		return this.frInTime;
 	}
 
-	public void setFrInTime(Timestamp frInTime) {
+	public void setFrInTime(Date frInTime) {
 		this.frInTime = frInTime;
 	}
 
@@ -459,11 +459,11 @@ public class JlHjRec implements java.io.Serializable {
 		this.frOutUser = frOutUser;
 	}
 
-	public Timestamp getFrOutTime() {
+	public Date getFrOutTime() {
 		return this.frOutTime;
 	}
 
-	public void setFrOutTime(Timestamp frOutTime) {
+	public void setFrOutTime(Date frOutTime) {
 		this.frOutTime = frOutTime;
 	}
 
@@ -475,11 +475,11 @@ public class JlHjRec implements java.io.Serializable {
 		this.qsInUser = qsInUser;
 	}
 
-	public Timestamp getQsInTime() {
+	public Date getQsInTime() {
 		return this.qsInTime;
 	}
 
-	public void setQsInTime(Timestamp qsInTime) {
+	public void setQsInTime(Date qsInTime) {
 		this.qsInTime = qsInTime;
 	}
 
@@ -491,11 +491,11 @@ public class JlHjRec implements java.io.Serializable {
 		this.qsOutUser = qsOutUser;
 	}
 
-	public Timestamp getQsOutTime() {
+	public Date getQsOutTime() {
 		return this.qsOutTime;
 	}
 
-	public void setQsOutTime(Timestamp qsOutTime) {
+	public void setQsOutTime(Date qsOutTime) {
 		this.qsOutTime = qsOutTime;
 	}
 
@@ -515,11 +515,11 @@ public class JlHjRec implements java.io.Serializable {
 		this.spInfo = spInfo;
 	}
 
-	public Timestamp getSpTime() {
+	public Date getSpTime() {
 		return this.spTime;
 	}
 
-	public void setSpTime(Timestamp spTime) {
+	public void setSpTime(Date spTime) {
 		this.spTime = spTime;
 	}
 

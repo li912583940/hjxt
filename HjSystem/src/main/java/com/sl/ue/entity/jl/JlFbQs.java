@@ -1,6 +1,6 @@
 package com.sl.ue.entity.jl;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
@@ -42,7 +42,7 @@ public class JlFbQs implements java.io.Serializable {
 	@DbField("SP_UserNo")
 	private String spUserNo;
 	@DbField("SP_Time")
-	private Timestamp spTime;
+	private Date spTime;
 	@DbField("SP_Info")
 	private String spInfo;
 	@DbField("SP_Mon")
@@ -164,11 +164,11 @@ public class JlFbQs implements java.io.Serializable {
 		this.spUserNo = spUserNo;
 	}
 
-	public Timestamp getSpTime() {
+	public Date getSpTime() {
 		return this.spTime;
 	}
 
-	public void setSpTime(Timestamp spTime) {
+	public void setSpTime(Date spTime) {
 		this.spTime = spTime;
 	}
 

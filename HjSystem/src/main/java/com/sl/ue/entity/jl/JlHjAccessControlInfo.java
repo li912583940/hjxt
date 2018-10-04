@@ -1,6 +1,6 @@
 package com.sl.ue.entity.jl;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
@@ -24,9 +24,9 @@ public class JlHjAccessControlInfo implements java.io.Serializable {
 	@DbField("Card_QH")
 	private String cardQH;
 	@DbField("InTime")
-	private Timestamp inTime;
+	private Date inTime;
 	@DbField("OutTime")
-	private Timestamp outTime;
+	private Date outTime;
 	@DbField("state")
 	private Integer state;
 	@Id
@@ -83,19 +83,19 @@ public class JlHjAccessControlInfo implements java.io.Serializable {
 		this.cardQH = cardQH;
 	}
 
-	public Timestamp getInTime() {
+	public Date getInTime() {
 		return inTime;
 	}
 
-	public void setInTime(Timestamp inTime) {
+	public void setInTime(Date inTime) {
 		this.inTime = inTime;
 	}
 
-	public Timestamp getOutTime() {
+	public Date getOutTime() {
 		return outTime;
 	}
 
-	public void setOutTime(Timestamp outTime) {
+	public void setOutTime(Date outTime) {
 		this.outTime = outTime;
 	}
 

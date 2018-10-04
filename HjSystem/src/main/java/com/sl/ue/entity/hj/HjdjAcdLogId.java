@@ -1,6 +1,6 @@
 package com.sl.ue.entity.hj;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
@@ -22,7 +22,7 @@ public class HjdjAcdLogId  implements java.io.Serializable {
 	 @DbField("LogType")
 	 private Integer logType;
 	 @DbField("LogTime")
-	 private Timestamp logTime;
+	 private Date logTime;
 	 @DbField("AcdNo")
 	 private Integer acdNo;
 	 @DbField("AcdIndex")
@@ -46,11 +46,11 @@ public class HjdjAcdLogId  implements java.io.Serializable {
         this.logType = logType;
     }
 
-    public Timestamp getLogTime() {
+    public Date getLogTime() {
         return this.logTime;
     }
     
-    public void setLogTime(Timestamp logTime) {
+    public void setLogTime(Date logTime) {
         this.logTime = logTime;
     }
 

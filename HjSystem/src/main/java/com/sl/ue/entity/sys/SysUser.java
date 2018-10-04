@@ -1,10 +1,7 @@
 package com.sl.ue.entity.sys;
 
 import java.io.Serializable;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-import org.springframework.jdbc.core.RowMapper;
 
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;

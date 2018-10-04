@@ -69,12 +69,14 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				Field[] voFields = clazzVO.getDeclaredFields();
 				for(Field field : voFields) {
 					if(field.getName().equals("leftJoinField")) {
+						field.setAccessible(true);
 						if(field.get(model) != null) {
 							leftJoinField = field.get(model).toString();
 						}
 						continue;
 					}
 					if(field.getName().equals("leftJoinTable")) {
+						field.setAccessible(true);
 						if(field.get(model) != null) {
 							leftJoinTable = field.get(model).toString();
 						}
@@ -89,7 +91,8 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 					}
 				}
 			} catch (Exception e) {
-			} 
+				e.printStackTrace();
+			}
 			try {
 				for(Field field : fields){
 					if(field.getName().equals("serialVersionUID"))
@@ -138,7 +141,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			if(pageSize != null && pageNum != null){
 				int startNum = (pageNum-1)*pageSize;
 				int endNum = pageNum*pageSize;
-				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" DESC) AS rowid,a.*"+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
+				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" DESC) AS rowid,a.* "+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
 						+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
 			}
 			System.out.println("执行查询list语句: [ "+sql+" ]");
@@ -256,7 +259,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			if(pageSize != null && pageNum != null){
 				int startNum = (pageNum-1)*pageSize;
 				int endNum = pageNum*pageSize;
-				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" DESC) AS rowid,a.*"+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
+				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" DESC) AS rowid,a.* "+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
 						+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
 			}
 			System.out.println("执行查询pojo语句: [ "+sql+" ]");

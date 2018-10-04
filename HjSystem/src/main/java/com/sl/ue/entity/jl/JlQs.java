@@ -1,6 +1,6 @@
 package com.sl.ue.entity.jl;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
@@ -44,13 +44,13 @@ public class JlQs implements java.io.Serializable {
 	@DbField("SP_UserNo")
 	private String spUserNo;
 	@DbField("SP_Time")
-	private Timestamp spTime;
+	private Date spTime;
 	@DbField("SP_Info")
 	private String spInfo;
 	@DbField("SP_Mon")
 	private String spMon;
 	@DbField("CreateTime")
-	private Timestamp createTime;
+	private Date createTime;
 	@DbField("Face_ZP")
 	private byte[] faceZp;
 	@DbField("Face_State")
@@ -62,7 +62,7 @@ public class JlQs implements java.io.Serializable {
 	@DbField("BZ")
 	private String bz;
 	@DbField("HJ_STOP_TIME")
-	private Timestamp hjStopTime;
+	private Date hjStopTime;
 	@DbField("ZP_URL")
 	private String zpUrl;
 
@@ -180,11 +180,11 @@ public class JlQs implements java.io.Serializable {
 		this.spUserNo = spUserNo;
 	}
 
-	public Timestamp getSpTime() {
+	public Date getSpTime() {
 		return this.spTime;
 	}
 
-	public void setSpTime(Timestamp spTime) {
+	public void setSpTime(Date spTime) {
 		this.spTime = spTime;
 	}
 
@@ -204,11 +204,11 @@ public class JlQs implements java.io.Serializable {
 		this.spMon = spMon;
 	}
 
-	public Timestamp getCreateTime() {
+	public Date getCreateTime() {
 		return this.createTime;
 	}
 
-	public void setCreateTime(Timestamp createTime) {
+	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 
@@ -260,11 +260,11 @@ public class JlQs implements java.io.Serializable {
 		this.bz = bz;
 	}
 
-	public Timestamp getHjStopTime() {
+	public Date getHjStopTime() {
 		return hjStopTime;
 	}
 
-	public void setHjStopTime(Timestamp hjStopTime) {
+	public void setHjStopTime(Date hjStopTime) {
 		this.hjStopTime = hjStopTime;
 	}
 
