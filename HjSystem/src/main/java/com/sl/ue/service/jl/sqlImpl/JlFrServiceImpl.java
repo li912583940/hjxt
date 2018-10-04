@@ -153,8 +153,6 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 			response.setContentType("application/x-download");
 			out = response.getOutputStream();
 			book.write(out);
-			out.flush();
-			book.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}finally{

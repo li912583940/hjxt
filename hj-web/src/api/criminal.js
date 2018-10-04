@@ -12,7 +12,15 @@ export const RequestEdit = params => { return request.post('/jlFr/edit', params 
 
 export const RequestDelete = params => { return request.post('/jlFr/delete', params ).then(res => res) }
 
-export const exportExcel = params => { return request.get('/jlFr/exportExcel', { params: params } ).then(res => res) }
+//export const exportExcel = params => { return request.get('/jlFr/exportExcel', { params: params } ).then(res => res) }
+
+export function exportExcel() {
+  return request({
+    url: '/jlFr/exportExcel',
+    method: 'get',
+    responseType:'blob'
+  })
+}
 
 // 亲属
 

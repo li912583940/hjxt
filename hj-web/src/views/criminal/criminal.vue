@@ -586,11 +586,15 @@ export default {
     	if(this.listQuery.jq != undefined) {
     		param += '&jq='+this.listQuery.jq
     	}
-    	if(param === ''){
-    		location.href='/api/jlFr/exportExcel'
-    	}else{
-    		location.href='/api/jlFr/exportExcel?'+param
-    	}
+//  	if(param === ''){
+//  		location.href='/api/jlFr/exportExcel'
+//  	}else{
+//  		location.href='/api/jlFr/exportExcel?'+param
+//  	}
+    	exportExcel().then(function(response){
+    //<img :src="url" /> vue
+     const url= URL.createObjectURL(response.data);
+			})
 //    this.downloadLoading = true
 //    exportExcel(this.listQuery).then((res) => {
 //    	this.downloadLoading = false
