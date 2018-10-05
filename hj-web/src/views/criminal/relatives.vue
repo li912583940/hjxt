@@ -20,37 +20,37 @@
           <span>{{scope.row.webId}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="服刑人员姓名">
+      <el-table-column width="140" align="center" label="服刑人员姓名">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160px" align="center" label="亲属姓名">
+      <el-table-column width="160" align="center" label="亲属姓名">
         <template slot-scope="scope">
           <span>{{scope.row.qsName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="关系">
+      <el-table-column width="140" align="center" label="关系">
         <template slot-scope="scope">
           <span>{{scope.row.gx}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="性别">
+      <el-table-column width="140" align="center" label="性别">
         <template slot-scope="scope">
           <span>{{scope.row.xb}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="电话号码">
+      <el-table-column width="140" align="center" label="电话号码">
         <template slot-scope="scope">
           <span>{{scope.row.tele}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300px" align="center" label="地址">
+      <el-table-column width="300" align="center" label="地址">
         <template slot-scope="scope">
           <span>{{scope.row.dz}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="备注">
+      <el-table-column width="200" align="center" label="备注">
         <template slot-scope="scope">
           <span>{{scope.row.bz}}</span>
         </template>

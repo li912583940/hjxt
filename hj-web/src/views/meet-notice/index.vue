@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
+    <el-table :key='tableKey' :data="list"   border fit highlight-current-row
       style="width: 100%">
       <el-table-column align="center" label="罪犯监区" width="140">
         <template slot-scope="scope">
@@ -19,19 +19,23 @@
       </el-table-column>
       <el-table-column width="140px" align="center" label="会见窗口">
         <template slot-scope="scope">
-          <span v-if="scope.row.fpFlag !=0">未分配</span>
+          <span v-if="scope.row.fpFlag ==0">未分配</span>
           <span else>{{scope.row.zw}}</span>
         </template>
       </el-table-column>
       <el-table-column width="140px" align="center" label="会见通知 接收状态">
         <template slot-scope="scope">
-          <span v-if="cope.row.pageTzState==0" @click="sdNotice">未接收</span>
-          <span else>已接收</span>
+          <span v-if="scope.row.pageTzState==0" @click="sdNotice">未接收</span>
+          <span v-if="scope.row.pageTzState==1">已接收</span>
         </template>
       </el-table-column>
       <el-table-column width="140px" align="center" label="会见类型">
         <template slot-scope="scope">
-          <span>{{scope.row.hjType}}</span>
+          <span v-if="scope.row.hjType ==1">电话会见</span>
+          <span v-else-if="scope.row.hjType ==2">面对面会见</span>
+          <span v-else-if="scope.row.hjType ==3">视频会见</span>
+          <span v-else-if="scope.row.hjType ==4">帮教</span>
+          <span v-else-if="scope.row.hjType ==5">提审</span>
         </template>
       </el-table-column>
       <el-table-column width="300px" align="center" label="会见说明">
@@ -39,7 +43,7 @@
           <span>{{scope.row.hjInfo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="登记时间">
+      <el-table-column width="200px" align="center" label="登记时间" :formatter="dateFormat">
         <template slot-scope="scope">
           <span>{{scope.row.djTime}}</span>
         </template>
@@ -51,7 +55,8 @@
       </el-table-column>
       <el-table-column width="200px" align="center" label="会见状态">
         <template slot-scope="scope">
-          <span>{{scope.row.fpFlag}}</span>
+          <span v-if="scope.row.fpFlag==2">已在会见</span>
+          <span v-if="scope.row.fpFlag!=2">未在会见</span>
         </template>
       </el-table-column>
       <el-table-column width="200px" align="center" label="会见通知 接收人">
@@ -59,20 +64,15 @@
           <span>{{scope.row.pageTzUserName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="接收 时间">
+      <el-table-column width="200px" align="center" label="接收 时间" :formatter="dateFormat">
         <template slot-scope="scope">
           <span>{{scope.row.pageTzTime}}</span>
         </template>
       </el-table-column>
       <el-table-column width="200px" align="center" label="接收通知 是否超时">
         <template slot-scope="scope">
-          <span>{{scope.row.isOverTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="180" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button  size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+          <span v-if="scope.row.isOverTime==0">未超时</span>
+          <span v-if="scope.row.isOverTime==1">已超时</span>
         </template>
       </el-table-column>
     </el-table>
@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import { findPojo } from '@/api/relatives'
+import { findPojo } from '@/api/meetNotice'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
