@@ -1,21 +1,9 @@
 <template>
   <div class="app-container">
-    <div class="filter-container">
-    	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员编号" v-model="listQuery.frNo">
-      </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员姓名" v-model="listQuery.frName">
-      </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="listQuery.qsName">
-      </el-input>
-      <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
-      <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
-      <el-checkbox class="filter-item" style='margin-left:15px;' @change='tableKey=tableKey+1' v-model="showReviewer">{{$t('criminal.reviewer')}}</el-checkbox>
-    </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
       style="width: 100%">
-      <el-table-column align="center" :label="$t('criminal.actions')" width="200" >
+      <el-table-column align="center" :label="$t('criminal.actions')" width="200" fixed="left" >
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">自动分配</el-button>
           <!--<el-button type="primary" size="mini" @click="handleUpdate(scope.row)">取消分配</el-button>-->
@@ -91,7 +79,7 @@
           <span v-if="scope.row.shState=='0'">未授权</span>
         </template>
       </el-table-column>
-      <el-table-column width="180" align="center" label="操作">
+      <el-table-column width="180" align="center" label="操作" fixed="right">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">授权</el-button>
           <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">取消授权</el-button>
@@ -111,7 +99,7 @@
 </template>
 
 <script>
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete } from '@/api/relatives'
+import { findPojo } from '@/api/meetSign'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -131,12 +119,8 @@ export default {
       listLoading: true,
       listQuery: {
         pageNum: 1,
-        pageSize: 20,
-        frNo: undefined,
-        frName: undefined,
-        qsName: undefined
-      },
-      showReviewer: false,
+        pageSize: 20
+      }
      
     }
   },
@@ -149,15 +133,6 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      if(!this.listQuery.frName){
-      	this.listQuery.frName = undefined
-      }
-      if(!this.listQuery.frNo){
-      	this.listQuery.frNo = undefined
-      }
-      if(!this.listQuery.qsName){
-      	this.listQuery.qsName = undefined
-      }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count
@@ -165,10 +140,6 @@ export default {
       }).catch(error => {
           this.listLoading = false
       })
-    },
-    handleFilter() {
-      this.listQuery.pageNum = 1
-      this.getList()
     },
     handleSizeChange(val) {
       this.listQuery.pageSize = val
