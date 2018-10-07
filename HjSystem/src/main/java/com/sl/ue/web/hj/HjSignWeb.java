@@ -16,7 +16,7 @@ import com.sl.ue.util.http.Result;
  */
 @RestController
 @RequestMapping("/hjSign")
-public class HjSign extends Result{
+public class HjSignWeb extends Result{
 
 	@Autowired
 	private JlHjDjService  jlHjDjSQL;

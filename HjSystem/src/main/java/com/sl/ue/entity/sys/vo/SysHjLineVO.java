@@ -6,12 +6,54 @@ public class SysHjLineVO extends SysHjLine{
 
     /** 序列化 */
     private static final long serialVersionUID = 1L;
+    
+    private String ip; // 服务器ip
 
+    private String port; // 服务器端口
+    
+    private String audioPort; // 服务器监听Socket端口号  默认值：9001    暂时未使用
+    
+    private String writeTxt; // 录音注释
+    public String getIp() {
+		return ip;
+	}
 
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public String getPort() {
+		return port;
+	}
+
+	public void setPort(String port) {
+		this.port = port;
+	}
+
+	public String getAudioPort() {
+		return audioPort;
+	}
+
+	public void setAudioPort(String audioPort) {
+		this.audioPort = audioPort;
+	}
+	
+	public String getWriteTxt() {
+		return writeTxt;
+	}
+
+	public void setWriteTxt(String writeTxt) {
+		this.writeTxt = writeTxt;
+	}
 
     /*---------------------------  处理关联表  -----------------------------*/
 
-    private String leftJoinField; // 关联表字段
+    
+
+	
+
+
+	private String leftJoinField; // 关联表字段
 
     private String leftJoinTable; // 关联表
 

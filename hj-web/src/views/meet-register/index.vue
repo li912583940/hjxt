@@ -16,10 +16,10 @@
 		<!-- 服刑人员开始 -->
 		<el-card class="box-card">
 	    <el-table :key='frTableKey' ref="frMultipleTable" :data="frList" v-loading="frListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-	       @row-click="frRowClick" @select="frSelectionChang" @select-all="frAllSelectionChang" style="width: 100%">
-	      <el-table-column align="center" type="selection" width="65" fixed="left">
+	       @row-click="frRowClick" @row-dblclick="handleSearchQs" @select="frSelectionChang" @select-all="frAllSelectionChang" style="width: 100%">
+	      <el-table-column align="center" type="selection" width="70" fixed="left">
 	      </el-table-column>
-	      <el-table-column align="center" label="监区" width="65">
+	      <el-table-column align="center" label="监区" width="70">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.jqName}}</span>
 	        </template>
@@ -44,7 +44,7 @@
 	          <span>{{scope.row.hjLastTime}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="上次会见家属信息">
+	      <el-table-column width="150px" align="center" label="上次会见家属信息">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.qsName}}</span>
 	        </template>
@@ -101,17 +101,16 @@
 	          <span v-if="scope.row.hjJb!='-1'">否</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column align="center" :label="$t('criminal.actions')" width="230" class-name="small-padding fixed-width">
+	      <el-table-column align="center" :label="$t('criminal.actions')" width="150" class-name="small-padding fixed-width" fixed="right">
 	        <template slot-scope="scope">
-	          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
-	          <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{$t('criminal.delete')}}
+	          <el-button type="primary" size="mini" @click="handleOpenQs(scope.row)">亲属</el-button>
 	          </el-button>
 	        </template>
 	      </el-table-column>
 	    </el-table>
 	
 	    <div class="pagination-container">
-	      <el-pagination background @size-change="handleFrSizeChange" @current-change="handleFrCurrentChange" :current-page="frListQuery.page" :page-sizes="[5,10]" :page-size="frListQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="frTotal">
+	      <el-pagination background @size-change="handleFrSizeChange" @current-change="handleFrCurrentChange" :current-page="frListQuery.pageNum" :page-sizes="[5,10]" :page-size="frListQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="frTotal">
 	      </el-pagination>
 	    </div>
 	  </el-card>
@@ -121,7 +120,7 @@
 		<el-card class="box-card">
 	    <el-table :key='qsTableKey' ref="qsMultipleTable" :data="qsList" v-loading="qsListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
 	      @selection-change="qsAllSelectionChange" @row-click="qsRowClick" style="width: 100%">
-	      <el-table-column align="center" type="selection"  width="65" fixed="left">
+	      <el-table-column align="center" type="selection"  width="70" fixed="left">
 	      </el-table-column>
 	      <el-table-column align="center" label="亲属姓名" width="100">
 	        <template slot-scope="scope">
@@ -133,7 +132,7 @@
 	          <span>{{scope.row.gx}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="160px" align="center" label="证件类别">
+	      <el-table-column width="110px" align="center" label="证件类别">
 	        <template slot-scope="scope">
 	          <span v-if="scope.row.qsZjlb==1">身份证</span>
 	          <span v-if="scope.row.qsZjlb==2">警官证</span>
@@ -141,12 +140,12 @@
 	          <span v-if="scope.row.qsZjlb==4">其他</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="证件号码">
+	      <el-table-column width="150px" align="center" label="证件号码">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.qsSfz}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="证件物理号">
+	      <el-table-column width="150px" align="center" label="证件物理号">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.qsSfzWlh}}</span>
 	        </template>
@@ -171,7 +170,7 @@
 	          <span>{{scope.row.tele}}</span>
 	        </template>
 	      </el-table-column>
-				<el-table-column width="110px" align="center" label="备注">
+				<el-table-column width="127px" align="center" label="备注">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.bz}}</span>
 	        </template>
@@ -189,19 +188,12 @@
 	        </template>
 	      </el-table-column>
 	      
-	      <el-table-column align="center" :label="$t('criminal.actions')" width="230" class-name="small-padding fixed-width">
-	        <template slot-scope="scope">
-	          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
-	          <el-button  size="mini" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{$t('criminal.delete')}}
-	          </el-button>
-	        </template>
-	      </el-table-column>
 	    </el-table>
 	
-	    <div class="pagination-container">
-	      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="qsListQuery.page" :page-sizes="[5,10]" :page-size="qsListQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="qsTotal">
+	    <!--<div class="pagination-container">
+	      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="qsListQuery.pageNum" :page-sizes="[5,10]" :page-size="qsListQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="qsTotal">
 	      </el-pagination>
-	    </div>
+	    </div>-->
 	  </el-card>
     <!-- 亲属结束 -->
   </div>
@@ -238,7 +230,7 @@ export default {
       qsListLoading: false,
       qsListQuery: {
         pageNum: 1,
-        pageSize: 5,
+        pageSize: 10,
         frNo: undefined
       },
       
@@ -328,6 +320,11 @@ export default {
 	    	})
     	}
     },
+    handleSearchQs(row) { //双击罪犯表格查询家属
+    	this.qsListQuery.frNo = row.frNo
+    	this.getQsFrList()
+    },
+    // 罪犯与家属多选框事件
     frSelectionChang(rows,row){
     	this.$refs.frMultipleTable.clearSelection();
     	this.$refs.frMultipleTable.toggleRowSelection(row);

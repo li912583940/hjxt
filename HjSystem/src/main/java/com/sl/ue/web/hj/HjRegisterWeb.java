@@ -18,7 +18,7 @@ import com.sl.ue.util.http.Result;
  */
 @RestController
 @RequestMapping("/hjRegister")
-public class HjRegister extends Result{
+public class HjRegisterWeb extends Result{
 
 	@Autowired
     private JlFrService jlFrSQL;

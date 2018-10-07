@@ -11,6 +11,10 @@ import com.sl.ue.entity.jl.vo.JlYjVO;
 import com.sl.ue.service.jl.JlYjService;
 import com.sl.ue.util.http.Result;
 
+/**
+ * 说明 [警察]
+ * L_晓天  @2018年10月7日
+ */
 @RestController
 @RequestMapping("/jlYj")
 public class JlYjWeb extends Result{
