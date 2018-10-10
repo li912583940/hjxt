@@ -3,6 +3,7 @@ package com.sl.ue.web.jl;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +32,13 @@ public class JlYjWeb extends Result{
 
     @RequestMapping("/findPojo")
     public String findPojo(JlYjVO model, Integer pageSize, Integer pageNum){
+    	StringBuffer leftJoinWhere = new StringBuffer();
+    	if(StringUtils.isNotBlank(model.getYjName())){
+    		String str = model.getYjName();
+    		leftJoinWhere.append(" AND a.YJ_Name LIKE '%"+str+"%' ");
+    		model.setYjName(null);
+    	}
+    	model.setLeftJoinWhere(leftJoinWhere.toString());
         Map<String, Object> map = jlYjSQL.findPojo(model, pageSize, pageNum);
         this.putPojo(map);
         return this.toResult();
@@ -52,6 +60,8 @@ public class JlYjWeb extends Result{
 
     @RequestMapping("/add")
     public String add(JlYjVO model){
+    	model.setJy("");
+    	model.setJq("");
         jlYjSQL.add(model);
         return this.toResult();
     }

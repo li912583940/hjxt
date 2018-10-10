@@ -10,11 +10,12 @@ public class Entity2 {
 	private String hj = "\\hj";
 	private String jl = "\\jl";
 	private String sys = "\\sys";
-	
+	private String other = "\\other";
 	public void execute(){
 		hj();
 		jl();
 		sys();
+		other();
 	}
 	
 	private void hj(){
@@ -63,6 +64,23 @@ public class Entity2 {
 					Entity3 entity3 = new Entity3();
 					String[] s = filename.split("\\.");
 					entity3.executeVO(s[0], "sys");
+				}
+			}
+		}
+	}
+	
+	private void other(){
+		System.out.println("读取文件夹： "+path+other);
+		File file = new File(path+other);
+		if(file.exists()){
+			File[] files = file.listFiles();
+			for(File f : files){
+				if(f.isFile()){
+					String filename = f.getName();
+					System.out.println(filename);
+					Entity3 entity3 = new Entity3();
+					String[] s = filename.split("\\.");
+					entity3.executeVO(s[0], "other");
 				}
 			}
 		}

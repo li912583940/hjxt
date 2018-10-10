@@ -76,8 +76,8 @@
       <el-table-column align="center" :label="$t('criminal.actions')" width="240" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
         	<el-button type="primary" size="mini" @click="handleQsManage(scope.row)">亲属</el-button>
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
-          <el-button  size="mini" type="danger" @click="handleDelete(scope.row)">{{$t('criminal.delete')}}
+          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
+          <el-button  size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">{{$t('criminal.delete')}}
           </el-button>
         </template>
       </el-table-column>
@@ -204,8 +204,8 @@
 	      </el-table-column>
 	      <el-table-column align="center" :label="$t('criminal.actions')" width="180" class-name="small-padding fixed-width" fixed="right">
 	        <template slot-scope="scope">
-	          <el-button type="primary" size="mini" @click="handleQsUpdate(scope.row)">编辑</el-button>
-	          <el-button  size="mini" type="danger" @click="handleQsDelete(scope.row)">删除</el-button>
+	          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleQsUpdate(scope.row)">编辑</el-button>
+	          <el-button  size="mini" type="danger" icon="el-icon-delete" @click="handleQsDelete(scope.row)">删除</el-button>
 	        </template>
 	      </el-table-column>
 	    </el-table>

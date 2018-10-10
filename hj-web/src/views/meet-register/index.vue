@@ -11,6 +11,7 @@
         </el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
+      <el-button class="filter-item" type="primary" v-waves  @click="addHjdj">提交登记</el-button>
     </div>
 
 		<!-- 服刑人员开始 -->
@@ -200,7 +201,7 @@
 </template>
 
 <script>
-import { findFrPojo, findQsPojo, findJqList } from '@/api/meetRegister'
+import { findFrPojo, findQsPojo, findJqList, RequestAddHjdj } from '@/api/meetRegister'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
 
@@ -238,10 +239,11 @@ export default {
       
       ],
       
-      formdata: {
-      	frSelections: [],
-      	qsSelections: [],
-      }
+      formdata: {// 提交会见登记表单
+      	frNo: undefined,
+      	qsIds: []
+      },
+      qsSelections: []
     }
   },
   filters: {
@@ -320,6 +322,34 @@ export default {
 	    	})
     	}
     },
+    addHjdj() { //提交会见登记
+    	if(!this.formdata.frNo) {
+    		this.$notify.error({
+          title: '错误',
+          message: '提交登记时，必须选择一位服刑人员'
+        })
+    	}
+    	if(this.qsSelections.length == 0) {
+    		this.$notify.error({
+          title: '错误',
+          message: '提交登记时，至少选择一位家属'
+        })
+    	}
+    	for(let x of this.qsSelections) {
+    		this.formdata.qsIds.push(x.webId)
+    	}
+    	const loading = this.$loading({
+	      lock: true,
+	      text: 'Loading',
+	      spinner: 'el-icon-loading',
+	      background: 'rgba(0, 0, 0, 0.7)'
+	    })
+    	RequestAddHjdj(this.formdata).then((res) => {
+    		loading.close();
+    	}).catch(error =>{
+    		loading.close();
+    	})
+    },
     handleSearchQs(row) { //双击罪犯表格查询家属
     	this.qsListQuery.frNo = row.frNo
     	this.getQsFrList()
@@ -332,15 +362,21 @@ export default {
     frAllSelectionChang(){
     	this.$refs.frMultipleTable.clearSelection();
     },
-    frRowClick(row){
+    frRowClick(row){ //单机罪犯表格某一行， 查询家属信息
     	this.$refs.frMultipleTable.clearSelection();
     	this.$refs.frMultipleTable.toggleRowSelection(row);
+    	
+    	this.qsListQuery.frNo = row.frNo
+    	this.getQsFrList()
+    	
+    	this.formdata.frNo= row.frNo 
+    	this.qsSelections = []
     },
-    qsRowClick(row){ // 单击亲属表格行 多选框选中事件
+    qsRowClick(row){ // 单击亲属表格得某一行  让多选框处于选中事件
       this.$refs.qsMultipleTable.toggleRowSelection(row);
     },
   	qsAllSelectionChange(rows){ // 亲属表格 全选事件
-  		this.formdata.qsSelections = rows;
+  		this.qsSelections = rows;
   	},
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {

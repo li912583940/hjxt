@@ -14,7 +14,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
  * 说明 [数据返回封装结果集]
  * @author lxt
  */
-public abstract class Result {
+public class Result {
 	public final static Integer error_0 = 0; // "正确"
 	public final static Integer error_100 = 100; // "系统异常"
 	public final static Integer error_101 = 101; // 无效token

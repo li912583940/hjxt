@@ -15,7 +15,7 @@
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
       style="width: 100%">
-      <el-table-column align="center" :label="$t('criminal.id')" width="80">
+      <el-table-column width="80" align="center"  :label="$t('criminal.id')">
         <template slot-scope="scope">
           <span>{{scope.row.webId}}</span>
         </template>
@@ -57,8 +57,8 @@
       </el-table-column>
       <el-table-column align="center" :label="$t('criminal.actions')" width="180" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button  size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button  size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

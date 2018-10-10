@@ -1,42 +1,44 @@
 <template>
   <div class="app-container">
   	<div class="filter-container">
-    	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员编号" v-model="listQuery.frNo">
+    	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="警察编号" v-model="listQuery.yjNum">
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员姓名" v-model="listQuery.frName">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="警察姓名" v-model="listQuery.yjName">
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="listQuery.qsName">
-      </el-input>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.deptName" placeholder="部门">
+        <el-option v-for="item in deptNames" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
     </div>
     
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
-      style="width: 100%">
-      <el-table-column align="center" label="警察编号" width="140">
+      style="width: 1001px">
+      <el-table-column align="center" label="警察编号" width="200">
         <template slot-scope="scope">
           <span>{{scope.row.yjNum}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="警察姓名">
+      <el-table-column width="200" align="center" label="警察姓名">
         <template slot-scope="scope">
           <span>{{scope.row.yjName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160px" align="center" label="警察IC卡号">
+      <el-table-column width="200" align="center" label="警察IC卡号">
         <template slot-scope="scope">
           <span>{{scope.row.yjCard}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="部门">
+      <el-table-column width="200" align="center" label="部门">
         <template slot-scope="scope">
           <span>{{scope.row.deptName}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="180" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('criminal.actions')" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button  size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button  size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -60,7 +62,10 @@
           <el-input v-model="dataForm.yjCard"></el-input>
         </el-form-item>
         <el-form-item label="部门" prop="deptName">
-          <el-input v-model="dataForm.deptName"></el-input>
+          <el-select class="filter-item" v-model="dataForm.deptName" placeholder="请选择">
+            <el-option v-for="item in  deptNames" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -74,7 +79,7 @@
 </template>
 
 <script>
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete} from '@/api/yjMessage'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, findDeptNameList} from '@/api/yjMessage'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -91,6 +96,9 @@ export default {
       list: null,
       total: null,
       listQuery: {
+      	yjNum: undefined,
+      	yjName: undefined,
+      	deptName: undefined,
         pageNum: 1,
         pageSize: 20
       },
@@ -102,6 +110,9 @@ export default {
         yjCard: undefined,
         deptName: undefined
       },
+      deptNames : [ 
+      
+      ],
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -118,9 +129,19 @@ export default {
   },
   created() {
     this.getList()
+    this.getDeptNameList()
   },
   methods: {
     getList() {
+    	if(!this.listQuery.yjNum){
+      	this.listQuery.yjNum = undefined
+      }
+      if(!this.listQuery.yjName){
+      	this.listQuery.yjName = undefined
+      }
+      if(!this.listQuery.deptName){
+      	this.listQuery.deptName = undefined
+      }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count
@@ -137,6 +158,19 @@ export default {
     handleCurrentChange(val) {
       this.listQuery.pageNum = val
       this.getList()
+    },
+    getDeptNameList() { //警察部门下拉框
+    	if(this.deptNames.length === 0) {
+    		findDeptNameList({}).then((res) => {
+	    		let list = res.list
+	    		for(let x of list){
+					  let value = {}
+					  value.id = x.deptName
+					  value.name = x.deptName
+					  this.deptNames.push(value)
+					}
+	    	})
+    	}
     },
     //重置表单
 		resetForm(formName) {
@@ -155,12 +189,6 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-        	if(this.dataForm.infoRjsj){
-        		this.dataForm.infoRjsj = this.dateFormats(this.dataForm.infoRjsj);
-        	}
-        	if(this.dataForm.infoCsrq){
-        		this.dataForm.infoCsrq = this.dateFormats(this.dataForm.infoCsrq);
-        	}
           RequestAdd(this.dataForm).then(() => {
             this.dialogFormVisible = false
             this.getList()
@@ -176,10 +204,10 @@ export default {
     	}
     	findOne(param).then((res) =>{
     		this.dataForm.webId = res.data.webId,
-	        this.dataForm.yjNum =  res.data.yjNum,
-	        this.dataForm.yjName = res.data.yjName,
-	        this.dataForm.yjCard = res.data.yjCard,
-	        this.dataForm.deptName = res.data.deptName
+        this.dataForm.yjNum =  res.data.yjNum,
+        this.dataForm.yjName = res.data.yjName,
+        this.dataForm.yjCard = res.data.yjCard,
+        this.dataForm.deptName = res.data.deptName
     	})
 	    this.dialogStatus = 'update'
 	    this.dialogFormVisible = true

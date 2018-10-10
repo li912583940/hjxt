@@ -1,12 +1,16 @@
 package com.sl.ue.entity.sys;
 
 import java.io.Serializable;
-
+import java.util.Date;
 
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
 import com.sl.ue.util.anno.Table;
 
+/**
+ * 说明 []
+ * L_晓天  @2018年10月10日
+ */
 @Table("SYS_USER")
 public class SysUser  implements Serializable{
 //public class User  implements RowMapper<User>,Serializable{
@@ -33,7 +37,10 @@ public class SysUser  implements Serializable{
 	private Integer isSp;
 	@DbField("Is_Bj")
 	private Integer isBj;
-	
+	@DbField("token")
+	private String token;
+	@DbField("token_time")
+	private Date tokenTime;
 
 	public Integer getWebid() {
 		return webid;
@@ -105,6 +112,22 @@ public class SysUser  implements Serializable{
 
 	public void setIsBj(Integer isBj) {
 		this.isBj = isBj;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public Date getTokenTime() {
+		return tokenTime;
+	}
+
+	public void setTokenTime(Date tokenTime) {
+		this.tokenTime = tokenTime;
 	}
 	
 

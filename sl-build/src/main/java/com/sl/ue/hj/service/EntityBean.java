@@ -15,12 +15,13 @@ public class EntityBean {
 	private String hj = "\\hj";
 	private String jl = "\\jl";
 	private String sys = "\\sys";
-	
+	private String other = "\\other";
 	
 	public void execute(){
 		hj();
 		jl();
 		sys();
+		other();
 	}
 	
 	private void hj(){
@@ -69,6 +70,23 @@ public class EntityBean {
 					ServiceBean serviceBean = new ServiceBean();
 					String[] s = filename.split("\\.");
 					serviceBean.execute(s[0], "sys");
+				}
+			}
+		}
+	}
+	
+	private void other(){
+		System.out.println("读取文件夹： "+path+other);
+		File file = new File(path+other);
+		if(file.exists()){
+			File[] files = file.listFiles();
+			for(File f : files){
+				if(f.isFile()){
+					String filename = f.getName();
+					System.out.println(filename);
+					ServiceBean serviceBean = new ServiceBean();
+					String[] s = filename.split("\\.");
+					serviceBean.execute(s[0], "other");
 				}
 			}
 		}

@@ -7,11 +7,21 @@ public class JlHjRecVO extends JlHjRec{
     /** 序列化 */
     private static final long serialVersionUID = 1L;
 
+    private String qsName; // 亲属  查询条件 
+    
+    public String getQsName() {
+  		return qsName;
+  	}
+
+  	public void setQsName(String qsName) {
+  		this.qsName = qsName;
+  	}
 
 
     /*---------------------------  处理关联表  -----------------------------*/
+  
 
-    private String leftJoinField; // 关联表字段
+	private String leftJoinField; // 关联表字段
 
     private String leftJoinTable; // 关联表
 

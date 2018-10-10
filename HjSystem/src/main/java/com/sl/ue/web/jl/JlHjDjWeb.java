@@ -7,8 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
+import com.sl.ue.entity.jl.vo.JlQsVO;
+import com.sl.ue.service.jl.JlFrService;
 import com.sl.ue.service.jl.JlHjDjService;
+import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.util.http.Result;
 
 @RestController
@@ -18,6 +22,12 @@ public class JlHjDjWeb extends Result{
     @Autowired
     private JlHjDjService jlHjDjSQL;
 
+    @Autowired
+    private JlFrService jlFrSQL;
+	
+	@Autowired
+    private JlQsService jlQsSQL;
+	
     @RequestMapping("/findList")
     public String findList(JlHjDjVO model,Integer pageSize, Integer pageNum){
         List<JlHjDjVO> list = jlHjDjSQL.findList(model, pageSize, pageNum);
@@ -64,4 +74,42 @@ public class JlHjDjWeb extends Result{
         return this.toResult();
     }
 
+    /**
+	 * 说明 [查询罪犯]
+	 * L_晓天  @2018年10月6日
+	 */
+	@RequestMapping("/findFrPojo")
+    public String findFrPojo(JlFrVO model, Integer pageSize, Integer pageNum){
+        Map<String, Object> map = jlFrSQL.findPojoJoin(model, pageSize, pageNum);
+        this.putPojo(map);
+        return this.toResult();
+    }
+	
+	/**
+	 * 说明 [查询家属]
+	 * L_晓天  @2018年10月6日
+	 */
+	@RequestMapping("/findQsPojo")
+    public String findQsPojo(JlQsVO model, Integer pageSize, Integer pageNum){
+        Map<String, Object> map = jlQsSQL.findPojo(model, pageSize, pageNum);
+        this.putPojo(map);
+        return this.toResult();
+    }
+	
+	/**
+	 * 说明 [提交会见登记]
+	 * L_晓天  @2018年10月9日
+	 */
+	@RequestMapping("/addHjdj")
+	public String addHjdj(
+			String frNo, // 罪犯编号
+			List<Integer> qsIds, // 亲属id集合
+			Integer hjsc, // 会见时长  单位：分钟
+			String hjsm, // 会见说明
+			Integer hjType, // 会见类型
+			Integer callNo //排队号
+			){
+		return jlHjDjSQL.addHjdj(frNo, qsIds, hjsc, hjsm, hjType, callNo).toResult();
+		
+	}
 }

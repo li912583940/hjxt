@@ -10,3 +10,6 @@ export const RequestAdd = params => { return request.post('/jlYj/add', params ).
 export const RequestEdit = params => { return request.post('/jlYj/edit', params ).then(res => res) }
 
 export const RequestDelete = params => { return request.post('/jlYj/delete', params ).then(res => res) }
+
+
+export const findDeptNameList = params => { return request.get('/dept/findList', { params: params } ).then(res => res) }

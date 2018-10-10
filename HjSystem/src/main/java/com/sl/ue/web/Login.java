@@ -1,6 +1,7 @@
 package com.sl.ue.web;
 
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import javax.websocket.Session;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +22,7 @@ import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.WebContextUtil;
 import com.sl.ue.util.http.token.TokenManager;
+import com.sl.ue.util.http.token.TokenUser;
 
 @RestController
 public class Login extends Result{
@@ -48,8 +51,9 @@ public class Login extends Result{
 			String token = tokenManager.createToken(username);
 			System.out.println("token: "+token);
 			loginUser.setToken(token);
-			Constants.sysUser = loginUser; //需要测试
-			System.out.println("登陆用户: "+Constants.sysUser.getUserName());
+			Date overdue = DateUtils.addHours(new Date(), Constants.TOKEN_EXPIRES_HOURS); // token 到期时间
+			loginUser.setTokenTime(overdue);
+			sysUserSQL.edit(loginUser);
 			this.putJson(loginUser);
 			return this.toResult();
 		}

@@ -1,14 +1,15 @@
-package com.sl.ue.entity.sys.vo;
+package com.sl.ue.entity.other.vo;
 
-import com.sl.ue.entity.sys.SysUser;
+import com.sl.ue.entity.other.Dept;
 
-public class SysUserVO extends SysUser{
+public class DeptVO extends Dept{
 
     /** 序列化 */
     private static final long serialVersionUID = 1L;
 
-	
-	/*---------------------------  处理关联表  -----------------------------*/
+
+
+    /*---------------------------  处理关联表  -----------------------------*/
 
     private String leftJoinField; // 关联表字段
 
@@ -39,5 +40,6 @@ public class SysUserVO extends SysUser{
     public void setLeftJoinWhere(String leftJoinWhere) {
         this.leftJoinWhere = leftJoinWhere;
     }
-    
+
+
 }

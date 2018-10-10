@@ -182,9 +182,6 @@ public class JlHjDj implements java.io.Serializable {
 	
 
 	/** default constructor */
-	public JlHjDj() {
-	}
-
 	public String getQsCard1() {
 		return qsCard1;
 	}
@@ -328,105 +325,6 @@ public class JlHjDj implements java.io.Serializable {
 	public void setQsZp9(byte[] qsZp9) {
 		this.qsZp9 = qsZp9;
 	}
-
-	/** minimal constructor */
-	public JlHjDj(String jy, String jqNo, String frNo, Integer hjTime,
-			Integer hjType, Integer djType, String djUser, Date djTime,
-			Integer fpFlag, Integer fpTzfrFlag, Integer fpTzqsFlag,
-			Integer state,String frDah,String pageTzUserNo,String pageTzUserName,Date pageTzTime) {
-			this.jy = jy;
-			this.jqNo = jqNo;
-			this.frNo = frNo;
-			this.hjTime = hjTime;
-			this.hjType = hjType;
-			this.djType = djType;
-			this.djUser = djUser;
-			this.djTime = djTime;
-			this.fpFlag = fpFlag;
-			this.fpTzfrFlag = fpTzfrFlag;
-			this.fpTzqsFlag = fpTzqsFlag;
-			this.state = state;
-			this.frDah = frDah;
-			this.pageTzUserNo = pageTzUserNo;
-			this.pageTzUserName = pageTzUserName;
-			this.pageTzTime = pageTzTime;
-	}
-
-	/** full constructor */
-	public JlHjDj(String jy, String jqNo, String jqName, String frNo,
-			String frName, String qsInfo1, String qsInfo2, String qsInfo3,
-			String qsInfo4, String qsInfo5, String qsInfo6, String qsInfo7,
-			String qsInfo8, String qsInfo9, Integer hjTime, String hjInfo,
-			Integer hjType, String monitorFlag, Integer djType, String djUser,
-			Date djTime, String yjNo, String yjName, String frInUser,
-			Date frInTime, String frOutUser, Date frOutTime,
-			String qsInUser, Date qsInTime, String qsOutUser,
-			Date qsOutTime, Integer hjOrder, Integer fpFlag,
-			Integer fpLineNo, Date fpTime, Integer fpTzfrFlag,
-			Integer fpTzqsFlag, Long hjIndex, String tpInfo, String spInfo,
-			Date spTime, String spUser, Integer state, String cancelInfo,
-			String callId, Integer importFlag, Date importTime,int infoWp,
-			Integer tpQsNum,Integer qzSp,String frDah,String pageTzUserNo,String pageTzUserName,Date pageTzTime,
-			Date fpTimeFr,Date fpTimeQs) {
-		this.jy = jy;
-		this.jqNo = jqNo;
-		this.jqName = jqName;
-		this.frNo = frNo;
-		this.frName = frName;
-		this.qsInfo1 = qsInfo1;
-		this.qsInfo2 = qsInfo2;
-		this.qsInfo3 = qsInfo3;
-		this.qsInfo4 = qsInfo4;
-		this.qsInfo5 = qsInfo5;
-		this.qsInfo6 = qsInfo6;
-		this.qsInfo7 = qsInfo7;
-		this.qsInfo8 = qsInfo8;
-		this.qsInfo9 = qsInfo9;
-		this.hjTime = hjTime;
-		this.hjInfo = hjInfo;
-		this.hjType = hjType;
-		this.monitorFlag = monitorFlag;
-		this.djType = djType;
-		this.djUser = djUser;
-		this.djTime = djTime;
-		this.yjNo = yjNo;
-		this.yjName = yjName;
-		this.frInUser = frInUser;
-		this.frInTime = frInTime;
-		this.frOutUser = frOutUser;
-		this.frOutTime = frOutTime;
-		this.qsInUser = qsInUser;
-		this.qsInTime = qsInTime;
-		this.qsOutUser = qsOutUser;
-		this.qsOutTime = qsOutTime;
-		this.hjOrder = hjOrder;
-		this.fpFlag = fpFlag;
-		this.fpLineNo = fpLineNo;
-		this.fpTime = fpTime;
-		this.fpTzfrFlag = fpTzfrFlag;
-		this.fpTzqsFlag = fpTzqsFlag;
-		this.hjIndex = hjIndex;
-		this.tpInfo = tpInfo;
-		this.spInfo = spInfo;
-		this.spTime = spTime;
-		this.spUser = spUser;
-		this.state = state;
-		this.cancelInfo = cancelInfo;
-		this.callId = callId;
-		this.importFlag = importFlag;
-		this.importTime = importTime;
-		this.infoWp=infoWp;
-		this.tpQsNum=tpQsNum;
-		this.qzSp=qzSp;
-		this.frDah=frDah;
-		this.pageTzUserNo = pageTzUserNo;
-		this.pageTzUserName = pageTzUserName;
-		this.pageTzTime = pageTzTime;
-		this.fpTimeFr = fpTimeFr;
-		this.fpTimeQs = fpTimeQs;
-	}
-
-	// Property accessors
 
 	public Long getHjid() {
 		return this.hjid;
