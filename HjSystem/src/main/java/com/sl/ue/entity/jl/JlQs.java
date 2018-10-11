@@ -36,9 +36,9 @@ public class JlQs implements java.io.Serializable {
 	@DbField("SW")
 	private Integer sw;
 	@DbField("ZP")
-	private byte[] zp;
+	private Byte[] zp;
 	@DbField("JZ")
-	private byte[] jz;
+	private Byte[] jz;
 	@DbField("SP_State")
 	private Integer spState;
 	@DbField("SP_UserNo")
@@ -52,7 +52,7 @@ public class JlQs implements java.io.Serializable {
 	@DbField("CreateTime")
 	private Date createTime;
 	@DbField("Face_ZP")
-	private byte[] faceZp;
+	private Byte[] faceZp;
 	@DbField("Face_State")
 	private Integer faceState;
 	@DbField("Face_ID")
@@ -148,19 +148,19 @@ public class JlQs implements java.io.Serializable {
 		this.sw = sw;
 	}
 
-	public byte[] getZp() {
+	public Byte[] getZp() {
 		return this.zp;
 	}
 
-	public void setZp(byte[] zp) {
+	public void setZp(Byte[] zp) {
 		this.zp = zp;
 	}
 
-	public byte[] getJz() {
+	public Byte[] getJz() {
 		return this.jz;
 	}
 
-	public void setJz(byte[] jz) {
+	public void setJz(Byte[] jz) {
 		this.jz = jz;
 	}
 
@@ -212,11 +212,11 @@ public class JlQs implements java.io.Serializable {
 		this.createTime = createTime;
 	}
 
-	public byte[] getFaceZp() {
+	public Byte[] getFaceZp() {
 		return faceZp;
 	}
 
-	public void setFaceZp(byte[] faceZp) {
+	public void setFaceZp(Byte[] faceZp) {
 		this.faceZp = faceZp;
 	}
 

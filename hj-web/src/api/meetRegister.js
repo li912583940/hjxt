@@ -11,4 +11,4 @@ export const findQsPojo = params => { return request.get('/jlHjDj/findQsPojo', {
 export const findJqList = params => { return request.get('/jlJq/findList', { params: params } ).then(res => res) }
 
 // 提交会见登记
-export const RequestAddHjdj = params => { return request.get('/jlHjDj/addHjdj', params ).then(res => res) }
+export const RequestAddHjdj = params => { return request.post('/jlHjDj/addHjdj', params ).then(res => res) }

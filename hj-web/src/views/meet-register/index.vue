@@ -335,9 +335,11 @@ export default {
           message: '提交登记时，至少选择一位家属'
         })
     	}
+    	let qsid = ''
     	for(let x of this.qsSelections) {
-    		this.formdata.qsIds.push(x.webId)
+    		qsid = qsid==''?x.webId:qsid+','+x.webId
     	}
+    	this.formdata.qsIds = qsid
     	const loading = this.$loading({
 	      lock: true,
 	      text: 'Loading',

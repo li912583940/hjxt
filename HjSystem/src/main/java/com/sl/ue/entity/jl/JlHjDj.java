@@ -12,7 +12,7 @@ public class JlHjDj implements java.io.Serializable {
 	/** */
 	private static final long serialVersionUID = 4904000068528047567L;
 	// Fields
-	@Id
+	@Id(inc=true)
 	@DbField("HJID")
 	private Long hjid;
 	@DbField("JY")
@@ -110,7 +110,7 @@ public class JlHjDj implements java.io.Serializable {
 	@DbField("Import_Time")
 	private Date importTime;
 	@DbField("Info_Wp")
-	private int infoWp;
+	private Integer infoWp;
 	@DbField("QS_Card1")
 	private String qsCard1;
 	@DbField("QS_Card2")
@@ -130,23 +130,23 @@ public class JlHjDj implements java.io.Serializable {
 	@DbField("QS_Card9")
 	private String qsCard9;
 	@DbField("QS_ZP1")
-	private byte[] qsZp1;
+	private Byte[] qsZp1;
 	@DbField("QS_ZP2")
-	private byte[] qsZp2;
+	private Byte[] qsZp2;
 	@DbField("QS_ZP3")
-	private byte[] qsZp3;
+	private Byte[] qsZp3;
 	@DbField("QS_ZP4")
-	private byte[] qsZp4;
+	private Byte[] qsZp4;
 	@DbField("QS_ZP5")
-	private byte[] qsZp5;
+	private Byte[] qsZp5;
 	@DbField("QS_ZP6")
-	private byte[] qsZp6;
+	private Byte[] qsZp6;
 	@DbField("QS_ZP7")
-	private byte[] qsZp7;
+	private Byte[] qsZp7;
 	@DbField("QS_ZP8")
-	private byte[] qsZp8;
+	private Byte[] qsZp8;
 	@DbField("QS_ZP9")
-	private byte[] qsZp9;
+	private Byte[] qsZp9;
 	@DbField("WP_DjTime")
 	private Date wpDjTime;
 	@DbField("WP_DJR")
@@ -254,75 +254,75 @@ public class JlHjDj implements java.io.Serializable {
 		this.qsCard9 = qsCard9;
 	}
 
-	public byte[] getQsZp1() {
+	public Byte[] getQsZp1() {
 		return qsZp1;
 	}
 
-	public void setQsZp1(byte[] qsZp1) {
+	public void setQsZp1(Byte[] qsZp1) {
 		this.qsZp1 = qsZp1;
 	}
 
-	public byte[] getQsZp2() {
+	public Byte[] getQsZp2() {
 		return qsZp2;
 	}
 
-	public void setQsZp2(byte[] qsZp2) {
+	public void setQsZp2(Byte[] qsZp2) {
 		this.qsZp2 = qsZp2;
 	}
 
-	public byte[] getQsZp3() {
+	public Byte[] getQsZp3() {
 		return qsZp3;
 	}
 
-	public void setQsZp3(byte[] qsZp3) {
+	public void setQsZp3(Byte[] qsZp3) {
 		this.qsZp3 = qsZp3;
 	}
 
-	public byte[] getQsZp4() {
+	public Byte[] getQsZp4() {
 		return qsZp4;
 	}
 
-	public void setQsZp4(byte[] qsZp4) {
+	public void setQsZp4(Byte[] qsZp4) {
 		this.qsZp4 = qsZp4;
 	}
 
-	public byte[] getQsZp5() {
+	public Byte[] getQsZp5() {
 		return qsZp5;
 	}
 
-	public void setQsZp5(byte[] qsZp5) {
+	public void setQsZp5(Byte[] qsZp5) {
 		this.qsZp5 = qsZp5;
 	}
 
-	public byte[] getQsZp6() {
+	public Byte[] getQsZp6() {
 		return qsZp6;
 	}
 
-	public void setQsZp6(byte[] qsZp6) {
+	public void setQsZp6(Byte[] qsZp6) {
 		this.qsZp6 = qsZp6;
 	}
 
-	public byte[] getQsZp7() {
+	public Byte[] getQsZp7() {
 		return qsZp7;
 	}
 
-	public void setQsZp7(byte[] qsZp7) {
+	public void setQsZp7(Byte[] qsZp7) {
 		this.qsZp7 = qsZp7;
 	}
 
-	public byte[] getQsZp8() {
+	public Byte[] getQsZp8() {
 		return qsZp8;
 	}
 
-	public void setQsZp8(byte[] qsZp8) {
+	public void setQsZp8(Byte[] qsZp8) {
 		this.qsZp8 = qsZp8;
 	}
 
-	public byte[] getQsZp9() {
+	public Byte[] getQsZp9() {
 		return qsZp9;
 	}
 
-	public void setQsZp9(byte[] qsZp9) {
+	public void setQsZp9(Byte[] qsZp9) {
 		this.qsZp9 = qsZp9;
 	}
 
@@ -710,11 +710,11 @@ public class JlHjDj implements java.io.Serializable {
 		this.importTime = importTime;
 	}
 
-	public int getInfoWp() {
+	public Integer getInfoWp() {
 		return infoWp;
 	}
 
-	public void setInfoWp(int infoWp) {
+	public void setInfoWp(Integer infoWp) {
 		this.infoWp = infoWp;
 	}
 

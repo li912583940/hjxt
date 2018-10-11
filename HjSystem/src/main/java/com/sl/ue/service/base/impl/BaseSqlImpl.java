@@ -3,6 +3,13 @@ package com.sl.ue.service.base.impl;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +19,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import com.sl.ue.service.base.BaseService;
@@ -361,6 +371,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			StringBuffer table_value = new StringBuffer();
 			sql.append("insert into "+tableName).append("(");
 			List<Object> params = new ArrayList<Object>();
+			List<Map<String, Object>> psList = new ArrayList<>(); // 实现 自增主键
 			Field[] fields = clazz.getDeclaredFields();
 			boolean isInc = false;
 			Field idField = null;
@@ -377,11 +388,17 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 						continue;
 					}
 					String table_filed = field.getAnnotation(DbField.class).value();
+					
 					field.setAccessible(true);
 					if(field.get(model) != null){
 						table_field.append(table_filed+",");
 						table_value.append("?,");
 						params.add(field.get(model));
+						
+						Map<String, Object> map = new HashMap<>();
+						map.put("class", field.getType());
+						map.put("value", field.get(model));
+						psList.add(map);
 					}
 				}
 			}catch(Exception e){
@@ -391,17 +408,20 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				.append(" values(")
 				.append(StringUtil.lastComma(table_value.toString()))
 				.append(")");
-			/*if(isInc == true){
+			System.out.println("执行新增语句：[ "+sql+" ]");
+			System.out.println("参数："+params);
+			if(isInc == true){
 				KeyHolder keyHolder = new GeneratedKeyHolder();
-				int id = 0;
+				Long id = 0L;
 				final String sqlStr = sql.toString();
 				jdbcTemplate.update(new PreparedStatementCreator(){  
 					public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-						 PreparedStatement ps = con.prepareStatement(sqlStr,PreparedStatement.RETURN_GENERATED_KEYS); 
+						 PreparedStatement ps = con.prepareStatement(sqlStr,PreparedStatement.RETURN_GENERATED_KEYS);
+						 addPs(ps,psList);
 				         return ps;  
 					}  
 			    }, keyHolder);
-				id = keyHolder.getKey().intValue();
+				id =  keyHolder.getKey().longValue();
 				if(id != 0){
 					idField.setAccessible(true);
 					try {
@@ -413,12 +433,11 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				}
 					
 			}else{
-				jdbcTemplate.update(sql.toString());
+				jdbcTemplate.update(sql.toString(), params.toArray());
 				return model;
-			}*/
-			System.out.println("执行新增语句：[ "+sql+" ]");
-			System.out.println("参数："+params);
-			jdbcTemplate.update(sql.toString(), params.toArray());
+			}
+			
+			//jdbcTemplate.update(sql.toString(), params.toArray());
 			return model;
 		}
 		return null;
@@ -520,5 +539,33 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			jdbcTemplate.update(sql.toString(), params.toArray());
 		}
 	
+	}
+	
+	
+	private void addPs(PreparedStatement ps, List<Map<String, Object>> psList) throws SQLException{
+		int i=1;
+		for(Map<String, Object> map : psList){
+			Class typeCla = (Class)map.get("class");
+			if(typeCla == Integer.class){
+				ps.setInt(i, (Integer) map.get("value"));
+			}else if(typeCla == String.class){
+				ps.setString(i, map.get("value").toString());
+			}else if(typeCla == Byte.class){
+				ps.setBytes(i, (byte[]) map.get("value"));
+			}else if(typeCla == BigDecimal.class){
+				ps.setBigDecimal(i, (BigDecimal) map.get("value"));
+			}else if(typeCla == Date.class){
+				ps.setDate(i, (Date) map.get("value"));
+			}else if(typeCla == java.util.Date.class){
+				java.util.Date date = (java.util.Date)map.get("value");
+				long l = date.getTime();
+				ps.setTimestamp(i, new Timestamp(l));
+			}else if(typeCla == Long.class){
+				ps.setLong(i, (long) map.get("value"));
+			}else{
+				
+			}
+			i++;
+		}
 	}
 }

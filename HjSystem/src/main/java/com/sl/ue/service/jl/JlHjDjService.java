@@ -10,10 +10,12 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 
 	public Result addHjdj(
 			String frNo, // 罪犯编号
-			List<Integer> qsIds, // 亲属id集合
+			String qsIds, // 亲属id集合
 			Integer hjsc, // 会见时长  单位：分钟
 			String hjsm, // 会见说明
 			Integer hjType, // 会见类型
-			Integer callNo //排队号
+			Integer callNo, //排队号
+			Integer tpQsNum, //特批亲属个数
+			Integer qzSp // 强制审批
 			);
 }

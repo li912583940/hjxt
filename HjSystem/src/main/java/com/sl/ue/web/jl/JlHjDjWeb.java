@@ -1,5 +1,6 @@
 package com.sl.ue.web.jl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -103,13 +104,20 @@ public class JlHjDjWeb extends Result{
 	@RequestMapping("/addHjdj")
 	public String addHjdj(
 			String frNo, // 罪犯编号
-			List<Integer> qsIds, // 亲属id集合
+			String qsIds, // 亲属id集合
 			Integer hjsc, // 会见时长  单位：分钟
 			String hjsm, // 会见说明
 			Integer hjType, // 会见类型
-			Integer callNo //排队号
+			Integer callNo, //排队号
+			Integer tpQsNum, //特批亲属个数
+			Integer qzSp // 强制审批
 			){
-		return jlHjDjSQL.addHjdj(frNo, qsIds, hjsc, hjsm, hjType, callNo).toResult();
+		return jlHjDjSQL.addHjdj(frNo, qsIds, hjsc, hjsm, hjType, callNo, tpQsNum, qzSp).toResult();
 		
+	}
+	
+	
+	public String printXp(){
+		return this.toResult();
 	}
 }

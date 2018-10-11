@@ -10,10 +10,8 @@ import com.sl.ue.util.http.Result;
 public class Test {
 
 	public static void main(String[] args){
-		double x=0;
-		for(int i=1; i<=20; i++){
-			x=x+((double)1/i);
-			System.out.println(x);
-		}
+		int i =9;
+		long l =i;
+		System.out.println(l);
 	}
 }
