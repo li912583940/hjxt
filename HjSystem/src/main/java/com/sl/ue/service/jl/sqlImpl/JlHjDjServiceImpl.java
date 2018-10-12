@@ -3,6 +3,7 @@ package com.sl.ue.service.jl.sqlImpl;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,15 +16,18 @@ import org.springframework.stereotype.Service;
 
 import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
+import com.sl.ue.entity.jl.vo.JlHjSpVO;
 import com.sl.ue.entity.jl.vo.JlJqVO;
 import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.entity.sys.vo.SysParamVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlFrService;
 import com.sl.ue.service.jl.JlHjDjService;
+import com.sl.ue.service.jl.JlHjSpService;
 import com.sl.ue.service.jl.JlJqService;
 import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.service.sys.SysParamService;
+import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.token.TokenUser;
 
@@ -39,9 +43,11 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 	private JlQsService jlQsSQL;
 	@Autowired
 	private SysParamService sysParamSQL;
+	@Autowired
+	private JlHjSpService jlHjSpSQL;
 	
 	@Override
-	public Result addHjdj(
+	public String addHjdj(
 			String frNo, // 罪犯编号
 			String qsIds, // 亲属id集合
 			Integer hjsc, // 会见时长  单位：分钟
@@ -60,7 +66,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		List<JlHjDjVO> list1 = this.findList(jlHjDj1);
 		if(list1.size()>0){
 			result.error(Result.error_103, "服刑人员处于会见中");
-			return result;
+			return result.toResult();
 		}
 		
 		JlFrVO jlFr = new JlFrVO();  //当前罪犯信息
@@ -70,7 +76,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			jlFr = jlFrList.get(0);
 		}else{
 			result.error(Result.error_103, "当前服刑人员不存在");
-			return result;
+			return result.toResult();
 		}
 		
 		JlJqVO jlJq = new JlJqVO(); // 当前罪犯监区
@@ -201,13 +207,107 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			addJlHjDj = this.add(addJlHjDj);
 		} catch (Exception e) {
 			result.error(Result.error_103, "添加会见登记失败");
-			return result;
+			return result.toResult();
 		}
 		System.out.println(addJlHjDj.getHjid());
 		result.msg("提交登记成功");
-		return result;
+		return result.toResult();
 	}
 
-	
+	@Override
+	public String printXp(Long id) {
+		Result result = new Result();
+		JlHjDjVO jlHjDj = this.findOne(id);
+		if(jlHjDj == null){
+			result.error(Result.error_103, "当前登记记录不存在");
+			return result.toResult();
+		}
+		List<String> list = new ArrayList<String>();
+		list.add("会见准见证");
+		list.add(DateUtil.getDefault(new Date())); //打印时间
+		list.add("会见编号:"+jlHjDj.getHjIndex().toString().substring(8));
+		if(StringUtils.isNoneBlank(jlHjDj.getFrName())){
+			list.add("罪犯姓名:"+jlHjDj.getFrName());
+		}
+		if(StringUtils.isNotBlank(jlHjDj.getJqName())){
+			list.add("监区:"+jlHjDj.getJqName());
+		}
+		list.add("本次会见时长:"+jlHjDj.getHjTime()/60+"分钟");
+		int i=0;
+		if(jlHjDj.getQsInfo1()!=null && jlHjDj.getQsInfo1()!=""){
+			i++;
+			list.add(i+"号亲属:"+jlHjDj.getQsInfo1());
+		}
+		if(jlHjDj.getQsInfo2()!=null && jlHjDj.getQsInfo2()!=""){
+			i++;
+			list.add(i+"号亲属:"+jlHjDj.getQsInfo2());
+		}
+		if(jlHjDj.getQsInfo3()!=null && jlHjDj.getQsInfo3()!=""){
+			i++;
+			list.add(i+"号亲属:"+jlHjDj.getQsInfo3());
+		}
+		if(jlHjDj.getQsInfo4()!=null && jlHjDj.getQsInfo4()!=""){
+			i++;
+			list.add(i+"号亲属:"+jlHjDj.getQsInfo4());
+		}
+		if(jlHjDj.getQsInfo5()!=null && jlHjDj.getQsInfo5()!=""){
+			i++;
+			list.add(i+"号亲属:"+jlHjDj.getQsInfo5());
+		}
+		if(jlHjDj.getQsInfo6()!=null && jlHjDj.getQsInfo6()!=""){
+			i++;
+			list.add(i+"号亲属:"+jlHjDj.getQsInfo6());
+		}
+		if(jlHjDj.getQsInfo7()!=null && jlHjDj.getQsInfo7()!=""){
+			i++;
+			list.add(i+"号亲属:"+jlHjDj.getQsInfo7());
+		}
+		if(jlHjDj.getQsInfo8()!=null && jlHjDj.getQsInfo8()!=""){
+			i++;
+			list.add(i+"号亲属:"+jlHjDj.getQsInfo8());
+		}
+		if(jlHjDj.getQsInfo9()!=null && jlHjDj.getQsInfo9()!=""){
+			i++;
+			list.add(i+"号亲属:"+jlHjDj.getQsInfo9());
+		}
+		list.add("会见总人数:"+i+"人");
+		result.putData(list);
+		return result.toResult();
+	}
+
+	public String cancelDj(Long id, String cancelInfo){
+		Result result = new Result();
+		JlHjDjVO jlHjDj = this.findOne(id);
+		if(jlHjDj == null){
+			result.error(Result.error_103, "当前登记记录不存在");
+			return result.toResult();
+		}
+		
+		if(jlHjDj.getFpFlag()==0){
+			jlHjDj.setState(2);
+			jlHjDj.setCancelInfo(cancelInfo);
+			this.edit(jlHjDj);
+			
+			JlHjSpVO jlHjSp = new JlHjSpVO();
+			jlHjSp.setHjId(jlHjDj.getHjid());
+			jlHjSpSQL.delete(jlHjSp);
+			
+			result.putJson(0);
+			return result.toResult();
+		}else if(jlHjDj.getFpFlag()==1){
+			String sql="update SysHjLine set hjid=null where hjid="+jlHjDj.getHjid();
+			this.jdbcTemplate.update(sql);
+			
+			jlHjDj.setState(2);
+			jlHjDj.setCancelInfo(cancelInfo);
+			this.edit(jlHjDj);
+			
+			result.putJson(0);
+			return result.toResult();
+		}else{
+			result.putJson(1);
+			return result.toResult();
+		}
+	}
 
 }

@@ -101,5 +101,8 @@ public class Result {
 		return result;
 	}
 	
+	public String toString(){
+		return this.toResult();
+	}
 	
 }

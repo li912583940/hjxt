@@ -8,7 +8,7 @@ import com.sl.ue.util.http.Result;
 
 public interface JlHjDjService extends BaseService<JlHjDjVO>{
 
-	public Result addHjdj(
+	public String addHjdj(
 			String frNo, // 罪犯编号
 			String qsIds, // 亲属id集合
 			Integer hjsc, // 会见时长  单位：分钟
@@ -18,4 +18,8 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 			Integer tpQsNum, //特批亲属个数
 			Integer qzSp // 强制审批
 			);
+	
+	public String printXp(Long id);
+	
+	public String cancelDj(Long id, String cancelInfo);
 }

@@ -13,7 +13,7 @@ public class DateUtil {
 
 	
 	/**
-	 * 说明 [返回日期的字符串类型:默认格式]
+	 * 说明 [返回日期的字符串类型:默认格式  yyyy-MM-dd HH:mm:ss]
 	 * @作者 LXT @2018年9月4日
 	 */
 	public static String getDefault(Date date){

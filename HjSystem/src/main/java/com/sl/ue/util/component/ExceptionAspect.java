@@ -63,10 +63,10 @@ public class ExceptionAspect extends Result{
 //		return this.toResult();
 //	}
 	
-//	@ExceptionHandler(Exception.class)
-//	public String handleException(Exception e){
-//		this.error(error_100);
-//		//e.printStackTrace();
-//		return this.toResult();
-//	}
+	@ExceptionHandler(Exception.class)
+	public String handleException(Exception e){
+		this.error(error_100);
+		//e.printStackTrace();
+		return this.toResult();
+	}
 }

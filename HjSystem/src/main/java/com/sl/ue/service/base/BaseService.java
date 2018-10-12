@@ -48,6 +48,10 @@ public interface BaseService<T>{
 	
 	public T add(T model);
 	
+	/**
+	 * 说明 [where后面 只能是主键]
+	 * L_晓天  @2018年10月12日
+	 */
 	public T edit(T model);
 	
 	/**

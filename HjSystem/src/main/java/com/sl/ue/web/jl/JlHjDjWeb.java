@@ -112,12 +112,34 @@ public class JlHjDjWeb extends Result{
 			Integer tpQsNum, //特批亲属个数
 			Integer qzSp // 强制审批
 			){
-		return jlHjDjSQL.addHjdj(frNo, qsIds, hjsc, hjsm, hjType, callNo, tpQsNum, qzSp).toResult();
+		return jlHjDjSQL.addHjdj(frNo, qsIds, hjsc, hjsm, hjType, callNo, tpQsNum, qzSp);
 		
 	}
 	
 	
-	public String printXp(){
-		return this.toResult();
+	/**
+	 * 说明 [打印小票]
+	 * L_晓天  @2018年10月12日
+	 */
+	@RequestMapping("/printXp")
+	public String printXp(Long id){ // 会见ID
+		if(id == null){
+			this.error(error_102);
+			return this.toResult();
+		}
+		return jlHjDjSQL.printXp(id);
+	}
+	
+	
+	/**
+	 * 说明 [取消登记]
+	 * L_晓天  @2018年10月12日
+	 */
+	public String cancelDj(Long id, String cancelInfo){ // 会见ID
+		if(id == null){
+			this.error(error_102);
+			return this.toResult();
+		}
+		return jlHjDjSQL.cancelDj(id, cancelInfo);
 	}
 }
