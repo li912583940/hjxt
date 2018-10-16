@@ -144,7 +144,7 @@ import { parseTime } from '@/utils'
 
 
 export default {
-  name: 'criminal',
+  name: 'relatives',
   directives: {
     waves
   },

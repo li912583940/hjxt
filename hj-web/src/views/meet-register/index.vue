@@ -1,400 +1,224 @@
-<!-- 会见登记 -->
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员编号" v-model="frListQuery.frNo">
+    	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员编号" v-model="listQuery.frNo">
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员姓名" v-model="frListQuery.frName">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员姓名" v-model="listQuery.frName">
       </el-input>
-      <el-select clearable style="width: 200px" class="filter-item" v-model="frListQuery.jq" placeholder="选择监区">
-        <el-option v-for="item in jqs" :key="item.id" :label="item.name" :value="item.id">
-        </el-option>
-      </el-select>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="listQuery.qsName">
+      </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button class="filter-item" type="primary" v-waves  @click="addHjdj">提交登记</el-button>
+      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">添加会见登记</el-button>
     </div>
 
-		<!-- 服刑人员开始 -->
-		<el-card class="box-card">
-	    <el-table :key='frTableKey' ref="frMultipleTable" :data="frList" v-loading="frListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-	       @row-click="frRowClick" @row-dblclick="handleSearchQs" @select="frSelectionChang" @select-all="frAllSelectionChang" style="width: 100%">
-	      <el-table-column align="center" type="selection" width="70" fixed="left">
-	      </el-table-column>
-	      <el-table-column align="center" label="监区" width="70">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.jqName}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="罪犯编号">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.frNo}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="160px" align="center" label="罪犯姓名">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.frName}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="本月已见次数">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.hjUse}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="上次会见时间">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.hjLastTime}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="上次会见家属信息">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.qsName}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="160" align="center" label="入监时间">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.infoRjsj}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="分管等级">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.jbName}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="刑期">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.infoXq}}</span>
-	        </template>
-	      </el-table-column>
-				<el-table-column width="150px" align="center" label="罪名">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.infoZm}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="家庭住址">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.infoHome}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="上次会见所在监区">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.formerJQName}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="重点罪犯">
-	        <template slot-scope="scope">
-	          <span v-if="scope.row.stateZdzf=='0'">否</span>
-	          <span v-if="scope.row.stateZdzf=='1'">是</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="备注">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.zdzfType}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="国籍">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.frGj}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="是否禁止/禁止时间">
-	        <template slot-scope="scope">
-	          <span v-if="scope.row.hjJb=='-1'">是/{{scope.row.hjStopTime}}</span>
-	          <span v-if="scope.row.hjJb!='-1'">否</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column align="center" :label="$t('criminal.actions')" width="150" class-name="small-padding fixed-width" fixed="right">
-	        <template slot-scope="scope">
-	          <el-button type="primary" size="mini" @click="handleOpenQs(scope.row)">亲属</el-button>
-	          </el-button>
-	        </template>
-	      </el-table-column>
-	    </el-table>
-	
-	    <div class="pagination-container">
-	      <el-pagination background @size-change="handleFrSizeChange" @current-change="handleFrCurrentChange" :current-page="frListQuery.pageNum" :page-sizes="[5,10]" :page-size="frListQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="frTotal">
-	      </el-pagination>
-	    </div>
-	  </el-card>
-		<!-- 服刑人员结束 -->
-	
-		<!-- 亲属开始 -->
-		<el-card class="box-card">
-	    <el-table :key='qsTableKey' ref="qsMultipleTable" :data="qsList" v-loading="qsListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-	      @selection-change="qsAllSelectionChange" @row-click="qsRowClick" style="width: 100%">
-	      <el-table-column align="center" type="selection"  width="70" fixed="left">
-	      </el-table-column>
-	      <el-table-column align="center" label="亲属姓名" width="100">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.qsName}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="关系">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.gx}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="证件类别">
-	        <template slot-scope="scope">
-	          <span v-if="scope.row.qsZjlb==1">身份证</span>
-	          <span v-if="scope.row.qsZjlb==2">警官证</span>
-	          <span v-if="scope.row.qsZjlb==3">工作证</span>
-	          <span v-if="scope.row.qsZjlb==4">其他</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="证件号码">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.qsSfz}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="证件物理号">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.qsSfzWlh}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="IC卡编号">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.qsCard}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="160" align="center" label="性别">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.xb}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="地址">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.dz}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="电话">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.tele}}</span>
-	        </template>
-	      </el-table-column>
-				<el-table-column width="127px" align="center" label="备注">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.bz}}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="审批状态">
-	        <template slot-scope="scope">
-	          <span v-if="scope.row.spState==1">已通过</span>
-	          <span v-if="scope.row.spState==0">未通过</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column width="140px" align="center" label="是否禁止/禁止时间">
-	        <template slot-scope="scope">
-	          <span v-if="scope.row.hjStopTime!=null">是/{{scope.row.hjStopTime}}</span>
-	          <span v-if="scope.row.hjStopTime==null">否/{{scope.row.hjStopTime}}</span>
-	        </template>
-	      </el-table-column>
-	      
-	    </el-table>
-	
-	    <!--<div class="pagination-container">
-	      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="qsListQuery.pageNum" :page-sizes="[5,10]" :page-size="qsListQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="qsTotal">
-	      </el-pagination>
-	    </div>-->
-	  </el-card>
-    <!-- 亲属结束 -->
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
+      style="width: 100%">
+      <el-table-column width="140" align="center"  label="监区">
+        <template slot-scope="scope">
+          <span>{{scope.row.jqName}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="140" align="center" label="会见编号">
+        <template slot-scope="scope">
+          <span>{{scope.row.hjIndex}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="160" align="center" label="罪犯编号">
+        <template slot-scope="scope">
+          <span>{{scope.row.frNo}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="140" align="center" label="罪犯姓名">
+        <template slot-scope="scope">
+          <span>{{scope.row.frName}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="140" align="center" label="亲属">
+        <template slot-scope="scope">
+          <span>{{scope.row.qsInfo1}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="140" align="center" label="会见时长">
+        <template slot-scope="scope">
+          <span>{{scope.row.hjTime}}分钟</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="180" align="center" label="登记时间">
+        <template slot-scope="scope">
+          <span>{{scope.row.djTime}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="140" align="center" label="登记人">
+        <template slot-scope="scope">
+          <span>{{scope.row.djUser}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="140" align="center" label="座位">
+        <template slot-scope="scope">
+          <span v-if="scope.row.fpFlag==0">未分配</span>
+          <span v-if="scope.row.fpFlag!=0">{{scope.row.zw}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="140" align="center" label="审批状态">
+        <template slot-scope="scope">
+          <span v-if="scope.row.state=='待审批'">待审批</span>
+          <span v-if="scope.row.state!='待审批'">审批通过</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="140" align="center" label="会见类型">
+        <template slot-scope="scope">
+          <span v-if="scope.row.hjType==1">电话会见</span>
+          <span v-if="scope.row.hjType==2">面对面会见</span>
+          <span v-if="scope.row.hjType==3">视频会见</span>
+          <span v-if="scope.row.hjType==4">帮教</span>
+          <span v-if="scope.row.hjType==5">提审</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="140" align="center" label="会见说明">
+        <template slot-scope="scope">
+          <span>{{scope.row.hjInfo}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" :label="$t('criminal.actions')" width="180" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" icon="el-icon-edit" @click="printXp(scope.row)">打印小票</el-button>
+          <el-button  size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">取消登记</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+		<!-- 分页 -->
+    <div class="pagination-container">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.pageNum" :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      </el-pagination>
+    </div>
+
   </div>
 </template>
 
 <script>
-import { findFrPojo, findQsPojo, findJqList, RequestAddHjdj } from '@/api/meetRegister'
+import { findPojo, RequestPrintXp, RequestCancelDj } from '@/api/meetRegister'
+
+import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
 
 
 export default {
-  name: 'criminal',
+  name: 'meetRegister',
   directives: {
     waves
   },
   data() {
     return {
-      frTableKey: 0,
-      frList: null,
-      frTotal: null,
-      frListLoading: true,
-      frListQuery: {
+      tableKey: 0,
+      list: null,
+      total: null,
+      listLoading: true,
+      listQuery: {
         pageNum: 1,
-        pageSize: 5,
+        pageSize: 20,
         frNo: undefined,
         frName: undefined,
-        jq: undefined
-      },
-      
-      qsTableKey: 1,
-      qsList: null,
-      qsTotal: null,
-      qsListLoading: false,
-      qsListQuery: {
-        pageNum: 1,
-        pageSize: 10,
-        frNo: undefined
-      },
-      
-      jqs: [ // 监区下拉选框
-      
-      ],
-      
-      formdata: {// 提交会见登记表单
-      	frNo: undefined,
-      	qsIds: []
-      },
-      qsSelections: []
+        qsName: undefined
+      }
     }
   },
   filters: {
-
+    
   },
   created() {
-   
-  },
-  mounted() {
-      this.getFrList()
-      this.getJqList()
+    this.getList()
   },
   methods: {
-    getFrList() {
-      this.frListLoading = true
-      if(!this.frListQuery.frName){
-      	this.frListQuery.frName = undefined
+    getList() {
+      this.listLoading = true
+      if(!this.listQuery.frName){
+      	this.listQuery.frName = undefined
       }
-      if(!this.frListQuery.frNo){
-      	this.frListQuery.frNo = undefined
+      if(!this.listQuery.frNo){
+      	this.listQuery.frNo = undefined
       }
-      if(!this.frListQuery.jq){
-      	this.frListQuery.jq = undefined
+      if(!this.listQuery.qsName){
+      	this.listQuery.qsName = undefined
       }
-      findFrPojo(this.frListQuery).then((res) => {
-      	 this.frList = res.pojo.list
-      	 this.frTotal = res.pojo.count
-      	 this.frListLoading = false
+      findPojo(this.listQuery).then((res) => {
+      	 this.list = res.pojo.list
+      	 this.total = res.pojo.count
+      	 this.listLoading = false
       }).catch(error => {
-          this.frListLoading = false
+          this.listLoading = false
       })
     },
-    getQsFrList() {
-      this.qsListLoading = true
-      if(!this.qsListQuery.frNo){
-      	this.qsListQuery.frNo = undefined
-      }
-      findQsPojo(this.qsListQuery).then((res) => {
-      	 this.qsList = res.pojo.list
-      	 this.qsTotal = res.pojo.count
-      	 this.qsListLoading = false
+    handleFilter() {
+      this.listQuery.pageNum = 1
+      this.getList()
+    },
+    handleSizeChange(val) {
+      this.listQuery.pageSize = val
+      this.getList()
+    },
+    handleCurrentChange(val) {
+      this.listQuery.pageNum = val
+      this.getList()
+    },
+    // 添加新的会见等级， 跳转至会见等级页面
+    handleCreate() {
+    	this.$router.push({ path: '/addHjDj' })
+    },
+    // 打印小票
+    printXp(row) {
+    	let param = {
+    		id: row.hjid
+    	}
+    	RequestPrintXp(this.dataForm).then((res) => {
+          
       }).catch(error => {
-         this.qsListLoading = false
-      })
-    },
-    handleFilter() { // 罪犯查询
-      this.frListQuery.page = 1
-      this.getFrList()
-    },
-    handleFrSizeChange(val) { // 罪犯分页
-      this.frListQuery.limit = val
-      this.getFrList()
-    },
-    handleFrCurrentChange(val) { // 罪犯分页
-      this.frListQuery.page = val
-      this.getFrList()
-    },
-    handleQsSizeChange(val) { // 亲属分页
-      this.qsListQuery.limit = val
-      this.getQsList()
-    },
-    handleQsCurrentChange(val) { // 亲属分页
-      this.qsListQuery.page = val
-      this.getQsList()
-    },
-    getJqList() { //监区下拉框
-    	if(this.jqs.length === 0) {
-    		findJqList({}).then((res) => {
-	    		let list = res.list
-	    		for(let x of list){
-					  let value = {}
-					  value.id = x.jqNo
-					  value.name = x.jqName
-					  this.jqs.push(value)
-					}
-	    	})
-    	}
-    },
-    addHjdj() { //提交会见登记
-    	if(!this.formdata.frNo) {
-    		this.$notify.error({
-          title: '错误',
-          message: '提交登记时，必须选择一位服刑人员'
-        })
-    	}
-    	if(this.qsSelections.length == 0) {
-    		this.$notify.error({
-          title: '错误',
-          message: '提交登记时，至少选择一位家属'
-        })
-    	}
-    	let qsid = ''
-    	for(let x of this.qsSelections) {
-    		qsid = qsid==''?x.webId:qsid+','+x.webId
-    	}
-    	this.formdata.qsIds = qsid
-    	const loading = this.$loading({
-	      lock: true,
-	      text: 'Loading',
-	      spinner: 'el-icon-loading',
-	      background: 'rgba(0, 0, 0, 0.7)'
 	    })
-    	RequestAddHjdj(this.formdata).then((res) => {
-    		loading.close();
-    	}).catch(error =>{
-    		loading.close();
-    	})
     },
-    handleSearchQs(row) { //双击罪犯表格查询家属
-    	this.qsListQuery.frNo = row.frNo
-    	this.getQsFrList()
-    },
-    // 罪犯与家属多选框事件
-    frSelectionChang(rows,row){
-    	this.$refs.frMultipleTable.clearSelection();
-    	this.$refs.frMultipleTable.toggleRowSelection(row);
-    },
-    frAllSelectionChang(){
-    	this.$refs.frMultipleTable.clearSelection();
-    },
-    frRowClick(row){ //单机罪犯表格某一行， 查询家属信息
-    	this.$refs.frMultipleTable.clearSelection();
-    	this.$refs.frMultipleTable.toggleRowSelection(row);
-    	
-    	this.qsListQuery.frNo = row.frNo
-    	this.getQsFrList()
-    	
-    	this.formdata.frNo= row.frNo 
-    	this.qsSelections = []
-    },
-    qsRowClick(row){ // 单击亲属表格得某一行  让多选框处于选中事件
-      this.$refs.qsMultipleTable.toggleRowSelection(row);
-    },
-  	qsAllSelectionChange(rows){ // 亲属表格 全选事件
-  		this.qsSelections = rows;
-  	},
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    }
+    //取消登记
+		handleDelete(row) {
+			this.$confirm('确认取消该会见吗?', '提示', {
+				type: 'warning'
+			}).then(() => {
+				this.listLoading = true;
+				let param = {
+	    		id: row.hjid
+	    	}
+				RequestCancelDj(param).then((res) => {
+	    		if(res.data == 0) {
+          	this.$notify({
+		          title: '成功',
+		          message: '会见登记取消成功',
+		          position: 'top-right',
+		          type: 'success'
+		        });
+          }else if(res.data == 1) {
+          	this.$notify({
+		          title: '警告',
+		          message: '已处会见通话状态，无法取消',
+		          position: 'top-right',
+		          type: 'warning'
+		        });
+          }
+	    	}).catch(error => {
+	      })
+			})
+		},
+    dateFormat(row, column) {
+			//时间格式化  
+	    let date = row[column.property];  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+		},
+		dateFormats: function (val) {
+			if(!val){
+				return undefined
+			}
+			return moment(val).format("YYYY-MM-DD HH:mm:ss");
+		},
   }
 }
 </script>
-
-<style>
-.box-card {
-  margin: 10px;
-  }
-</style>

@@ -9,6 +9,7 @@ export default {
     criminalLevel: '服刑人员级别',
     relatives: '亲属',
     meetRegister: '会见登记',
+    addMeetRegister: '添加会见登记',
     meetSign: '会见签到',
     meetNotice: '会见通知',
     meetMonitor: '会见监控',

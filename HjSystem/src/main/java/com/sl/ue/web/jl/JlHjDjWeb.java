@@ -122,12 +122,12 @@ public class JlHjDjWeb extends Result{
 	 * L_晓天  @2018年10月12日
 	 */
 	@RequestMapping("/printXp")
-	public String printXp(Long id){ // 会见ID
-		if(id == null){
+	public String printXp(Long hjid){ // 会见ID
+		if(hjid == null){
 			this.error(error_102);
 			return this.toResult();
 		}
-		return jlHjDjSQL.printXp(id);
+		return jlHjDjSQL.printXp(hjid);
 	}
 	
 	
@@ -135,6 +135,7 @@ public class JlHjDjWeb extends Result{
 	 * 说明 [取消登记]
 	 * L_晓天  @2018年10月12日
 	 */
+	@RequestMapping("/cancelDj")
 	public String cancelDj(Long id, String cancelInfo){ // 会见ID
 		if(id == null){
 			this.error(error_102);
