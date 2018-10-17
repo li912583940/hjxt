@@ -133,7 +133,7 @@ export default {
 	        this.$store.dispatch('RequestLogin', this.loginForm).then(() => {
 	        	console.log(1116)
 	          this.loading = false
-	          this.$router.push({ path: this.redirect || '/' })
+	          this.$router.push({ path: this.redirect || '/dashboard' })
 	        }).catch(() => {
 	          this.loading = false
 	        })

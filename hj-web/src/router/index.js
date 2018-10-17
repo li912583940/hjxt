@@ -63,7 +63,7 @@ export const constantRouterMap = [
     hidden: true
   },
   {
-    path: '',
+    path: '/dashboard',
     component: Layout,
     redirect: 'dashboard',
     children: [{
