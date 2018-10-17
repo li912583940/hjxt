@@ -1,6 +1,5 @@
 package com.sl.ue.web.jl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +37,7 @@ public class JlHjDjWeb extends Result{
 
     @RequestMapping("/findPojo")
     public String findPojo(JlHjDjVO model, Integer pageSize, Integer pageNum){
-        Map<String, Object> map = jlHjDjSQL.findPojo(model, pageSize, pageNum);
+        Map<String, Object> map = jlHjDjSQL.findPojoJoin(model, pageSize, pageNum);
         this.putPojo(map);
         return this.toResult();
     }

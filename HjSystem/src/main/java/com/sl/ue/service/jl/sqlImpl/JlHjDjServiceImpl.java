@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -308,6 +309,20 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			result.putJson(1);
 			return result.toResult();
 		}
+	}
+
+	@Override
+	public Map<String, Object> findPojoJoin(JlHjDjVO model, Integer pageSize, Integer pageNum) {
+		StringBuffer leftJoinField = new StringBuffer(); // 字段
+		leftJoinField.append(",(CASE WHEN a.FP_Flag=0 THEN '未分配' ELSE dbo.get_ck(a.FP_Line_No,a.JY) END) AS zw");
+		
+		StringBuffer leftJoinWhere = new StringBuffer();
+		leftJoinWhere.append(" AND (a.state=0 OR a.state=3)"); // 条件
+		
+		model.setLeftJoinField(leftJoinField.toString());
+		model.setLeftJoinWhere(leftJoinWhere.toString());
+		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
+		return map;
 	}
 
 }

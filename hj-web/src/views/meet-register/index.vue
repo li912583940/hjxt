@@ -55,14 +55,14 @@
       </el-table-column>
       <el-table-column width="140" align="center" label="座位">
         <template slot-scope="scope">
-          <span v-if="scope.row.fpFlag==0">未分配</span>
-          <span v-if="scope.row.fpFlag!=0">{{scope.row.zw}}</span>
+          <span>{{scope.row.zw}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="审批状态">
+      <el-table-column width="140" align="center" label="会见状态">
         <template slot-scope="scope">
-          <span v-if="scope.row.state=='待审批'">待审批</span>
-          <span v-if="scope.row.state!='待审批'">审批通过</span>
+          <span v-if="scope.row.state==0">未完成</span>
+          <span v-else-if="scope.row.state==1">已完成</span>
+          <span v-else-if="scope.row.state==2">已取消</span>
         </template>
       </el-table-column>
       <el-table-column width="140" align="center" label="会见类型">
@@ -79,10 +79,10 @@
           <span>{{scope.row.hjInfo}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="180" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('criminal.actions')" width="240" fixed="right">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="printXp(scope.row)">打印小票</el-button>
-          <el-button  size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">取消登记</el-button>
+          <el-button type="primary" size="mini" icon="el-icon-download" @click="printXp(scope.row)">打印小票</el-button>
+          <el-button type="danger"  size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">取消登记</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -169,12 +169,14 @@ export default {
     // 打印小票
     printXp(row) {
     	let param = {
-    		id: row.hjid
+    		hjid: row.hjid
     	}
-    	RequestPrintXp(this.dataForm).then((res) => {
-          
-      }).catch(error => {
-	    })
+    	var url="/jlHjDj/printXp&hjid="+row.hjid;
+		val=window.open(url,"","width=360,height=150,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no");
+//  	RequestPrintXp(this.dataForm).then((res) => {
+//        
+//    }).catch(error => {
+//	    })
     },
     //取消登记
 		handleDelete(row) {
@@ -201,7 +203,9 @@ export default {
 		          type: 'warning'
 		        });
           }
+          this.getList()
 	    	}).catch(error => {
+	    		this.listLoading = false;
 	      })
 			})
 		},
