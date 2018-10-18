@@ -13,6 +13,7 @@ import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.service.jl.JlFrService;
 import com.sl.ue.service.jl.JlHjDjService;
 import com.sl.ue.service.jl.JlQsService;
+import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
 
 @RestController
@@ -121,6 +122,7 @@ public class JlHjDjWeb extends Result{
 	 * L_晓天  @2018年10月12日
 	 */
 	@RequestMapping("/printXp")
+	@IgnoreSecurity
 	public String printXp(Long hjid){ // 会见ID
 		if(hjid == null){
 			this.error(error_102);

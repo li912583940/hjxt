@@ -171,8 +171,8 @@ export default {
     	let param = {
     		hjid: row.hjid
     	}
-    	var url="/jlHjDj/printXp&hjid="+row.hjid;
-		val=window.open(url,"","width=360,height=150,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no");
+    	var url="/views/meet-register/printXp?hjid="+row.hjid;
+		val=window.open(url,"","width=360,height=350,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no");
 //  	RequestPrintXp(this.dataForm).then((res) => {
 //        
 //    }).catch(error => {
