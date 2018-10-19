@@ -226,52 +226,52 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		List<String> list = new ArrayList<String>();
 		list.add("会见准见证");
 		list.add(DateUtil.getDefault(new Date())); //打印时间
-		list.add("会见编号:"+jlHjDj.getHjIndex().toString().substring(8));
+		list.add("会见编号: "+jlHjDj.getHjIndex().toString().substring(8));
 		if(StringUtils.isNoneBlank(jlHjDj.getFrName())){
-			list.add("罪犯姓名:"+jlHjDj.getFrName());
+			list.add("罪犯姓名: "+jlHjDj.getFrName());
 		}
 		if(StringUtils.isNotBlank(jlHjDj.getJqName())){
-			list.add("监区:"+jlHjDj.getJqName());
+			list.add("监区: "+jlHjDj.getJqName());
 		}
-		list.add("本次会见时长:"+jlHjDj.getHjTime()/60+"分钟");
+		list.add("本次会见时长: "+jlHjDj.getHjTime()/60+"分钟");
 		int i=0;
 		if(jlHjDj.getQsInfo1()!=null && jlHjDj.getQsInfo1()!=""){
 			i++;
-			list.add(i+"号亲属:"+jlHjDj.getQsInfo1());
+			list.add(i+"号亲属: "+jlHjDj.getQsInfo1());
 		}
 		if(jlHjDj.getQsInfo2()!=null && jlHjDj.getQsInfo2()!=""){
 			i++;
-			list.add(i+"号亲属:"+jlHjDj.getQsInfo2());
+			list.add(i+"号亲属: "+jlHjDj.getQsInfo2());
 		}
 		if(jlHjDj.getQsInfo3()!=null && jlHjDj.getQsInfo3()!=""){
 			i++;
-			list.add(i+"号亲属:"+jlHjDj.getQsInfo3());
+			list.add(i+"号亲属: "+jlHjDj.getQsInfo3());
 		}
 		if(jlHjDj.getQsInfo4()!=null && jlHjDj.getQsInfo4()!=""){
 			i++;
-			list.add(i+"号亲属:"+jlHjDj.getQsInfo4());
+			list.add(i+"号亲属: "+jlHjDj.getQsInfo4());
 		}
 		if(jlHjDj.getQsInfo5()!=null && jlHjDj.getQsInfo5()!=""){
 			i++;
-			list.add(i+"号亲属:"+jlHjDj.getQsInfo5());
+			list.add(i+"号亲属: "+jlHjDj.getQsInfo5());
 		}
 		if(jlHjDj.getQsInfo6()!=null && jlHjDj.getQsInfo6()!=""){
 			i++;
-			list.add(i+"号亲属:"+jlHjDj.getQsInfo6());
+			list.add(i+"号亲属: "+jlHjDj.getQsInfo6());
 		}
 		if(jlHjDj.getQsInfo7()!=null && jlHjDj.getQsInfo7()!=""){
 			i++;
-			list.add(i+"号亲属:"+jlHjDj.getQsInfo7());
+			list.add(i+"号亲属: "+jlHjDj.getQsInfo7());
 		}
 		if(jlHjDj.getQsInfo8()!=null && jlHjDj.getQsInfo8()!=""){
 			i++;
-			list.add(i+"号亲属:"+jlHjDj.getQsInfo8());
+			list.add(i+"号亲属: "+jlHjDj.getQsInfo8());
 		}
 		if(jlHjDj.getQsInfo9()!=null && jlHjDj.getQsInfo9()!=""){
 			i++;
-			list.add(i+"号亲属:"+jlHjDj.getQsInfo9());
+			list.add(i+"号亲属: "+jlHjDj.getQsInfo9());
 		}
-		list.add("会见总人数:"+i+"人");
+		list.add("会见总人数: "+i+"人");
 		result.putData(list);
 		return result.toResult();
 	}

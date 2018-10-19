@@ -28,11 +28,6 @@ if (store.getters.token) {
     config.headers['X-Token'] = getToken()
 }
 
-	//对于/auth/**的请求路径，默认不添加token认证
-//	if (config.url.indexOf("/login") <0 && store.getters.token) {
-//	    config.headers['X-Token'] = getToken();
-//	}
-
 	if (config.method == 'post') {
 	    config.data = {
 	        ...config.data
@@ -105,15 +100,13 @@ if (store.getters.token) {
 
 service.interceptors.response.use(
     response => {
-    	//console.log(response);
     	const res = response.data;
-    	if (res.errCode != 0) {
-    		Message({
-          message: res.errMsg,
-          type: 'error',
-          duration: 5 * 1000
-        });
-    		
+    	//debugger
+    	// 如果文件流 就直接返回 （下载excel）
+    	if(res.type == 'application/octet-stream'){
+    		return res
+    	}
+    	if (res.errCode != 0) { //系统错误
     		// 101:无效token;
         if (res.errCode === 101) {
            // 请自行在引入 MessageBox
@@ -127,10 +120,16 @@ service.interceptors.response.use(
                location.reload() // 为了重新实例化vue-router对象 避免bug
              })
            })
+        }else{
+        	Message({
+	          message: res.errMsg,
+	          type: 'error',
+	          duration: 5 * 1000
+	        });
         }
         return Promise.reject('error')
 
-    	}else {
+    	}else { // 系统正常
     		Message({
           message: res.errMsg,
           type: 'success',

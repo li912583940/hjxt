@@ -122,7 +122,6 @@ public class JlHjDjWeb extends Result{
 	 * L_晓天  @2018年10月12日
 	 */
 	@RequestMapping("/printXp")
-	@IgnoreSecurity
 	public String printXp(Long hjid){ // 会见ID
 		if(hjid == null){
 			this.error(error_102);

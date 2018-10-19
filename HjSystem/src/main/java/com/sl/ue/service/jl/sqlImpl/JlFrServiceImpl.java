@@ -12,6 +12,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -33,18 +34,23 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 	private JlQsService jlQsSQL;
 	@Override
 	public Map<String, Object> findPojoJoin(JlFrVO model, Integer pageSize, Integer pageNum) {
-		StringBuffer field = new StringBuffer();
+		StringBuffer field = new StringBuffer(); // sql关联字段
 		field.append(",b.JQ_Name");
 		field.append(",c.JB_Name");
 		
-		
-		StringBuffer table = new StringBuffer();
+		StringBuffer table = new StringBuffer(); // sql关联表
 		table.append(" left join JL_JQ b ON a.JQ=b.JQ_No");
 		table.append(" left join JL_JB c ON a.JB_No=c.JB_No");
 		
-		model.setLeftJoinField(field.toString());
+		StringBuffer Where = new StringBuffer(); // sql条件
+    	if(StringUtils.isNotBlank(model.getFrName())){
+    		String str = model.getFrName();
+    		Where.append(" AND a.FR_Name LIKE '%"+str+"%' ");
+    		model.setFrName(null);
+    	}
+    	model.setLeftJoinField(field.toString());
 		model.setLeftJoinTable(table.toString());
-		
+    	model.setLeftJoinWhere(Where.toString());
 		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
 		if(map.containsKey("list")) {
 			List<JlFrVO> list = (List<JlFrVO>) map.get("list");
@@ -68,13 +74,22 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 		table.append(" left join JL_JQ b ON a.JQ=b.JQ_No");
 		table.append(" left join JL_JB c ON a.JB_No=c.JB_No");
 		
+		StringBuffer Where = new StringBuffer(); // sql条件
+    	if(StringUtils.isNotBlank(model.getFrName())){
+    		String str = model.getFrName();
+    		Where.append(" AND a.FR_Name LIKE '%"+str+"%' ");
+    		model.setFrName(null);
+    	}
+    	
 		model.setLeftJoinField(field.toString());
 		model.setLeftJoinTable(table.toString());
+		model.setLeftJoinWhere(Where.toString());
 		
 		List<JlFrVO> frList = this.findList(model);
-		if(frList == null || frList.size() == 0){
-			return;
-		}
+//		if(frList == null || frList.size() == 0){
+//			response.setContentType("application/octet-stream");
+//			return ;
+//		}
 		
 		String fileName =  "服刑人员记录.xls";
 		
@@ -150,7 +165,7 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 			response.setHeader("Content-Disposition", "attachment;filename="+fileName);
 			response.setHeader("Cache-Control","no-cache");//设置头
 			response.setCharacterEncoding("UTF-8");
-			response.setContentType("application/x-download");
+			response.setContentType("application/octet-stream");
 			out = response.getOutputStream();
 			book.write(out);
 		} catch (IOException e) {

@@ -576,31 +576,33 @@ export default {
 			})
 		},
     handleDownload() {
-    	let param = ''
-    	if(this.listQuery.frNo != undefined) {
-    		param += 'frNo='+ this.listQuery.frNo
-    	}
-    	if(this.listQuery.frName != undefined) {
-    		param += '&frName='+this.listQuery.frName
-    	}
-    	if(this.listQuery.jq != undefined) {
-    		param += '&jq='+this.listQuery.jq
-    	}
-//  	if(param === ''){
-//  		location.href='/api/jlFr/exportExcel'
-//  	}else{
-//  		location.href='/api/jlFr/exportExcel?'+param
-//  	}
-    	exportExcel().then(function(response){
-    //<img :src="url" /> vue
-     const url= URL.createObjectURL(response.data);
-			})
-//    this.downloadLoading = true
-//    exportExcel(this.listQuery).then((res) => {
-//    	this.downloadLoading = false
-//    }).catch(error => {
-//      this.downloadLoading = false
-//    })
+			if(!this.listQuery.frName){
+      	this.listQuery.frName = undefined
+      }
+      if(!this.listQuery.frNo){
+      	this.listQuery.frNo = undefined
+      }
+      if(!this.listQuery.jq){
+      	this.listQuery.jq = undefined
+      }
+      
+			let url = '/jlFr/exportExcel'
+			exportExcel(url,this.listQuery).then(res => {
+				console.log(res)
+	      const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
+	     	const downloadElement = document.createElement('a')
+	     	const href = window.URL.createObjectURL(blob)
+	     	downloadElement.href = href
+	     	downloadElement.download = '服刑人员记录.xls'
+	     	document.body.appendChild(downloadElement)
+	     	downloadElement.click()
+     		document.body.removeChild(downloadElement) // 下载完成移除元素
+	     	window.URL.revokeObjectURL(href) // 释放掉blob对象
+			}).catch(error => {
+         console.log(error)
+      })
+
+
     },
     
     

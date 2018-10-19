@@ -93,6 +93,21 @@
       </el-pagination>
     </div>
 
+
+    <!-- 打印小票 -->
+    <el-dialog title="" :visible.sync="dialogFormVisible">
+      <div id="wrap" class="wrap">
+		  	<span v-for="x in this.printList">
+		  	  <li>{{ x}}</li>
+		  	</span>
+		  </div>
+      <div slot="footer" class="dialog-footer">
+      	<el-button type="primary" @click="print">打 印</el-button>
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        
+      </div>
+    </el-dialog>
+    
   </div>
 </template>
 
@@ -102,7 +117,6 @@ import { findPojo, RequestPrintXp, RequestCancelDj } from '@/api/meetRegister'
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
-
 
 export default {
   name: 'meetRegister',
@@ -121,7 +135,10 @@ export default {
         frNo: undefined,
         frName: undefined,
         qsName: undefined
-      }
+      },
+      
+      dialogFormVisible: false,
+      printList : []
     }
   },
   filters: {
@@ -171,12 +188,18 @@ export default {
     	let param = {
     		hjid: row.hjid
     	}
-    	var url="/views/meet-register/printXp?hjid="+row.hjid;
-		val=window.open(url,"","width=360,height=350,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no");
-//  	RequestPrintXp(this.dataForm).then((res) => {
-//        
-//    }).catch(error => {
-//	    })
+    	RequestPrintXp(param).then((res) => {
+          this.printList = res.list
+      }).catch(error => {
+	    })
+			this.dialogFormVisible = true
+    },
+    print(){
+    	var newstr = document.getElementsByClassName('wrap')[0].innerHTML
+    	document.body.innerHTML = newstr
+      window.print()
+      // 重新加载页面，以刷新数据
+      window.location.reload()
     },
     //取消登记
 		handleDelete(row) {
