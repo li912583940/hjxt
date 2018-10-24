@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
   	<div class="filter-container">
-    	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="警察编号" v-model="listQuery.yjNum">
+    	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="警察编号" v-model="listQuery.yjNum" clearable>
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="警察姓名" v-model="listQuery.yjName">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="警察姓名" v-model="listQuery.yjName" clearable>
       </el-input>
       <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.deptName" placeholder="部门">
         <el-option v-for="item in deptNames" :key="item.id" :label="item.name" :value="item.id">

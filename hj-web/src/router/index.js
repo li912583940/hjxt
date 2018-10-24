@@ -98,21 +98,7 @@ export const constantRouterMap = [
         meta: { title: 'guide', icon: 'guide', noCache: true }
       }
     ]
-  },
-   {
-    path: '/addHjDj',
-    component: Layout,
-    children: [
-      {
-        path: '/addHjDj',
-        component: () => import('@/views/meet-register/addHjDj'),
-        name: 'addMeetRegister',
-        meta: { title: 'addMeetRegister', icon: 'excel' }
-      }
-    ],
-    hidden: true
-  },
- 
+  }
 ]
 
 export default new Router({
@@ -148,6 +134,19 @@ export const asyncRouterMap = [
     }]
   },
   
+  {
+    path: '/addHjDj',
+    component: Layout,
+    children: [
+      {
+        path: '/addHjDj',
+        component: () => import('@/views/meet-register/addHjDj'),
+//      name: 'addMeetRegister',
+//      meta: { title: 'addMeetRegister', icon: 'excel' }
+      }
+    ],
+    hidden: true
+  },
 
   { // 会见签到 -- 座位分配
     path: '/meetSign',

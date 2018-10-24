@@ -2,18 +2,25 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员编号" v-model="frListQuery.frNo">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员编号" v-model="frListQuery.frNo" clearable>
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员姓名" v-model="frListQuery.frName">
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员姓名" v-model="frListQuery.frName" clearable>
       </el-input>
       <el-select clearable style="width: 200px" class="filter-item" v-model="frListQuery.jq" placeholder="选择监区">
         <el-option v-for="item in jqs" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属身份证" v-model="frListQuery.qsSfz" clearable>
+      </el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="frListQuery.qsName" clearable>
+      </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
+      <el-button id="shibie1" class="filter-item" type="primary" v-waves  @click="shibie">识别身份证</el-button>
       <el-button class="filter-item" type="primary" v-waves  @click="addHjdj">提交登记</el-button>
+      
+      
     </div>
-
+    
 		<!-- 服刑人员开始 -->
 		<el-card class="box-card">
 	    <el-table :key='frTableKey' ref="frMultipleTable" :data="frList" v-loading="frListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
@@ -197,6 +204,8 @@
 	    </div>-->
 	  </el-card>
     <!-- 亲属结束 -->
+    <object width="0px" height="0px" id="IDCard2" name="IDCard2"  codebase="./SynCardOcx.CAB#version=1,0,0,1" classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039">
+					</object>
   </div>
 </template>
 
@@ -222,8 +231,12 @@ export default {
         pageSize: 5,
         frNo: undefined,
         frName: undefined,
-        jq: undefined
+        jq: undefined,
+        qsSfz: undefined, // 亲属身份证
+        qsName: undefined // 亲属姓名
       },
+      
+      qsImageUrl: '',
       
       qsTableKey: 1,
       qsList: null,
@@ -255,6 +268,11 @@ export default {
   mounted() {
       this.getFrList()
       this.getJqList()
+      this.openPort()
+      this.cardEvent()
+  },
+  destroyed(){
+  	this.colsePort()
   },
   methods: {
     getFrList() {
@@ -272,6 +290,13 @@ export default {
       	 this.frList = res.pojo.list
       	 this.frTotal = res.pojo.count
       	 this.frListLoading = false
+      	 if( res.pojo.count > 0){ //默认查询第一个罪犯的亲属信息
+      	   this.qsListQuery.frNo = res.pojo.list[0].frNo
+      	   this.getQsFrList()
+      	 }else{
+      	 	this.qsList = null
+      	 	this.qsTotal = null
+      	 }
       }).catch(error => {
           this.frListLoading = false
       })
@@ -322,6 +347,33 @@ export default {
 	    	})
     	}
     },
+    openPort(){ // 打开读卡器驱动
+    	console.log('打开port')
+			//document.all.qsCard.focus();
+		//	var isSuc=false;
+		//	for(var i=1;i<10;i++){
+		//		 isSuc=document.getElementById("WM1711").OpenPort1(i,"115200");
+		//		 if(isSuc==true){
+		//		 	break;
+		//		 }
+		//	}
+			//reID.ReadCardID(4, "baud=9600 parity=N data=8 stop=1");
+			let str=document.getElementById("IDCard2").FindReader()
+			if(str>1000){
+				document.getElementById("IDCard2").SetloopTime(1000);
+		  		document.getElementById("IDCard2").SetReadType(1);
+		  		document.getElementById("IDCard2").SetPhotoType(1);
+			}
+			
+			
+		},
+		
+		colsePort(){ // 关闭读卡器驱动
+			console.log('关闭port')
+			document.getElementById("IDCard2").SetReadType(0);
+		//	document.getElementById("WM1711").FunCloseCard();
+		},
+		
     addHjdj() { //提交会见登记
     	if(!this.formdata.frNo) {
     		this.$notify.error({
@@ -348,6 +400,8 @@ export default {
 	    })
     	RequestAddHjdj(this.formdata).then((res) => {
     		loading.close();
+    		history.go(-1) 
+    		//this.$router.push({ path: '/meetRegister/index' })
     	}).catch(error =>{
     		loading.close();
     	})
@@ -380,6 +434,28 @@ export default {
   	qsAllSelectionChange(rows){ // 亲属表格 全选事件
   		this.qsSelections = rows;
   	},
+  	cardEvent() { // 设置读卡器监听事件  并根据亲属身份证信息查询犯人
+		let handler =	document.createElement("script")
+		handler.setAttribute("for", "IDCard2");
+		handler.setAttribute("event","CardIn(State);")
+		handler.appendChild(document.createTextNode("document.getElementById('shibie1').click();"))
+		document.body.appendChild(handler)
+  	},
+  	shibie(){ // 识别身份证信息并查询
+    	var IDCard2=document.getElementById("IDCard2");
+		  IDCard2.SetPhotoName(2);
+		  let a = IDCard2.Base64Photo;
+		//document.getElementById("base64").value=a;
+		  this.frListQuery.qsSfz = IDCard2.CardNo
+		  this.frListQuery.qsName = IDCard2.NameA
+//		  document.getElementById("sfzzzz").value=b;
+//	  	document.getElementById("qsName").value=IDCard2.NameA;
+//	  	document.getElementById("qsSfz").value=IDCard2.CardNo;
+//	  	document.getElementById("dz").value=IDCard2.Address;
+	  	//var sex=IDCard2.Sex;
+	  	this.getFrList() //查询罪犯信息
+	  	
+  	},
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
         if (j === 'timestamp') {
@@ -389,8 +465,58 @@ export default {
         }
       }))
     }
+    
+    
   }
+  
+   
 }
+
+
+/*<script for="IDCard2" event="CardIn( State );">
+{ 
+if(State == 1)
+{
+	consol.log(1334)
+		var IDCard2=document.getElementById("IDCard2");
+		  	  	IDCard2.SetPhotoName(2);
+		  	  	var a = IDCard2.Base64Photo;
+		//	  	  	document.getElementById("base64").value=a;
+		  	  	var b = IDCard2.CardNo;
+		  	  	document.getElementById("sfzzzz").value=b;
+		  	document.getElementById("qsName").value=IDCard2.NameA;
+		  	document.getElementById("qsSfz").value=IDCard2.CardNo;
+		  	document.getElementById("dz").value=IDCard2.Address;
+		  	var sex=IDCard2.Sex;
+		  	if(sex==2){
+		 	for(var i=0;i<xb.length;i++){
+		if(xb.options[i].value=='女'){
+		xb.options[i].selected=true;
+		break;
+		}
+		}
+		  	}else{
+		  	for(var i=0;i<xb.length;i++){
+		if(xb.options[i].value=='男'){
+		xb.options[i].selected=true;
+		break;
+		}
+		}
+		  	}
+//		a=encodeURIComponent(encodeURIComponent(a));
+//		  	$.ajax({
+//		      type:"POST",
+//		      url:"hjdj.do",
+//		      data:"method=GenerateImage&sfzzBase64="+a+"&sfz="+b,
+//		      dataType:"json",
+//		      success:aaaa,
+//		      error:bbbb
+//		});
+}
+}
+   <script>*/
+
+
 </script>
 
 <style>

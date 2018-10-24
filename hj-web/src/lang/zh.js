@@ -207,6 +207,7 @@ export default {
   tagsView: {
     close: '关闭',
     closeOthers: '关闭其它',
-    closeAll: '关闭所有'
+    closeAll: '关闭所有',
+    refresh: '刷新'
   }
 }

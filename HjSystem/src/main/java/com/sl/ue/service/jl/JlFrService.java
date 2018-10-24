@@ -10,7 +10,7 @@ import com.sl.ue.service.base.BaseService;
 
 public interface JlFrService extends BaseService<JlFrVO>{
 
-	public Map<String, Object> findPojoJoin(JlFrVO model, Integer pageSize, Integer pageNum);
+	public Map<String, Object> findPojoJoin(JlFrVO model, Integer pageSize, Integer pageNum, String qsName, String qsSfz);
 	
 	/**
 	 * 说明 [导出excel]

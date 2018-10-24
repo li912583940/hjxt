@@ -207,6 +207,7 @@ export default {
   tagsView: {
     close: 'Close',
     closeOthers: 'Close Others',
-    closeAll: 'Close All'
+    closeAll: 'Close All',
+    refresh: 'Refresh'
   }
 }

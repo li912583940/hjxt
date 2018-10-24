@@ -33,7 +33,25 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 	@Autowired
 	private JlQsService jlQsSQL;
 	@Override
-	public Map<String, Object> findPojoJoin(JlFrVO model, Integer pageSize, Integer pageNum) {
+	public Map<String, Object> findPojoJoin(JlFrVO model, Integer pageSize, Integer pageNum,  String qsName, String qsSfz) {
+		JlQsVO queryJlQs = new JlQsVO();
+		queryJlQs.setQsSfz(qsSfz);
+		StringBuffer WhereJlQs = new StringBuffer(); // sql条件
+		if(StringUtils.isNotBlank(qsName)){
+			WhereJlQs.append(" AND a.QS_Name LIKE '%"+qsName+"%' ");
+		}
+		queryJlQs.setLeftJoinWhere(WhereJlQs.toString());
+		List<JlQsVO> jlQsList = jlQsSQL.findList(queryJlQs, pageSize, pageNum);
+		String frNos = "";
+		for(int i=0; i<jlQsList.size();i++){
+			JlQsVO jlQs = jlQsList.get(i);
+			if(i==0){
+				frNos = jlQs.getFrNo();
+			}else{
+				frNos +=","+jlQs.getFrNo();
+			}
+		}
+		
 		StringBuffer field = new StringBuffer(); // sql关联字段
 		field.append(",b.JQ_Name");
 		field.append(",c.JB_Name");
@@ -48,19 +66,22 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
     		Where.append(" AND a.FR_Name LIKE '%"+str+"%' ");
     		model.setFrName(null);
     	}
+    	if(StringUtils.isNotBlank(frNos)){
+    		Where.append(" AND a.FR_No in ("+frNos+") ");
+    	}
     	model.setLeftJoinField(field.toString());
 		model.setLeftJoinTable(table.toString());
     	model.setLeftJoinWhere(Where.toString());
 		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
-		if(map.containsKey("list")) {
-			List<JlFrVO> list = (List<JlFrVO>) map.get("list");
-			for(JlFrVO jlFr : list) {
-				JlQsVO jlQs = new JlQsVO();
-				jlQs.setFrNo(jlFr.getFrNo());
-				Integer qsNum= jlQsSQL.count(jlQs);
-				jlFr.setQsNum(qsNum);
-			}
-		}
+//		if(map.containsKey("list")) { //查询亲属个数
+//			List<JlFrVO> list = (List<JlFrVO>) map.get("list");
+//			for(JlFrVO jlFr : list) {
+//				JlQsVO jlQs = new JlQsVO();
+//				jlQs.setFrNo(jlFr.getFrNo());
+//				Integer qsNum= jlQsSQL.count(jlQs);
+//				jlFr.setQsNum(qsNum);
+//			}
+//		}
 		return map;
 	}
 	@Override

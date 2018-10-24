@@ -142,7 +142,6 @@ export default {
     }
   },
   filters: {
-    
   },
   created() {
     this.getList()

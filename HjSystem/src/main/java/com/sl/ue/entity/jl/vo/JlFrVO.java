@@ -13,7 +13,6 @@ public class JlFrVO extends JlFr{
     
     private Integer qsNum; // 亲属数量
     
-    
     public String getJqName() {
 		return jqName;
 	}
