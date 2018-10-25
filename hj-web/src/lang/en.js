@@ -127,7 +127,8 @@ export default {
     dashboard: 'Dashboard',
     github: 'Github',
     screenfull: 'screenfull',
-    theme: 'theme'
+    theme: 'theme',
+    size : 'size' 
   },
   login: {
     title: 'Login Form',

@@ -3,6 +3,7 @@ package com.sl.ue.service.jl;
 import java.util.List;
 import java.util.Map;
 
+import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
 import com.sl.ue.service.base.BaseService;
 
@@ -32,4 +33,7 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 	 * L_晓天  @2018年10月17日
 	 */
 	public String cancelDj(Long id, String cancelInfo);
+	
+	
+	public Map<String, Object> findPojoJoin(JlFrVO model, Integer pageSize, Integer pageNum, String qsName, String qsSfz);
 }

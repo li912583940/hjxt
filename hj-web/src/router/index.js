@@ -148,6 +148,17 @@ export const asyncRouterMap = [
     hidden: true
   },
 
+  {
+    path: '/addQs',
+    component: Layout,
+    children: [
+      {
+        path: '/addQs',
+        component: () => import('@/views/meet-register/addQs'),
+      }
+    ],
+    hidden: true
+  },
   { // 会见签到 -- 座位分配
     path: '/meetSign',
     component: Layout,

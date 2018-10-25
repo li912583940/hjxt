@@ -81,7 +81,7 @@ public class JlHjDjWeb extends Result{
 	 */
 	@RequestMapping("/findFrPojo")
     public String findFrPojo(JlFrVO model, Integer pageSize, Integer pageNum, String qsName, String qsSfz){
-        Map<String, Object> map = jlFrSQL.findPojoJoin(model, pageSize, pageNum, qsName, qsSfz);
+        Map<String, Object> map = jlHjDjSQL.findPojoJoin(model, pageSize, pageNum, qsName, qsSfz);
         this.putPojo(map);
         return this.toResult();
     }

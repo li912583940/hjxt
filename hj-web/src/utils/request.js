@@ -130,11 +130,11 @@ service.interceptors.response.use(
         return Promise.reject('error')
 
     	}else { // 系统正常
-    		Message({
-          message: res.errMsg,
-          type: 'success',
-          duration: 5 * 1000
-        });
+//  		Message({
+//        message: res.errMsg,
+//        type: 'success',
+//        duration: 5 * 1000
+//      });
          return response.data;
       }
     },

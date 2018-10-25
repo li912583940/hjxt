@@ -325,4 +325,65 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		return map;
 	}
 
+	@Override
+	public Map<String, Object> findPojoJoin(JlFrVO model, Integer pageSize, Integer pageNum, String qsName,
+			String qsSfz) {
+		String frNos = "";
+		if(StringUtils.isNotBlank(qsName) ||  StringUtils.isNotBlank(qsSfz)){
+			JlQsVO queryJlQs = new JlQsVO();
+			queryJlQs.setQsSfz(qsSfz);
+			StringBuffer WhereJlQs = new StringBuffer(); // sql条件
+			if(StringUtils.isNotBlank(qsName)){
+				WhereJlQs.append(" AND a.QS_Name LIKE '%"+qsName+"%' ");
+			}
+			queryJlQs.setLeftJoinWhere(WhereJlQs.toString());
+			List<JlQsVO> jlQsList = jlQsSQL.findList(queryJlQs, pageSize, pageNum);
+			if(jlQsList.size()>0){
+				for(int i=0; i<jlQsList.size();i++){
+					JlQsVO jlQs = jlQsList.get(i);
+					if(i==0){
+						frNos = jlQs.getFrNo();
+					}else{
+						frNos +=","+jlQs.getFrNo();
+					}
+				}
+			}else{
+				frNos = "-1";
+			}
+			
+		}
+		
+		StringBuffer field = new StringBuffer(); // sql关联字段
+		field.append(",b.JQ_Name");
+		field.append(",c.JB_Name");
+		
+		StringBuffer table = new StringBuffer(); // sql关联表
+		table.append(" left join JL_JQ b ON a.JQ=b.JQ_No");
+		table.append(" left join JL_JB c ON a.JB_No=c.JB_No");
+		
+		StringBuffer Where = new StringBuffer(); // sql条件
+    	if(StringUtils.isNotBlank(model.getFrName())){
+    		String str = model.getFrName();
+    		Where.append(" AND a.FR_Name LIKE '%"+str+"%' ");
+    		model.setFrName(null);
+    	}
+    	if(StringUtils.isNotBlank(frNos)){
+    		Where.append(" AND a.FR_No in ("+frNos+") ");
+    	}
+    	model.setLeftJoinField(field.toString());
+		model.setLeftJoinTable(table.toString());
+    	model.setLeftJoinWhere(Where.toString());
+		Map<String, Object> map = jlFrSQL.findPojo(model, pageSize, pageNum);
+//		if(map.containsKey("list")) { //查询亲属个数
+//			List<JlFrVO> list = (List<JlFrVO>) map.get("list");
+//			for(JlFrVO jlFr : list) {
+//				JlQsVO jlQs = new JlQsVO();
+//				jlQs.setFrNo(jlFr.getFrNo());
+//				Integer qsNum= jlQsSQL.count(jlQs);
+//				jlFr.setQsNum(qsNum);
+//			}
+//		}
+		return map;
+	}
+
 }

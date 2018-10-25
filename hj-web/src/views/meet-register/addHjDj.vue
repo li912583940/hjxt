@@ -15,9 +15,9 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="frListQuery.qsName" clearable>
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button id="shibie1" class="filter-item" type="primary" v-waves  @click="shibie">识别身份证</el-button>
+      <el-button id="shibie1" name="shibie1" class="filter-item" type="primary" v-waves  @click="shibie">识别身份证</el-button>
       <el-button class="filter-item" type="primary" v-waves  @click="addHjdj">提交登记</el-button>
-      
+      <el-button class="filter-item" type="primary" v-waves  @click="returnPrevious">返回</el-button>
       
     </div>
     
@@ -111,7 +111,7 @@
 	      </el-table-column>
 	      <el-table-column align="center" :label="$t('criminal.actions')" width="150" class-name="small-padding fixed-width" fixed="right">
 	        <template slot-scope="scope">
-	          <el-button type="primary" size="mini" @click="handleOpenQs(scope.row)">亲属</el-button>
+	          <el-button type="primary" size="mini" @click="handleAddQs(scope.row)">添加亲属</el-button>
 	          </el-button>
 	        </template>
 	      </el-table-column>
@@ -203,6 +203,7 @@
 	      </el-pagination>
 	    </div>-->
 	  </el-card>
+    
     <!-- 亲属结束 -->
     <object width="0px" height="0px" id="IDCard2" name="IDCard2"  codebase="./SynCardOcx.CAB#version=1,0,0,1" classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039">
 					</object>
@@ -212,7 +213,6 @@
 <script>
 import { findFrPojo, findQsPojo, findJqList, RequestAddHjdj } from '@/api/meetRegister'
 import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
 
 
 export default {
@@ -257,6 +257,7 @@ export default {
       	qsIds: []
       },
       qsSelections: []
+      
     }
   },
   filters: {
@@ -269,7 +270,7 @@ export default {
       this.getFrList()
       this.getJqList()
       this.openPort()
-      this.cardEvent()
+      
   },
   destroyed(){
   	this.colsePort()
@@ -285,6 +286,12 @@ export default {
       }
       if(!this.frListQuery.jq){
       	this.frListQuery.jq = undefined
+      }
+      if(!this.frListQuery.qsSfz){
+      	this.frListQuery.qsSfz = undefined
+      }
+      if(!this.frListQuery.qsName){
+      	this.frListQuery.qsName = undefined
       }
       findFrPojo(this.frListQuery).then((res) => {
       	 this.frList = res.pojo.list
@@ -365,7 +372,7 @@ export default {
 		  		document.getElementById("IDCard2").SetPhotoType(1);
 			}
 			
-			
+			this.cardEvent()
 		},
 		
 		colsePort(){ // 关闭读卡器驱动
@@ -406,6 +413,9 @@ export default {
     		loading.close();
     	})
     },
+    returnPrevious(){ // 返回上一页
+    	history.go(-1)
+    },
     handleSearchQs(row) { //双击罪犯表格查询家属
     	this.qsListQuery.frNo = row.frNo
     	this.getQsFrList()
@@ -434,17 +444,19 @@ export default {
   	qsAllSelectionChange(rows){ // 亲属表格 全选事件
   		this.qsSelections = rows;
   	},
-  	cardEvent() { // 设置读卡器监听事件  并根据亲属身份证信息查询犯人
-		let handler =	document.createElement("script")
-		handler.setAttribute("for", "IDCard2");
-		handler.setAttribute("event","CardIn(State);")
-		handler.appendChild(document.createTextNode("document.getElementById('shibie1').click();"))
-		document.body.appendChild(handler)
+  	cardEvent() {// 设置读卡器监听事件  并根据亲属身份证信息查询犯人
+  		console.log('cardEvent start')
+			let handler =	document.createElement("script")
+			handler.setAttribute("for", "IDCard2");
+			handler.setAttribute("event","CardIn(State);")
+			handler.appendChild(document.createTextNode("document.getElementById('shibie1').click();"))
+			document.body.appendChild(handler)
   	},
   	shibie(){ // 识别身份证信息并查询
+  		console.log('shibie start')
     	var IDCard2=document.getElementById("IDCard2");
 		  IDCard2.SetPhotoName(2);
-		  let a = IDCard2.Base64Photo;
+		  //let a = IDCard2.Base64Photo;
 		//document.getElementById("base64").value=a;
 		  this.frListQuery.qsSfz = IDCard2.CardNo
 		  this.frListQuery.qsName = IDCard2.NameA
@@ -456,15 +468,10 @@ export default {
 	  	this.getFrList() //查询罪犯信息
 	  	
   	},
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    }
+  	handleAddQs(row) { //打开亲属
+    	this.$router.push({ path: '/addQs' })
+		}
+
     
     
   }
