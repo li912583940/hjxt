@@ -109,7 +109,7 @@
 	          <span v-if="scope.row.hjJb!='-1'">否</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column align="center" :label="$t('criminal.actions')" width="150" class-name="small-padding fixed-width" fixed="right">
+	      <el-table-column align="center" :label="$t('criminal.actions')" width="150"  fixed="right">
 	        <template slot-scope="scope">
 	          <el-button type="primary" size="mini" @click="handleAddQs(scope.row)">添加亲属</el-button>
 	          </el-button>
@@ -256,7 +256,9 @@ export default {
       	frNo: undefined,
       	qsIds: []
       },
-      qsSelections: []
+      qsSelections: [],
+      
+      scriptAddHjDj : undefined //身份证读卡器时间节点
       
     }
   },
@@ -377,6 +379,10 @@ export default {
 		
 		colsePort(){ // 关闭读卡器驱动
 			console.log('关闭port')
+			if(this.scriptAddHjDj){ // 删除节点
+				document.body.removeChild(this.scriptAddHjDj);
+				console.log('节点删除成功')
+			}
 			document.getElementById("IDCard2").SetReadType(0);
 		//	document.getElementById("WM1711").FunCloseCard();
 		},
@@ -449,12 +455,19 @@ export default {
 			let handler =	document.createElement("script")
 			handler.setAttribute("for", "IDCard2");
 			handler.setAttribute("event","CardIn(State);")
+			handler.appendChild(document.createTextNode("{"))
+			handler.appendChild(document.createTextNode("if(State == 1){"))
 			handler.appendChild(document.createTextNode("document.getElementById('shibie1').click();"))
+			handler.appendChild(document.createTextNode("}"))
+			handler.appendChild(document.createTextNode("}"))
 			document.body.appendChild(handler)
+			
+			this.scriptAddHjDj = handler
   	},
   	shibie(){ // 识别身份证信息并查询
   		console.log('shibie start')
     	var IDCard2=document.getElementById("IDCard2");
+    	console.log(IDCard2.CardNo)
 		  IDCard2.SetPhotoName(2);
 		  //let a = IDCard2.Base64Photo;
 		//document.getElementById("base64").value=a;
