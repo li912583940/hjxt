@@ -10,7 +10,7 @@
   <url>http://maven.apache.org</url> -->
   
   
-    <!-- 继承父包 -->
+  <!-- 继承父包 -->
   <parent>
       <groupId>org.springframework.boot</groupId>
        <artifactId>spring-boot-starter-parent</artifactId>
