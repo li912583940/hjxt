@@ -7,7 +7,7 @@ import { asyncRouterMap, constantRouterMap } from '@/router'
  */
 function hasPermission(roles, route) {
   if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
+    return roles.some(role => route.meta.roles.includes(role)) //  some方法：只要其中一个为true 就会返回true
   } else {
     return true
   }
@@ -46,6 +46,7 @@ const permission = {
     }
   },
   actions: {
+  	// 根据当前角色判断其拥有的菜单目录  如果为admin就是超级管理员，  否则就解析权限路径
     GenerateRoutes({ commit }, data) {
       return new Promise(resolve => {
         const { roles } = data

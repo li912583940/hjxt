@@ -118,8 +118,8 @@ export const asyncRouterMap = [
       icon: 'peoples'
     },
     children: [
-      { path: 'criminal', component: () => import('@/views/criminal/criminal'), name: 'criminal', meta: { title: 'criminal', icon: 'peoples' }}, //服刑人员
-      { path: 'relatives', component: () => import('@/views/criminal/relatives'), name: 'relatives', meta: { title: 'relatives', icon: 'peoples'}} // 亲属
+      { path: 'criminal', component: () => import('@/views/criminal/criminal'), name: 'criminal', meta: { title: 'criminal', icon: 'peoples', roles:'/criminal' }}, //服刑人员
+      { path: 'relatives', component: () => import('@/views/criminal/relatives'), name: 'relatives', meta: { title: 'relatives', icon: 'peoples', roles:'/relatives'}} // 亲属
     ]
   },
 
@@ -130,7 +130,7 @@ export const asyncRouterMap = [
       path: 'index',
       component: () => import('@/views/meet-register/index'),
       name: 'meetRegister',
-      meta: { title: 'meetRegister', icon: 'excel' }
+      meta: { title: 'meetRegister', icon: 'excel', roles:'/meetRegister' }
     }]
   },
   
@@ -166,7 +166,7 @@ export const asyncRouterMap = [
       path: 'index',
       component: () => import('@/views/meet-sign/index'),
       name: 'meetSign',
-      meta: { title: 'meetSign', icon: 'form' }
+      meta: { title: 'meetSign', icon: 'form', roles:'/meetSign' }
     }]
   },
 
@@ -177,7 +177,7 @@ export const asyncRouterMap = [
       path: 'index',
       component: () => import('@/views/meet-notice/index'),
       name: 'meetNotice',
-      meta: { title: 'meetNotice', icon: 'email' }
+      meta: { title: 'meetNotice', icon: 'email', roles:'/meetNotice' }
     }]
   },
   
@@ -188,7 +188,7 @@ export const asyncRouterMap = [
       path: 'index',
       component: () => import('@/views/meet-monitor/index'),
       name: 'meetMonitor',
-      meta: { title: 'meetMonitor', icon: 'eye' }
+      meta: { title: 'meetMonitor', icon: 'eye', roles:'/meetMonitor' }
     }]
   },
   
@@ -199,7 +199,7 @@ export const asyncRouterMap = [
       path: 'index',
       component: () => import('@/views/meet-sp/index'),
       name: 'meetSp',
-      meta: { title: 'meetSp', icon: 'documentation' }
+      meta: { title: 'meetSp', icon: 'documentation', roles:'/meetSp' }
     }]
   },
   
@@ -210,7 +210,7 @@ export const asyncRouterMap = [
       path: 'index',
       component: () => import('@/views/yj-message/index'),
       name: 'yjMessage',
-      meta: { title: 'yjMessage', icon: 'people' }
+      meta: { title: 'yjMessage', icon: 'people', roles:'/yjMessage' }
     }]
   },
   
@@ -221,7 +221,7 @@ export const asyncRouterMap = [
       path: 'index',
       component: () => import('@/views/log-record/meetRecord'),
       name: 'meetRecord',
-      meta: { title: 'meetRecord', icon: 'form' }
+      meta: { title: 'meetRecord', icon: 'form', roles:'/meetRecord' }
     }]
   },
   
@@ -232,7 +232,7 @@ export const asyncRouterMap = [
       path: 'index',
       component: () => import('@/views/log-record/meetReport'),
       name: 'meetReport',
-      meta: { title: 'meetReport', icon: 'chart' }
+      meta: { title: 'meetReport', icon: 'chart', roles:'/meetReport' }
     }]
   },
   
@@ -246,9 +246,9 @@ export const asyncRouterMap = [
       icon: 'clipboard'
     },
     children: [
-      { path: 'operationLog', component: () => import('@/views/log-record/operationLog'), name: 'operationLog', meta: { title: 'operationLog', icon: 'form' }}, //操作日志
-      { path: 'registerLog', component: () => import('@/views/log-record/registerLog'), name: 'registerLog', meta: { title: 'registerLog' , icon: 'form'}}, //登记记录
-      { path: 'entranceGuard', component: () => import('@/views/log-record/entranceGuard'), name: 'entranceGuard', meta: { title: 'entranceGuard', icon: 'form' }} // 门禁记录
+      { path: 'operationLog', component: () => import('@/views/log-record/operationLog'), name: 'operationLog', meta: { title: 'operationLog', icon: 'form', roles:'/operationLog' }}, //操作日志
+      { path: 'registerLog', component: () => import('@/views/log-record/registerLog'), name: 'registerLog', meta: { title: 'registerLog' , icon: 'form', roles:'/registerLog'}}, //登记记录
+      { path: 'entranceGuard', component: () => import('@/views/log-record/entranceGuard'), name: 'entranceGuard', meta: { title: 'entranceGuard', icon: 'form', roles:'/entranceGuard' }} // 门禁记录
       
     ]
   },
@@ -264,12 +264,12 @@ export const asyncRouterMap = [
       icon: 'tab'
     },
     children: [
-      { path: 'sysUser', component: () => import('@/views/system-set/sysUser'), name: 'sysUser', meta: { title: 'sysUser', icon: 'user' }}, //系统用户管理
-      { path: 'sysRoles', component: () => import('@/views/system-set/sysRoles'), name: 'sysRoles', meta: { title: 'sysRoles', icon: 'user'}}, //系统权限配置
-      { path: 'criminalLevel', component: () => import('@/views/system-set/criminalLevel'), name: 'criminalLevel', meta: { title: 'criminalLevel', icon: 'tree' }}, //服刑人员级别
-      { path: 'jqSet', component: () => import('@/views/system-set/jqSet'), name: 'jqSet', meta: { title: 'jqSet', icon: 'tab' }}, //监区设置
-      { path: 'lineSet', component: () => import('@/views/system-set/lineSet'), name: 'lineSet', meta: { title: 'lineSet', icon: 'tab' }}, // 线路设置
-      { path: 'sysParam', component: () => import('@/views/system-set/sysParam'), name: 'sysParam', meta: { title: 'sysParam', icon: 'tab' }} // 系统参数
+      { path: 'sysUser', component: () => import('@/views/system-set/sysUser'), name: 'sysUser', meta: { title: 'sysUser', icon: 'user', roles:'/sysUser' }}, //系统用户管理
+      { path: 'sysRoles', component: () => import('@/views/system-set/sysRoles'), name: 'sysRoles', meta: { title: 'sysRoles', icon: 'user', roles:'/sysRoles'}}, //系统权限配置
+      { path: 'criminalLevel', component: () => import('@/views/system-set/criminalLevel'), name: 'criminalLevel', meta: { title: 'criminalLevel', icon: 'tree', roles:'/criminalLevel' }}, //服刑人员级别
+      { path: 'jqSet', component: () => import('@/views/system-set/jqSet'), name: 'jqSet', meta: { title: 'jqSet', icon: 'tab', roles:'/jqSet' }}, //监区设置
+      { path: 'lineSet', component: () => import('@/views/system-set/lineSet'), name: 'lineSet', meta: { title: 'lineSet', icon: 'tab', roles:'/lineSet' }}, // 线路设置
+      { path: 'sysParam', component: () => import('@/views/system-set/sysParam'), name: 'sysParam', meta: { title: 'sysParam', icon: 'tab', roles:'/sysParam' }} // 系统参数
     ]
   },
  

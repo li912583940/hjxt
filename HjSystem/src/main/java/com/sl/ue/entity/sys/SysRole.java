@@ -36,6 +36,10 @@ public class SysRole implements java.io.Serializable{
     @DbField("create_user_id")
     private Integer createUserId;
 
+    /** 是否位管理员 1：是， 0：不是  */
+    @DbField("is_admin")
+    private Integer isAdmin;
+    
     public Integer getId() {
         return this.id;
     }
@@ -78,4 +82,14 @@ public class SysRole implements java.io.Serializable{
     public void setCreateUserId(Integer createUserId) {
         this.createUserId = createUserId;
     }
+
+	public Integer getIsAdmin() {
+		return isAdmin;
+	}
+
+	public void setIsAdmin(Integer isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+    
+    
 }
