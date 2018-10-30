@@ -151,7 +151,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			if(pageSize != null && pageNum != null){
 				int startNum = (pageNum-1)*pageSize;
 				int endNum = pageNum*pageSize;
-				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" DESC) AS rowid,a.* "+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
+				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" ASC) AS rowid,a.* "+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
 						+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
 			}
 			System.out.println("执行查询list语句: [ "+sql+" ]");

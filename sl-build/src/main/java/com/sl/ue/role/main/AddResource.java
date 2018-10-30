@@ -89,7 +89,7 @@ public class AddResource {
 		Map<String, String> map7 = new HashMap<String, String>();
 		map7.put("path", "yjMessage");
 		map7.put("name", "警察信息");
-		list.add(map);
+		list.add(map7);
 		
 		Map<String, String> map8 = new HashMap<String, String>();
 		map8.put("path", "meetRecord");

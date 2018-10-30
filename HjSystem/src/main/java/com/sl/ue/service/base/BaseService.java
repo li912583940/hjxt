@@ -15,20 +15,20 @@ public interface BaseService<T>{
 	public List<T> findList(T model);
 	
 	/**
-	 * 说明 [分页查询,不带记录总数(count)]
+	 * 说明 [分页查询,不带记录总数(count) 升序]
 	 * @作者 LXT @2018年9月24日
 	 */
 	public List<T> findList(T model, Integer pageSize, Integer pageNum);
 	
 	
 	/**
-	 * 说明 [分页查询,带记录总数(count)]
+	 * 说明 [分页查询,带记录总数(count) 降序]
 	 * @作者 LXT @2018年9月24日
 	 */
 	public Map<String, Object> findPojo(T model);
 	
 	/**
-	 * 说明 [分页查询,带记录总数(count)]
+	 * 说明 [分页查询,带记录总数(count) 降序]
 	 * @作者 LXT @2018年9月24日
 	 */
 	public Map<String, Object> findPojo(T model, Integer pageSize, Integer pageNum);

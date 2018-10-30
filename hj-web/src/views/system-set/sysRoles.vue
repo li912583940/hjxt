@@ -81,6 +81,7 @@
 						  :data="menuData"
 						  show-checkbox
 						  default-expand-all
+						  :default-checked-keys="menuCheckedKeys"
 						  node-key="id"
 						  ref="menuDataTree"
 						  highlight-current
@@ -99,6 +100,7 @@
 						  :data="jqData"
 						  show-checkbox
 						  default-expand-all
+						  :default-checked-keys="jqCheckedKeys"
 						  node-key="id"
 						  ref="jqDataTree"
 						  highlight-current
@@ -118,7 +120,7 @@
 </template>
 
 <script>
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete } from '@/api/sysRoles'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, GetMenuTree, GetCheckedMenu, GetJqTree, GetCheckedJq } from '@/api/sysRoles'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -161,44 +163,10 @@ export default {
 	    children: 'children',
 	    label: 'label'
 	  },
-	  menuData: [{
-          id: 1,
-          label: '全选',
-          children: [
-          	{
-	            id: 4,
-	            label: '服刑人员',
-            },
-            {
-	            id: 5,
-	            label: '会见登记',
-            },
-            {
-	            id: 5,
-	            label: '会见监控',
-            },
-          ]
-        }
-	  ],
-	  jqData: [
-	  	{
-          id: 0,
-          label: '全选',
-          children: [{
-              id: 1,
-              label: '一监区'
-            }, {
-              id: 10,
-              label: '二监区'
-            },
-            {
-              id: 11,
-              label: '三监区'
-            }
-          ]
-       },
-       
-	  ]
+	  menuData: [], // 目录树形结构
+	  menuCheckedKeys: [], //  目录默认选中节点的值
+	  jqData: [], // 监区树形结构
+	  jqCheckedKeys : [], // 监区默认选中节点的值
     }
   },
   filters: {
@@ -307,7 +275,48 @@ export default {
 	},
 	openAuthority(row){ //打开权限弹框
 		this.dialogAuthorityVisible = true
+		
+		if(this.menuData.length === 0){ // 只查询一次
+			this.getMenuTree()
+		}
+		if(this.jqData.length === 0){ // 只查询一次
+			this.getJqTree()
+		}
+		
+		// 获取当前角色的目录和监区
+		this.getCheckedMenu(row.id)
+		this.getCheckedJq(row.id)
 	},
+	getMenuTree() { // 获取目录树形结构
+      GetMenuTree({}).then((res) => {
+      	 this.menuData = res.data
+      }).catch(error => {
+      })
+  },
+  getCheckedMenu(roleId) { // 获取当前角色选中的目录 数组格式
+  	  let param = {
+  	  	roleId: roleId
+  	  }
+      GetCheckedMenu(param).then((res) => {
+      	 this.menuCheckedKeys = res.data
+      }).catch(error => {
+      })
+  },
+  getJqTree() { // 获取监区树形结构
+      GetJqTree({}).then((res) => {
+      	 this.jqData = res.data
+      }).catch(error => {
+      })
+  },
+  getCheckedJq(roleId) { // 获取当前角色选中的监区 数组格式
+  	let param = {
+  	  	roleId: roleId
+  	  }
+      GetCheckedJq(param).then((res) => {
+      	 this.jqCheckedKeys = res.data
+      }).catch(error => {
+      })
+  },
 	dateFormats: function (val) {
 		if(!val){
 			return undefined
