@@ -45,7 +45,7 @@
       </el-table-column>
       <el-table-column width="180" align="center" label="登记时间">
         <template slot-scope="scope">
-          <span>{{scope.row.djTime}}</span>
+          <span>{{scope.row.djTime | dateFormat}}</span>
         </template>
       </el-table-column>
       <el-table-column width="140" align="center" label="登记人">
@@ -142,6 +142,13 @@ export default {
     }
   },
   filters: {
+  	dateFormat(date) {
+		  //时间格式化  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+	  }
   },
   created() {
     this.getList()
@@ -230,14 +237,6 @@ export default {
 	    		this.listLoading = false;
 	      })
 			})
-		},
-    dateFormat(row, column) {
-			//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
 		},
 		dateFormats: function (val) {
 			if(!val){

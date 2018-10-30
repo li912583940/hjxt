@@ -26,5 +26,5 @@ public interface SysUserService extends BaseService<SysUserVO>{
 	 * 说明 [查询用户角色]
 	 * L_晓天  @2018年9月20日
 	 */
-	public List<String> getRoles(String token);
+	public String getRoles(String token);
 }

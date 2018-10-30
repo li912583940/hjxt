@@ -64,10 +64,12 @@ public class SysUserWeb extends Result{
         return this.toResult();
     }
 
+    /**
+     * 说明 [获取目录资源]
+     * L_晓天  @2018年10月30日
+     */
     @RequestMapping("/getRoles")
     public String getRoles(String token){
-    	List<String> roles = sysUserSQL.getRoles(token);
-    	this.putJson(roles);
-    	return this.toResult();
+    	return sysUserSQL.getRoles(token);
     }
 }

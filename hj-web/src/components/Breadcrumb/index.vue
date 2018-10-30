@@ -11,7 +11,6 @@
 
 <script>
 import { generateTitle } from '@/utils/i18n'
-
 export default {
   data() {
     return {

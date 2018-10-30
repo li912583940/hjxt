@@ -1,5 +1,6 @@
 package com.sl.ue.web.sys;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.sl.ue.entity.sys.vo.SysRoleVO;
 import com.sl.ue.service.sys.SysRoleService;
 import com.sl.ue.util.http.Result;
+import com.sl.ue.util.http.token.TokenUser;
 
 @RestController
 @RequestMapping("/sysRole")
@@ -48,12 +50,16 @@ public class SysRoleWeb extends Result{
 
     @RequestMapping("/add")
     public String add(SysRoleVO model){
+    	model.setCreateTime(new Date());
+    	model.setCreateUserId(TokenUser.getUser().getWebid());
         sysRoleSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(SysRoleVO model){
+    	model.setCreateTime(new Date());
+    	model.setCreateUserId(TokenUser.getUser().getWebid());
         sysRoleSQL.edit(model);
         return this.toResult();
     }

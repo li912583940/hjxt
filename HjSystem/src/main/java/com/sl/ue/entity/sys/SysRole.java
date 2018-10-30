@@ -24,7 +24,7 @@ public class SysRole implements java.io.Serializable{
     @DbField("description")
     private String description;
 
-    /** 是否可用 1：可用， 0：不可用 */
+    /** 是否可用 1：可用， 0：不可用  默认：1*/
     @DbField("useble")
     private Integer useble;
 
@@ -35,8 +35,12 @@ public class SysRole implements java.io.Serializable{
     /** 创建人id */
     @DbField("create_user_id")
     private Integer createUserId;
-
-    /** 是否位管理员 1：是， 0：不是  */
+    
+    /** 当前角色是否已分配权限， 1：已分配，0：未分配， 默认：0 */
+    @DbField("is_authority")
+    private Integer isAuthority;
+    
+    /** 是否位管理员 1：是， 0：不是  默认：0 */
     @DbField("is_admin")
     private Integer isAdmin;
     
@@ -89,6 +93,14 @@ public class SysRole implements java.io.Serializable{
 
 	public void setIsAdmin(Integer isAdmin) {
 		this.isAdmin = isAdmin;
+	}
+
+	public Integer getIsAuthority() {
+		return isAuthority;
+	}
+
+	public void setIsAuthority(Integer isAuthority) {
+		this.isAuthority = isAuthority;
 	}
     
     
