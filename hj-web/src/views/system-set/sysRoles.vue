@@ -39,7 +39,7 @@
           <span v-if="scope.row.isAdmin ==-1">超级管理员不能更改</span>
           <el-button v-if="scope.row.isAdmin !=-1" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button v-if="scope.row.isAdmin !=-1"  size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
-          <el-button v-if="scope.row.isAdmin !=-1"  size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">设置权限</el-button>
+          <el-button v-if="scope.row.isAdmin !=-1"  size="mini" type="danger" icon="el-icon-delete" @click="openAuthority(scope.row)">设置权限</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -67,6 +67,52 @@
       </div>
     </el-dialog>
     
+    
+    <!-- 设置权限 -->
+    <el-dialog title="设置权限" :visible.sync="dialogAuthorityVisible">
+    	<el-row :gutter="12">
+    		<el-col :span="12">
+		        <el-card style="width: 400px; margin-left: 15px;">
+				    <div slot="header" >
+				        <span>为角色分配菜单权限</span>
+				    </div>
+				    <div class="text item">
+				        <el-tree
+						  :data="menuData"
+						  show-checkbox
+						  default-expand-all
+						  node-key="id"
+						  ref="menuDataTree"
+						  highlight-current
+						  :props="defaultProps">
+					    </el-tree>
+				    </div>
+			    </el-card>
+	        </el-col>
+	        <el-col :span="12">
+			  <el-card style="width: 400px; margin-left: 15px;">
+				    <div slot="header" >
+				        <span>为角色分配监区权限</span>
+				    </div>
+				    <div class="text item">
+			            <el-tree
+						  :data="jqData"
+						  show-checkbox
+						  default-expand-all
+						  node-key="id"
+						  ref="jqDataTree"
+						  highlight-current
+						  :props="defaultProps">
+					    </el-tree>
+				    </div>
+			  </el-card>
+			</el-col>
+	  </el-row>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogAuthorityVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updateData">确 定</el-button>
+      </div>
+    </el-dialog>
 
   </div>
 </template>
@@ -108,7 +154,51 @@ export default {
       },
       rules: {
         name: [{ required: true, message: '名称不能为空', trigger: 'blur' }]
-      }
+      },
+      dialogAuthorityVisible: false, // 设置权限弹框
+      // 树形节点
+      defaultProps: {
+	    children: 'children',
+	    label: 'label'
+	  },
+	  menuData: [{
+          id: 1,
+          label: '全选',
+          children: [
+          	{
+	            id: 4,
+	            label: '服刑人员',
+            },
+            {
+	            id: 5,
+	            label: '会见登记',
+            },
+            {
+	            id: 5,
+	            label: '会见监控',
+            },
+          ]
+        }
+	  ],
+	  jqData: [
+	  	{
+          id: 0,
+          label: '全选',
+          children: [{
+              id: 1,
+              label: '一监区'
+            }, {
+              id: 10,
+              label: '二监区'
+            },
+            {
+              id: 11,
+              label: '三监区'
+            }
+          ]
+       },
+       
+	  ]
     }
   },
   filters: {
@@ -214,6 +304,9 @@ export default {
         this.dialogFormVisible = false
       })
 		})
+	},
+	openAuthority(row){ //打开权限弹框
+		this.dialogAuthorityVisible = true
 	},
 	dateFormats: function (val) {
 		if(!val){
