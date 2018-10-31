@@ -56,7 +56,7 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 		// 查询当前用户是否为管理员权限
 		SysRoleVO sysRole = new SysRoleVO();
 		sysRole.setLeftJoinTable(" left join sys_user_role b ON a.id=b.role_id");
-		sysRole.setLeftJoinWhere(" AND b.user_id="+sysUser.getWebid());
+		sysRole.setLeftJoinWhere(" AND b.user_id="+sysUser.getWebId());
 		List<SysRoleVO>  roleList = SysRoleSQL.findList(sysRole);
 		if(roleList.size() == 0){
 			result.error(Result.error_103, "当前账号无权限");

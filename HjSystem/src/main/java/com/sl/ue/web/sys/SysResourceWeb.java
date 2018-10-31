@@ -64,42 +64,5 @@ public class SysResourceWeb extends Result{
         return this.toResult();
     }
 
-    /**
-     * 说明 [获取目录树形结构]
-     * L_晓天  @2018年10月30日
-     */
-    @RequestMapping("/getMenuTree")
-    public String getMenuTree(){
-    	return sysResourceSQL.getMenuTree();
-    }
     
-    /**
-     * 说明 [获取当前角色选中的目录 数组格式]
-     * L_晓天  @2018年10月30日
-     */
-    @RequestMapping("/getCheckedMenu")
-    public String getCheckedMenu(Integer roleId){
-    	if(roleId == null){
-    		this.error(error_102);
-    		return this.toResult();
-    	}
-    	return sysResourceSQL.getCheckedMenu(roleId);
-    }
-    /**
-     * 说明 [获取监区树形结构]
-     * L_晓天  @2018年10月30日
-     */
-    @RequestMapping("/getJqTree")
-    public String getJqTree(){
-    	return sysResourceSQL.getJqTree();
-    }
-    
-    /**
-     * 说明 [获取当前角色选中的监区 数组格式]
-     * L_晓天  @2018年10月30日
-     */
-    @RequestMapping("/getCheckedJq")
-    public String getCheckedJq(Integer roleId){
-    	return sysResourceSQL.getCheckedJq(roleId);
-    }
 }

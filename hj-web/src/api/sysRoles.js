@@ -12,10 +12,16 @@ export const RequestEdit = params => { return request.post('/sysRole/edit', para
 
 export const RequestDelete = params => { return request.post('/sysRole/delete', params ).then(res => res) }
 
-export const GetMenuTree = params => { return request.get('/sysResource/getMenuTree', { params: params } ).then(res => res) }
+export const GetMenuTree = params => { return request.get('/sysRole/getMenuTree', { params: params } ).then(res => res) }
 
-export const GetCheckedMenu = params => { return request.get('/sysResource/getCheckedMenu', { params: params } ).then(res => res) }
+export const GetCheckedMenu = params => { return request.get('/sysRole/getCheckedMenu', { params: params } ).then(res => res) }
 
-export const GetJqTree = params => { return request.get('/sysResource/getJqTree', { params: params } ).then(res => res) }
+export const GetJqTree = params => { return request.get('/sysRole/getJqTree', { params: params } ).then(res => res) }
 
-export const GetCheckedJq = params => { return request.get('/sysResource/getCheckedJq', { params: params } ).then(res => res) }
+export const GetCheckedJq = params => { return request.get('/sysRole/getCheckedJq', { params: params } ).then(res => res) }
+
+export const AddRoleMenu = params => { return request.post('/sysRole/addRoleMenu', params ).then(res => res) }
+
+export const AddRoleJq = params => { return request.post('/sysRole/addRoleJq', params ).then(res => res) }
+
+export const FindUserList = params => { return request.get('/sysUser/findList', { params: params } ).then(res => res) }

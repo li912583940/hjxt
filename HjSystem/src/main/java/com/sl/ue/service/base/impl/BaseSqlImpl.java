@@ -384,8 +384,9 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 						if(id.inc() == true){
 							isInc = true;
 							idField = field;
+							continue;
 						}
-						continue;
+						
 					}
 					String table_filed = field.getAnnotation(DbField.class).value();
 					

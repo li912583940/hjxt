@@ -10,11 +10,9 @@ import com.sl.ue.util.http.Result;
 public class Test {
 
 	public static void main(String[] args){
-		List<Integer> i = new ArrayList<>();
-		i.add(1);
-		i.add(4);
-		Object[] o = i.toArray();
-		String s = o.toString();
-		System.out.println(s);
+		String s = "1,2";
+		String[] ss = s.split(",");
+		
+		System.out.println(ss.length);
 	}
 }

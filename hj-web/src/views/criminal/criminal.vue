@@ -650,6 +650,8 @@ export default {
 			if(this.$refs[formName] !== undefined){
 				this.$refs[formName].resetFields();
 			}
+			this.dataForm.webId= undefined
+			this.dataQsForm.webId= undefined
 	  },
     handleQsCreate() {
       this.dialogStatus = 'create'

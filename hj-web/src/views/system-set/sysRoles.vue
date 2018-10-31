@@ -4,11 +4,11 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入名称" v-model="listQuery.name" clearable>
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
+      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('criminal.add')}}</el-button>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 1231px">
+      style="width: 1651px">
       <el-table-column width="100" align="center"  :label="$t('criminal.id')">
         <template slot-scope="scope">
           <span>{{scope.row.id}}</span>
@@ -34,12 +34,30 @@
           <span>{{scope.row.createUserId}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="320" >
+      <el-table-column width="150" align="center" label="菜单权限">
+        <template slot-scope="scope">
+          <span v-if="scope.row.authorityResource==1">已设置</span>
+          <span v-if="scope.row.authorityResource==0">未设置</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="150" align="center" label="监区权限">
+        <template slot-scope="scope">
+          <span v-if="scope.row.authorityJq==1">已设置</span>
+          <span v-if="scope.row.authorityJq==0">未设置</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" :label="$t('criminal.actions')" width="200" >
         <template slot-scope="scope">
           <span v-if="scope.row.isAdmin ==-1">超级管理员不能更改</span>
           <el-button v-if="scope.row.isAdmin !=-1" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button v-if="scope.row.isAdmin !=-1"  size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
-          <el-button v-if="scope.row.isAdmin !=-1"  size="mini" type="danger" icon="el-icon-delete" @click="openAuthority(scope.row)">设置权限</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="权限设置" width="240" >
+        <template slot-scope="scope">
+          <span v-if="scope.row.isAdmin ==-1">超级管理员不能更改</span>
+          <el-button v-if="scope.row.isAdmin !=-1"  size="mini" type="primary" icon="el-icon-setting" @click="openAuthority(scope.row)">分配权限</el-button>
+          <el-button v-if="scope.row.isAdmin !=-1" type="primary" size="mini" icon="el-icon-plus" @click="openUser(scope.row)">添加用户</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -72,7 +90,7 @@
     <el-dialog title="设置权限" :visible.sync="dialogAuthorityVisible">
     	<el-row :gutter="12">
     		<el-col :span="12">
-		        <el-card style="width: 400px; margin-left: 15px;">
+		      <el-card style="width: 400px; margin-left: 30px;">
 				    <div slot="header" >
 				        <span>为角色分配菜单权限</span>
 				    </div>
@@ -89,7 +107,7 @@
 					    </el-tree>
 				    </div>
 			    </el-card>
-	        </el-col>
+	      </el-col>
 	        <el-col :span="12">
 			  <el-card style="width: 400px; margin-left: 15px;">
 				    <div slot="header" >
@@ -112,15 +130,37 @@
 	  </el-row>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogAuthorityVisible = false">取 消</el-button>
-        <el-button type="primary" @click="updateData">确 定</el-button>
+        <el-button type="primary" @click="updateAuthorityData">确 定</el-button>
       </div>
     </el-dialog>
 
+
+    <!-- 添加用户 -->
+		<el-dialog title="添加用户" :visible.sync="dialogUserVisible">
+			<el-card style="width: 60%; margin-left: 15%;">
+				<el-transfer
+			    filterable
+			    :filter-method="userFilter"
+			    filter-placeholder="请输入关键字搜索"
+			    v-model="userValue"
+			    :data="userData"
+			    :titles="['系统用户', '角色用户']">
+			  </el-transfer>
+		  </el-card>
+		  <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogUserVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updateUserData">确 定</el-button>
+      </div>
+		</el-dialog>
+		
   </div>
 </template>
 
 <script>
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, GetMenuTree, GetCheckedMenu, GetJqTree, GetCheckedJq } from '@/api/sysRoles'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete,
+	GetMenuTree,GetCheckedMenu, GetJqTree, GetCheckedJq,AddRoleMenu,AddRoleJq,
+  FindUserList} from '@/api/sysRoles'
+
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -133,6 +173,7 @@ export default {
   },
   data() {
     return {
+    	/**---------------------------角色增删改查开始-1--------------------------*/
       tableKey: 0,
       list: null,
       total: null,
@@ -157,16 +198,27 @@ export default {
       rules: {
         name: [{ required: true, message: '名称不能为空', trigger: 'blur' }]
       },
+      /** 角色增删改查结束 */
+      
+      roleId: undefined,  //设置权限时的id
+      /** 设置权限开始 */
       dialogAuthorityVisible: false, // 设置权限弹框
       // 树形节点
       defaultProps: {
-	    children: 'children',
-	    label: 'label'
-	  },
-	  menuData: [], // 目录树形结构
-	  menuCheckedKeys: [], //  目录默认选中节点的值
-	  jqData: [], // 监区树形结构
-	  jqCheckedKeys : [], // 监区默认选中节点的值
+		    children: 'children',
+		    label: 'label'
+		  },
+		  menuData: [], // 目录树形结构
+		  menuCheckedKeys: [], //  目录默认选中节点的值
+		  jqData: [], // 监区树形结构
+		  jqCheckedKeys : [], // 监区默认选中节点的值
+		  /** 设置权限结束 */
+		 
+		  /** 添加用户开始 */
+		  dialogUserVisible: false, // 添加用户弹框
+		  userData: [],
+		  userValue: [],
+		  /** 添加用户结束 */
     }
   },
   filters: {
@@ -182,6 +234,7 @@ export default {
     this.getList()
   },
   methods: {
+  	/** 角色增删改查开始 */
     getList() {
       this.listLoading = true
       if(!this.listQuery.name){
@@ -208,10 +261,11 @@ export default {
       this.getList()
     },
     //重置表单
-	resetForm(formName) {
-		if(this.$refs[formName] !== undefined){
-			this.$refs[formName].resetFields();
-		}
+	  resetForm(formName) {
+			if(this.$refs[formName] !== undefined){
+				this.$refs[formName].resetFields();
+			}
+			this.dataForm.id = undefined
     },
     handleCreate() {
       this.dialogStatus = 'create'
@@ -273,7 +327,23 @@ export default {
       })
 		})
 	},
+	/**---------------------------角色增删改查结束-1--------------------------*/
+	
+	/**---------------------------设置权限开始-2--------------------------*/
+	resetCheckedTree(){ //重置
+		this.menuCheckedKeys = []
+		this.jqCheckedKeys = []
+		if(this.$refs.menuDataTree){ //确保树加载完毕，再调用清空方法
+			this.$refs.menuDataTree.setCheckedKeys([])
+		}
+		if(this.$refs.jqDataTree){ //确保树加载完毕，再调用清空方法
+			this.$refs.jqDataTree.setCheckedKeys([])
+		}
+		
+	},
 	openAuthority(row){ //打开权限弹框
+		this.resetCheckedTree()
+		
 		this.dialogAuthorityVisible = true
 		
 		if(this.menuData.length === 0){ // 只查询一次
@@ -283,9 +353,12 @@ export default {
 			this.getJqTree()
 		}
 		
+		this.roleId = row.id
 		// 获取当前角色的目录和监区
-		this.getCheckedMenu(row.id)
-		this.getCheckedJq(row.id)
+		this.getCheckedMenu(this.roleId)
+		this.getCheckedJq(this.roleId)
+		
+		
 	},
 	getMenuTree() { // 获取目录树形结构
       GetMenuTree({}).then((res) => {
@@ -317,6 +390,66 @@ export default {
       }).catch(error => {
       })
   },
+  updateAuthorityData(){ // 提交权限选择
+  	this.addRoleMenu() 
+  	this.dialogAuthorityVisible = false
+  	
+  },
+  addRoleMenu(){ // 添加角色菜单关联关系
+  	let menus = this.$refs.menuDataTree.getCheckedKeys().join()
+  	let param = {
+  		roleId: this.roleId,
+  		menus: menus
+  	}
+  	AddRoleMenu(param).then(res => {
+  		this.addRoleJq()
+  	})
+  },
+  addRoleJq(){ // 添加角色监区关联关系
+  	let jqs = this.$refs.jqDataTree.getCheckedKeys().join()
+  	let param = {
+  		roleId: this.roleId,
+  		jqs: jqs
+  	}
+  	AddRoleJq(param).then(res => {
+  		this.getList()
+  	})
+  },
+  /**---------------------------设置权限结束-2--------------------------*/
+ 
+  /**---------------------------添加用户开始-3--------------------------*/
+  resetCheckedUser(){ //重置
+		this.userValue = []
+	},
+	openUser(row){
+		this.resetCheckedUser()
+		
+	 	this.dialogUserVisible = true
+	 	
+	 	if(this.userData.length ==0){ // 只查询一次
+	 		//查询系统并设置到穿梭框中
+		 	FindUserList({}).then(res => {
+		 		let list = res.list
+		 		list.forEach((item, index) => {
+		 			let name = item.userName +"-"+item.userDepart
+		 			this.userData.push({
+		 				label: name,
+		 				key:item.webId
+		 			})
+		 		})
+		 	})
+	 	}
+	 	
+	},
+	updateUserData(){
+		
+	},
+	
+  userFilter(query, item){ //穿梭框搜索功能
+  	return item.label.indexOf(query) > -1;
+  },
+  /**---------------------------添加用户结束-3-------------------------- */
+ 
 	dateFormats: function (val) {
 		if(!val){
 			return undefined

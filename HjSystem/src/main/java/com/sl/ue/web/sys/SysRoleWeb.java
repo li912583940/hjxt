@@ -51,7 +51,7 @@ public class SysRoleWeb extends Result{
     @RequestMapping("/add")
     public String add(SysRoleVO model){
     	model.setCreateTime(new Date());
-    	model.setCreateUserId(TokenUser.getUser().getWebid());
+    	model.setCreateUserId(TokenUser.getUser().getWebId());
         sysRoleSQL.add(model);
         return this.toResult();
     }
@@ -59,7 +59,7 @@ public class SysRoleWeb extends Result{
     @RequestMapping("/edit")
     public String edit(SysRoleVO model){
     	model.setCreateTime(new Date());
-    	model.setCreateUserId(TokenUser.getUser().getWebid());
+    	model.setCreateUserId(TokenUser.getUser().getWebId());
         sysRoleSQL.edit(model);
         return this.toResult();
     }
@@ -70,4 +70,60 @@ public class SysRoleWeb extends Result{
         return this.toResult();
     }
 
+    /**
+     * 说明 [获取目录树形结构]
+     * L_晓天  @2018年10月30日
+     */
+    @RequestMapping("/getMenuTree")
+    public String getMenuTree(){
+    	return sysRoleSQL.getMenuTree();
+    }
+    
+    /**
+     * 说明 [获取当前角色选中的目录 数组格式]
+     * L_晓天  @2018年10月30日
+     */
+    @RequestMapping("/getCheckedMenu")
+    public String getCheckedMenu(Integer roleId){
+    	if(roleId == null){
+    		this.error(error_102);
+    		return this.toResult();
+    	}
+    	return sysRoleSQL.getCheckedMenu(roleId);
+    }
+    /**
+     * 说明 [获取监区树形结构]
+     * L_晓天  @2018年10月30日
+     */
+    @RequestMapping("/getJqTree")
+    public String getJqTree(){
+    	return sysRoleSQL.getJqTree();
+    }
+    
+    /**
+     * 说明 [获取当前角色选中的监区 数组格式]
+     * L_晓天  @2018年10月30日
+     */
+    @RequestMapping("/getCheckedJq")
+    public String getCheckedJq(Integer roleId){
+    	return sysRoleSQL.getCheckedJq(roleId);
+    }
+    
+    @RequestMapping("/addRoleMenu")
+    public String addRoleMenu(Integer roleId, String menus){
+    	if(roleId ==null){
+    		this.error(error_102);
+    		return this.toResult();
+    	}
+    	return sysRoleSQL.addRoleMenu(roleId, menus);
+    }
+    
+    @RequestMapping("/addRoleJq")
+    public String addRoleJq(Integer roleId, String jqs){
+    	if(roleId == null){
+    		this.error(error_102);
+    		return this.toResult();
+    	}
+    	return sysRoleSQL.addRoleJq(roleId, jqs);
+    }
 }

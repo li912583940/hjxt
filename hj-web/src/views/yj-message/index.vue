@@ -177,6 +177,7 @@ export default {
 			if(this.$refs[formName] !== undefined){
 				this.$refs[formName].resetFields();
 			}
+			this.dataForm.webId = undefined
 	  },
     handleCreate() {
       this.dialogStatus = 'create'
