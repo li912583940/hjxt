@@ -13,7 +13,12 @@
     </div>
     
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
-      style="width: 1001px">
+      style="width: 1201px">
+      <el-table-column width="200" align="center" label="级别编号" >
+        <template slot-scope="scope">
+          <span>{{scope.row.jbNo}}</span>
+        </template>
+      </el-table-column>
       <el-table-column width="200" align="center" label="级别名称" >
         <template slot-scope="scope">
           <span>{{scope.row.jbName}}</span>
@@ -34,7 +39,7 @@
           <span>{{scope.row.recordOverTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="200" class-name="small-padding fixed-width">
+      <el-table-column align="center" :label="$t('criminal.actions')" width="200">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button  size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
@@ -51,6 +56,9 @@
 	<!-- 新增或编辑 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="180px" style='width: 400px; margin-left:25%;' >
+         <el-form-item label="级别编号" prop="jbNo">
+          <el-input v-model="dataForm.jbNo"></el-input>
+        </el-form-item>
         <el-form-item label="级别名称" prop="jbName">
           <el-input v-model="dataForm.jbName"></el-input>
         </el-form-item>
@@ -99,6 +107,7 @@ export default {
       // 新增或编辑弹窗
       dataForm: { 
         webId: undefined,
+        jbNo: undefined,
         jbName: undefined,
         hjCount: undefined,
         hjTime: undefined,
@@ -111,6 +120,7 @@ export default {
         create: '新 增'
       },
        rules: {
+       	jbNo: [{ required: true, message: '级别编号不能为空', trigger: 'blur' }],
         jbName: [{ required: true, message: '级别名称不能为空', trigger: 'blur' }]
       }
     }
