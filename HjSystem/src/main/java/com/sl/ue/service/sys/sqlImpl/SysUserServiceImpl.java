@@ -2,6 +2,7 @@ package com.sl.ue.service.sys.sqlImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,12 @@ import org.springframework.stereotype.Service;
 
 import com.sl.ue.entity.sys.vo.SysResourceVO;
 import com.sl.ue.entity.sys.vo.SysRoleVO;
+import com.sl.ue.entity.sys.vo.SysUserRoleVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.sys.SysResourceService;
 import com.sl.ue.service.sys.SysRoleService;
+import com.sl.ue.service.sys.SysUserRoleService;
 import com.sl.ue.service.sys.SysUserService;
 import com.sl.ue.util.StringUtil;
 import com.sl.ue.util.http.Result;
@@ -25,27 +28,22 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 	private SysRoleService SysRoleSQL;
 	@Autowired
 	private SysResourceService SysResourceSQL;
+	@Autowired
+	private SysUserRoleService sysUserRoleSQL;
 	
 	@Override
-	public List<SysRoleVO> findRoles(String username) {
-		String sql = "select b.* from SYS_USER a, sys_role b, sys_user_role c "+
-				"where a.username=? AND a.WebID=c.user_id AND b.id=c.role_id AND b.useble=1";
-		return jdbcTemplate.queryForList(sql, SysRoleVO.class, username);
+	public Map<String, Object> findPojoJoin(SysUserVO model, Integer pageSize, Integer pageNum){
+		StringBuffer Where = new StringBuffer(); // sql条件
+    	if(StringUtils.isNotBlank(model.getUserName())){
+    		String str = model.getUserName();
+    		Where.append(" AND a.User_Name LIKE '%"+str+"%' ");
+    		model.setUserName(null);
+    	}
+    	model.setLeftJoinWhere(Where.toString());
+    	Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
+    	return map;
 	}
-
-	@Override
-	public List<SysResourceVO> findResource(String username) {
-		// 先查询出 roleid
-		String sql_roleId = "select b.role_id AS roleId from SYS_USER a, sys_user_role b "+
-				"where a.username=? and a.WebID=b.user_id";
-		List<Integer>  roleIdList = jdbcTemplate.queryForList(sql_roleId, Integer.class, username);
-		Object[] obj = roleIdList.toArray();
-		// 根据roleid 查询权限
-		String sql_per = "select b.* from sys_role_resource a, sys_resource b "+
-				"where a.resource_id=b.id AND a.role_id in (?) AND b.useble=1";
-		return jdbcTemplate.queryForList(sql_per, SysResourceVO.class, obj);
-	}
-
+	
 	@Override
 	public String getRoles(String token) {
 		Result result = new Result();
@@ -91,4 +89,45 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 		
 	}
 
+	@Override
+	public String getCheckedRole(Integer userId){
+		Result result = new Result();
+		if(userId == null){
+			result.error(Result.error_102);
+    		return result.toResult();
+    	}
+		SysUserRoleVO sysUserRole = new SysUserRoleVO();
+		sysUserRole.setUserId(userId);
+		List<SysUserRoleVO> list = sysUserRoleSQL.findList(sysUserRole);
+		List<Integer> reList = new ArrayList<Integer>();
+		for(SysUserRoleVO t : list){
+			reList.add(t.getRoleId());
+		}
+		result.putJson(reList);
+		return result.toResult();
+	}
+	
+	@Override
+	public String addUserRole(Integer userId, String roles){
+		Result result = new Result();
+		if(userId == null){
+			result.error(Result.error_102);
+    		return result.toResult();
+    	}
+		// 先删
+		SysUserRoleVO sysUserRole = new SysUserRoleVO();
+		sysUserRole.setUserId(userId);
+		sysUserRoleSQL.delete(sysUserRole);
+		
+		//再添加
+		if(StringUtils.isNotBlank(roles)){
+			for(String i : roles.split(",")){
+				SysUserRoleVO t = new SysUserRoleVO();
+				t.setUserId(userId);
+				t.setRoleId(Integer.parseInt(i));
+				sysUserRoleSQL.add(t);
+			}
+		}
+		return result.toResult();
+	}
 }

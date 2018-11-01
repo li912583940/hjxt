@@ -2,6 +2,7 @@ package com.sl.ue.service.sys.sqlImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,14 @@ import com.sl.ue.entity.sys.vo.SysResourceVO;
 import com.sl.ue.entity.sys.vo.SysRoleJqVO;
 import com.sl.ue.entity.sys.vo.SysRoleResourceVO;
 import com.sl.ue.entity.sys.vo.SysRoleVO;
+import com.sl.ue.entity.sys.vo.SysUserRoleVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlJqService;
 import com.sl.ue.service.sys.SysResourceService;
 import com.sl.ue.service.sys.SysRoleJqService;
 import com.sl.ue.service.sys.SysRoleResourceService;
 import com.sl.ue.service.sys.SysRoleService;
+import com.sl.ue.service.sys.SysUserRoleService;
 import com.sl.ue.util.http.Result;
 
 @Service("sysRoleSQL")
@@ -33,6 +36,29 @@ public class SysRoleServiceImpl extends BaseSqlImpl<SysRoleVO> implements SysRol
 	private SysRoleJqService sysRoleJqSQL;
 	@Autowired
 	private SysResourceService sysResourceSQL;
+	@Autowired
+	private SysUserRoleService sysUserRoleSQL;
+	
+	@Override
+	public Map<String, Object> findPojoJoin(SysRoleVO model, Integer pageSize, Integer pageNum){
+		StringBuffer field = new StringBuffer(); // sql关联字段
+		field.append(",b.User_Name AS createUserName");
+		
+		StringBuffer table = new StringBuffer(); // sql关联表
+		table.append(" left join SYS_USER b ON a.create_user_id=b.WebID");
+		
+		StringBuffer Where = new StringBuffer(); // sql条件
+    	if(StringUtils.isNotBlank(model.getName())){
+    		String str = model.getName();
+    		Where.append(" AND a.name LIKE '%"+str+"%' ");
+    		model.setName(null);
+    	}
+    	model.setLeftJoinField(field.toString());
+		model.setLeftJoinTable(table.toString());
+    	model.setLeftJoinWhere(Where.toString());
+    	Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
+    	return map;
+	}
 	
 	@Override
 	public String getMenuTree() {
@@ -87,7 +113,10 @@ public class SysRoleServiceImpl extends BaseSqlImpl<SysRoleVO> implements SysRol
 	@Override
 	public String getCheckedMenu(Integer roleId) {
 		Result result = new Result();
-		
+		if(roleId == null){
+			result.error(Result.error_102);
+    		return result.toResult();
+    	}
 		SysRoleResourceVO sysRoleResource = new SysRoleResourceVO();
 		sysRoleResource.setRoleId(roleId);
 		sysRoleResource.setType("menu");
@@ -103,7 +132,10 @@ public class SysRoleServiceImpl extends BaseSqlImpl<SysRoleVO> implements SysRol
 	@Override
 	public String getCheckedJq(Integer roleId) {
 		Result result = new Result();
-		
+		if(roleId == null){
+			result.error(Result.error_102);
+    		return result.toResult();
+    	}
 		SysRoleJqVO sysRoleJq = new SysRoleJqVO();
 		sysRoleJq.setRoleId(roleId);
 		List<SysRoleJqVO> list = sysRoleJqSQL.findList(sysRoleJq);
@@ -119,7 +151,10 @@ public class SysRoleServiceImpl extends BaseSqlImpl<SysRoleVO> implements SysRol
 	@Override
 	public String addRoleMenu(Integer roleId, String menus) {
 		Result result = new Result();
-		
+		if(roleId == null){
+			result.error(Result.error_102);
+    		return result.toResult();
+    	}
 		int authorityResource = 0; // 角色是否已设置菜单权限
 		// 先删
 		SysRoleResourceVO sysRoleResource = new SysRoleResourceVO();
@@ -151,7 +186,10 @@ public class SysRoleServiceImpl extends BaseSqlImpl<SysRoleVO> implements SysRol
 	@Override
 	public String addRoleJq(Integer roleId, String jqs) {
 		Result result = new Result();
-		
+		if(roleId == null){
+			result.error(Result.error_102);
+    		return result.toResult();
+    	}
 		int authorityJq = 0; //角色是否已设置监区权限
 		// 先删
 		SysRoleJqVO sysRoleJq = new SysRoleJqVO();
@@ -176,6 +214,48 @@ public class SysRoleServiceImpl extends BaseSqlImpl<SysRoleVO> implements SysRol
 		sysRole.setAuthorityJq(authorityJq);
 		this.edit(sysRole);
 		
+		return result.toResult();
+	}
+
+	@Override
+	public String getCheckedUser(Integer roleId) {
+		Result result = new Result();
+		if(roleId == null){
+			result.error(Result.error_102);
+    		return result.toResult();
+    	}
+		SysUserRoleVO sysUserRole = new SysUserRoleVO();
+		sysUserRole.setRoleId(roleId);
+		List<SysUserRoleVO> list = sysUserRoleSQL.findList(sysUserRole);
+		List<Integer> reList = new ArrayList<Integer>();
+		for(SysUserRoleVO t : list){
+			reList.add(t.getUserId());
+		}
+		result.putJson(reList);
+		return result.toResult();
+	}
+
+	@Override
+	public String addRoleUser(Integer roleId, String users) {
+		Result result = new Result();
+		if(roleId == null){
+			result.error(Result.error_102);
+    		return result.toResult();
+    	}
+		// 先删
+		SysUserRoleVO sysUserRole = new SysUserRoleVO();
+		sysUserRole.setRoleId(roleId);
+		sysUserRoleSQL.delete(sysUserRole);
+		
+		//再添加
+		if(StringUtils.isNotBlank(users)){
+			for(String i : users.split(",")){
+				SysUserRoleVO t = new SysUserRoleVO();
+				t.setRoleId(roleId);
+				t.setUserId(Integer.parseInt(i));
+				sysUserRoleSQL.add(t);
+			}
+		}
 		return result.toResult();
 	}
 }

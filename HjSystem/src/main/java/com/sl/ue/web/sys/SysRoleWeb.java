@@ -29,7 +29,7 @@ public class SysRoleWeb extends Result{
 
     @RequestMapping("/findPojo")
     public String findPojo(SysRoleVO model, Integer pageSize, Integer pageNum){
-        Map<String, Object> map = sysRoleSQL.findPojo(model, pageSize, pageNum);
+        Map<String, Object> map = sysRoleSQL.findPojoJoin(model, pageSize, pageNum);
         this.putPojo(map);
         return this.toResult();
     }
@@ -85,10 +85,6 @@ public class SysRoleWeb extends Result{
      */
     @RequestMapping("/getCheckedMenu")
     public String getCheckedMenu(Integer roleId){
-    	if(roleId == null){
-    		this.error(error_102);
-    		return this.toResult();
-    	}
     	return sysRoleSQL.getCheckedMenu(roleId);
     }
     /**
@@ -109,21 +105,39 @@ public class SysRoleWeb extends Result{
     	return sysRoleSQL.getCheckedJq(roleId);
     }
     
+    /**
+     * 说明 [为当前角色配置目录权限]
+     * L_晓天  @2018年11月1日
+     */
     @RequestMapping("/addRoleMenu")
     public String addRoleMenu(Integer roleId, String menus){
-    	if(roleId ==null){
-    		this.error(error_102);
-    		return this.toResult();
-    	}
     	return sysRoleSQL.addRoleMenu(roleId, menus);
     }
     
+    /**
+     * 说明 [为当前角色配置监区权限]
+     * L_晓天  @2018年11月1日
+     */
     @RequestMapping("/addRoleJq")
     public String addRoleJq(Integer roleId, String jqs){
-    	if(roleId == null){
-    		this.error(error_102);
-    		return this.toResult();
-    	}
     	return sysRoleSQL.addRoleJq(roleId, jqs);
+    }
+    
+    /**
+     * 说明 [获取当前角色的用户列表]
+     * L_晓天  @2018年11月1日
+     */
+    @RequestMapping("/getCheckedUser")
+    public String getCheckedUser(Integer roleId){
+    	return sysRoleSQL.getCheckedUser(roleId);
+    }
+    
+    /**
+     * 说明 [为当前角色添加用户]
+     * L_晓天  @2018年11月1日
+     */
+    @RequestMapping("/addRoleUser")
+    public String addRoleUser(Integer roleId, String users){
+    	return sysRoleSQL.addRoleUser(roleId, users);
     }
 }

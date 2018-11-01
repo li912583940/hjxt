@@ -7,11 +7,21 @@ public class SysRoleVO extends SysRole{
     /** 序列化 */
     private static final long serialVersionUID = 1L;
 
+    /** 创建人姓名  */
+    private String createUserName;
 
+    public String getCreateUserName() {
+		return createUserName;
+	}
+
+	public void setCreateUserName(String createUserName) {
+		this.createUserName = createUserName;
+	}
 
     /*---------------------------  处理关联表  -----------------------------*/
+   
 
-    private String leftJoinField; // 关联表字段
+	private String leftJoinField; // 关联表字段
 
     private String leftJoinTable; // 关联表
 

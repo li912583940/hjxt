@@ -1,30 +1,29 @@
 package com.sl.ue.service.sys;
 
-import java.util.List;
-import java.util.Set;
 
-import com.sl.ue.entity.sys.vo.SysResourceVO;
-import com.sl.ue.entity.sys.vo.SysRoleVO;
+import java.util.Map;
+
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.BaseService;
 
 public interface SysUserService extends BaseService<SysUserVO>{
 
-	/**
-	 * 说明 [根据用户名查找其角色]
-	 * @author lxt
-	 */
-	public List<SysRoleVO> findRoles(String username);
-	
-	/**
-	 * 说明 [根据用户名查找其权限]
-	 * @author lxt
-	 */
-	public List<SysResourceVO> findResource(String username);
-	
+	public Map<String, Object> findPojoJoin(SysUserVO model, Integer pageSize, Integer pageNum);
 	/**
 	 * 说明 [查询用户角色]
 	 * L_晓天  @2018年9月20日
 	 */
 	public String getRoles(String token);
+	
+	/**
+	 * 说明 [获取当前用户的角色列表]
+	 * L_晓天  @2018年11月1日
+	 */
+	public String getCheckedRole(Integer userId);
+	
+	/**
+	 * 说明 [为当前用户添加角色]
+	 * L_晓天  @2018年11月1日
+	 */
+	public String addUserRole(Integer userId, String roles);
 }

@@ -33,7 +33,7 @@ public class JlJb implements java.io.Serializable {
 	private String downJb;
 	@DbField("HJ_QY")
 	private Integer hjQy;
-	@DbField("Record_OverTime")
+	@DbField("record_over_time")
 	private Integer recordOverTime;
 	
 	public Integer getWebId() {

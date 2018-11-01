@@ -15,7 +15,7 @@
     
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
       style="width: 1001px">
-      <el-table-column align="center" label="警察编号" width="200">
+      <el-table-column width="200" align="center" label="警察编号" >
         <template slot-scope="scope">
           <span>{{scope.row.yjNum}}</span>
         </template>

@@ -27,7 +27,7 @@ public class SysUserWeb extends Result{
 
     @RequestMapping("/findPojo")
     public String findPojo(SysUserVO model, Integer pageSize, Integer pageNum){
-        Map<String, Object> map = sysUserSQL.findPojo(model, pageSize, pageNum);
+        Map<String, Object> map = sysUserSQL.findPojoJoin(model, pageSize, pageNum);
         this.putPojo(map);
         return this.toResult();
     }
@@ -48,6 +48,7 @@ public class SysUserWeb extends Result{
 
     @RequestMapping("/add")
     public String add(SysUserVO model){
+    	model.setUserPwd("123456");
         sysUserSQL.add(model);
         return this.toResult();
     }
@@ -71,5 +72,23 @@ public class SysUserWeb extends Result{
     @RequestMapping("/getRoles")
     public String getRoles(String token){
     	return sysUserSQL.getRoles(token);
+    }
+    
+    /**
+     * 说明 [获取当前用户的角色列表]
+     * L_晓天  @2018年11月1日
+     */
+    @RequestMapping("/getCheckedRole")
+    public String getCheckedRole(Integer userId){
+    	return sysUserSQL.getCheckedRole(userId);
+    }
+    
+    /**
+     * 说明 [为当前用户添加角色]
+     * L_晓天  @2018年11月1日
+     */
+    @RequestMapping("/addUserRole")
+    public String addUserRole(Integer userId, String roles){
+    	return sysUserSQL.addUserRole(userId, roles);
     }
 }

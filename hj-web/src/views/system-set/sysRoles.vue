@@ -31,7 +31,7 @@
       </el-table-column>
       <el-table-column width="150" align="center" label="创建人">
         <template slot-scope="scope">
-          <span>{{scope.row.createUserId}}</span>
+          <span>{{scope.row.createUserName}}</span>
         </template>
       </el-table-column>
       <el-table-column width="150" align="center" label="菜单权限">
@@ -56,8 +56,8 @@
       <el-table-column align="center" label="权限设置" width="240" >
         <template slot-scope="scope">
           <span v-if="scope.row.isAdmin ==-1">超级管理员不能更改</span>
-          <el-button v-if="scope.row.isAdmin !=-1"  size="mini" type="primary" icon="el-icon-setting" @click="openAuthority(scope.row)">分配权限</el-button>
-          <el-button v-if="scope.row.isAdmin !=-1" type="primary" size="mini" icon="el-icon-plus" @click="openUser(scope.row)">添加用户</el-button>
+          <el-button v-if="scope.row.isAdmin !=-1"  size="mini" type="info" icon="el-icon-setting" @click="openAuthority(scope.row)">分配权限</el-button>
+          <el-button v-if="scope.row.isAdmin !=-1" type="info" size="mini" icon="el-icon-plus" @click="openUser(scope.row)">添加用户</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -88,9 +88,9 @@
     
     <!-- 设置权限 -->
     <el-dialog title="设置权限" :visible.sync="dialogAuthorityVisible">
-    	<el-row :gutter="12">
+    	<el-row >
     		<el-col :span="12">
-		      <el-card style="width: 400px; margin-left: 30px;">
+		      <el-card style="width: 85%; margin-left: 30px;">
 				    <div slot="header" >
 				        <span>为角色分配菜单权限</span>
 				    </div>
@@ -99,6 +99,7 @@
 						  :data="menuData"
 						  show-checkbox
 						  default-expand-all
+						  check-on-click-node
 						  :default-checked-keys="menuCheckedKeys"
 						  node-key="id"
 						  ref="menuDataTree"
@@ -109,7 +110,7 @@
 			    </el-card>
 	      </el-col>
 	        <el-col :span="12">
-			  <el-card style="width: 400px; margin-left: 15px;">
+			  <el-card style="width: 85%; margin-left: 15px;">
 				    <div slot="header" >
 				        <span>为角色分配监区权限</span>
 				    </div>
@@ -118,6 +119,7 @@
 						  :data="jqData"
 						  show-checkbox
 						  default-expand-all
+						  check-on-click-node
 						  :default-checked-keys="jqCheckedKeys"
 						  node-key="id"
 						  ref="jqDataTree"
@@ -137,14 +139,14 @@
 
     <!-- 添加用户 -->
 		<el-dialog title="添加用户" :visible.sync="dialogUserVisible">
-			<el-card style="width: 60%; margin-left: 15%;">
+			<el-card style="width: 60%; margin-left: 20%;">
 				<el-transfer
 			    filterable
 			    :filter-method="userFilter"
 			    filter-placeholder="请输入关键字搜索"
 			    v-model="userValue"
 			    :data="userData"
-			    :titles="['系统用户', '角色用户']">
+			    :titles="['未拥有用户', '拥有用户']">
 			  </el-transfer>
 		  </el-card>
 		  <div slot="footer" class="dialog-footer">
@@ -157,9 +159,9 @@
 </template>
 
 <script>
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete,
-	GetMenuTree,GetCheckedMenu, GetJqTree, GetCheckedJq,AddRoleMenu,AddRoleJq,
-  FindUserList} from '@/api/sysRoles'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, //角色的增删改查
+	GetMenuTree,GetCheckedMenu, GetJqTree, GetCheckedJq, AddRoleMenu, AddRoleJq, // 设置权限相关
+  FindUserList, GetCheckedUser, AddRoleUser } from '@/api/sysRoles'
 
 
 import moment from 'moment';
@@ -354,15 +356,16 @@ export default {
 		}
 		
 		this.roleId = row.id
-		// 获取当前角色的目录和监区
+		// 获取当前角色的目录
 		this.getCheckedMenu(this.roleId)
+		// 获取当前角色的监区
 		this.getCheckedJq(this.roleId)
-		
 		
 	},
 	getMenuTree() { // 获取目录树形结构
       GetMenuTree({}).then((res) => {
       	 this.menuData = res.data
+      	 
       }).catch(error => {
       })
   },
@@ -417,32 +420,55 @@ export default {
   },
   /**---------------------------设置权限结束-2--------------------------*/
  
+ 
   /**---------------------------添加用户开始-3--------------------------*/
   resetCheckedUser(){ //重置
 		this.userValue = []
 	},
-	openUser(row){
+	openUser(row){ //打开用户弹框
 		this.resetCheckedUser()
 		
 	 	this.dialogUserVisible = true
 	 	
 	 	if(this.userData.length ==0){ // 只查询一次
-	 		//查询系统并设置到穿梭框中
+	 		//查询系统用户并设置到穿梭框中
 		 	FindUserList({}).then(res => {
 		 		let list = res.list
+		 		if(list == undefined){
+		 			return false;
+		 		}
 		 		list.forEach((item, index) => {
-		 			let name = item.userName +"-"+item.userDepart
-		 			this.userData.push({
-		 				label: name,
-		 				key:item.webId
-		 			})
+		 			if(item.isSuper==0){
+		 				let name = item.userName +"-"+item.userDepart
+			 			this.userData.push({
+			 				label: name,
+			 				key:item.webId
+			 			})
+		 			}
 		 		})
+		 		
 		 	})
 	 	}
 	 	
+	 	this.roleId = row.id
+	 	
+	 	// 获取当前角色的用户信息
+	 	let param ={
+	 		roleId: this.roleId
+	 	}
+	 	GetCheckedUser(param).then(res => {
+	 		this.userValue = res.data
+	 	})
 	},
-	updateUserData(){
-		
+	updateUserData(){ // 添加角色用户
+		let users = this.userValue.join()
+		let param = {
+			roleId: this.roleId,
+			users: users
+		}
+		AddRoleUser(param).then(res => {
+			this.dialogUserVisible = false
+		})
 	},
 	
   userFilter(query, item){ //穿梭框搜索功能
