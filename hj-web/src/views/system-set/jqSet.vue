@@ -14,11 +14,6 @@
     
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
       style="width: 100%">
-      <el-table-column width="200" align="center" label="服务器名称" >
-        <template slot-scope="scope">
-          <span>{{scope.row.jy}}</span>
-        </template>
-      </el-table-column>
       <el-table-column width="200" align="center" label="监区编号">
         <template slot-scope="scope">
           <span>{{scope.row.jqNo}}</span>
@@ -31,7 +26,7 @@
       </el-table-column>
       <el-table-column width="200" align="center" label="会见星期时间">
         <template slot-scope="scope">
-          <span>{{scope.row.jqName}}</span>
+          <span>{{scope.row.jqWeek}}</span>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="特殊监区">
@@ -58,17 +53,17 @@
 	<!-- 新增或编辑 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="180px" style='width: 400px; margin-left:25%;' >
-        <el-form-item label="服务器名称" prop="jy">
-          <el-input v-model="dataForm.jy"></el-input>
-        </el-form-item>
         <el-form-item label="监区编号" prop="jqNo">
           <el-input v-model="dataForm.jqNo"></el-input>
         </el-form-item>
         <el-form-item label="监区名称" prop="jqName">
           <el-input v-model="dataForm.jqName"></el-input>
         </el-form-item>
-        <el-form-item label="特殊监区" prop="isTs">
-          <el-input v-model="dataForm.isTs"></el-input>
+        <el-form-item label="特殊监区">
+          <el-radio-group v-model="dataForm.isTs">
+		    <el-radio :label="0">否</el-radio>
+		    <el-radio :label="1">是</el-radio>
+		  </el-radio-group>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -97,7 +92,7 @@
 </template>
 
 <script>
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, findDeptNameList} from '@/api/jqSet'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, findDeptNameList, GetCheckedWeek, AddJqWeek} from '@/api/jqSet'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -121,10 +116,9 @@ export default {
       // 新增或编辑弹窗
       dataForm: { 
         webId: undefined,
-        jbName: undefined,
-        hjCount: undefined,
-        hjTime: undefined,
-        recordOverTime: undefined
+        jqNo: undefined,
+        jqName: undefined,
+        isTs: 0
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -133,8 +127,11 @@ export default {
         create: '新 增'
       },
        rules: {
-        jqName: [{ required: true, message: '级别名称不能为空', trigger: 'blur' }]
+       	jqNo: [{ required: true, message: '监区编号不能为空', trigger: 'blur' }],
+        jqName: [{ required: true, message: '监区名称不能为空', trigger: 'blur' }]
       },
+      /**---------------------设置会见星期日--------------------------*/
+      jqNo: undefined,
       dialogWeekVisible: false,
       weekValue: [],
       weekData: [
@@ -209,10 +206,9 @@ export default {
     	}
     	findOne(param).then((res) =>{
     		this.dataForm.webId = res.data.webId,
-	        this.dataForm.jbName =  res.data.jbName,
-	        this.dataForm.hjCount = res.data.hjCount,
-	        this.dataForm.hjTime = res.data.hjTime,
-	        this.dataForm.recordOverTime = res.data.recordOverTime
+	        this.dataForm.jqNo =  res.data.jqNo,
+	        this.dataForm.jqName = res.data.jqName,
+	        this.dataForm.isTs = res.data.isTs
     	})
 	    this.dialogStatus = 'update'
 	    this.dialogFormVisible = true
@@ -248,13 +244,38 @@ export default {
 	      })
 		})
 	},
-	
+	/**------------------ 设置会见星期日开始 ----------------------*/
+	resetCheckedRole(){ //重置
+		this.weekValue = []
+	},
 	openWeek(row){
-		this.dialogWeekVisible = true
-	},
-	updateWeekData(){
+		this.resetCheckedRole()
 		
+		this.dialogWeekVisible = true
+		
+		this.jqNo = row.jqNo
+		
+		// 获取当前监区的会见星期日
+		let param ={
+	 		jqNo: this.jqNo
+	 	}
+	 	GetCheckedWeek(param).then(res => {
+	 		this.weekValue = res.data
+	 	})
 	},
+	// 添加会见星期日
+	updateWeekData(){
+		let weeks = this.weekValue.join()
+		let param = {
+			jqNo: this.jqNo,
+			weeks: weeks
+		}
+		AddJqWeek(param).then(res => {
+			this.dialogWeekVisible = false
+		})
+	},
+	/**------------------ 设置会见星期日结束 ----------------------*/
+	
     dateFormat(row, column) {
 			//时间格式化  
 	    let date = row[column.property];  

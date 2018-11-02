@@ -3,11 +3,13 @@ package com.sl.ue.web.jl;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.sl.ue.entity.jl.vo.JlJbVO;
+import com.sl.ue.entity.jl.vo.JlJqVO;
 import com.sl.ue.service.jl.JlJbService;
 import com.sl.ue.util.http.Result;
 
@@ -48,12 +50,33 @@ public class JlJbWeb extends Result{
 
     @RequestMapping("/add")
     public String add(JlJbVO model){
+    	//查看级别编号或者级别名称是否存在
+    	if(StringUtils.isNotBlank(model.getJbNo())){
+    		JlJbVO jlJbQuery = new JlJbVO();
+    		jlJbQuery.setJbNo(model.getJbNo());
+    		if(StringUtils.isNotBlank(model.getJbName())){
+    			jlJbQuery.setLeftJoinWhere(" OR a.JB_Name='"+model.getJbName()+"'");
+    		}
+    		List<JlJbVO> jlJbList = jlJbSQL.findList(jlJbQuery);
+    		if(jlJbList.size()>0){
+    			this.error(error_102, "级别编号或者级别名称不能重复");
+    			return this.toResult();
+    		}
+    	}
         jlJbSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlJbVO model){
+    	JlJbVO jlJbQuery = new JlJbVO();
+    	jlJbQuery.setLeftJoinWhere(" AND a.WebID<>"+model.getWebId()+" AND (a.JB_No='"+model.getJbNo()+"'"
+    			+" OR a.JB_Name='"+model.getJbName()+"')");
+    	List<JlJbVO> list = jlJbSQL.findList(jlJbQuery);
+    	if(list.size()>0){
+    		this.error(error_102, "级别编号或者级别名称不能重复");
+			return this.toResult();
+    	}
         jlJbSQL.edit(model);
         return this.toResult();
     }

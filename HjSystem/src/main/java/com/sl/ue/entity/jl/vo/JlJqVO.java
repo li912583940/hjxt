@@ -7,11 +7,20 @@ public class JlJqVO extends JlJq{
     /** 序列化 */
     private static final long serialVersionUID = 1L;
 
+    /** 监区会见星期日 */
+    private String jqWeek;
 
+    public String getJqWeek() {
+		return jqWeek;
+	}
+
+	public void setJqWeek(String jqWeek) {
+		this.jqWeek = jqWeek;
+	}
 
     /*---------------------------  处理关联表  -----------------------------*/
 
-    private String leftJoinField; // 关联表字段
+	private String leftJoinField; // 关联表字段
 
     private String leftJoinTable; // 关联表
 
