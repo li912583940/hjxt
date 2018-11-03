@@ -139,8 +139,8 @@
 
     <!-- 添加用户 -->
 		<el-dialog title="添加用户" :visible.sync="dialogUserVisible">
-			<el-card style="width: 60%; margin-left: 20%;">
-				<el-transfer
+			<!--<el-card style="width: 80%; margin-left: 30px;">-->
+				<el-transfer style="width: 600px; margin-left: 20%;"
 			    filterable
 			    :filter-method="userFilter"
 			    filter-placeholder="请输入关键字搜索"
@@ -148,7 +148,7 @@
 			    :data="userData"
 			    :titles="['未拥有用户', '拥有用户']">
 			  </el-transfer>
-		  </el-card>
+		  <!--</el-card>-->
 		  <div slot="footer" class="dialog-footer">
         <el-button @click="dialogUserVisible = false">取 消</el-button>
         <el-button type="primary" @click="updateUserData">确 定</el-button>

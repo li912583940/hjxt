@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, findDeptNameList, GetCheckedWeek, AddJqWeek} from '@/api/jqSet'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, GetCheckedWeek, AddJqWeek} from '@/api/jqSet'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令

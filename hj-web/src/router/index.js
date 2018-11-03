@@ -141,7 +141,8 @@ export const asyncRouterMap = [
     name: 'criminalManage',
     meta: {
       title: 'criminalManage',
-      icon: 'peoples'
+      icon: 'peoples',
+      roles:'criminalManage'
     },
     children: [
       { path: 'criminal', component: () => import('@/views/criminal/criminal'), name: 'criminal', meta: { title: 'criminal', icon: 'peoples', roles:'criminal' }}, //服刑人员
@@ -244,7 +245,8 @@ export const asyncRouterMap = [
     name: 'logRecord',
     meta: {
       title: 'logRecord',
-      icon: 'clipboard'
+      icon: 'clipboard',
+      roles:'logRecord'
     },
     children: [
       { path: 'operationLog', component: () => import('@/views/log-record/operationLog'), name: 'operationLog', meta: { title: 'operationLog', icon: 'form', roles:'operationLog' }}, //操作日志
@@ -262,7 +264,8 @@ export const asyncRouterMap = [
     name: 'systemSet',
     meta: {
       title: 'systemSet',
-      icon: 'tab'
+      icon: 'tab',
+      roles:'systemSet'
     },
     children: [
       { path: 'sysUser', component: () => import('@/views/system-set/sysUser'), name: 'sysUser', meta: { title: 'sysUser', icon: 'user', roles:'sysUser' }}, //系统用户管理

@@ -63,29 +63,73 @@ public class SysRoleServiceImpl extends BaseSqlImpl<SysRoleVO> implements SysRol
 	@Override
 	public String getMenuTree() {
 		Result result = new Result();
+		JSONArray jArray = getMenuTreeBySQL(null);
+		result.putJson(jArray);
+		return result.toResult();
+	}
+
+	private JSONArray getMenuTreeBySQL(Integer resourceId){
+		String where ="";
+		if(resourceId != null){
+			where = "AND parent_id="+resourceId;
+		}else{
+			where = "AND parent_id is NULL";
+		}
+		String sql = "SELECT * FROM sys_resource where 1=1 AND useble=1 "+where+" ORDER BY sort ASC";
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+		if(list.size()>0){
+			JSONArray ary = new JSONArray();
+			for(Map<String, Object> map : list){
+				JSONObject obj = new JSONObject();
+				Integer id = (Integer) map.get("id");
+				String name = (String) map.get("name");
+				JSONArray children = getMenuTreeBySQL(id);
+				if(children != null){
+					obj.put("children", children);
+				}
+				obj.put("id", id);
+				obj.put("label", name);
+				ary.add(obj);
+			}
+			return ary;
+		}
 		
-		SysResourceVO sysResource = new SysResourceVO();
-		sysResource.setType("menu");
-		sysResource.setUseble(1);
-		List<SysResourceVO> list = sysResourceSQL.findList(sysResource);
-		JSONArray jArray1 = new JSONArray();
+		return null;
+	} 
+	private JSONArray getMenuTreeByMethod(List<SysResourceVO> list){
+		JSONArray jArray1 = new JSONArray();//第一级
 		JSONObject jObject1 = new JSONObject();
 		jObject1.put("id", -1);
 		jObject1.put("label", "全选");
 		
-		JSONArray jArray2 = new JSONArray();
+		JSONArray jArray2 = new JSONArray(); //第二级
 		for(SysResourceVO t : list){
-			JSONObject jObject2 = new JSONObject();
-			jObject2.put("id", t.getId());
-			jObject2.put("label", t.getName());
-			jArray2.add(jObject2);
+			if(t.getParentId() != null && t.getParentId() == 0){
+				JSONObject jObject2 = new JSONObject();
+				jObject2.put("id", t.getId());
+				jObject2.put("label", t.getName());
+				jArray2.add(jObject2);
+				
+				JSONArray jArray3 = new JSONArray(); //第三级
+				for(SysResourceVO children : list){
+					if(t.getId() == children.getParentId()){
+						JSONObject jObject3 = new JSONObject();
+						jObject3.put("id", children.getId());
+						jObject3.put("label", children.getName());
+						jArray3.add(jObject3);
+					}
+				}
+				
+				if(jArray3.size()>0){ //如果有子集 就添加到jObject2中
+					jObject2.put("children", jArray3);
+				}
+			}
 		}
 		jObject1.put("children", jArray2);
 		jArray1.add(jObject1);
-		result.putJson(jArray1);
-		return result.toResult();
+		return jArray1;
 	}
-
+	
 	@Override
 	public String getJqTree() {
 		Result result = new Result();
