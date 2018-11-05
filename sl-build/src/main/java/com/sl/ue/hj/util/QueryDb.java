@@ -73,10 +73,11 @@ public class QueryDb {
 							                                                      "AND col.colid = ep.minor_id "+
 							                                                      "AND ep.name = 'MS_Description' "+
 							"WHERE   obj.name = '"+tableNameOld+"'";
+			Statement stmt = null;
 			try {
 				tableName = tableNameOld;
 				entityName = sqlMap.get(tableNameOld);
-				Statement stmt = conn.createStatement();
+				stmt = conn.createStatement();
 				ResultSet tableRs = stmt.executeQuery(tableSql);
 				while(tableRs.next()){
 					tableExplain = tableRs.getString("table_explain");
@@ -99,6 +100,14 @@ public class QueryDb {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
+			}finally{
+				try {
+					if(stmt!=null)stmt.close();
+					if(conn!=null)conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		

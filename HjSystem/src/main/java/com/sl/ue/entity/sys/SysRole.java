@@ -48,6 +48,10 @@ public class SysRole implements java.io.Serializable{
     @DbField("is_admin")
     private Integer isAdmin;
     
+    /** 用于权限管理中element控件反选的。并非最终的角色与资源的关联关系 */
+    @DbField("resources")
+    private String resources;
+    
     public Integer getId() {
         return this.id;
     }
@@ -113,6 +117,14 @@ public class SysRole implements java.io.Serializable{
 
 	public void setAuthorityJq(Integer authorityJq) {
 		this.authorityJq = authorityJq;
+	}
+
+	public String getResources() {
+		return resources;
+	}
+
+	public void setResources(String resources) {
+		this.resources = resources;
 	}
 
 

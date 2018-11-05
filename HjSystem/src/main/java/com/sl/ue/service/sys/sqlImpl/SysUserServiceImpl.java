@@ -1,13 +1,18 @@
 package com.sl.ue.service.sys.sqlImpl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.sl.ue.entity.sys.vo.SysResourceVO;
 import com.sl.ue.entity.sys.vo.SysRoleVO;
 import com.sl.ue.entity.sys.vo.SysUserRoleVO;
@@ -47,7 +52,10 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 	@Override
 	public String getRoles(String token) {
 		Result result = new Result();
-		List<String> roles = new ArrayList<String>();
+		List<String> roles = new ArrayList<String>();  //菜单权限
+		
+		//存放按钮权限
+		JSONObject obj = new JSONObject();
 		
 		SysUserVO sysUser = TokenUser.getUser();
 		
@@ -80,11 +88,31 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 		sysResource.setLeftJoinWhere(" AND b.role_id in ("+StringUtil.lastComma(roleIds)+") AND a.useble=1");
 		List<SysResourceVO> resourceList = SysResourceSQL.findList(sysResource);
 		
+		// 需要计算真实的菜单权限，因为
+		Map<Integer,SysResourceVO> menuMap = new HashMap<>();
+		List<SysResourceVO> buttonList = new ArrayList<>();
+		Set<Integer> menuId = new HashSet<Integer>(); //存储按钮所属的菜单
 		for(SysResourceVO t : resourceList){
-			roles.add(t.getPathUrl());
+			if("menu".equals(t.getType())){
+				roles.add(t.getPathUrl());
+				menuMap.put(t.getId(), t);
+			}else if("button".equals(t.getType())){
+				buttonList.add(t);
+				menuId.add(t.getParentId());
+			}
 		}
 		
+		for(Integer id: menuId){
+			JSONArray ary = new JSONArray();
+			for(SysResourceVO t: buttonList){
+				if(t.getParentId() == id){
+					ary.add(t.getPathUrl());
+				}
+			}
+			obj.put(menuMap.get(id).getPathUrl(), ary);
+		}
 		result.putJson(roles);
+		result.putJson("buttonData", obj);
 		return result.toResult();
 		
 	}

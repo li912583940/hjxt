@@ -11,6 +11,7 @@ const user = {
     avatar: '',
     introduction: '',
     roles: [],
+    buttonRoles: '',
     setting: {
       articlePlatform: []
     }
@@ -40,6 +41,9 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_BUTTON_ROLES: (state, buttonRoles) => {
+    	state.buttonRoles = buttonRoles
     }
   },
 
@@ -67,6 +71,7 @@ const user = {
       	getRoles(para).then((res) => {
       		if (res.data && res.data.length > 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', res.data)
+            commit('SET_BUTTON_ROLES',res.buttonData)
           } else {
             reject('getInfo: roles must be a non-null array !')
           }

@@ -1,8 +1,11 @@
 package com.sl.ue.service.sys.sqlImpl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,15 +164,20 @@ public class SysRoleServiceImpl extends BaseSqlImpl<SysRoleVO> implements SysRol
 			result.error(Result.error_102);
     		return result.toResult();
     	}
-		SysRoleResourceVO sysRoleResource = new SysRoleResourceVO();
-		sysRoleResource.setRoleId(roleId);
-		sysRoleResource.setType("menu");
-		List<SysRoleResourceVO> list = sysRoleResourceSQL.findList(sysRoleResource);
-		List<Integer> reList = new ArrayList<Integer>();
-		for(SysRoleResourceVO t : list){
-			reList.add(t.getResourceId());
+//		SysRoleResourceVO sysRoleResource = new SysRoleResourceVO();
+//		sysRoleResource.setRoleId(roleId);
+//		sysRoleResource.setType("menu");
+//		List<SysRoleResourceVO> list = sysRoleResourceSQL.findList(sysRoleResource);
+//		List<Integer> reList = new ArrayList<Integer>();
+//		for(SysRoleResourceVO t : list){
+//			reList.add(t.getResourceId());
+//		}
+		String[] s = {};
+		SysRoleVO sysRole = this.findOne(roleId);
+		if(StringUtils.isNotBlank(sysRole.getResources())){
+			s = sysRole.getResources().split(",");
 		}
-		result.putJson(reList);
+		result.putJson(s);
 		return result.toResult();
 	}
 
@@ -207,26 +215,54 @@ public class SysRoleServiceImpl extends BaseSqlImpl<SysRoleVO> implements SysRol
 		
 		// 再添加
 		if(StringUtils.isNotBlank(menus)){
-			for(String i : menus.split(",")){
-				if("-1".equals(i)){
-					continue;
-				}
-				SysRoleResourceVO t = new SysRoleResourceVO();
-				t.setRoleId(roleId);
-				t.setResourceId(Integer.parseInt(i));
-				t.setType("menu");
-				sysRoleResourceSQL.add(t);
+			List<String> oldMenuList = Arrays.asList(menus.split(","));
+			List<String> menuList = new ArrayList(oldMenuList);
+			SysResourceVO sysResource = new SysResourceVO();
+			sysResource.setLeftJoinWhere(" AND a.id in ("+menus+")");
+			List<SysResourceVO> sysResourceList = sysResourceSQL.findList(sysResource);
+			//先将现成的数据插入
+			for(SysResourceVO t : sysResourceList){
+				SysRoleResourceVO sysRR = new SysRoleResourceVO();
+				sysRR.setRoleId(roleId);
+				sysRR.setResourceId(t.getId());
+				sysRR.setType(t.getType());
+				sysRoleResourceSQL.add(sysRR);
+			}
+			// 再执行递归插入，这样避免插入重复数据时报错
+			for(SysResourceVO t : sysResourceList){
+				handleCheckedMenuId(roleId, t, menuList);
 			}
 			authorityResource=1;
 		}
 		
+		//更新反选的资源
 		SysRoleVO sysRole = this.findOne(roleId);
+		String resources = StringUtils.isNotBlank(menus)?menus:"";
+		sysRole.setResources(resources);
 		sysRole.setAuthorityResource(authorityResource);
 		this.edit(sysRole);
 		
 		return result.toResult();
 	}
 
+	/**
+	 * 说明 [因为前端element树形控件只传了选中的id，而对于上一级的id当成未选中状态（非全选状态下）并没有传递。所以需要计算出上一级的id并插入到数据库中]
+	 * L_晓天  @2018年11月4日
+	 */
+	private void handleCheckedMenuId(Integer roleId, SysResourceVO sysResource,List<String> menuList){
+		if(sysResource.getParentId()!=null){
+			if(!menuList.contains(sysResource.getParentId()+"")){
+				SysResourceVO oldSysResource = sysResourceSQL.findOne(sysResource.getParentId());
+				SysRoleResourceVO sysRR = new SysRoleResourceVO();
+				sysRR.setRoleId(roleId);
+				sysRR.setResourceId(oldSysResource.getId());
+				sysRR.setType(oldSysResource.getType());
+				sysRoleResourceSQL.add(sysRR);
+				menuList.add(oldSysResource.getId()+"");
+				handleCheckedMenuId(roleId, oldSysResource, menuList);
+			}
+		}
+	}
 	@Override
 	public String addRoleJq(Integer roleId, String jqs) {
 		Result result = new Result();

@@ -29,7 +29,7 @@ router.beforeEach((to, from, next) => {
     } else {
       if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetRoles').then(res => { // 拉取user_info
-          const roles = res.data // 注意：角色必须是数组！如：['admin'] 或者['/jlFr','/jlHjDj']
+          const roles = res.data // 注意：角色必须是数组！如：['admin'] 或者['jlFr','jlHjDj']
           store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
             next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,设置替换, 所以导航不会留下历史记录

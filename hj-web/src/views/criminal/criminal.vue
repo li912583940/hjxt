@@ -10,7 +10,7 @@
         </el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
+      <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
       <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
       <el-checkbox class="filter-item" style='margin-left:15px;' @change='tableKey=tableKey+1' v-model="showReviewer">{{$t('criminal.reviewer')}}</el-checkbox>
     </div>
@@ -76,8 +76,8 @@
       <el-table-column align="center" :label="$t('criminal.actions')" width="240" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
         	<el-button type="primary" size="mini" @click="handleQsManage(scope.row)">亲属</el-button>
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
-          <el-button  size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">{{$t('criminal.delete')}}
+          <el-button v-if="buttonRole.editPermission=1" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
+          <el-button v-if="buttonRole.deletePermission=1" size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">{{$t('criminal.delete')}}
           </el-button>
         </template>
       </el-table-column>
@@ -275,6 +275,7 @@ import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
 import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, exportExcel, findJqList, findJbList, findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList  } from '@/api/criminal'
 
 import moment from 'moment';
+import store from '@/store'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
 
@@ -297,6 +298,14 @@ export default {
         frName: undefined,
         jq: undefined
       },
+      
+      buttonRole: { //按钮权限   1：有权限， 0：无权限
+      	queryPermission: 1, 
+      	addPermission: 0,
+      	editPermission: 0,
+      	deletePermission:0
+      }, 
+      
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       // 新增或编辑弹窗
@@ -409,6 +418,9 @@ export default {
     this.getJqList()
     this.getJbList()
   },
+  mounted() {
+      this.setButtonRole()
+  },
   methods: {
     getList() { // 犯人列表
       this.listLoading = true
@@ -454,6 +466,30 @@ export default {
 					}
 	    	})
     	}
+    },
+    setButtonRole() { //设置按钮的权限
+    	let roles = store.getters.roles
+    	if(roles.includes('admin')){
+    		this.buttonRole.addPermission= 1
+    		this.buttonRole.editPermission= 1
+    		this.buttonRole.deletePermission= 1
+    	}else{
+    		let buttonRoles = store.getters.buttonRoles
+    		let criminal = buttonRoles.criminal
+    		if(criminal.length>0){
+    			criminal.forEach(function(value,index){
+    				console.log(value)
+    				if(value=='addPermission'){
+    					this.buttonRole.addPermission= 1
+    				}else if(value=='editPermission'){
+    					this.buttonRole.editPermission= 1
+    				}else if(value=='deletePermission'){
+    					this.buttonRole.deletePermission= 1
+    				}
+    			})
+    		}
+    	}
+    	
     },
     handleFilter() {
       this.listQuery.pageNum = 1

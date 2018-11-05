@@ -346,8 +346,6 @@ export default {
 	openAuthority(row){ //打开权限弹框
 		this.resetCheckedTree()
 		
-		this.dialogAuthorityVisible = true
-		
 		if(this.menuData.length === 0){ // 只查询一次
 			this.getMenuTree()
 		}
@@ -361,6 +359,7 @@ export default {
 		// 获取当前角色的监区
 		this.getCheckedJq(this.roleId)
 		
+		this.dialogAuthorityVisible = true
 	},
 	getMenuTree() { // 获取目录树形结构
       GetMenuTree({}).then((res) => {
