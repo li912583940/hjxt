@@ -10,7 +10,7 @@
         </el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
+      <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
     </div>
     
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
@@ -35,10 +35,10 @@
           <span>{{scope.row.deptName}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="200" class-name="small-padding fixed-width">
+      <el-table-column v-if="buttonRole.editPermission==1 || buttonRole.deletePermission==1" align="center" :label="$t('criminal.actions')" width="200" >
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button  size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-if="buttonRole.editPermission==1" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button v-if="buttonRole.deletePermission==1" size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -81,7 +81,8 @@
 <script>
 import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, findDeptNameList} from '@/api/yjMessage'
 
-import moment from 'moment';
+import moment from 'moment'
+import store from '@/store'
 import waves from '@/directive/waves' // 水波纹指令
 
 
@@ -121,7 +122,16 @@ export default {
       },
        rules: {
         yjName: [{ required: true, message: '警察姓名不能为空', trigger: 'blur' }]
+      },
+      
+      //按钮权限   1：有权限， 0：无权限
+      buttonRole: { 
+      	queryPermission: 1, 
+      	addPermission: 0,
+      	editPermission: 0,
+      	deletePermission: 0
       }
+      
     }
   },
   filters: {
@@ -130,6 +140,9 @@ export default {
   created() {
     this.getList()
     this.getDeptNameList()
+  },
+  mounted() {
+    this.setButtonRole()
   },
   methods: {
     getList() {
@@ -159,6 +172,31 @@ export default {
       this.listQuery.pageNum = val
       this.getList()
     },
+    
+    setButtonRole() { //设置按钮的权限
+    	let roles = store.getters.roles
+    	if(roles.includes('admin')){
+    		this.buttonRole.addPermission= 1
+    		this.buttonRole.editPermission= 1
+    		this.buttonRole.deletePermission= 1
+    	}else{
+    		let buttonRoles = store.getters.buttonRoles
+    		let yjMessage = buttonRoles.yjMessage
+    		if(yjMessage.length>0){
+    			for(let value of yjMessage){
+    					if(value=='addPermission'){
+    					this.buttonRole.addPermission= 1
+    				}else if(value=='editPermission'){
+    					this.buttonRole.editPermission= 1
+    				}else if(value=='deletePermission'){
+    					this.buttonRole.deletePermission= 1
+    				}
+    			}
+    		}
+    	}
+    },
+    
+    
     getDeptNameList() { //警察部门下拉框
     	if(this.deptNames.length === 0) {
     		findDeptNameList({}).then((res) => {

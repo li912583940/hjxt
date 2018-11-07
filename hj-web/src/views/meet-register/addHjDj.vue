@@ -109,9 +109,9 @@
 	          <span v-if="scope.row.hjJb!='-1'">否</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column align="center" :label="$t('criminal.actions')" width="150"  fixed="right">
+	      <el-table-column v-if="buttonRole.addQsPermission==1" align="center" :label="$t('criminal.actions')" width="150"  fixed="right">
 	        <template slot-scope="scope">
-	          <el-button type="primary" size="mini" @click="handleAddQs(scope.row)">添加亲属</el-button>
+	          <el-button v-if="buttonRole.addQsPermission==1" type="primary" size="mini" @click="handleAddQs(scope.row)">添加亲属</el-button>
 	          </el-button>
 	        </template>
 	      </el-table-column>
@@ -211,6 +211,7 @@
 </template>
 
 <script>
+import store from '@/store'
 import { findFrPojo, findQsPojo, findJqList, RequestAddHjdj } from '@/api/meetRegister'
 import waves from '@/directive/waves' // 水波纹指令
 
@@ -258,7 +259,13 @@ export default {
       },
       qsSelections: [],
       
-      scriptAddHjDj : undefined //身份证读卡器时间节点
+      scriptAddHjDj : undefined, //身份证读卡器事件节点
+      
+      //按钮权限   1：有权限， 0：无权限
+      buttonRole: { 
+      	addQsPermission: 0
+      }
+      
       
     }
   },
@@ -269,10 +276,11 @@ export default {
    
   },
   mounted() {
+  		this.setButtonRole()
+  		
       this.getFrList()
       this.getJqList()
       this.openPort()
-      
   },
   destroyed(){
   	this.colsePort()
@@ -343,6 +351,25 @@ export default {
       this.qsListQuery.page = val
       this.getQsList()
     },
+    
+    setButtonRole() { //设置按钮的权限
+    	let roles = store.getters.roles
+    	if(roles.includes('admin')){
+    		this.buttonRole.addQsPermission= 1
+    	}else{
+    		let buttonRoles = store.getters.buttonRoles
+    		let meetRegister = buttonRoles.meetRegister
+    		if(meetRegister.length>0){
+    			for(let value of meetRegister){
+    					if(value=='addQsPermission'){
+    					this.buttonRole.addQsPermission= 1
+    				}
+    			}
+    		}
+    	}
+    },
+    
+    
     getJqList() { //监区下拉框
     	if(this.jqs.length === 0) {
     		findJqList({}).then((res) => {

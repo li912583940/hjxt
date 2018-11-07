@@ -3,11 +3,11 @@
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
       style="width: 100%">
-      <el-table-column align="center" :label="$t('criminal.actions')" width="200" fixed="left" >
+      <el-table-column v-if="buttonRole.distributionPermission==1 || buttonRole.cancelDistributionPermission==1 || buttonRole.artificialPermission==1" align="center" :label="$t('criminal.actions')" width="300" fixed="left" >
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">自动分配</el-button>
-          <!--<el-button type="primary" size="mini" @click="handleUpdate(scope.row)">取消分配</el-button>-->
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">人工分配</el-button>
+          <el-button v-if="buttonRole.distributionPermission==1" type="primary" size="mini" @click="handleUpdate(scope.row)">自动分配</el-button>
+          <el-button v-if="buttonRole.cancelDistributionPermission==1" type="primary" size="mini" @click="handleUpdate(scope.row)">取消分配</el-button>
+          <el-button v-if="buttonRole.artificialPermission==1" type="primary" size="mini" @click="handleUpdate(scope.row)">人工分配</el-button>
         </template>
       </el-table-column>
       
@@ -79,10 +79,10 @@
           <span v-if="scope.row.shState=='0'">未授权</span>
         </template>
       </el-table-column>
-      <el-table-column width="180" align="center" label="操作" fixed="right">
+      <el-table-column v-if="buttonRole.grantPermission==1 || buttonRole.cancelGrantPermission==1" width="180" align="center" label="操作" fixed="right">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">授权</el-button>
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">取消授权</el-button>
+          <el-button v-if="buttonRole.grantPermission==1" type="primary" size="mini" @click="handleUpdate(scope.row)">授权</el-button>
+          <el-button v-if="buttonRole.cancelGrantPermission==1" type="primary" size="mini" @click="handleUpdate(scope.row)">取消授权</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -102,12 +102,13 @@
 import { findPojo } from '@/api/meetSign'
 
 import moment from 'moment';
+import store from '@/store'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
 
 
 export default {
-  name: 'criminal',
+  name: 'meetSign',
   directives: {
     waves
   },
@@ -120,6 +121,15 @@ export default {
       listQuery: {
         pageNum: 1,
         pageSize: 20
+      },
+      
+      //按钮权限   1：有权限， 0：无权限
+      buttonRole: { 
+      	distributionPermission: 0, 
+      	cancelDistributionPermission: 0,
+      	artificialPermission: 0,
+      	grantPermission : 0,
+      	cancelGrantPermission: 0,
       }
      
     }
@@ -129,6 +139,9 @@ export default {
   },
   created() {
     this.getList()
+  },
+  mounted() {
+    this.setButtonRole()
   },
   methods: {
     getList() {
@@ -149,6 +162,36 @@ export default {
       this.listQuery.pageNum = val
       this.getList()
     },
+    
+    setButtonRole() { //设置按钮的权限
+    	let roles = store.getters.roles
+    	if(roles.includes('admin')){
+    		this.buttonRole.distributionPermission= 1
+    		this.buttonRole.cancelDistributionPermission= 1
+    		this.buttonRole.artificialPermission= 1
+    		this.buttonRole.grantPermission= 1
+    		this.buttonRole.cancelGrantPermission= 1
+    	}else{
+    		let buttonRoles = store.getters.buttonRoles
+    		let meetSign = buttonRoles.meetSign
+    		if(meetSign.length>0){
+    			for(let value of meetSign){
+    				if(value=='distributionPermission'){
+    					this.buttonRole.distributionPermission= 1
+    				}else if(value=='cancelDistributionPermission'){
+    					this.buttonRole.cancelDistributionPermission= 1
+    				}else if(value=='artificialPermission'){
+    					this.buttonRole.artificialPermission= 1
+    				}else if(value=='grantPermission'){
+    					this.buttonRole.grantPermission= 1
+    				}else if(value=='cancelGrantPermission'){
+    					this.buttonRole.cancelGrantPermission= 1
+    				}
+    			}
+    		}
+    	}
+    },
+    
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
         if (j === 'timestamp') {

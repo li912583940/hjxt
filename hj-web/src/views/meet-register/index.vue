@@ -8,7 +8,7 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="listQuery.qsName">
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">添加会见登记</el-button>
+      <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">添加会见登记</el-button>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
@@ -79,10 +79,10 @@
           <span>{{scope.row.hjInfo}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="240" fixed="right">
+      <el-table-column v-if="buttonRole.printXpPermission==1 || buttonRole.cancelDjPermission==1" align="center" :label="$t('criminal.actions')" width="240" fixed="right">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-download" @click="printXp(scope.row)">打印小票</el-button>
-          <el-button type="danger"  size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">取消登记</el-button>
+          <el-button v-if="buttonRole.printXpPermission==1" type="primary" size="mini" icon="el-icon-download" @click="printXp(scope.row)">打印小票</el-button>
+          <el-button v-if="buttonRole.cancelDjPermission==1" type="danger"  size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">取消登记</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -115,6 +115,7 @@
 import { findPojo, RequestPrintXp, RequestCancelDj } from '@/api/meetRegister'
 
 import moment from 'moment';
+import store from '@/store'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
 
@@ -138,7 +139,16 @@ export default {
       },
       
       dialogFormVisible: false,
-      printList : []
+      printList : [],
+      
+      //按钮权限   1：有权限， 0：无权限
+      buttonRole: { 
+      	queryPermission: 1, 
+      	addPermission: 0,
+      	printXpPermission: 0,
+      	cancelDjPermission: 0
+      }
+      
     }
   },
   filters: {
@@ -152,6 +162,9 @@ export default {
   },
   created() {
     this.getList()
+  },
+  mounted() {
+    this.setButtonRole()
   },
   methods: {
     getList() {
@@ -185,6 +198,30 @@ export default {
       this.listQuery.pageNum = val
       this.getList()
     },
+    
+    setButtonRole() { //设置按钮的权限
+    	let roles = store.getters.roles
+    	if(roles.includes('admin')){
+    		this.buttonRole.addPermission= 1
+    		this.buttonRole.printXpPermission= 1
+    		this.buttonRole.cancelDjPermission= 1
+    	}else{
+    		let buttonRoles = store.getters.buttonRoles
+    		let meetRegister = buttonRoles.meetRegister
+    		if(meetRegister.length>0){
+    			for(let value of meetRegister){
+    				if(value=='addPermission'){
+    					this.buttonRole.addPermission= 1
+    				}else if(value=='printXpPermission'){
+    					this.buttonRole.printXpPermission= 1
+    				}else if(value=='cancelDjPermission'){
+    					this.buttonRole.cancelDjPermission= 1
+    				}
+    			}
+    		}
+    	}
+    },
+    
     // 添加新的会见等级， 跳转至会见等级页面
     handleCreate() {
     	this.$router.push({ path: '/addHjDj' })

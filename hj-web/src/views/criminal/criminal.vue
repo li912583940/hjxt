@@ -10,8 +10,8 @@
         </el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
-      <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
+      <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('criminal.add')}}</el-button>
+      <el-button v-if="buttonRole.exportPermission==1" class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
       <el-checkbox class="filter-item" style='margin-left:15px;' @change='tableKey=tableKey+1' v-model="showReviewer">{{$t('criminal.reviewer')}}</el-checkbox>
     </div>
 
@@ -73,11 +73,11 @@
           <span>{{scope.row.hjJb}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="240" class-name="small-padding fixed-width" fixed="right">
+      <el-table-column v-if="buttonRole.queryQsPermission==1 || buttonRole.editPermission==1 || buttonRole.deletePermission==1" align="center" :label="$t('criminal.actions')" width="240" class-name="small-padding fixed-width" fixed="right">
         <template slot-scope="scope">
-        	<el-button type="primary" size="mini" @click="handleQsManage(scope.row)">亲属</el-button>
-          <el-button v-if="buttonRole.editPermission=1" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
-          <el-button v-if="buttonRole.deletePermission=1" size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">{{$t('criminal.delete')}}
+        	<el-button v-if="buttonRole.queryQsPermission==1" type="primary" size="mini" @click="handleQsManage(scope.row)">亲属</el-button>
+          <el-button v-if="buttonRole.editPermission==1" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
+          <el-button v-if="buttonRole.deletePermission==1" size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">{{$t('criminal.delete')}}
           </el-button>
         </template>
       </el-table-column>
@@ -163,7 +163,7 @@
     <!-- 亲属弹框  -->
     <el-dialog :title="qs_frname" :visible.sync="dialogQsVisible" width="70%">
     	<div class="filter-container">
-	      <el-button class="filter-item" style="margin-left: 10px;" @click="handleQsCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
+	      <el-button v-if="buttonRole.addQsPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleQsCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
 	    </div>
       <el-table :key='qsTableKey' :data="qsList" v-loading="qsListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
 	      style="width: 100%">
@@ -202,10 +202,10 @@
 	          <span>{{scope.row.bz}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column align="center" :label="$t('criminal.actions')" width="180" class-name="small-padding fixed-width" fixed="right">
+	      <el-table-column v-if="buttonRole.editQsPermission==1 || buttonRole.deleteQsPermission==1" align="center" :label="$t('criminal.actions')" width="180" class-name="small-padding fixed-width" fixed="right">
 	        <template slot-scope="scope">
-	          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleQsUpdate(scope.row)">编辑</el-button>
-	          <el-button  size="mini" type="danger" icon="el-icon-delete" @click="handleQsDelete(scope.row)">删除</el-button>
+	          <el-button v-if="buttonRole.editQsPermission==1" type="primary" size="mini" icon="el-icon-edit" @click="handleQsUpdate(scope.row)">编辑</el-button>
+	          <el-button v-if="buttonRole.deleteQsPermission==1" size="mini" type="danger" icon="el-icon-delete" @click="handleQsDelete(scope.row)">删除</el-button>
 	        </template>
 	      </el-table-column>
 	    </el-table>
@@ -298,14 +298,6 @@ export default {
         frName: undefined,
         jq: undefined
       },
-      
-      buttonRole: { //按钮权限   1：有权限， 0：无权限
-      	queryPermission: 1, 
-      	addPermission: 0,
-      	editPermission: 0,
-      	deletePermission:0
-      }, 
-      
       statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: false,
       // 新增或编辑弹窗
@@ -407,7 +399,23 @@ export default {
       ],
       rulesQs:{
         qsName: [{ required: true, message: '亲属姓名不能为空', trigger: 'blur' }],
+      },
+      
+      //按钮权限   1：有权限， 0：无权限
+      buttonRole: { 
+      	queryPermission: 1, 
+      	addPermission: 0,
+      	editPermission: 0,
+      	deletePermission: 0,
+      	exportPermission: 0,
+      	
+      	//亲属相关的
+      	queryQsPermission: 0,
+      	addQsPermission: 0,
+      	editQsPermission: 0,
+      	deleteQsPermission: 0
       }
+      
     }
   },
   filters: {
@@ -419,7 +427,7 @@ export default {
     this.getJbList()
   },
   mounted() {
-      this.setButtonRole()
+     this.setButtonRole()
   },
   methods: {
     getList() { // 犯人列表
@@ -473,20 +481,39 @@ export default {
     		this.buttonRole.addPermission= 1
     		this.buttonRole.editPermission= 1
     		this.buttonRole.deletePermission= 1
+    		this.buttonRole.exportPermission= 1
+    		
+    		this.buttonRole.queryQsPermission= 1
+    		this.buttonRole.addQsPermission= 1
+    		this.buttonRole.editQsPermission= 1
+    		this.buttonRole.deleteQsPermission= 1
     	}else{
     		let buttonRoles = store.getters.buttonRoles
     		let criminal = buttonRoles.criminal
     		if(criminal.length>0){
-    			criminal.forEach(function(value,index){
-    				console.log(value)
-    				if(value=='addPermission'){
+    			for(let value of criminal){
+    					if(value=='addPermission'){
     					this.buttonRole.addPermission= 1
     				}else if(value=='editPermission'){
     					this.buttonRole.editPermission= 1
     				}else if(value=='deletePermission'){
     					this.buttonRole.deletePermission= 1
+    				}else if(value=='exportPermission'){
+    					this.buttonRole.exportPermission= 1
     				}
-    			})
+    				else if(value=='queryQsPermission'){
+    					this.buttonRole.queryQsPermission= 1
+    				}else if(value=='addQsPermission'){
+    					this.buttonRole.addQsPermission= 1
+    					this.buttonRole.queryQsPermission= 1
+    				}else if(value=='editQsPermission'){
+    					this.buttonRole.editQsPermission= 1
+    					this.buttonRole.queryQsPermission= 1
+    				}else if(value=='deleteQsPermission'){
+    					this.buttonRole.deleteQsPermission= 1
+    					this.buttonRole.queryQsPermission= 1
+    				}
+    			}
     		}
     	}
     	
