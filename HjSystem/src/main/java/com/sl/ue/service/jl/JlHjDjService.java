@@ -3,6 +3,8 @@ package com.sl.ue.service.jl;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
 import com.sl.ue.service.base.BaseService;
@@ -35,5 +37,27 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 	public String cancelDj(Long id, String cancelInfo);
 	
 	
+	/**
+	 * 说明 [会见登记 根据亲属查询罪犯信息]
+	 * L_晓天  @2018年11月8日
+	 */
 	public Map<String, Object> findPojoJoin(JlFrVO model, Integer pageSize, Integer pageNum, String qsName, String qsSfz);
+	
+	/**
+	 * 说明 [会见签到 查询会见登记信息]
+	 * L_晓天  @2018年11月8日
+	 */
+	public Map<String, Object> findPojoByHjSign(JlHjDjVO model, Integer pageSize, Integer pageNum);
+	
+	/**
+	 * 说明 [分配座位]
+	 * L_晓天  @2018年11月8日
+	 */
+	public String fpZw(Long hjId);
+	
+	/**
+	 * 说明 [取消分配座位]
+	 * L_晓天  @2018年11月8日
+	 */
+	public String qxZw(Long hjId, HttpServletRequest request);
 }

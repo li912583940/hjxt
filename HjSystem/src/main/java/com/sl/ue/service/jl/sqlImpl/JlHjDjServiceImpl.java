@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -386,4 +388,118 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		return map;
 	}
 
+	
+	public Map<String, Object> findPojoByHjSign(JlHjDjVO model, Integer pageSize, Integer pageNum){
+		StringBuffer leftJoinField = new StringBuffer(); // 字段 
+		leftJoinField.append(",dbo.get_ck(dj.FP_Line_No,dj.JY) as zw");
+		
+		StringBuffer leftJoinWhere = new StringBuffer();  // 条件
+		leftJoinWhere.append(" AND a.State=0 and (a.DJ_Type=0 or a.DJ_Type=2)");
+		
+		model.setLeftJoinField(leftJoinField.toString());
+		model.setLeftJoinWhere(leftJoinWhere.toString());
+		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
+		List<JlHjDjVO> list = (List<JlHjDjVO>) map.get("list");
+		for(JlHjDjVO t : list){
+			String qsName = "";
+			if(StringUtils.isNotBlank(t.getQsInfo1())){
+				qsName+=t.getQsInfo1();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo2())){
+				qsName+=t.getQsInfo2();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo3())){
+				qsName+=t.getQsInfo3();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo4())){
+				qsName+=t.getQsInfo4();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo5())){
+				qsName+=t.getQsInfo5();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo6())){
+				qsName+=t.getQsInfo6();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo7())){
+				qsName+=t.getQsInfo7();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo8())){
+				qsName+=t.getQsInfo8();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo9())){
+				qsName+=t.getQsInfo9();
+			}
+			t.setQsInfo1(qsName);
+			t.setHjTime(t.getHjTime()/60);
+		}
+		return map;
+	}
+	
+	public String fpZw(Long hjId){
+		Result result = new Result();
+		if(hjId == null){
+			result.error(Result.error_102);
+			return result.toResult();
+		}
+		JlHjDjVO jlHjDj = this.findOne(hjId);
+		if(jlHjDj == null){
+			result.error(Result.error_103, "查询不到此条记录");
+			return result.toResult();
+		}
+		if(jlHjDj.getFpFlag() == 0){
+			Integer resu = (Integer) jdbcTemplate.execute(  // 调用存储过程 获取会见批次号
+				     new CallableStatementCreator() {
+						@Override
+						public CallableStatement createCallableStatement(Connection con) throws SQLException {
+							 String storedProc = "{call set_ZW_ex_new1(?,?,?)}";// 调用的sql   
+					           CallableStatement cs = con.prepareCall(storedProc); 
+					           cs.setInt(1, jlHjDj.getHjType());
+					           cs.setString(2, jlHjDj.getFrNo());// 设置输入参数的值   
+					           cs.registerOutParameter(3, java.sql.Types.INTEGER);// 注册输出参数的类型   
+					           return cs;   
+						}
+					}, 
+				    new CallableStatementCallback<Integer>() {  
+						@Override
+				        public Integer doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException {   
+				           cs.execute();   
+				           return cs.getInt(3);// 获取输出参数的值   
+				        }   
+			});
+			
+			if(resu==0){
+				
+			}else if(resu==1){
+				result.error(Result.error_103,"当前已没有空闲座位可供使用");
+			}
+		}else{
+			result.error(Result.error_103,"当前记录已分配座位");
+		}
+		return result.toResult();
+	}
+	
+	public String qxZw(Long hjId, HttpServletRequest request){
+		Result result = new Result();
+		
+		SysParamVO sysParam = new SysParamVO();
+		sysParam.setParamName("HJ_Client4");
+		List<SysParamVO> sysParamList = sysParamSQL.findList(sysParam);
+		if(sysParamList.size()>0){
+			SysParamVO t = sysParamList.get(0);
+			if(!request.getRemoteAddr().equals(t.getParamData1())){
+				result.error(Result.error_103, "电脑IP地址非法");
+				return result.toResult();
+			}
+		}
+		
+		if(hjId == null){
+			result.error(Result.error_102);
+			return result.toResult();
+		}
+		JlHjDjVO jlHjDj = this.findOne(hjId);
+		if(jlHjDj == null){
+			result.error(Result.error_103, "查询不到此条记录");
+			return result.toResult();
+		}
+	}
 }

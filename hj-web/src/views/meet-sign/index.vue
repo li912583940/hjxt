@@ -104,7 +104,6 @@ import { findPojo } from '@/api/meetSign'
 import moment from 'moment';
 import store from '@/store'
 import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
 
 
 export default {
@@ -192,15 +191,6 @@ export default {
     	}
     },
     
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
     dateFormat(row, column) {
 			//时间格式化  
 	    let date = row[column.property];  
