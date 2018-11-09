@@ -22,6 +22,7 @@ import com.sl.ue.entity.jl.vo.JlHjDjVO;
 import com.sl.ue.entity.jl.vo.JlHjSpVO;
 import com.sl.ue.entity.jl.vo.JlJqVO;
 import com.sl.ue.entity.jl.vo.JlQsVO;
+import com.sl.ue.entity.sys.vo.SysHjLineVO;
 import com.sl.ue.entity.sys.vo.SysParamVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlFrService;
@@ -29,6 +30,7 @@ import com.sl.ue.service.jl.JlHjDjService;
 import com.sl.ue.service.jl.JlHjSpService;
 import com.sl.ue.service.jl.JlJqService;
 import com.sl.ue.service.jl.JlQsService;
+import com.sl.ue.service.sys.SysHjLineService;
 import com.sl.ue.service.sys.SysParamService;
 import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.http.Result;
@@ -48,6 +50,9 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 	private SysParamService sysParamSQL;
 	@Autowired
 	private JlHjSpService jlHjSpSQL;
+	@Autowired
+	private SysHjLineService sysHjLineSQL;
+	
 	
 	@Override
 	public String addHjdj(
@@ -478,7 +483,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		return result.toResult();
 	}
 	
-	public String qxZw(Long hjId, HttpServletRequest request){
+	public String qxFpZw(Long hjId, HttpServletRequest request){
 		Result result = new Result();
 		
 		SysParamVO sysParam = new SysParamVO();
@@ -501,5 +506,113 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			result.error(Result.error_103, "查询不到此条记录");
 			return result.toResult();
 		}
+		if(jlHjDj.getFpFlag()==2){
+			result.error(Result.error_103, "已处于会见通话状态，无法取消");
+			return result.toResult();
+		}else if(jlHjDj.getFpFlag()==0){
+			
+		}else{
+			String sql="update SysHjLine set hjid=null where hjid="+jlHjDj.getHjid();
+			this.jdbcTemplate.update(sql);
+			
+			/** 原会见系统的逻辑*/
+//			String hql1="from JlFr where frNo='"+jlHjDj.getFrNo()+"'";
+//			List<JlFr> list=ycs.searchAll(hql1);
+//			if(list.size()>0){
+//				jlHjDj.setJy(list.get(0).getJy());
+//			}else{
+//				jlHjDj.setJy("Server1");
+//			}
+			
+			String hjSql = "update JL_HJ_DJ set FP_Flag=0,FP_Line_No=null,FP_Time=null,FP_Time_FR=null,FP_Time_QS=null where hjid="+jlHjDj.getHjid();
+			this.jdbcTemplate.update(hjSql);
+			
+		}
+		return result.toResult();
+	}
+	
+	
+	public String getSurplusZw(Long hjId){
+		Result result = new Result();
+		if(hjId == null){
+			result.error(Result.error_102);
+			return result.toResult();
+		}
+		JlHjDjVO jlHjDj = this.findOne(hjId);
+		if(jlHjDj == null){
+			result.error(Result.error_103, "查询不到此条记录");
+			return result.toResult();
+		}
+		result.putJson("jlHjDj", jlHjDj);
+		
+		SysHjLineVO sysHjLine = new SysHjLineVO();
+		sysHjLine.setState(1);
+		sysHjLine.setHjstate(0);
+		if(jlHjDj.getHjType()==2){
+			sysHjLine.setLineType(1);
+		}else{
+			sysHjLine.setLineType(0);
+		}
+		sysHjLine.setLeftJoinWhere(" AND hjid is null");
+		List<SysHjLineVO> sysHjLineList = sysHjLineSQL.findList(sysHjLine);
+		result.putData("sysHjLineList", sysHjLineList);
+		return result.toResult();
+	}
+	
+	public String rgFpZw(Long hjId, String jy, Integer zw, HttpServletRequest request){
+		Result result = new Result();
+		
+		SysParamVO sysParam = new SysParamVO();
+		sysParam.setParamName("HJ_Client4");
+		List<SysParamVO> sysParamList = sysParamSQL.findList(sysParam);
+		if(sysParamList.size()>0){
+			SysParamVO t = sysParamList.get(0);
+			if(!request.getRemoteAddr().equals(t.getParamData1())){
+				result.error(Result.error_103, "电脑IP地址非法");
+				return result.toResult();
+			}
+		}
+		
+		if(hjId == null){
+			result.error(Result.error_102);
+			return result.toResult();
+		}
+		JlHjDjVO jlHjDj = this.findOne(hjId);
+		if(jlHjDj == null){
+			result.error(Result.error_103, "查询不到此条记录");
+			return result.toResult();
+		}
+		
+		if(jlHjDj.getFpFlag() == 0){
+			Integer resu = (Integer) jdbcTemplate.execute(  // 调用存储过程 获取会见批次号
+				     new CallableStatementCreator() {
+						@Override
+						public CallableStatement createCallableStatement(Connection con) throws SQLException {
+							 String storedProc = "{call set_ZW_ts(?,?,?,?)}";// 调用的sql   
+					           CallableStatement cs = con.prepareCall(storedProc); 
+					           cs.setString(1, jlHjDj.getFrNo());// 设置输入参数的值   
+					           cs.setString(2, jy);// 设置输入参数的值   
+					           cs.setInt(3, zw);
+					           cs.registerOutParameter(4, java.sql.Types.INTEGER);// 注册输出参数的类型   
+					           return cs;   
+						}
+					}, 
+				    new CallableStatementCallback<Integer>() {  
+						@Override
+				        public Integer doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException {   
+				           cs.execute();   
+				           return cs.getInt(4);// 获取输出参数的值   
+				        }   
+			});
+			
+			if(resu==0){
+				
+			}else if(resu==1){
+				result.error(Result.error_103,"当前已没有空闲座位可供使用");
+			}
+		}else{
+			result.error(Result.error_103,"当前记录已分配座位");
+		}
+		return result.toResult();
 	}
 }

@@ -45,8 +45,26 @@ public class HjSignWeb extends Result{
 	 * 说明 [取消分配座位]
 	 * L_晓天  @2018年11月8日
 	 */
-	@RequestMapping("/qxZw")
-	public String qxZw(Long hjId, HttpServletRequest request){
-		return jlHjDjSQL.qxZw(hjId,request);
+	@RequestMapping("/qxFpZw")
+	public String qxFpZw(Long hjId, HttpServletRequest request){
+		return jlHjDjSQL.qxFpZw(hjId,request);
+	}
+	
+	/**
+	 * 说明 [获取剩余的座位号]
+	 * L_晓天  @2018年11月9日
+	 */
+	@RequestMapping("/getSurplusZw")
+	public String getSurplusZw(Long hjId){
+		return jlHjDjSQL.getSurplusZw(hjId);
+	}
+	
+	/**
+	 * 说明 [人工分配座位]
+	 * L_晓天  @2018年11月9日
+	 */
+	@RequestMapping("/rgFpZw")
+	public String rgFpZw(Long hjId, String jy, Integer zw, HttpServletRequest request){
+		return jlHjDjSQL.rgFpZw(hjId, jy, zw, request);
 	}
 }

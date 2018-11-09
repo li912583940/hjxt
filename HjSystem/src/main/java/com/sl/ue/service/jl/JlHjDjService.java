@@ -59,5 +59,17 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 	 * 说明 [取消分配座位]
 	 * L_晓天  @2018年11月8日
 	 */
-	public String qxZw(Long hjId, HttpServletRequest request);
+	public String qxFpZw(Long hjId, HttpServletRequest request);
+	
+	/**
+	 * 说明 [获取剩余的座位号]
+	 * L_晓天  @2018年11月9日
+	 */
+	public String getSurplusZw(Long hjId);
+	
+	/**
+	 * 说明 [人工分配座位]
+	 * L_晓天  @2018年11月9日
+	 */
+	public String rgFpZw(Long hjId, String jy, Integer zw, HttpServletRequest request);
 }
