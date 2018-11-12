@@ -24,6 +24,7 @@ import com.sl.ue.entity.jl.vo.JlJqVO;
 import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.entity.sys.vo.SysHjLineVO;
 import com.sl.ue.entity.sys.vo.SysParamVO;
+import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlFrService;
 import com.sl.ue.service.jl.JlHjDjService;
@@ -617,6 +618,71 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		}else{
 			result.error(Result.error_103,"当前记录已分配座位");
 		}
+		return result.toResult();
+	}
+	
+	public String grantCall(Long hjId, HttpServletRequest request){
+		Result result = new Result();
+		
+		SysParamVO sysParam = new SysParamVO();
+		sysParam.setParamName("HJ_Client4");
+		List<SysParamVO> sysParamList = sysParamSQL.findList(sysParam);
+		if(sysParamList.size()>0){
+			SysParamVO t = sysParamList.get(0);
+			if(!request.getRemoteAddr().equals(t.getParamData1())){
+				result.error(Result.error_103, "电脑IP地址非法");
+				return result.toResult();
+			}
+		}
+		
+		if(hjId == null){
+			result.error(Result.error_102);
+			return result.toResult();
+		}
+		
+		JlHjDjVO jlHjDj = this.findOne(hjId);
+		if(jlHjDj == null){
+			result.error(Result.error_103, "查询不到此条记录");
+			return result.toResult();
+		}
+		SysUserVO user = TokenUser.getUser();
+		jlHjDj.setShState(1);
+		jlHjDj.setYjNo(user.getUserNo());
+		jlHjDj.setYjName(user.getUserName());
+		jlHjDj.setFrInUser(user.getUserNo());
+		jlHjDj.setFrInTime(new Date());
+		this.edit(jlHjDj);
+		
+		return result.toResult();
+	}
+	
+	public String cancelGrantCall(Long hjId, HttpServletRequest request){
+		Result result = new Result();
+		
+		SysParamVO sysParam = new SysParamVO();
+		sysParam.setParamName("HJ_Client4");
+		List<SysParamVO> sysParamList = sysParamSQL.findList(sysParam);
+		if(sysParamList.size()>0){
+			SysParamVO t = sysParamList.get(0);
+			if(!request.getRemoteAddr().equals(t.getParamData1())){
+				result.error(Result.error_103, "电脑IP地址非法");
+				return result.toResult();
+			}
+		}
+		
+		if(hjId == null){
+			result.error(Result.error_102);
+			return result.toResult();
+		}
+		
+		JlHjDjVO jlHjDj = this.findOne(hjId);
+		if(jlHjDj == null){
+			result.error(Result.error_103, "查询不到此条记录");
+			return result.toResult();
+		}
+		jlHjDj.setShState(0);
+		this.edit(jlHjDj);
+		
 		return result.toResult();
 	}
 }

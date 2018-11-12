@@ -177,6 +177,8 @@ public class JlHjDj implements java.io.Serializable {
 	private Date fpTimeFr;
 	@DbField("FP_Time_QS")
 	private Date fpTimeQs;
+	@DbField("SH_State")
+	private Integer shState; //授权状态 
 	// Constructors
 
 	
@@ -835,6 +837,14 @@ public class JlHjDj implements java.io.Serializable {
 
 	public void setFrLastTime(Date frLastTime) {
 		this.frLastTime = frLastTime;
+	}
+
+	public Integer getShState() {
+		return shState;
+	}
+
+	public void setShState(Integer shState) {
+		this.shState = shState;
 	}
 
 }

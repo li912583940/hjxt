@@ -81,8 +81,8 @@
       </el-table-column>
       <el-table-column v-if="buttonRole.grantPermission==1 || buttonRole.cancelGrantPermission==1" width="180" align="center" label="操作" fixed="right">
         <template slot-scope="scope">
-          <el-button v-if="buttonRole.grantPermission==1" type="primary" size="mini" @click="handleUpdate(scope.row)">授权</el-button>
-          <el-button v-if="buttonRole.cancelGrantPermission==1" type="primary" size="mini" @click="handleUpdate(scope.row)">取消授权</el-button>
+          <el-button v-if="buttonRole.grantPermission==1" type="primary" size="mini" @click="grantCall(scope.row)">授权</el-button>
+          <el-button v-if="buttonRole.cancelGrantPermission==1" type="primary" size="mini" @click="cancelGrantCall(scope.row)">取消授权</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import { findPojo, FpZw, QxFpZw, GetSurplusZw, RgFpZw } from '@/api/meetSign'
+import { findPojo, FpZw, QxFpZw, GetSurplusZw, RgFpZw, GrantCall, CancelGrantCall } from '@/api/meetSign'
 
 import moment from 'moment';
 import store from '@/store'
@@ -284,9 +284,32 @@ export default {
           type: 'success',
           duration: 5 * 1000
 	      });
+	      
+	      this.dialogRgFpVisible=false
+    	  this.getList();
     	})
-    	this.dialogRgFpVisible=false
-    	this.getList();
+    	
+    },
+    
+    grantCall(row) {
+    	let param ={
+    		hjId: row.hjid
+    	}
+    	GrantCall(param).then(res => {
+    		
+    		this.getList();
+    	})
+    },
+    
+    cancelGrantCall(row){
+    	let param ={
+    		hjId: row.hjid
+    	}
+    	CancelGrantCall(param).then(res => {
+    		
+    		this.getList();
+    	})
+    	
     },
     
     dateFormat(row, column) {

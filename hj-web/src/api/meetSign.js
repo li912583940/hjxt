@@ -14,3 +14,9 @@ export const GetSurplusZw = params => { return request.get('/hjSign/getSurplusZw
 
 // 人工分配座位
 export const RgFpZw = params => { return request.post('/hjSign/rgFpZw', params ).then(res => res) }
+
+// 授权才能使用电话
+export const GrantCall = params => { return request.post('/hjSign/grantCall', params ).then(res => res) }
+
+// 取消授权才能使用电话
+export const CancelGrantCall = params => { return request.post('/hjSign/cancelGrantCall', params ).then(res => res) }
