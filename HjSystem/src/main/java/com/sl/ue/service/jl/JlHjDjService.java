@@ -71,5 +71,5 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 	 * 说明 [人工分配座位]
 	 * L_晓天  @2018年11月9日
 	 */
-	public String rgFpZw(Long hjId, String jy, Integer zw, HttpServletRequest request);
+	public String rgFpZw(Long hjId, Integer lineNo, HttpServletRequest request);
 }

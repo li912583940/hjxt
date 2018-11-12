@@ -64,7 +64,7 @@ public class HjSignWeb extends Result{
 	 * L_晓天  @2018年11月9日
 	 */
 	@RequestMapping("/rgFpZw")
-	public String rgFpZw(Long hjId, String jy, Integer zw, HttpServletRequest request){
-		return jlHjDjSQL.rgFpZw(hjId, jy, zw, request);
+	public String rgFpZw(Long hjId, Integer lineNo, HttpServletRequest request){
+		return jlHjDjSQL.rgFpZw(hjId, lineNo, request);
 	}
 }

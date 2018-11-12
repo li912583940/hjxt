@@ -230,7 +230,7 @@ export default {
 	      return "";  
 	    }  
 	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-	}
+	  }
   },
   created() {
     this.getList()

@@ -58,7 +58,7 @@
         <el-form-item label="用户姓名" prop="userName">
           <el-input v-model="dataForm.userName"></el-input>
         </el-form-item>
-        <el-form-item label="部门" prop="userDepart">
+        <el-form-item label="部门" >
           <el-select class="filter-item" v-model="dataForm.userDepart" placeholder="请选择部门">
             <el-option v-for="item in userDeparts" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
@@ -133,6 +133,12 @@ export default {
         update: '编 辑',
         create: '新 增'
       },
+      
+      rules: {
+        userNo: [{ required: true, message: '登陆账号不能为空', trigger: 'blur' }],
+        userName: [{ required: true, message: '用户姓名不能为空', trigger: 'blur' }]
+      },
+      
       /**------------用户增删改查结束-1-----------*/
      
       
@@ -142,7 +148,7 @@ export default {
 		  roleData: [],
 		  roleValue: [],
 		  /**------------添加角色结束-2-----------*/
-   
+   		
     }
   },
   filters: {

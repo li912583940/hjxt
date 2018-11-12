@@ -5,9 +5,9 @@
       style="width: 100%">
       <el-table-column v-if="buttonRole.distributionPermission==1 || buttonRole.cancelDistributionPermission==1 || buttonRole.artificialPermission==1" align="center" :label="$t('criminal.actions')" width="300" fixed="left" >
         <template slot-scope="scope">
-          <el-button v-if="buttonRole.distributionPermission==1" type="primary" size="mini" @click="handleUpdate(scope.row)">自动分配</el-button>
-          <el-button v-if="buttonRole.cancelDistributionPermission==1" type="primary" size="mini" @click="handleUpdate(scope.row)">取消分配</el-button>
-          <el-button v-if="buttonRole.artificialPermission==1" type="primary" size="mini" @click="handleUpdate(scope.row)">人工分配</el-button>
+          <el-button v-if="buttonRole.distributionPermission==1" type="primary" size="mini" @click="fpZw(scope.row)">自动分配</el-button>
+          <el-button v-if="buttonRole.cancelDistributionPermission==1" type="primary" size="mini" @click="qxFpZw(scope.row)">取消分配</el-button>
+          <el-button v-if="buttonRole.artificialPermission==1" type="primary" size="mini" @click="getSurplusZw(scope.row)">人工分配</el-button>
         </template>
       </el-table-column>
       
@@ -58,7 +58,7 @@
           <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="亲属">
+      <el-table-column width="300" align="center" label="亲属">
         <template slot-scope="scope">
           <span>{{scope.row.qsInfo1}}</span>
         </template>
@@ -68,9 +68,9 @@
           <span>{{scope.row.hjTime}}分钟</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="登记时间">
+      <el-table-column width="160" align="center" label="登记时间">
         <template slot-scope="scope">
-          <span>{{scope.row.djTime}}</span>
+          <span>{{scope.row.djTime | dateFormat}}</span>
         </template>
       </el-table-column>
       <el-table-column width="140" align="center" label="授权状态">
@@ -93,13 +93,29 @@
       </el-pagination>
     </div>
 
-    
+    <!-- 人工分配座位 -->
+		<el-dialog title="人工分配座位" :visible.sync="dialogRgFpVisible">
+			<el-form :rules="rules" :model="rgFpDataForm" ref="rgFpDataForm" label-position="right" label-width="120px" style='width: 300px; margin-left:25%;' >
+        <el-form-item label="服刑人员姓名" prop="frName">
+          <el-input v-model="rgFpDataForm.frName" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="座位" prop="lineNo">
+          <el-select class="filter-item" v-model="rgFpDataForm.lineNo" placeholder="请选择座位">
+            <el-option v-for="item in zws" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+		  <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogRgFpVisible = false">取 消</el-button>
+        <el-button type="primary" @click="rgFpZw">确 定</el-button>
+      </div>
+		</el-dialog>
 
   </div>
 </template>
 
 <script>
-import { findPojo } from '@/api/meetSign'
+import { findPojo, FpZw, QxFpZw, GetSurplusZw, RgFpZw } from '@/api/meetSign'
 
 import moment from 'moment';
 import store from '@/store'
@@ -129,12 +145,31 @@ export default {
       	artificialPermission: 0,
       	grantPermission : 0,
       	cancelGrantPermission: 0,
-      }
+      },
+      
+      rgFpDataForm: {
+      	hjId: undefined,
+      	frName: undefined,
+      	lineNo: undefined
+      },
+      
+      zws:[],
+      dialogRgFpVisible: false,
+      
+      rules: {
+        lineNo: [{ required: true, message: '请选择座位', trigger: 'blur' }]
+      },
      
     }
   },
   filters: {
-    
+    dateFormat(date) {
+		//时间格式化  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+	  }
   },
   created() {
     this.getList()
@@ -189,6 +224,69 @@ export default {
     			}
     		}
     	}
+    },
+    
+    fpZw(row) {
+    	let param = {
+    		hjId: row.hjid
+    	}
+    	FpZw(param).then(res => {
+    		Message({
+          message: res.errMsg,
+          type: 'success',
+          duration: 5 * 1000
+	      });
+    	})
+    },
+    
+    qxFpZw(row){
+    	let param ={
+    		hjId: row.hjid
+    	}
+    	QxFpZw(param).then(res => {
+    		Message({
+          message: res.errMsg,
+          type: 'success',
+          duration: 5 * 1000
+	      });
+    	})
+    },
+    
+    getSurplusZw(row) {
+    	this.zws = []
+    	
+    	this.dialogRgFpVisible=true
+    	
+    	let param ={
+    		hjId: row.hjid
+    	}
+    	GetSurplusZw(param).then(res => {
+    		let jlHjDj = res.jlHjDj
+    		this.rgFpDataForm.hjId = jlHjDj.hjid
+    		this.rgFpDataForm.frName = jlHjDj.frName
+    		
+    		let sysHjLineList = res.sysHjLineList
+    		for(let x of sysHjLineList){
+    			let value = {}
+    			value.id= x.lineNo
+    			value.name = x.zw
+    			this.zws.push(value)
+    		}
+    	})
+    	
+    	
+    },
+    
+    rgFpZw() {
+    	RgFpZw(this.rgFpDataForm).then(res => {
+    		Message({
+          message: res.errMsg,
+          type: 'success',
+          duration: 5 * 1000
+	      });
+    	})
+    	this.dialogRgFpVisible=false
+    	this.getList();
     },
     
     dateFormat(row, column) {

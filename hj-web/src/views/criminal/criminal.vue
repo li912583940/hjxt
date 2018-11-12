@@ -53,7 +53,7 @@
           <span>{{scope.row.hjLeft}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" label="入监时间" :formatter="dateFormat">
+      <el-table-column width="160" align="center" label="入监时间">
         <template slot-scope="scope">
           <span>{{scope.row.infoRjsj}}</span>
         </template>

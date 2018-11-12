@@ -396,7 +396,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 	
 	public Map<String, Object> findPojoByHjSign(JlHjDjVO model, Integer pageSize, Integer pageNum){
 		StringBuffer leftJoinField = new StringBuffer(); // 字段 
-		leftJoinField.append(",dbo.get_ck(dj.FP_Line_No,dj.JY) as zw");
+		leftJoinField.append(",dbo.get_ck(a.FP_Line_No,a.JY) as zw");
 		
 		StringBuffer leftJoinWhere = new StringBuffer();  // 条件
 		leftJoinWhere.append(" AND a.State=0 and (a.DJ_Type=0 or a.DJ_Type=2)");
@@ -559,7 +559,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		return result.toResult();
 	}
 	
-	public String rgFpZw(Long hjId, String jy, Integer zw, HttpServletRequest request){
+	public String rgFpZw(Long hjId, Integer lineNo, HttpServletRequest request){
 		Result result = new Result();
 		
 		SysParamVO sysParam = new SysParamVO();
@@ -582,7 +582,11 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			result.error(Result.error_103, "查询不到此条记录");
 			return result.toResult();
 		}
-		
+		SysHjLineVO sysHjLine = new SysHjLineVO();
+		sysHjLine.setLineNo(lineNo);
+		List<SysHjLineVO> sysHjLineList = sysHjLineSQL.findList(sysHjLine);
+		sysHjLine = sysHjLineList.get(0);
+		String jy = sysHjLine.getJy();
 		if(jlHjDj.getFpFlag() == 0){
 			Integer resu = (Integer) jdbcTemplate.execute(  // 调用存储过程 获取会见批次号
 				     new CallableStatementCreator() {
@@ -592,7 +596,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 					           CallableStatement cs = con.prepareCall(storedProc); 
 					           cs.setString(1, jlHjDj.getFrNo());// 设置输入参数的值   
 					           cs.setString(2, jy);// 设置输入参数的值   
-					           cs.setInt(3, zw);
+					           cs.setInt(3, lineNo);
 					           cs.registerOutParameter(4, java.sql.Types.INTEGER);// 注册输出参数的类型   
 					           return cs;   
 						}
