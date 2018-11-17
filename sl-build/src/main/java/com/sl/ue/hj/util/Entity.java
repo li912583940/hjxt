@@ -20,7 +20,8 @@ public class Entity {
 		
 		//enMap.put("JL_QS_GX", "JlQsGx");
 		
-		enMap.put("sys_role_jq", "SysRoleJq");
+		//enMap.put("sys_role_jq", "SysRoleJq");
+		enMap.put("JL_HJ_SP_FR", "JlHjSpFr");
 	}
 	
 	

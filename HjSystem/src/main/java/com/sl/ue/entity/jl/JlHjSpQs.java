@@ -10,7 +10,7 @@ public class JlHjSpQs implements java.io.Serializable {
 	/** */
 	private static final long serialVersionUID = 4599728834762505732L;
 	@DbField("SPID")
-	private Integer spId;
+	private Long spId;
 	@DbField("QS_Info")
 	private String qsInfo;
 	@DbField("QS_SFZ")
@@ -42,10 +42,10 @@ public class JlHjSpQs implements java.io.Serializable {
 	private String spbz;
 	
 	
-	public Integer getSpId() {
+	public Long getSpId() {
 		return spId;
 	}
-	public void setSpId(Integer spId) {
+	public void setSpId(Long spId) {
 		this.spId = spId;
 	}
 	public String getQsInfo() {
