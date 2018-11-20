@@ -53,7 +53,7 @@
 	        </el-form>
         </el-card>
         
-        <object width="0px" height="0px" id="IDCard2" name="IDCard2"  codebase="./SynCardOcx.CAB#version=1,0,0,1" classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039">
+        <object width="0px" height="0px" id="IDCard2" name="IDCard2"  codebase="../../ocx/SynCardOcx.CAB#version=1,0,0,1" classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039">
 		</object>
     </div>
 </template>

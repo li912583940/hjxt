@@ -58,9 +58,17 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 	public List<T> findList(T model) {
 		return findList(model, null, null);
 	}
-
+    
+	/**
+	 * 说明 [分页查询,不带记录总数(count) 自定义排序]
+	 * @作者 LXT @2018年9月24日
+	 */
+	public List<T> findList(T model, Integer pageSize, Integer pageNum){
+		return findList(model, null, null, "DESC");
+	}
+	
 	@Override
-	public List<T> findList(T model,  Integer pageSize, Integer pageNum) {
+	public List<T> findList(T model,  Integer pageSize, Integer pageNum, String sort) {
 		Table table = clazz.getAnnotation(Table.class); // 自定义注解 表
 		String tableName;
 		if(table != null){
@@ -147,11 +155,11 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			if(StringUtils.isBlank(table_fileds_str)){
 				table_fileds_str = "*";
 			}
-			String sql = "select a.*"+leftJoinField+" from " + tableName+" a "+leftJoinTable+" where 1=1 " + where_fields.toString()+" "+leftJoinWhere;
+			String sql = "select a.*"+leftJoinField+" from " + tableName+" a "+leftJoinTable+" where 1=1 " + where_fields.toString()+" "+leftJoinWhere+" ORDER BY a."+id_field+" "+sort;
 			if(pageSize != null && pageNum != null){
 				int startNum = (pageNum-1)*pageSize;
 				int endNum = pageNum*pageSize;
-				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" ASC) AS rowid,a.* "+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
+				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" "+sort+") AS rowid,a.* "+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
 						+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
 			}
 			System.out.println("执行查询list语句: [ "+sql+" ]");
@@ -171,11 +179,14 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 		return findPojo(model, null, null);
 	}
 	
+	public Map<String, Object> findPojo(T model, Integer pageSize, Integer pageNum){
+		return findPojo(model, null, null, "DESC");
+	}
 	/**
 	 * 说明 [分页查询,带记录总数(count)]
 	 * @作者 LXT @2018年9月24日
 	 */
-	public Map<String, Object> findPojo(T model, Integer pageSize, Integer pageNum){
+	public Map<String, Object> findPojo(T model, Integer pageSize, Integer pageNum, String sort){
 		Table table = clazz.getAnnotation(Table.class); // 自定义注解 表
 		String tableName;
 		if(table != null){
@@ -265,11 +276,11 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				table_fileds_str = "*";
 			}
 			
-			String sql = "select a.*"+leftJoinField+" from " + tableName+" a "+leftJoinTable+" where 1=1 " + where_fields.toString()+" "+leftJoinWhere;
+			String sql = "select a.*"+leftJoinField+" from " + tableName+" a "+leftJoinTable+" where 1=1 " + where_fields.toString()+" "+leftJoinWhere+" ORDER BY a."+id_field+" "+sort;
 			if(pageSize != null && pageNum != null){
 				int startNum = (pageNum-1)*pageSize;
 				int endNum = pageNum*pageSize;
-				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" DESC) AS rowid,a.* "+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
+				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" "+sort+") AS rowid,a.* "+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
 						+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
 			}
 			System.out.println("执行查询pojo语句: [ "+sql+" ]");
@@ -413,7 +424,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			System.out.println("参数："+params);
 			if(isInc == true){
 				KeyHolder keyHolder = new GeneratedKeyHolder();
-				Long id = 0L;
+				Number id = null;
 				final String sqlStr = sql.toString();
 				jdbcTemplate.update(new PreparedStatementCreator(){  
 					public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -422,11 +433,16 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				         return ps;  
 					}  
 			    }, keyHolder);
-				id =  keyHolder.getKey().longValue();
-				if(id != 0){
+				id =  keyHolder.getKey();
+				if(id != null){
 					idField.setAccessible(true);
 					try {
-						idField.set(model, id);
+						if(idField.getType()==Long.class){
+							idField.set(model, id.longValue());
+						}else if(idField.getType()==Integer.class){
+							idField.set(model, id.intValue());
+						}
+						
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

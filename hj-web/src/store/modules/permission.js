@@ -30,7 +30,7 @@ function filterAsyncRouter(routes, roles) {
     }
   })
   
-  console.log(res)
+  
    
   return res
 }

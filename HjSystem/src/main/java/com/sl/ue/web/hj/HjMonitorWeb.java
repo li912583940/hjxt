@@ -26,4 +26,21 @@ public class HjMonitorWeb extends Result{
 		this.putPojo(map);
 		return this.toResult();
 	}
+	
+	/**
+	 * 说明 [修改时间]
+	 * L_晓天  @2018年11月20日
+	 */
+	@RequestMapping("/updateSJ")
+	public String updateSJ(Integer webId, Integer timeUp){
+		return sysHjLineSQL.updateSJ(webId, timeUp);
+	}
+	
+	/**
+	 * 说明 [监听注释]
+	 * L_晓天  @2018年11月20日
+	 */
+	public String addMonitorFlag(String callId, String writeTxtLx){
+		return sysHjLineSQL.addMonitorFlag(callId, writeTxtLx);
+	}
 }

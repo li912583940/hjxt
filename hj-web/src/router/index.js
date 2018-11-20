@@ -153,6 +153,9 @@ export const asyncRouterMap = [
   { // 会见登记
     path: '/meetRegister',
     component: Layout,
+    meta: {
+      roles:'meetRegister'
+    },
     children: [{
       path: 'index',
       component: () => import('@/views/meet-register/index'),
@@ -164,6 +167,9 @@ export const asyncRouterMap = [
   { // 会见签到 -- 座位分配
     path: '/meetSign',
     component: Layout,
+    meta: {
+      roles:'meetSign'
+    },
     children: [{
       path: 'index',
       component: () => import('@/views/meet-sign/index'),
@@ -175,6 +181,9 @@ export const asyncRouterMap = [
   { // 会见通知
     path: '/meetNotice',
     component: Layout,
+    meta: {
+      roles:'meetNotice'
+    },
     children: [{
       path: 'index',
       component: () => import('@/views/meet-notice/index'),
@@ -186,6 +195,9 @@ export const asyncRouterMap = [
   { // 会见监控
     path: '/meetMonitor',
     component: Layout,
+    meta: {
+      roles:'meetMonitor'
+    },
     children: [{
       path: 'index',
       component: () => import('@/views/meet-monitor/index'),
@@ -194,9 +206,26 @@ export const asyncRouterMap = [
     }]
   },
   
+  { // 会见监控-图形
+    path: '/meetMonitorGraph',
+    component: Layout,
+    meta: {
+      roles:'meetMonitorGraph'
+    },
+    children: [{
+      path: 'index',
+      component: () => import('@/views/meet-monitor/graph'),
+      name: 'meetMonitor',
+      meta: { title: '会见监控-图形化', icon: 'eye', roles:'meetMonitorGraph' }
+    }]
+  },
+  
   { // 会见审批
     path: '/meetSp',
     component: Layout,
+    meta: {
+      roles:'meetSp'
+    },
     children: [{
       path: 'index',
       component: () => import('@/views/meet-sp/index'),
@@ -208,6 +237,9 @@ export const asyncRouterMap = [
   { // 警察信息
     path: '/yjMessage',
     component: Layout,
+    meta: {
+      roles:'yjMessage'
+    },
     children: [{
       path: 'index',
       component: () => import('@/views/yj-message/index'),
@@ -219,6 +251,9 @@ export const asyncRouterMap = [
   { // 会见记录
     path: '/meetRecord',
     component: Layout,
+    meta: {
+      roles:'meetRecord'
+    },
     children: [{
       path: 'index',
       component: () => import('@/views/log-record/meetRecord'),
@@ -230,6 +265,9 @@ export const asyncRouterMap = [
   { // 会见报表
     path: '/meetReport',
     component: Layout,
+    meta: {
+      roles:'meetReport'
+    },
     children: [{
       path: 'index',
       component: () => import('@/views/log-record/meetReport'),

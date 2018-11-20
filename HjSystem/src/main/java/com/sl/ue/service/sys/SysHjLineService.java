@@ -8,4 +8,8 @@ import com.sl.ue.service.base.BaseService;
 public interface SysHjLineService extends BaseService<SysHjLineVO>{
 
 	public Map<String, Object> findPojoMonitor(Integer pageSize, Integer pageNum);
+	
+	public String updateSJ(Integer webId, Integer timeUp);
+	
+	public String addMonitorFlag(String callId, String writeTxtLx);
 }

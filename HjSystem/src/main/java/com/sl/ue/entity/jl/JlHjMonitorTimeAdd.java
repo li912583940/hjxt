@@ -12,7 +12,7 @@ public class JlHjMonitorTimeAdd implements java.io.Serializable {
 
 	/** */
 	private static final long serialVersionUID = 2814204021074507066L;
-	@Id
+	@Id(inc=true)
 	@DbField("WebID")
 	private Integer webId;
 	@DbField("Call_ID")

@@ -60,15 +60,15 @@ public class SysHjLine implements java.io.Serializable {
 	@DbField("Monitor_JKBZ")
 	private String monitorJkbz;
 	@DbField("Monitor_CallID")
-	private String monitorCallId;
+	private String monitorCallid;
 	@DbField("VideoChan1_Server")
-	private String videoChan1Server;
+	private String videochan1Server;
 	@DbField("VideoChan1_No")
-	private Integer videoChan1No;
+	private Integer videochan1No;
 	@DbField("VideoChan2_Server")
-	private String videoChan2Server;
+	private String videochan2Server;
 	@DbField("VideoChan2_No")
-	private Integer videoChan2No;
+	private Integer videochan2No;
 
 	public Integer getWebId() {
 		return this.webId;
@@ -262,44 +262,45 @@ public class SysHjLine implements java.io.Serializable {
 		this.monitorJkbz = monitorJkbz;
 	}
 
-	public String getMonitorCallId() {
-		return this.monitorCallId;
+	public String getMonitorCallid() {
+		return monitorCallid;
 	}
 
-	public void setMonitorCallId(String monitorCallId) {
-		this.monitorCallId = monitorCallId;
+	public void setMonitorCallid(String monitorCallid) {
+		this.monitorCallid = monitorCallid;
 	}
 
-	public String getVideoChan1Server() {
-		return this.videoChan1Server;
+	public String getVideochan1Server() {
+		return videochan1Server;
 	}
 
-	public void setVideoChan1Server(String videoChan1Server) {
-		this.videoChan1Server = videoChan1Server;
+	public void setVideochan1Server(String videochan1Server) {
+		this.videochan1Server = videochan1Server;
 	}
 
-	public Integer getVideoChan1No() {
-		return this.videoChan1No;
+	public Integer getVideochan1No() {
+		return videochan1No;
 	}
 
-	public void setVideoChan1No(Integer videoChan1No) {
-		this.videoChan1No = videoChan1No;
+	public void setVideochan1No(Integer videochan1No) {
+		this.videochan1No = videochan1No;
 	}
 
-	public String getVideoChan2Server() {
-		return this.videoChan2Server;
+	public String getVideochan2Server() {
+		return videochan2Server;
 	}
 
-	public void setVideoChan2Server(String videoChan2Server) {
-		this.videoChan2Server = videoChan2Server;
+	public void setVideochan2Server(String videochan2Server) {
+		this.videochan2Server = videochan2Server;
 	}
 
-	public Integer getVideoChan2No() {
-		return this.videoChan2No;
+	public Integer getVideochan2No() {
+		return videochan2No;
 	}
 
-	public void setVideoChan2No(Integer videoChan2No) {
-		this.videoChan2No = videoChan2No;
+	public void setVideochan2No(Integer videochan2No) {
+		this.videochan2No = videochan2No;
 	}
 
+	
 }

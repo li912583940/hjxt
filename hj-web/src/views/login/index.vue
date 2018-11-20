@@ -214,14 +214,18 @@ export default {
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-$bg:#2d3a4b;
+/*$bg:#2d3a4b;*/
+$bg:#00F5FF;
 $dark_gray:#889aa4;
 $light_gray:#eee;
+$bgImg:url(/static/image/hj_logo.jpg);
 
 .login-container {
   position: fixed;
   height: 100%;
   width: 100%;
+  background-image: $bgImg;
+  background-repeat: no-repeat;
   background-color: $bg;
   .login-form {
     position: absolute;
@@ -230,7 +234,7 @@ $light_gray:#eee;
     width: 520px;
     max-width: 100%;
     padding: 35px 35px 15px 35px;
-    margin: 120px auto;
+    margin: 150px auto;
   }
   .tips {
     font-size: 14px;
