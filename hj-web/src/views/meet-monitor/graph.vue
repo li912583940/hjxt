@@ -99,6 +99,7 @@
 import { findPojo, UpdateSJ, GetHjServerList, GetMonitorVocList, AddMonitorFlag, GetZs, QieduanHj } from '@/api/meetMonitor'
 
 import moment from 'moment';
+import store from '@/store'
 import waves from '@/directive/waves' // 水波纹指令
 import { Message, MessageBox } from 'element-ui'
 
@@ -186,6 +187,17 @@ export default {
   	
   	this.getHjServerList()
   	this.getMonitorVocList()
+  	
+  	if(this.timer){
+  		this.clearInterval(this.timer)
+  	}else{
+  		this.timer = setInterval(() =>{
+  			this.getList()
+  		}, 10000)
+  	}
+  },
+  destroyed() {
+  	clearInterval(this.timer)
   },
   methods: {
     getList() {
@@ -213,9 +225,9 @@ export default {
     		this.buttonRole.zhushiPermission= 1
     	}else{
     		let buttonRoles = store.getters.buttonRoles
-    		let meetMonitor = buttonRoles.meetMonitor
-    		if(meetMonitor.length>0){
-    			for(let value of meetMonitor){
+    		let meetMonitorGraph = buttonRoles.meetMonitorGraph
+    		if(meetMonitorGraph.length>0){
+    			for(let value of meetMonitorGraph){
     				if(value=='jiantingPermission'){
     					this.buttonRole.jiantingPermission= 1
     				}else if(value=='qieduanPermission'){

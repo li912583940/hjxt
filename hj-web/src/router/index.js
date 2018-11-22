@@ -192,6 +192,20 @@ export const asyncRouterMap = [
     }]
   },
   
+  { // 会见监控-图形
+    path: '/meetMonitorGraph',
+    component: Layout,
+    meta: {
+      roles:'meetMonitorGraph'
+    },
+    children: [{
+      path: 'index',
+      component: () => import('@/views/meet-monitor/graph'),
+      name: 'meetMonitorGraph',
+      meta: { title: '会见监控-图形化', icon: 'eye', roles:'meetMonitorGraph' }
+    }]
+  },
+  
   { // 会见监控
     path: '/meetMonitor',
     component: Layout,
@@ -206,19 +220,7 @@ export const asyncRouterMap = [
     }]
   },
   
-  { // 会见监控-图形
-    path: '/meetMonitorGraph',
-    component: Layout,
-    meta: {
-      roles:'meetMonitorGraph'
-    },
-    children: [{
-      path: 'index',
-      component: () => import('@/views/meet-monitor/graph'),
-      name: 'meetMonitorGraph',
-      meta: { title: '会见监控-图形化', icon: 'eye', roles:'meetMonitorGraph' }
-    }]
-  },
+  
   
   { // 会见审批
     path: '/meetSp',
