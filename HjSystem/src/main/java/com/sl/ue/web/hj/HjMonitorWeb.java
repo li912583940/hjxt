@@ -37,10 +37,28 @@ public class HjMonitorWeb extends Result{
 	}
 	
 	/**
+	 * 说明 [获取当前用户在此次通话的注释]
+	 * L_晓天  @2018年11月21日
+	 */
+	@RequestMapping("/getZs")
+	public String getZs(String monitorCallid){
+		return sysHjLineSQL.getZs(monitorCallid);
+	}
+	/**
 	 * 说明 [监听注释]
 	 * L_晓天  @2018年11月20日
 	 */
-	public String addMonitorFlag(String callId, String writeTxtLx){
-		return sysHjLineSQL.addMonitorFlag(callId, writeTxtLx);
+	@RequestMapping("/addMonitorFlag")
+	public String addMonitorFlag(String monitorCallid, String writeTxt){
+		return sysHjLineSQL.addMonitorFlag(monitorCallid, writeTxt);
+	}
+	
+	/**
+	 * 说明 [切断]
+	 * L_晓天  @2018年11月22日
+	 */
+	@RequestMapping("/qieduanHj")
+	public String qieduanHj(Long hjid){
+		return sysHjLineSQL.qieduanHj(hjid);
 	}
 }

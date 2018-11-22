@@ -2,77 +2,53 @@
   <div class="app-container">
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row max-height="700"
       style="width: 100%">
-      <el-table-column align="center" label="罪犯监区" width="140">
+      <el-table-column width="140px" align="center" label="服务器名称">
         <template slot-scope="scope">
-          <span>{{scope.row.jqName}}</span>
+          <span>{{scope.row.jy}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="罪犯编号">
+      <el-table-column width="140px" align="center" label="通道">
         <template slot-scope="scope">
-          <span>{{scope.row.frNo}}</span>
+          <span>{{scope.row.lineNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160px" align="center" label="罪犯姓名">
+      <el-table-column width="160px" align="center" label="座位号">
         <template slot-scope="scope">
-          <span>{{scope.row.frName}}</span>
+          <span>{{scope.row.zw}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="会见窗口">
+      <el-table-column width="140px" align="center" label="状态">
         <template slot-scope="scope">
-          <span v-if="scope.row.fpFlag ==0">未分配</span>
-          <span else>{{scope.row.zw}}</span>
+          <span v-if="scope.row.monitorState =='通话'">通话</span>
+          <span v-if="scope.row.monitorState =='空闲'">空闲</span>
+          <span v-if="scope.row.monitorState =='应答'">应答</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="会见通知 接收状态">
+      <el-table-column width="140px" align="center" label="罪犯监区">
         <template slot-scope="scope">
-          <span v-if="scope.row.pageTzState==0" @click="sdNotice">未接收</span>
-          <span v-if="scope.row.pageTzState==1">已接收</span>
+          <span>{{scope.row.monitorJq}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="会见类型">
+      <el-table-column width="140px" align="center" label="罪犯姓名">
         <template slot-scope="scope">
-          <span v-if="scope.row.hjType ==1">电话会见</span>
-          <span v-else-if="scope.row.hjType ==2">面对面会见</span>
-          <span v-else-if="scope.row.hjType ==3">视频会见</span>
-          <span v-else-if="scope.row.hjType ==4">帮教</span>
-          <span v-else-if="scope.row.hjType ==5">提审</span>
+          <span>{{scope.row.monitorFr}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300px" align="center" label="会见说明">
+      <el-table-column width="300px" align="center" label="亲属信息">
         <template slot-scope="scope">
-          <span>{{scope.row.hjInfo}}</span>
+          <span>{{scope.row.monitorQs}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="登记时间" :formatter="dateFormat">
+      <el-table-column width="200px" align="center" label="剩余时间">
         <template slot-scope="scope">
-          <span>{{scope.row.djTime}}</span>
+          <span>{{scope.row.monitorTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="亲属信息">
+      <el-table-column v-if="buttonRole.editPermission==1 || buttonRole.deletePermission==1" align="center" :label="$t('criminal.actions')" width="180">
         <template slot-scope="scope">
-          <span>{{scope.row.qsInfo1}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="200px" align="center" label="会见状态">
-        <template slot-scope="scope">
-          <span v-if="scope.row.fpFlag==2">已在会见</span>
-          <span v-if="scope.row.fpFlag!=2">未在会见</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="200px" align="center" label="会见通知 接收人">
-        <template slot-scope="scope">
-          <span>{{scope.row.pageTzUserName}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="200px" align="center" label="接收 时间" :formatter="dateFormat">
-        <template slot-scope="scope">
-          <span>{{scope.row.pageTzTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="200px" align="center" label="接收通知 是否超时">
-        <template slot-scope="scope">
-          <span v-if="scope.row.isOverTime==0">未超时</span>
-          <span v-if="scope.row.isOverTime==1">已超时</span>
+          <el-button v-if="buttonRole.editPermission==1" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">监听</el-button>
+          <el-button v-if="buttonRole.deletePermission==1" size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">停止监听</el-button>
+          <el-button v-if="buttonRole.deletePermission==1" size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">切断</el-button>
         </template>
       </el-table-column>
     </el-table>

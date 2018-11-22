@@ -6,27 +6,27 @@
                 	<div slot="header" class="clearfix">
 					    <span style="float: left;">窗口：{{item.zw}}</span>
 					    <span v-if="item.monitorState=='通话'">
-					    	<el-button v-if="jtState==2" style="float: right; padding: 3px 0;" type="text">切断</el-button>
-					    	<el-button v-if="jtState==2" style="float: right; padding: 3px 0;margin-right: 6px;" type="text">停止监听</el-button>
-					    	<el-button v-if="jtState==1" style="float: right; padding: 3px 0" type="text">监听</el-button>
+					    	<el-button v-if="jtState==2 && buttonRole.qieduanPermission==1" style="float: right; padding: 3px 0;" type="text"><a @click="qieduan(item)">切断</a></el-button>
+					    	<el-button v-if="jtState==2 && buttonRole.jiantingPermission==1" style="float: right; padding: 3px 0;margin-right: 6px;" type="text"><a @click="jiantingStop(item)">停止监听</a></el-button>
+					    	<el-button v-if="jtState==1 && buttonRole.jiantingPermission==1" style="float: right; padding: 3px 0" type="text"><a @click="jianting(item)">监听</a></el-button>
 					    </span>
 					    <span v-else-if="item.monitorState=='应答'" style="float: right; padding: 3px 10; color: #FF9900;">应答</span>
 					    <span v-else style="float: right; padding: 3px 10; color: #33CC00;">空闲</span>
 					</div>
                     <div style="padding: 6px;height: 310px;">
-                    	<div style=" background:rgba(0,0,0,.5); position:relative; top:0px; color:#FFF; font-size:12px; padding:6px 0;">
-					    	<span style="margin-left: 50px;"><a @click="chahua(item)">插话</a></span>
-					    	<span style="margin-left: 20px;"><a @click="zhushi(item)">注释</a></span>
-					    	<span style="margin-left: 20px;"><a @click="xiugaiTime(item)">修改时间</a></span>
+                    	<div v-if="buttonRole.chahuaPermission==1 || buttonRole.zhushiPermission==1 || buttonRole.updateTimePermission==1"  style=" background:rgba(0,0,0,.5); position:relative; top:0px; color:#FFF; font-size:12px; padding:6px 0;">
+					    	<span v-if="buttonRole.chahuaPermission==1" style="margin-left: 50px;"><a @click="chahua(item)">插话</a></span>
+					    	<span v-if="buttonRole.zhushiPermission==1" style="margin-left: 20px;"><a @click="zhushi(item)">注释</a></span>
+					    	<span v-if="buttonRole.updateTimePermission==1" style="margin-left: 20px;"><a @click="xiugaiTime(item)">修改时间</a></span>
 					    </div>
                     	<div v-if="item.monitorState=='' ">
-	                        <div class="text item" style="margin-top: 10px;">监区：一监区 {{item.monitorJq}}</div>
-						    <div class="text item">姓名：张三 {{item.monitorFr}}</div>
+	                        <div class="text item" style="margin-top: 10px;">监区 ：一监区 {{item.monitorJq}}</div>
+						    <div class="text item">姓名 ：张三 {{item.monitorFr}}</div>
 						    <span v-for="(o, i) in item.qsList">
 						    	<div class="text item">亲属{{i+1}}：{{o}}</div>
 						    </span>
-						    <div class="text item">通话：4分钟20秒 {{item.monitorFr}}</div>
-						    <div class="text item">剩余：26分钟40秒 {{item.monitorTime}}</div>
+						    <div class="text item">通话 ：4分钟20秒 {{item.monitorFr}}</div>
+						    <div class="text item">剩余 ：26分钟40秒 {{item.monitorTime}}</div>
 					    </div>
 					    
 					    
@@ -55,22 +55,52 @@
 	      </div>
 	    </el-dialog>
     	
+    	<el-dialog title="插话" :visible.sync="dialogCHVisible">
+	      <el-form :rules="rulesCH" :model="dataFormCH" ref="dataFormCH" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+	        <el-form-item label="姓名" >
+	          <el-input v-model="dataFormCH.frName" :disabled="true"></el-input>
+	        </el-form-item>
+	        <el-form-item label="插话" prop="vocId" >
+	        	<el-select class="filter-item" v-model="dataFormCH.vocId" placeholder="请选择">
+		            <el-option v-for="item in monitorVocList" :key="item.vocId" :label="item.vocInfo" :value="item.vocId"></el-option>
+		        </el-select>
+	        </el-form-item>
+	      </el-form>
+	      <div slot="footer" class="dialog-footer">
+	        <el-button @click="dialogCHVisible = false">取 消</el-button>
+	        <el-button type="primary" @click="updateCH">确 定</el-button>
+	      </div>
+	    </el-dialog>
+    	
+    	<el-dialog title="注释" :visible.sync="dialogZSVisible">
+	      <el-form :rules="rulesZS" :model="dataFormZS" ref="dataFormZS" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+	        <el-form-item label="姓名" >
+	          <el-input v-model="dataFormZS.frName" :disabled="true"></el-input>
+	        </el-form-item>
+	        <el-form-item label="注释" prop="writeTxt" >
+	          <el-input v-model="dataFormZS.writeTxt"></el-input>
+	        </el-form-item>
+	      </el-form>
+	      <div slot="footer" class="dialog-footer">
+	        <el-button @click="dialogZSVisible = false">取 消</el-button>
+	        <el-button type="primary" @click="updateZS">确 定</el-button>
+	      </div>
+	    </el-dialog>
+	    
     	<div v-for="(item, index) in sysHjServerList">
-    		<object id="${item.serverName }" name="${item.serverName}" codebase="../../ocx/TeleQqOcx.ocx#version=1,0,0,1" classid="clsid:561E476B-6C4F-4FCC-A8CE-A85C7F781620" 
+    		<object :id="item.serverName" :name="item.serverName" codebase="../../ocx/TeleQqOcx.ocx#version=1,0,0,1" classid="clsid:561E476B-6C4F-4FCC-A8CE-A85C7F781620" 
  		 		width="0" height="0">
 			</object>
     	</div>
-    	
 	</div>
 </template>
 
 <script>
-import { findPojo, UpdateSJ, FindHjServerList } from '@/api/meetMonitor'
+import { findPojo, UpdateSJ, GetHjServerList, GetMonitorVocList, AddMonitorFlag, GetZs, QieduanHj } from '@/api/meetMonitor'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
-
+import { Message, MessageBox } from 'element-ui'
 
 export default {
   name: 'criminal',
@@ -88,6 +118,7 @@ export default {
       },
       jtState: 1,
       
+      /** 修改时间 开始 */ 
       dialogSJVisible: false,
       
       dataForm: {
@@ -98,8 +129,50 @@ export default {
       rules: {
         timeUp: [{ required: true, message: '时间不能为空', trigger: 'blur' }]
       },
+      /** 修改时间 结束 */ 
       
+      /** 插话 开始 */
+      // 注册控件
       sysHjServerList: null,
+      
+      // 插话
+      monitorVocList: [],
+      dialogCHVisible: false,
+      
+      dataFormCH: {
+      	frName: undefined,
+      	serverName: undefined,
+      	lineNo:undefined,
+      	vocId: undefined,
+      },
+      rulesCH: {
+        vocId: [{ required: true, message: '请选择一条内容', trigger: 'blur' }]
+      },
+      /** 插话 结束 */
+     
+      /** 注释开始 */
+      dialogZSVisible: false, 
+      dataFormZS: {
+      	monitorCallid: undefined,
+      	frName: undefined,
+      	writeTxt: undefined,
+      	
+      },
+      rulesZS: {
+        writeTxt: [{ required: true, message: '请输入注释内容', trigger: 'blur' }]
+      },
+      /** 注释结束 */
+     
+     //按钮权限   1：有权限， 0：无权限
+      buttonRole: { 
+      	queryPermission: 1,      //查询
+      	jiantingPermission: 0,   //监听
+      	qieduanPermission: 0,    //切断
+      	chahuaPermission: 0,     //插话
+      	updateTimePermission: 0, //修改时间
+      	zhushiPermission: 0      //注释
+      },
+      
     }
   },
   filters: {
@@ -107,6 +180,12 @@ export default {
   },
   created() {
     this.getList()
+  },
+  mounted() {
+  	this.setButtonRole()
+  	
+  	this.getHjServerList()
+  	this.getMonitorVocList()
   },
   methods: {
     getList() {
@@ -123,8 +202,71 @@ export default {
       this.listQuery.pageNum = val
       this.getList()
     },
-    //重置表单
-	resetForm() {
+    
+    setButtonRole() { //设置按钮的权限
+    	let roles = store.getters.roles
+    	if(roles.includes('admin')){
+    		this.buttonRole.jiantingPermission= 1
+    		this.buttonRole.qieduanPermission= 1
+    		this.buttonRole.chahuaPermission= 1
+    		this.buttonRole.updateTimePermission= 1
+    		this.buttonRole.zhushiPermission= 1
+    	}else{
+    		let buttonRoles = store.getters.buttonRoles
+    		let meetMonitor = buttonRoles.meetMonitor
+    		if(meetMonitor.length>0){
+    			for(let value of meetMonitor){
+    				if(value=='jiantingPermission'){
+    					this.buttonRole.jiantingPermission= 1
+    				}else if(value=='qieduanPermission'){
+    					this.buttonRole.qieduanPermission= 1
+    				}else if(value=='chahuaPermission'){
+    					this.buttonRole.chahuaPermission= 1
+    				}else if(value=='updateTimePermission'){
+    					this.buttonRole.updateTimePermission= 1
+    				}else if(value=='zhushiPermission'){
+    					this.buttonRole.zhushiPermission= 1
+    				}
+    			}
+    		}
+    	}
+    },
+    /** 监听 开始 */
+    jianting(row){
+    	if(row.monitorState=='通话'){
+    		document.getElementById(row.jy).ListenTele(row.lineNo);
+    		this.jtState = 2
+    	}
+    },
+    /** 监听 结束 */
+   
+    /** 停止监听 开始 */
+    jiantingStop(row){
+    	document.getElementById(row.jy).ListenStop(row.lineNo);
+    	this.jtState = 1
+    },
+    /** 停止监听 结束 */
+    
+    /** 切断 开始 */
+    qieduan(row){
+    	this.$confirm('是否确定切断通话？注意：切断后，需要前往会见登记处重新登记会见！', '提示', {
+			type: 'warning'
+		}).then(() => {
+			let param = {
+				hjid:row.hjid
+			}
+			QieduanHj(param).then(res => {
+				this.jtState = 1
+				this.getList()
+			})
+		})
+    },
+    /** 切断 结束 */
+  
+  
+    /** 修改时间 开始 */
+    
+	resetForm() {//重置表单
 		this.dataForm.webId = undefined
 		this.dataForm.frName = undefined
 		this.dataForm.timeUp = undefined
@@ -138,20 +280,92 @@ export default {
 	},
 	updateSJ(){ //修改时间
 		UpdateSJ(this.dataForm).then(res => {
-		  Message({
-          message: res.errMsg,
-          type: 'success',
-          duration: 5 * 1000
-        });
+		    Message({
+	          message: res.errMsg,
+	          type: 'success',
+	          duration: 5 * 1000
+	        });
 		})
 		this.dialogSJVisible =false
 	},
+	/** 修改时间 结束 */
 	
-	chahua(row){
-		FindHjServerList({}).then(res => {
-			
+	
+	/** 用于插话  开始 */
+	getHjServerList() { // 获取服务器用于注册控件
+		GetHjServerList({}).then(res => {
+			this.sysHjServerList = res.list
 		})
 	},
+	getMonitorVocList(){ // 获取插话内容
+		GetMonitorVocList({}).then(res => {
+			this.monitorVocList = res.list
+		})
+	},
+	//重置表单
+	resetFormCH() {
+		if(this.$refs['dataFormCH'] !== undefined){
+			this.$refs['dataFormCH'].resetFields();
+		}
+		this.dataFormCH.serverName = undefined
+      	this.dataFormCH.lineNo = undefined
+    },
+	chahua(row){
+		this.resetFormCH()
+		this.dialogCHVisible = true
+		this.dataFormCH.frName = row.monitorFr
+		this.dataFormCH.serverName = row.jy
+      	this.dataFormCH.lineNo = row.lineNo
+	},
+	updateCH(){
+		var serverName = this.dataFormCH.serverName
+		console.log(serverName)
+		var lineNo = this.dataFormCH.lineNo 
+		var vocId = this.dataFormCH.vocId
+		
+		this.$refs['dataFormCH'].validate((valid) => {
+	        if (valid) {
+	           document.getElementById(serverName).InsertVoc(lineNo,vocId);
+	        }
+	    })
+		
+		this.dialogCHVisible = false
+	},
+	/** 用于插话  结束 */
+	
+	/** 注释 开始 */
+	//重置表单
+	resetFormZS() {
+		this.dataForm.monitorCallid = undefined
+		this.dataFormCH.frName = undefined
+		this.dataFormCH.writeTxt = undefined
+      	
+    },
+    getZs(monitorCallid){ //获取注释
+    	GetZs({monitorCallid: monitorCallid}).then(res => {
+    		this.dataFormZS.writeTxt = res.data.writeTxt
+    	})
+    },
+	zhushi(row){
+		this.resetFormZS()
+		this.dialogZSVisible = true
+		this.dataFormZS.monitorCallid = row.monitorCallid
+		this.dataFormZS.frName = row.monitorFr
+		
+		this.getZs(this.dataFormZS.monitorCallid)
+	},
+	updateZS(){
+		AddMonitorFlag(this.dataFormZS).then(res => {
+			Message({
+	          message: res.errMsg,
+	          type: 'success',
+	          duration: 5 * 1000
+	        });
+		})
+		this.dialogZSVisible = false
+	},
+	/** 注释 结束 */
+	
 	
     dateFormat(row, column) {
 			//时间格式化  

@@ -215,7 +215,7 @@ export const asyncRouterMap = [
     children: [{
       path: 'index',
       component: () => import('@/views/meet-monitor/graph'),
-      name: 'meetMonitor',
+      name: 'meetMonitorGraph',
       meta: { title: '会见监控-图形化', icon: 'eye', roles:'meetMonitorGraph' }
     }]
   },

@@ -8,16 +8,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sl.ue.entity.jl.vo.JlHjDjVO;
+import com.sl.ue.entity.jl.vo.JlHjMonVO;
 import com.sl.ue.entity.jl.vo.JlHjMonitorTimeAddVO;
 import com.sl.ue.entity.sys.vo.SysHjLineVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
+import com.sl.ue.service.jl.JlHjDjService;
 import com.sl.ue.service.jl.JlHjMonService;
 import com.sl.ue.service.jl.JlHjMonitorTimeAddService;
 import com.sl.ue.service.sys.SysHjLineService;
 import com.sl.ue.service.sys.SysUserService;
 import com.sl.ue.util.Constants;
 import com.sl.ue.util.http.Result;
+import com.sl.ue.util.http.token.TokenUser;
 
 @Service("sysHjLineSQL")
 public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements SysHjLineService{
@@ -26,6 +30,8 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 	private JlHjMonitorTimeAddService jlHjMonitorTimeAddSQL;
 	@Autowired
 	private JlHjMonService jlHjMonSQL;
+	@Autowired
+	private JlHjDjService jlHjDjSQL;
 	
 	@Override
 	public Map<String, Object> findPojoMonitor(Integer pageSize, Integer pageNum) {
@@ -108,7 +114,60 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 		return result.toResult();
 	}
 	
-	public String addMonitorFlag(String callId, String writeTxtLx){
-		
+	public String getZs(String monitorCallid){
+		Result result = new Result();
+		if(StringUtils.isBlank(monitorCallid)){
+			result.error(Result.error_102);
+			return result.toResult();
+		}
+		SysUserVO sysUser = TokenUser.getUser();
+		JlHjMonVO jlHjMon = new JlHjMonVO();
+		jlHjMon.setCallId(monitorCallid);
+		jlHjMon.setUserNo(sysUser.getUserNo());
+		List<JlHjMonVO> jlHjMonList = jlHjMonSQL.findList(jlHjMon);
+		if(jlHjMonList.size()>0){
+			jlHjMon = jlHjMonList.get(0);
+		}
+		result.putJson(jlHjMon);
+		return result.toResult();
+	}
+	
+	public String addMonitorFlag(String monitorCallid, String writeTxt){
+		Result result = new Result();
+		if(StringUtils.isBlank(monitorCallid)){
+			result.error(Result.error_102);
+			return result.toResult();
+		}
+		SysUserVO sysUser = TokenUser.getUser();
+		JlHjMonVO jlHjMon = new JlHjMonVO();
+		jlHjMon.setCallId(monitorCallid);
+		jlHjMon.setUserNo(sysUser.getUserNo());
+		List<JlHjMonVO> jlHjMonList = jlHjMonSQL.findList(jlHjMon);
+		if(jlHjMonList.size()>0){
+			jlHjMon = jlHjMonList.get(0);
+			jlHjMon.setWriteTxt(writeTxt);
+			jlHjMon.setWriteTxtLx("有摘要");
+			jlHjMonSQL.edit(jlHjMon);
+		}else{
+			jlHjMon.setUserName(sysUser.getUserName());
+			jlHjMon.setWriteTxt(writeTxt);
+			jlHjMon.setWriteTxtLx("有摘要");
+			jlHjMonSQL.add(jlHjMon);
+		}
+		return result.toResult();
+	}
+	
+	public String qieduanHj(Long hjid){
+		Result result = new Result();
+		if(hjid == null){
+			result.error(Result.error_102);
+			return result.toResult();
+		}
+		JlHjDjVO jlHjDj = jlHjDjSQL.findOne(hjid);
+		if(jlHjDj != null){
+			jlHjDj.setState(3);
+			jlHjDjSQL.edit(jlHjDj);
+		}
+		return result.toResult();
 	}
 }

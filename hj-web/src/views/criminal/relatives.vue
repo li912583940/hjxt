@@ -278,7 +278,7 @@ export default {
     		let relatives = buttonRoles.relatives
     		if(relatives.length>0){
     			for(let value of relatives){
-    					if(value=='addPermission'){
+    				if(value=='addPermission'){
     					this.buttonRole.addPermission= 1
     				}else if(value=='editPermission'){
     					this.buttonRole.editPermission= 1

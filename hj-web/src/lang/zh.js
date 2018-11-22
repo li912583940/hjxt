@@ -13,6 +13,7 @@ export default {
     meetSign: '会见签到',
     meetNotice: '会见通知',
     meetMonitor: '会见监控',
+    meetMonitorGraph: '会见监控-图形化',
     meetSp: '会见审批',
     yjMessage: '警察信息',
     logRecord: '日志记录',
