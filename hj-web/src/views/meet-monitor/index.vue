@@ -99,11 +99,11 @@
     </el-dialog>
 	
 	  <el-dialog title="注释" :visible.sync="dialogZSVisible">
-      <el-form :rules="rulesZS" :model="dataFormZS" ref="dataFormZS" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+      <el-form :model="dataFormZS" ref="dataFormZS" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
         <el-form-item label="姓名" >
           <el-input v-model="dataFormZS.frName" :disabled="true"></el-input>
         </el-form-item>
-        <el-form-item label="注释" prop="writeTxt" >
+        <el-form-item label="注释" >
           <el-input v-model="dataFormZS.writeTxt"></el-input>
         </el-form-item>
       </el-form>
@@ -187,9 +187,6 @@ export default {
       	frName: undefined,
       	writeTxt: undefined,
       	
-      },
-      rulesZS: {
-        writeTxt: [{ required: true, message: '请输入注释内容', trigger: 'blur' }]
       },
       /** 注释结束 */
      

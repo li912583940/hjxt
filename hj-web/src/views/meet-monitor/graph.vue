@@ -1,5 +1,5 @@
 <template>
-	<div id="pro_form" style="position: relative;width: 100%;margin-top: 50px; margin-bottom: 50px;">
+	<div style="position: relative;width: 100%;margin-top: 50px; margin-bottom: 50px;">
         <el-row :gutter="12">
             <el-col :span="4" v-for="(item, index) in list" :key="index" :offset="1" style="margin-bottom:40px">
                 <el-card  :body-style="{ padding: '0px', height:'360px'}" shadow="always" style="width: 260px;height: 320px;border:2px solid #CDC9C9; max-height: 500px;">
@@ -14,21 +14,20 @@
 					    <span v-else style="float: right; padding: 3px 10; color: #33CC00;">空闲</span>
 					</div>
                     <div style="padding: 6px;height: 310px;">
-                    	<div v-if="buttonRole.chahuaPermission==1 || buttonRole.zhushiPermission==1 || buttonRole.updateTimePermission==1"  style=" background:rgba(0,0,0,.5); position:relative; top:0px; color:#FFF; font-size:12px; padding:6px 0;">
-					    	<span v-if="buttonRole.chahuaPermission==1" style="margin-left: 50px;"><a @click="chahua(item)">插话</a></span>
-					    	<span v-if="buttonRole.zhushiPermission==1" style="margin-left: 20px;"><a @click="zhushi(item)">注释</a></span>
-					    	<span v-if="buttonRole.updateTimePermission==1" style="margin-left: 20px;"><a @click="xiugaiTime(item)">修改时间</a></span>
-					    </div>
-                    	<div v-if="item.monitorState=='' ">
-	                        <div class="text item" style="margin-top: 10px;">监区 ：一监区 {{item.monitorJq}}</div>
-						    <div class="text item">姓名 ：张三 {{item.monitorFr}}</div>
+                    	<div v-if="item.monitorState=='通话' ">
+                    		<div v-if="buttonRole.chahuaPermission==1 || buttonRole.zhushiPermission==1 || buttonRole.updateTimePermission==1"  style=" background:rgba(0,0,0,.5); position:relative; top:0px; color:#FFF; font-size:12px; padding:6px 0;">
+						    	<span v-if="buttonRole.chahuaPermission==1" style="margin-left: 50px;"><a @click="chahua(item)">插话</a></span>
+						    	<span v-if="buttonRole.zhushiPermission==1" style="margin-left: 20px;"><a @click="zhushi(item)">注释</a></span>
+						    	<span v-if="buttonRole.updateTimePermission==1" style="margin-left: 20px;"><a @click="xiugaiTime(item)">修改时间</a></span>
+						    </div>
+						    
+	                        <div class="text item" style="margin-top: 10px;">监区 ： {{item.monitorJq}}</div>
+						    <div class="text item">姓名 ： {{item.monitorFr}}</div>
 						    <span v-for="(o, i) in item.qsList">
 						    	<div class="text item">亲属{{i+1}}：{{o}}</div>
 						    </span>
-						    <div class="text item">通话 ：4分钟20秒 {{item.monitorFr}}</div>
-						    <div class="text item">剩余 ：26分钟40秒 {{item.monitorTime}}</div>
+						    <div class="text item">剩余 ： {{item.monitorTime}}</div>
 					    </div>
-					    
 					    
                     </div>
                 </el-card>
@@ -73,12 +72,12 @@
 	    </el-dialog>
     	
     	<el-dialog title="注释" :visible.sync="dialogZSVisible">
-	      <el-form :rules="rulesZS" :model="dataFormZS" ref="dataFormZS" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+	      <el-form  :model="dataFormZS" ref="dataFormZS" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
 	        <el-form-item label="姓名" >
 	          <el-input v-model="dataFormZS.frName" :disabled="true"></el-input>
 	        </el-form-item>
-	        <el-form-item label="注释" prop="writeTxt" >
-	          <el-input v-model="dataFormZS.writeTxt"></el-input>
+	        <el-form-item label="注释" >
+	          <el-input type="textarea" :rows="2" v-model="dataFormZS.writeTxt"></el-input>
 	        </el-form-item>
 	      </el-form>
 	      <div slot="footer" class="dialog-footer">
@@ -158,9 +157,6 @@ export default {
       	frName: undefined,
       	writeTxt: undefined,
       	
-      },
-      rulesZS: {
-        writeTxt: [{ required: true, message: '请输入注释内容', trigger: 'blur' }]
       },
       /** 注释结束 */
      

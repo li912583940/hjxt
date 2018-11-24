@@ -88,21 +88,22 @@
           <span>{{scope.row.yjNo}}/{{scope.row.yjName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="180" align="center" label="音视频操作">
+      <el-table-column width="280" align="center" label="音视频操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini"  @click="handleUpdate(scope.row)">播放录音录像</el-button>
+          <el-button type="primary" size="mini" @click="playRecor(scope.row)">播放录音录像</el-button>
+          <el-button type="primary" size="mini" @click="downRecord(scope.row)">下载录音录像</el-button>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="摘要操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">录入回放</el-button>
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">查看</el-button>
+          <el-button type="primary" size="mini" @click="zhushi(scope.row)">注释</el-button>
+          <el-button type="primary" size="mini" @click="zhushiAll(scope.row)">查看所有注释</el-button>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="录音操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">播放录音</el-button>
-          <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">下载录音</el-button>
+          <el-button type="primary" size="mini" @click="palyTape(scope.row)">播放录音</el-button>
+          <a :href="callRecfileUrl"><el-button type="primary" size="mini">下载录音</el-button></a>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="录音评级">
@@ -148,55 +149,111 @@
       </el-pagination>
     </div>
 
-    <!-- 新增或编辑 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
-      	<el-input v-if="false" v-model="dataForm.frNo" ></el-input>
-        <el-form-item label="服刑人员姓名" prop="frName">
-          <el-input v-model="dataForm.frName"></el-input>
-        </el-form-item>
-        <el-form-item label="证件号码" prop="qsSfz">
-          <el-input v-model="dataForm.qsSfz"></el-input>
-          <el-button  size="mini" type="primary" @click="handleDistinguish()">识别</el-button>
-        </el-form-item>
-        <el-form-item label="亲属姓名" prop="qsName">
-          <el-input v-model="dataForm.qsName"></el-input>
-        </el-form-item>
-        <el-form-item label="IC卡号" prop="qsCard">
-          <el-input v-model="dataForm.qsCard"></el-input>
-        </el-form-item>
-        <el-form-item label="地址" prop="dz">
-          <el-input v-model="dataForm.dz"></el-input>
-        </el-form-item>
-        <el-form-item label="性别" >
-        	<el-radio-group v-model="dataForm.xb">
-        		<el-radio :label="'男'">男</el-radio>
-				    <el-radio :label="'女'">女</el-radio>
-				  </el-radio-group>
-        </el-form-item>
-        <el-form-item label="电话号码" prop="tele">
-          <el-input v-model="dataForm.tele"></el-input>
-        </el-form-item>
-        <el-form-item label="审批状态">
-          <el-input v-model="dataForm.spState" :disabled="true"></el-input>
-        </el-form-item>
-        <el-form-item label="备注" prop="bz">
-          <el-input v-model="dataForm.bz"></el-input>
-        </el-form-item>
-      </el-form>
+    <!-- 播放录音录像 开始 -->
+    <el-dialog title="播放录音录像 " :visible.sync="dialogPlayVisible" @close='closePlayDialog'>
+    	<div style="position: relative;margin-top: 10px; margin-bottom: 30px;">
+    		<el-row :gutter="12">
+    			<el-col :span="8" :offset="1" style="margin-left: 50px;" >
+				    	<div>
+				    		<video id="video1" width="360" height="240" controls="controls">
+				    			<source :src="callRecfileUrl" type="video/ogg" />
+				    			<!--<source :src="callRecfileUrl" type="video/mp4" />-->
+				    			<!--<audio :src="callRecfileUrl" controls="controls" controlsList="nodownload"></audio>-->
+				    		</video>
+				    	</div>
+				  </el-col>
+				  
+				  <el-col :span="8" :offset="1" style="margin-left: 120px;">
+				    	<div>
+				    		<video id="video2" width="360" height="240" controls="controls">
+				    			<source :src="callRecfileUrl" type="video/ogg" />
+				    			<!--<source :src="callRecfileUrl" type="video/mp4" />-->
+				    			<!--<audio :src="callRecfileUrl" controls="controls" controlsList="nodownload"></audio>-->
+				    		</video>
+				    	</div>
+				  </el-col>
+				  
+		    </el-row>
+      </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">确 定</el-button>
-        <el-button v-else type="primary" @click="updateData">确 定</el-button>
+        <el-button @click="dialogPlayVisible = false">关 闭</el-button>
       </div>
     </el-dialog>
+    <!-- 播放录音录像 结束 -->
 
-
+    <!-- 注释 开始 -->
+    <el-dialog title="注释" :visible.sync="dialogZSVisible"  width="50%">
+	      <el-form  :model="dataFormZS" ref="dataFormZS" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+	        <el-form-item label="呼叫ID" >
+	          <el-input v-model="dataFormZS.callId" :disabled="true"></el-input>
+	        </el-form-item>
+	        <el-form-item label="罪犯姓名" >
+	          <el-input v-model="dataFormZS.frName" :disabled="true"></el-input>
+	        </el-form-item>
+	        <el-form-item label="注释">
+	          <el-input type="textarea" :rows="2" v-model="dataFormZS.writeTxt"></el-input>
+	        </el-form-item>
+	      </el-form>
+	      <div slot="footer" class="dialog-footer">
+	        <el-button @click="dialogZSVisible = false">取 消</el-button>
+	        <el-button type="primary" @click="updateZS">确 定</el-button>
+	      </div>
+	  </el-dialog>
+	  <!-- 注释 结束 -->
+	  
+	  <!-- 查看所有注释  开始  -->
+    <el-dialog title="查看所有注释" :visible.sync="dialogZsAllVisible" width="50%">
+      <el-table :key='zsAllTableKey' :data="zsAllList" v-loading="zsAllListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
+	      style="width: 100%">
+	      <el-table-column width="160" align="center" label="用户编号">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.userNo}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="160" align="center" label="用户姓名">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.userName}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="" align="center" label="注释摘要">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.writeTxt}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="180" align="center" label="摘要录入时间">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.createTime | dateFormat}}</span>
+	        </template>
+	      </el-table-column>
+	    </el-table>
+	    <!-- 分页 -->
+	    <div class="pagination-container">
+	      <el-pagination background @size-change="handleZsAllSizeChange" @current-change="handleZsAllCurrentChange" :current-page="zsAllListQuery.pageNum" :page-sizes="[10,20,30, 50]" :page-size="zsAllListQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="zsAllTotal">
+	      </el-pagination>
+	    </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogZsAllVisible = false">关闭</el-button>
+      </span>
+    </el-dialog>
+    <!-- 查看所有注释  结束  -->
+    
+    <!-- 播放录音 开始 -->
+    <el-dialog title="播放录音" :visible.sync="dialogTapeVisible" @close='closeTapeDialog'>
+    	<div style="position: relative;margin-top: 10px; margin-bottom: 30px;">
+				<audio :src="callRecfileUrl" controls="controls" controlsList="nodownload">
+				</audio>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogTapeVisible = false">关 闭</el-button>
+      </div>
+    </el-dialog>
+    <!-- 播放录音 结束 -->
+    
   </div>
 </template>
 
 <script>
-import { findPojo, findOne, findJqList } from '@/api/meetRecord'
+import { findPojo, findOne, findJqList, GetZs, AddRecordFlag, GetZsAllPojo, DownZip } from '@/api/meetRecord'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -225,34 +282,9 @@ export default {
         qsName: undefined
       },
       statusOptions: ['published', 'draft', 'deleted'],
-      // 新增或编辑弹窗
-      dataForm: { 
-        webId: undefined,
-        frNo: '',
-        frName: undefined,
-        qsZjlb: 1,
-        qsSfz: undefined,
-        qsName: undefined,
-        gx: undefined,
-        qsCard: undefined,
-        dz: undefined,
-        xb: undefined,
-        tele: undefined,
-        spState: undefined,
-        bz: undefined
-      },
       jqs: [ // 监区下拉选框
       
       ],
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '编 辑',
-        create: '新 增'
-      },
-      rules: {
-        qsName: [{ required: true, message: '亲属姓名不能为空', trigger: 'blur' }]
-      },
       downloadLoading: false,
 	    pickerOptionsStart: {
 	      shortcuts: [{
@@ -297,10 +329,51 @@ export default {
 	        }
 	      }]
 	    },
+	    
+	    /** 播放录音录像 开始 */
+	    dialogPlayVisible: false,
+	    
+	    asl: '/阳光电影www.ygdy8.com.巴比龙.BD.720p.中英双字幕.mkv',
+	    asla: '/20180707154146278_011@1.mp4',
+	    aslb: '/Lollipop.mp3',
+	    callRecfileUrl: undefined,
+	    callVideofile1Url: undefined,
+	    callVideofile2Url: undefined,
+	    /** 播放录音录像 结束 */
+	   
+	   /** 注释 开始 */
+      dialogZSVisible: false, 
+      dataFormZS: {
+      	callId: undefined,
+      	frName: undefined,
+      	writeTxt: undefined,
+      	
+      },
+      /** 注释 结束 */
+     
+      /**  查看所有注释  开始 */
+		  dialogZsAllVisible: false,
+		  zsAllTableKey: 0,
+		  zsAllList: null,
+		  zsAllTotal: null,
+		  zsAllListLoading: true,
+		  zsAllListQuery: {
+		    pageNum: 1,
+		    pageSize: 10,
+		    callId: undefined
+		  },
+		  /**  查看所有注释  结束 */
+		 
     }
   },
   filters: {
-    
+    dateFormat(date) {
+		//时间格式化  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+	  }
   },
   created() {
     this.getList()
@@ -366,31 +439,101 @@ export default {
       this.listQuery.pageNum = val
       this.getList()
     },
-    handleUpdate(row) {
-    	let param = {
-    		id: row.webId
-    	}
-    	findOne(param).then((res) =>{
-    		this.dataForm.webId = res.data.webId,
-        this.dataForm.frName =  res.data.frName,
-        this.dataForm.frNo = res.data.frNo,
-        this.dataForm.qsZjlb = res.data.qsZjlb,
-        this.dataForm.qsSfz = res.data.qsSfz,
-        this.dataForm.qsName = res.data.qsName,
-        this.dataForm.gx = res.data.gx,
-        this.dataForm.qsCard = res.data.qsCard,
-        this.dataForm.dz = res.data.dz,
-        this.dataForm.xb = res.data.xb,
-        this.dataForm.tele = res.data.tele,
-        this.dataForm.spState = res.data.spState,
-        this.dataForm.bz = res.data.bz
-    	})
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
+    /** 播放录音录像 开始 */
+    playRecor(row){ //播放录音录像
+    	this.dialogPlayVisible =true
+    	//this.callRecfileUrl = row.callRecfile
+    	this.callRecfileUrl = "/api/file"+this.asl
+    },
+    downRecord(row){ //下载录音录像
+			let url = '/jlHjRec/downFile'
+			DownZip(url,{webId:row.webId}).then(res => {
+				console.log(res)
+	      const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
+	     	const downloadElement = document.createElement('a')
+	     	const href = window.URL.createObjectURL(blob)
+	     	downloadElement.href = href
+	     	downloadElement.download = '录音录像.zip'
+	     	document.body.appendChild(downloadElement)
+	     	downloadElement.click()
+     		document.body.removeChild(downloadElement) // 下载完成移除元素
+	     	window.URL.revokeObjectURL(href) // 释放掉blob对象
+			}).catch(error => {
+         console.log(error)
       })
     },
+    
+    closePlayDialog(){ 
+    	var video1 = document.getElementById("video1")
+    	if(video1.play){
+    		video1.currentTime = 0;
+        video1.pause();
+    	}
+    	var video2 = document.getElementById("video2")
+    	if(video2.play){
+    		video2.currentTime = 0;
+        video2.pause();
+    	}
+    },
+    
+    /** 播放录音录像 结束 */
+   
+		/** 注释 开始 */
+		resetFormZS() { //重置表单
+			this.dataFormZS.callId = undefined
+			this.dataFormZS.frName = undefined
+			this.dataFormZS.writeTxt = undefined
+	  },
+    getZs(callId){ //获取注释
+    	GetZs({callId: callId}).then(res => {
+    		this.dataFormZS.writeTxt = res.data.writeTxt
+    	})
+    },
+		zhushi(row){
+			this.resetFormZS()
+			this.dialogZSVisible = true
+			this.dataFormZS.callId = row.callId
+			this.dataFormZS.frName = row.frName
+			
+			this.getZs(this.dataFormZS.callId)
+		},
+		updateZS(){
+			AddRecordFlag(this.dataFormZS).then(res => {
+				Message({
+		          message: res.errMsg,
+		          type: 'success',
+		          duration: 5 * 1000
+		        });
+			})
+			this.dialogZSVisible = false
+		},
+		/** 注释 结束 */
+   
+    /** 查看所有注释 开始 */
+    zhushiAll(row){
+    	this.dialogZsAllVisible= true
+    	this.zsAllListQuery.callId=row.callId
+    	this.getZsAllList()
+    },
+    getZsAllList(){ // 获取所有注释
+    	GetZsAllPojo(this.zsAllListQuery).then(res => {
+    		 this.zsAllList = res.pojo.list
+      	 this.zsAllTotal = res.pojo.count
+      	 this.zsAllListLoading = false
+      }).catch(error => {
+         this.zsAllListLoading = false
+      })
+    },
+    handleZsAllSizeChange(val) {
+      this.zsAllListQuery.pageSize = val
+      this.getZsAllList()
+    },
+    handleZsAllCurrentChange(val) {
+      this.zsAllListQuery.pageNum = val
+      this.getZsAllList()
+    },
+    /** 查看所有注释 结束 */
+    
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {

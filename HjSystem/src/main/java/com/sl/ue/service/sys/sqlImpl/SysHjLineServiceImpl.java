@@ -1,6 +1,7 @@
 package com.sl.ue.service.sys.sqlImpl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -147,6 +148,7 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 			jlHjMon = jlHjMonList.get(0);
 			jlHjMon.setWriteTxt(writeTxt);
 			jlHjMon.setWriteTxtLx("有摘要");
+			jlHjMon.setCreateTime(new Date());
 			jlHjMonSQL.edit(jlHjMon);
 		}else{
 			jlHjMon.setUserName(sysUser.getUserName());

@@ -3,10 +3,14 @@ package com.sl.ue.web.jl;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.sl.ue.entity.jl.vo.JlHjRecVO;
 import com.sl.ue.service.jl.JlHjRecService;
@@ -69,4 +73,28 @@ public class JlHjRecWeb extends Result{
         return this.toResult();
     }
 
+    /**
+	 * 说明 [获取当前用户在此次会见记录的注释]
+	 * L_晓天  @2018年11月21日
+	 */
+	@RequestMapping("/getZs")
+	public String getZs(String callId){
+		return jlHjRecSQL.getZs(callId);
+	}
+	
+	/**
+	 * 说明 [添加当前用户的在会见记录中的注释]
+	 * L_晓天  @2018年11月24日
+	 */
+	@RequestMapping("/addRecordFlag")
+	public String addRecordFlag(String callId, String writeTxt){
+		return jlHjRecSQL.addRecordFlag(callId, writeTxt);
+	}
+	
+	@RequestMapping(value="/downFile",method={RequestMethod.GET,RequestMethod.POST})
+	public void downFile(HttpServletRequest request, HttpServletResponse response){
+		//String str = projectFileService.downFile(request, response);
+		System.out.println("adafa");
+		jlHjRecSQL.downFile(request, response);
+	}
 }

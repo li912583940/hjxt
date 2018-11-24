@@ -64,7 +64,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 	 * @作者 LXT @2018年9月24日
 	 */
 	public List<T> findList(T model, Integer pageSize, Integer pageNum){
-		return findList(model, null, null, "DESC");
+		return findList(model, pageSize, pageNum, "DESC");
 	}
 	
 	@Override
@@ -180,7 +180,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 	}
 	
 	public Map<String, Object> findPojo(T model, Integer pageSize, Integer pageNum){
-		return findPojo(model, null, null, "DESC");
+		return findPojo(model, pageSize, pageNum, "DESC");
 	}
 	/**
 	 * 说明 [分页查询,带记录总数(count)]

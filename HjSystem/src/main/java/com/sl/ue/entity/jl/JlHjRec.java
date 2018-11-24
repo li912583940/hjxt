@@ -76,11 +76,11 @@ public class JlHjRec implements java.io.Serializable {
 	@DbField("Call_Time_Len")
 	private Integer callTimeLen;
 	@DbField("Call_RecFile")
-	private String callRecFile;
+	private String callRecfile;
 	@DbField("Call_VideoFile1")
-	private String callVideoFile1;
+	private String callVideofile1;
 	@DbField("Call_VideoFile2")
-	private String callVideoFile2;
+	private String callVideofile2;
 	@DbField("Down_Video_Count")
 	private Integer downVideoCount;
 	@DbField("Delete_Flag")
@@ -378,29 +378,28 @@ public class JlHjRec implements java.io.Serializable {
 	public void setCallTimeLen(Integer callTimeLen) {
 		this.callTimeLen = callTimeLen;
 	}
-
-	public String getCallRecFile() {
-		return this.callRecFile;
+	public String getCallRecfile() {
+		return callRecfile;
 	}
 
-	public void setCallRecFile(String callRecFile) {
-		this.callRecFile = callRecFile;
+	public void setCallRecfile(String callRecfile) {
+		this.callRecfile = callRecfile;
 	}
 
-	public String getCallVideoFile1() {
-		return this.callVideoFile1;
+	public String getCallVideofile1() {
+		return callVideofile1;
 	}
 
-	public void setCallVideoFile1(String callVideoFile1) {
-		this.callVideoFile1 = callVideoFile1;
+	public void setCallVideofile1(String callVideofile1) {
+		this.callVideofile1 = callVideofile1;
 	}
 
-	public String getCallVideoFile2() {
-		return this.callVideoFile2;
+	public String getCallVideofile2() {
+		return callVideofile2;
 	}
 
-	public void setCallVideoFile2(String callVideoFile2) {
-		this.callVideoFile2 = callVideoFile2;
+	public void setCallVideofile2(String callVideofile2) {
+		this.callVideofile2 = callVideofile2;
 	}
 
 	public Integer getDownVideoCount() {
