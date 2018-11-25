@@ -27,10 +27,12 @@ import org.springframework.stereotype.Service;
 import com.sl.ue.entity.jl.vo.JlHjInfoVO;
 import com.sl.ue.entity.jl.vo.JlHjMonVO;
 import com.sl.ue.entity.jl.vo.JlHjRecVO;
+import com.sl.ue.entity.sys.vo.SysHjServerVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlHjInfoService;
 import com.sl.ue.service.jl.JlHjRecService;
+import com.sl.ue.service.sys.SysHjServerService;
 import com.sl.ue.util.Config;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.token.TokenUser;
@@ -40,6 +42,8 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 
 	@Autowired
 	private JlHjInfoService jlHjInfoSQL;
+	@Autowired
+	private SysHjServerService sysHjServerSQL;
 	
 	@Override
 	public Map<String, Object> findPojoLeft(JlHjRecVO model, Integer pageSize, Integer pageNum) {
@@ -61,6 +65,39 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     	}
     	model.setLeftJoinWhere(leftJoinWhere.toString());
     	Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
+    	List<JlHjRecVO> list = (List<JlHjRecVO>) map.get("list");
+    	List<SysHjServerVO> sysHjServerList = sysHjServerSQL.findList(new SysHjServerVO());
+    	
+    	String callRecPath = Config.getPropertiesValue("callRecfile");
+    	String callVideoPath1 = Config.getPropertiesValue("callVideofile1");
+    	String callVideoPath2 = Config.getPropertiesValue("callVideofile2");
+    	for(JlHjRecVO hjRec : list){
+    		for(SysHjServerVO hjServer: sysHjServerList){
+    			if(hjRec.getJy().equals(hjServer.getServerName())){
+    				if(StringUtils.isNotBlank(hjRec.getCallRecfile())){
+    					String end =hjRec.getCallRecfile().replace("\\", "/");
+        				end = end.substring(end.indexOf("/")+1);
+        				end = end.substring(end.indexOf("/"));
+        				String url = hjServer.getRecUrl()+callRecPath+end;
+        				hjRec.setCallRecfileUrl(url);
+    				}
+    				if(StringUtils.isNotBlank(hjRec.getCallVideofile1())){
+    					String end = hjRec.getCallVideofile1().replace("\\", "/");
+    					end = end.substring(end.indexOf("/")+1);
+        				end = end.substring(end.indexOf("/"));
+        				String url = hjServer.getRecUrl()+callVideoPath1+end;
+        				hjRec.setCallVideofile1Url(url);
+    				}
+    				if(StringUtils.isNotBlank(hjRec.getCallVideofile2())){
+    					String end = hjRec.getCallVideofile2().replace("\\", "/");
+    					end = end.substring(end.indexOf("/")+1);
+        				end = end.substring(end.indexOf("/"));
+        				String url = hjServer.getRecUrl()+callVideoPath2+end;
+        				hjRec.setCallVideofile2Url(url);
+    				}
+    			}
+    		}
+    	}
 		return map;
 	}
 	
@@ -106,63 +143,5 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 		return result.toResult();
 	}
 	
-	public void downFile(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			String webId = request.getParameter("webId");
-			
-			if(StringUtils.isBlank(webId)){
-				return;
-			}
-			JlHjRecVO jlHjRec = this.findOne(webId);
-			
-			List<String> fileList = new ArrayList<>();
-			if(StringUtils.isNotBlank(jlHjRec.getCallVideofile1())){
-				fileList.add(jlHjRec.getCallVideofile1());
-			}
-			if(StringUtils.isNotBlank(jlHjRec.getCallVideofile2())){
-				fileList.add(jlHjRec.getCallVideofile2());
-			}
-			if(StringUtils.isNotBlank(jlHjRec.getCallRecfile())){
-				fileList.add(jlHjRec.getCallRecfile());
-			}
-			OutputStream os = new BufferedOutputStream( new FileOutputStream( "jiankong.zip" ) );
-	        ZipOutputStream zos = new ZipOutputStream( os );
-	        byte[] buf = new byte[8192];
-	        int len;
-	        for (String filePath: fileList) {  
-	            File file = new File( filePath );
-	            if ( !file.isFile() ) continue;
-	            ZipEntry ze = new ZipEntry( file.getName() );
-	            zos.putNextEntry( ze );
-	            BufferedInputStream bis = new BufferedInputStream( new FileInputStream( file ) );
-	            while ( ( len = bis.read( buf ) ) > 0 ) {
-	                zos.write( buf, 0, len );
-	            }
-	            zos.closeEntry();
-	        }
-//	        zos.setEncoding("GBK");
-	        zos.closeEntry();
-	        zos.close();
-	        
-//			for(int i=0;i<file1.length;i++) {
-//				FileInputStream fis = new FileInputStream(file1[i]);
-//				out.putNextEntry(new ZipEntry(file1[i].getName()));
-//				  int len;
-//				  //读入需要下载的文件的内容，打包到zip文件
-//		          while((len = fis.read(buffer))>0) {
-//		        	  out.write(buffer,0,len); 
-	//
-//		          }
-//		          out.closeEntry();
-//		          fis.close();
-//			}
-		
-		} catch (Exception e) {
-			// TODO: handle exception
-		}finally{
-
-		}
-		
-        
-	}
+	
 }

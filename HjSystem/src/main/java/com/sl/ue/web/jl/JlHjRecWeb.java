@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.sl.ue.entity.jl.vo.JlHjRecVO;
 import com.sl.ue.service.jl.JlHjRecService;
+import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
 
 /**
@@ -91,10 +92,4 @@ public class JlHjRecWeb extends Result{
 		return jlHjRecSQL.addRecordFlag(callId, writeTxt);
 	}
 	
-	@RequestMapping(value="/downFile",method={RequestMethod.GET,RequestMethod.POST})
-	public void downFile(HttpServletRequest request, HttpServletResponse response){
-		//String str = projectFileService.downFile(request, response);
-		System.out.println("adafa");
-		jlHjRecSQL.downFile(request, response);
-	}
 }

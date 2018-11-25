@@ -24,5 +24,4 @@ public interface JlHjRecService extends BaseService<JlHjRecVO>{
 	 */
 	public String addRecordFlag(String callId, String writeTxt);
 	
-	public void downFile(HttpServletRequest request, HttpServletResponse response);
 }

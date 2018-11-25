@@ -9,6 +9,10 @@ public class JlHjRecVO extends JlHjRec{
 
     private String qsName; // 亲属  查询条件 
     
+    private String callRecfileUrl;
+	private String callVideofile1Url;
+	private String callVideofile2Url;
+	
     public String getQsName() {
   		return qsName;
   	}
@@ -16,10 +20,38 @@ public class JlHjRecVO extends JlHjRec{
   	public void setQsName(String qsName) {
   		this.qsName = qsName;
   	}
+  	
+	public String getCallRecfileUrl() {
+		return callRecfileUrl;
+	}
 
+	public void setCallRecfileUrl(String callRecfileUrl) {
+		this.callRecfileUrl = callRecfileUrl;
+	}
+
+	public String getCallVideofile1Url() {
+		return callVideofile1Url;
+	}
+
+	public void setCallVideofile1Url(String callVideofile1Url) {
+		this.callVideofile1Url = callVideofile1Url;
+	}
+
+	public String getCallVideofile2Url() {
+		return callVideofile2Url;
+	}
+
+	public void setCallVideofile2Url(String callVideofile2Url) {
+		this.callVideofile2Url = callVideofile2Url;
+	}
+
+  	
 
     /*---------------------------  处理关联表  -----------------------------*/
   
+
+
+
 
 	private String leftJoinField; // 关联表字段
 

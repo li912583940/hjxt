@@ -253,7 +253,7 @@
 </template>
 
 <script>
-import { findPojo, findOne, findJqList, GetZs, AddRecordFlag, GetZsAllPojo, DownZip } from '@/api/meetRecord'
+import { findPojo, findOne, findJqList, GetZs, AddRecordFlag, GetZsAllPojo } from '@/api/meetRecord'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -335,7 +335,7 @@ export default {
 	    
 	    asl: '/阳光电影www.ygdy8.com.巴比龙.BD.720p.中英双字幕.mkv',
 	    asla: '/20180707154146278_011@1.mp4',
-	    aslb: '/Lollipop.mp3',
+	    aslb: 'F:/DD/Lollipop.mp3',
 	    callRecfileUrl: undefined,
 	    callVideofile1Url: undefined,
 	    callVideofile2Url: undefined,
@@ -446,21 +446,32 @@ export default {
     	this.callRecfileUrl = "/api/file"+this.asl
     },
     downRecord(row){ //下载录音录像
-			let url = '/jlHjRec/downFile'
-			DownZip(url,{webId:row.webId}).then(res => {
-				console.log(res)
-	      const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
-	     	const downloadElement = document.createElement('a')
-	     	const href = window.URL.createObjectURL(blob)
-	     	downloadElement.href = href
-	     	downloadElement.download = '录音录像.zip'
-	     	document.body.appendChild(downloadElement)
-	     	downloadElement.click()
-     		document.body.removeChild(downloadElement) // 下载完成移除元素
-	     	window.URL.revokeObjectURL(href) // 释放掉blob对象
-			}).catch(error => {
-         console.log(error)
-      })
+    	console.log(row.callVideofile1Url)
+    	// 1 录像
+    	const downloadElement1 = document.createElement('a')
+    	downloadElement1.href = row.callVideofile1Url
+    	downloadElement1.download=""
+    	document.body.appendChild(downloadElement1)
+    	downloadElement1.click()
+    	document.body.removeChild(downloadElement1)
+    	
+    	console.log(row.callVideofile2Url)
+    	// 2 录像
+    	const downloadElement2 = document.createElement('a')
+    	downloadElement2.href = row.callVideofile2Url
+    	downloadElement2.download=""
+    	document.body.appendChild(downloadElement2)
+    	downloadElement2.click()
+    	document.body.removeChild(downloadElement2)
+    	
+    	console.log(row.callRecfileUrl)
+    	// 2 录音
+    	const downloadElement3 = document.createElement('a')
+    	downloadElement3.href = row.callRecfileUrl
+    	downloadElement3.download=""
+    	document.body.appendChild(downloadElement3)
+    	downloadElement3.click()
+    	document.body.removeChild(downloadElement3)
     },
     
     closePlayDialog(){ 

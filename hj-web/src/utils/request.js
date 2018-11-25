@@ -44,59 +44,6 @@ if (store.getters.token) {
   Promise.reject(error)
 })
 
-// respone interceptor
-//service.interceptors.response.use(
-//response => {
-//		console.log(response);
-//	  return response;
-//	},
-///**
-// * 下面的注释为通过在response里，自定义code来标示请求状态
-// * 当code返回如下情况则说明权限有问题，登出并返回到登录页
-// * 如想通过xmlhttprequest来状态码标识 逻辑可写在下面error中
-// * 以下代码均为样例，请结合自生需求加以修改，若不需要，则可删除
-// */
-//   response => {
-//   	console.log(response);
-//     const res = response.data
-//     //console.log(res);
-//     if (res.errCode != 0) {
-//       Message({
-//         message: res.errMsg,
-//         type: 'error',
-//         duration: 5 * 1000
-//       })
-//       // 101:无效token;
-//       if (res.errCode === 101) {
-//         // 请自行在引入 MessageBox
-//         // import { Message, MessageBox } from 'element-ui'
-//         MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
-//           confirmButtonText: '重新登录',
-//           cancelButtonText: '取消',
-//           type: 'warning'
-//         }).then(() => {
-//           store.dispatch('FedLogOut').then(() => {
-//             location.reload() // 为了重新实例化vue-router对象 避免bug
-//           })
-//         })
-//       }
-//       return Promise.reject('error')
-//     } else {
-//       return response.data
-//     }
-//   },
-//error => {
-//  console.log('err' + error) // for debug
-//  Message({
-//    message: error.Error,
-//    type: 'error',
-//    duration: 5 * 1000
-//  });
-//  return Promise.reject(error);
-//}
-//
-//);
-
 
 service.interceptors.response.use(
     response => {
