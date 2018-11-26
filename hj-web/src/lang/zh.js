@@ -82,7 +82,9 @@ export default {
   currency: {
     number: '编号',
     name: '名称',
-    fullName: '姓名'
+    fullName: '姓名',
+    frName: '罪犯姓名',
+    jqName: '监区'
   },
   /* 服刑 */
   criminal: {

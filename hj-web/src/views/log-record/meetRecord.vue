@@ -111,12 +111,12 @@
           <span v-if="scope.row.recRatingState==0">未评</span>
           <span v-if="scope.row.recRatingState==1">异常</span>
           <span v-if="scope.row.recRatingState==2">正常</span>
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="评级详情">
+      <el-table-column width="200" align="center" label="评级操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">查看</el-button>
+          <el-button type="primary" size="mini" @click="openRatingState(scope.row)">评级</el-button>
+          <el-button type="primary" size="mini" @click="openRatingStateAll(scope.row)">查看所有评级</el-button>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="复听状态">
@@ -268,11 +268,75 @@
     </el-dialog>
     <!-- 播放录音 结束 -->
     
+    <!-- 录音评级 开始 -->
+    <el-dialog title="录音评级" :visible.sync="dialogRatingStateVisible" >
+    	 <el-form :model="dataFormRatingState" ref="dataFormRatingState" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+        <el-form-item label="呼叫ID" prop="callId">
+          <el-input v-model="dataFormRatingState.callId" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="用户编号" prop="userNo">
+          <el-input v-model="dataFormRatingState.userNo" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="用户姓名" prop="userName">
+          <el-input v-model="dataFormRatingState.userName" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="评级状态" prop="recRatingState">
+          <el-select class="filter-item" v-model="dataFormRatingState.recRatingState" placeholder="请选择">
+            <el-option v-for="item in recRatingStates" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="评级内容" prop="writeTxt">
+          <el-input type="textarea" :rows="2" v-model="dataFormRatingState.writeTxt"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogRatingStateVisible = false">取 消</el-button>
+        <el-button v-else type="primary" @click="updateRatingStateData">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 录音评级 开始 -->
+    
+    <!-- 查看所有录音评级  开始  -->
+    <el-dialog title="查看所有录音评级" :visible.sync="dialogRatingStateAllVisible" width="50%">
+      <el-table :key='ratingStateAllTableKey' :data="ratingStateAllList" v-loading="ratingStateAllListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
+	      style="width: 100%">
+	      <el-table-column width="160" align="center" label="用户编号">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.userNo}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="160" align="center" label="用户姓名">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.userName}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="" align="center" label="注释摘要">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.writeTxt}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="180" align="center" label="摘要录入时间">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.createTime | dateFormat}}</span>
+	        </template>
+	      </el-table-column>
+	    </el-table>
+	    <!-- 分页 -->
+	    <div class="pagination-container">
+	      <el-pagination background @size-change="handleRatingStateAllSizeChange" @current-change="handleRatingStateAllCurrentChange" :current-page="ratingStateAllListQuery.pageNum" :page-sizes="[10,20,30, 50]" :page-size="ratingStateAllListQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="ratingStateAllTotal">
+	      </el-pagination>
+	    </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogRatingStateAllVisible = false">关闭</el-button>
+      </span>
+    </el-dialog>
+    <!-- 查看所有录音评级  结束  -->
+    
   </div>
 </template>
 
 <script>
-import { findPojo, findOne, findJqList, GetZs, AddRecordFlag, GetZsAllPojo } from '@/api/meetRecord'
+import { findPojo, findOne, findJqList, GetZs, AddRecordFlag, GetZsAllPojo, GetRatingState, UpdateRatingState, GetRatingStateAllPojo } from '@/api/meetRecord'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -386,9 +450,46 @@ export default {
 		 
 		  /** 录音操作 开始 */
 		  dialogTapeVisible: false,
-		  
 		  /** 录音操作 结束 */
 		 
+		  /** 录音评级 开始 */
+		  dialogRatingStateVisible: false,
+		  dataFormRatingState: {
+		  	webId: undefined,
+		  	callId: undefined,
+		  	userNo: undefined,
+		  	userName: undefined,
+		  	recRatingState: 0,
+		  	writeTxt: undefined,
+		  },
+		  recRatingStates: [
+		    {
+        	id: 0,
+        	name: '未评'
+        },
+      	{
+      		id: 1,
+      		name: '异常'
+      	},
+      	{
+      		id: 2,
+      		name: '正常'
+      	}
+		  ],
+		  /** 录音评级 结束 */
+		 
+		 /**  查看所有录音评级  开始 */
+		  dialogRatingStateAllVisible: false,
+		  ratingStateAllTableKey: 0,
+		  ratingStateAllList: null,
+		  ratingStateAllTotal: null,
+		  ratingStateAllListLoading: true,
+		  ratingStateAllListQuery: {
+		    pageNum: 1,
+		    pageSize: 10,
+		    callId: undefined
+		  },
+		  /**  查看所有录音评级  结束 */
     }
   },
   filters: {
@@ -618,60 +719,68 @@ export default {
         audio1.pause();
     	}
     },
-    
     /** 录音操作 结束 */
     
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          RequestEdit(this.dataForm).then(() => {
-            this.dialogFormVisible = false
-            this.getList()
-          }).catch(error => {
-		        this.dialogFormVisible = false
-		      })
-        }
+    /** 录音评级 开始 */
+    resetFormRatingState() { //重置录音评级表单
+			if(this.$refs['dataFormRatingState'] !== undefined){
+				this.$refs['dataFormRatingState'].resetFields();
+			}
+			this.dataFormRatingState.webId = undefined
+	  },
+	  openRatingState(row){
+	  	this.resetFormRatingState()
+	  	
+	  	let param= {
+	   		callId: row.callId
+	   	}
+	   	GetRatingState(param).then(res => {
+	   		let jlHjRecRatingInfo = res.jlHjRecRatingInfo
+	   		this.dataFormRatingState.webId=row.webId
+		  	this.dataFormRatingState.callId= jlHjRecRatingInfo.callId,
+		  	this.dataFormRatingState.userNo= jlHjRecRatingInfo.userNo,
+		  	this.dataFormRatingState.userName= jlHjRecRatingInfo.userName,
+		  	this.dataFormRatingState.recRatingState= row.recRatingState,
+		  	this.dataFormRatingState.writeTxt= jlHjRecRatingInfo.writeTxt,
+	   	})
+	   	this.dialogRatingStateVisible = true
+	   	
+	  },
+	  
+	  updateRatingStateData() {
+	  	UpdateRatingState(this.dataFormRatingState).then(res => {
+	  		
+	  	})
+	  	this.dialogRatingStateVisible = false
+	  },
+	  /** 录音评级 结束 */
+	 
+	  /** 查看所有录音评级 开始 */
+    zhushiAll(row){
+    	this.dialogRatingStateAllVisible= true
+    	this.ratingStateAllListQuery.callId=row.callId
+    	this.getRatingStateAllList()
+    },
+    getRatingStateAllList(){ // 获取所有注释
+    	GetRatingStateAllPojo(this.ratingStateAllListQuery).then(res => {
+    		 this.ratingStateAllList = res.pojo.list
+      	 this.ratingStateAllTotal = res.pojo.count
+      	 this.ratingStateAllListLoading = false
+      }).catch(error => {
+         this.ratingStateAllListLoading = false
       })
     },
-    //删除
-		handleDelete(row) {
-			this.$confirm('确认删除该记录吗?', '提示', {
-				type: 'warning'
-			}).then(() => {
-				this.listLoading = true;
-				let param = {
-	    		id: row.webId
-	    	}
-				RequestDelete(param).then(() => {
-	    		this.getList()
-	    	}).catch(error => {
-	        this.dialogFormVisible = false
-	      })
-			})
-		},
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp']
-        const filterVal = ['timestamp']
-        const data = this.formatJson(filterVal, this.list)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
-      })
+    handleRatingStateAllSizeChange(val) {
+      this.ratingStateAllListQuery.pageSize = val
+      this.getRatingStateAllList()
     },
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
+    handleRatingStateAllCurrentChange(val) {
+      this.ratingStateAllListQuery.pageNum = val
+      this.getRatingStateAllList()
     },
+    /** 查看所有录音评级 结束 */
+   
+   
     dateFormat(row, column) {
 			//时间格式化  
 	    let date = row[column.property];  

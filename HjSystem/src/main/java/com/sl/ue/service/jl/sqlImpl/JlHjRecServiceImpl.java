@@ -26,11 +26,13 @@ import org.springframework.stereotype.Service;
 
 import com.sl.ue.entity.jl.vo.JlHjInfoVO;
 import com.sl.ue.entity.jl.vo.JlHjMonVO;
+import com.sl.ue.entity.jl.vo.JlHjRecRatingInfoVO;
 import com.sl.ue.entity.jl.vo.JlHjRecVO;
 import com.sl.ue.entity.sys.vo.SysHjServerVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlHjInfoService;
+import com.sl.ue.service.jl.JlHjRecRatingInfoService;
 import com.sl.ue.service.jl.JlHjRecService;
 import com.sl.ue.service.sys.SysHjServerService;
 import com.sl.ue.util.Config;
@@ -44,6 +46,8 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 	private JlHjInfoService jlHjInfoSQL;
 	@Autowired
 	private SysHjServerService sysHjServerSQL;
+	@Autowired
+	private JlHjRecRatingInfoService jlHjRecRatingInfoSQL;
 	
 	@Override
 	public Map<String, Object> findPojoLeft(JlHjRecVO model, Integer pageSize, Integer pageNum) {
@@ -143,5 +147,47 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 		return result.toResult();
 	}
 	
+	public String getRatingState(String callId){
+		Result result = new Result();
+		if(StringUtils.isBlank(callId)){
+			result.error(Result.error_102);
+			return result.toResult();
+		}
+		SysUserVO sysUser = TokenUser.getUser();
+		
+		JlHjRecRatingInfoVO jlHjRecRatingInfo = new JlHjRecRatingInfoVO();
+		jlHjRecRatingInfo.setCallId(callId);
+		jlHjRecRatingInfo.setUserNo(sysUser.getUserNo());
+		List<JlHjRecRatingInfoVO> list = jlHjRecRatingInfoSQL.findList(jlHjRecRatingInfo);
+		jlHjRecRatingInfo = list.get(0);
+		result.putJson("jlHjRecRatingInfo", jlHjRecRatingInfo);
+		return result.toResult();
+	}
 	
+	public String updateRatingState(Long webId, Integer recRatingState, String writeTxt){
+		Result result = new Result();
+		if(webId == null){
+			result.error(Result.error_102);
+			return result.toResult();
+		}
+		JlHjRecVO jlHjRec = this.findOne(webId);
+		if(jlHjRec == null){
+			result.error(Result.error_103, "查询不到当前记录");
+			return result.toResult();
+		}
+		jlHjRec.setRecRatingState(recRatingState);
+		this.edit(jlHjRec);
+		
+		SysUserVO sysUser = TokenUser.getUser();
+		
+		JlHjRecRatingInfoVO jlHjRecRatingInfo = new JlHjRecRatingInfoVO();
+		jlHjRecRatingInfo.setCallId(jlHjRec.getCallId());
+		jlHjRecRatingInfo.setUserNo(sysUser.getUserNo());
+		jlHjRecRatingInfo.setUserName(sysUser.getUserName());
+		jlHjRecRatingInfo.setWriteTxt(writeTxt);
+		jlHjRecRatingInfo.setCreateTime(new Date());
+		jlHjRecRatingInfoSQL.add(jlHjRecRatingInfo);
+		
+		return result.toResult();
+	}
 }

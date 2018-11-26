@@ -18,12 +18,13 @@ export const AddRecordFlag = params => { return request.post('/jlHjRec/addRecord
 // 获取当前会见记录所有注释
 export const GetZsAllPojo = params => { return request.get('/jlHjInfo/findPojo', { params: params } ).then(res => res) }
 
-// 导出EXCEL
-export function DownZip(url,param) {
-  return request({
-    url: url,
-    method: 'post',
-    data: param,
-    responseType:'blob'
-  }).then(res => res)
-}
+// 获取录音评级
+export const GetRatingState = params => { return request.get('/jlHjRec/getRatingState', { params: params } ).then(res => res) }
+
+// 修改评级内容
+export const UpdateRatingState = params => { return request.post('/jlHjRec/updateRatingState', params ).then(res => res) }
+
+// 获取当前会见记录所有录音评级
+export const GetRatingStateAllPojo = params => { return request.get('/jlHjRecRatingInfo/findPojo', { params: params } ).then(res => res) }
+
+

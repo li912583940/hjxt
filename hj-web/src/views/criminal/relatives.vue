@@ -20,7 +20,7 @@
           <span>{{scope.row.webId}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="服刑人员姓名">
+      <el-table-column width="140" align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
         </template>
@@ -73,7 +73,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
       	<el-input v-if="false" v-model="dataForm.frNo" ></el-input>
-        <el-form-item label="服刑人员姓名" prop="frName">
+        <el-form-item :label="$t('currency.frName')" prop="frName">
           <el-input v-model="dataForm.frName"></el-input>
         </el-form-item>
         <el-form-item label="证件类别" prop="qsZjlb">

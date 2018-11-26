@@ -24,4 +24,16 @@ public interface JlHjRecService extends BaseService<JlHjRecVO>{
 	 */
 	public String addRecordFlag(String callId, String writeTxt);
 	
+	/**
+	 * 说明 [获取录音评级]
+	 * L_晓天  @2018年11月26日
+	 */
+	public String getRatingState(String callId);
+	
+	/**
+	 * 说明 [修改录音评级]
+	 * L_晓天  @2018年11月26日
+	 */
+	public String updateRatingState(Long webId, Integer recRatingState, String writeTxt);
+	
 }

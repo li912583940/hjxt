@@ -92,4 +92,21 @@ public class JlHjRecWeb extends Result{
 		return jlHjRecSQL.addRecordFlag(callId, writeTxt);
 	}
 	
+    
+	/**
+	 * 说明 [获取录音评级]
+	 * L_晓天  @2018年11月26日
+	 */
+	@RequestMapping("/getRatingState")
+	public String getRatingState(String callId){
+		return jlHjRecSQL.getRatingState(callId);
+	}
+	/**
+	 * 说明 [修改录音评级]
+	 * L_晓天  @2018年11月26日
+	 */
+	@RequestMapping("/updateRatingState")
+	public String updateRatingState(Long webId, Integer recRatingState, String writeTxt){
+		return jlHjRecSQL.updateRatingState(webId, recRatingState, writeTxt);
+	}
 }
