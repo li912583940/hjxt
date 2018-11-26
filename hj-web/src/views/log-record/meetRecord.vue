@@ -103,7 +103,7 @@
       <el-table-column width="200" align="center" label="录音操作">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="palyTape(scope.row)">播放录音</el-button>
-          <a :href="callRecfileUrl"><el-button type="primary" size="mini">下载录音</el-button></a>
+          <el-button type="primary" size="mini" @click="down3(scope.row.callRecfileUrl)">下载录音</el-button>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="录音评级">
@@ -181,6 +181,25 @@
     </el-dialog>
     <!-- 播放录音录像 结束 -->
 
+		<!-- 下载录音录像  IE浏览器 -->
+    <el-dialog title="录音录像下载" :visible.sync="dialogPlayDownVisible" width="40%">
+    	<div style="position: relative;margin-top: 10px; margin-bottom: 30px; margin-left: 20%;">
+    		<span style="margin-left: 20px;">
+    			<el-button type="primary" size="mini" @click="down1(callVideofile1Url)">录像文件1</el-button>
+    		</span>
+    		<span style="margin-left: 20px;">
+    			<el-button type="primary" size="mini" @click="down2(callVideofile2Url)">录像文件2</el-button>
+    		</span>
+    		<span style="margin-left: 20px;">
+    			<el-button type="primary" size="mini" @click="down3(callRecfileUrl)">录音文件</el-button>
+    		</span>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogPlayDownVisible = false">关 闭</el-button>
+      </div>
+    </el-dialog>
+    <!-- 下载录音录像 结束 下载 IE浏览器 -->
+    
     <!-- 注释 开始 -->
     <el-dialog title="注释" :visible.sync="dialogZSVisible"  width="50%">
 	      <el-form  :model="dataFormZS" ref="dataFormZS" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
@@ -238,9 +257,9 @@
     <!-- 查看所有注释  结束  -->
     
     <!-- 播放录音 开始 -->
-    <el-dialog title="播放录音" :visible.sync="dialogTapeVisible" @close='closeTapeDialog'>
-    	<div style="position: relative;margin-top: 10px; margin-bottom: 30px;">
-				<audio :src="callRecfileUrl" controls="controls" controlsList="nodownload">
+    <el-dialog title="播放录音" :visible.sync="dialogTapeVisible" @close='closeTapeDialog'  width="40%">
+    	<div style="position: relative;margin-top: 10px; margin-bottom: 30px; margin-left: 25%;">
+				<audio id="audio1" :src="callRecfileUrl" controls="controls" controlsList="nodownload">
 				</audio>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -336,6 +355,7 @@ export default {
 	    asl: '/阳光电影www.ygdy8.com.巴比龙.BD.720p.中英双字幕.mkv',
 	    asla: '/20180707154146278_011@1.mp4',
 	    aslb: 'F:/DD/Lollipop.mp3',
+	    dialogPlayDownVisible: false,
 	    callRecfileUrl: undefined,
 	    callVideofile1Url: undefined,
 	    callVideofile2Url: undefined,
@@ -363,6 +383,11 @@ export default {
 		    callId: undefined
 		  },
 		  /**  查看所有注释  结束 */
+		 
+		  /** 录音操作 开始 */
+		  dialogTapeVisible: false,
+		  
+		  /** 录音操作 结束 */
 		 
     }
   },
@@ -446,34 +471,70 @@ export default {
     	this.callRecfileUrl = "/api/file"+this.asl
     },
     downRecord(row){ //下载录音录像
-    	console.log(row.callVideofile1Url)
-    	// 1 录像
-    	const downloadElement1 = document.createElement('a')
-    	downloadElement1.href = row.callVideofile1Url
-    	downloadElement1.download=""
-    	document.body.appendChild(downloadElement1)
-    	downloadElement1.click()
-    	document.body.removeChild(downloadElement1)
-    	
-    	console.log(row.callVideofile2Url)
-    	// 2 录像
-    	const downloadElement2 = document.createElement('a')
-    	downloadElement2.href = row.callVideofile2Url
-    	downloadElement2.download=""
-    	document.body.appendChild(downloadElement2)
-    	downloadElement2.click()
-    	document.body.removeChild(downloadElement2)
-    	
-    	console.log(row.callRecfileUrl)
-    	// 2 录音
-    	const downloadElement3 = document.createElement('a')
-    	downloadElement3.href = row.callRecfileUrl
-    	downloadElement3.download=""
-    	document.body.appendChild(downloadElement3)
-    	downloadElement3.click()
-    	document.body.removeChild(downloadElement3)
+    	var userAgent = navigator.userAgent.toLowerCase();
+    	console.log(userAgent)
+    	if(userAgent.indexOf("chrome")>-1 || userAgent.indexOf("firefox")>-1) { 
+       	this.down1(row.callRecfileUrl).then(() => {
+	    		this.down2(row.callVideofile2Url).then(() => {
+	    			  this.down3(row.callRecfileUrl).then(() => {
+	    			})
+	    		})
+	    	})
+    		
+      }else{ // 如果是IE浏览器
+	 	    this.callRecfileUrl= row.callRecfileUrl
+		    this.callVideofile1Url= row.callVideofile1Url
+		    this.callVideofile2Url= row.callVideofile2Url
+        this.dialogPlayDownVisible = true
+      }
     },
-    
+    down1(pathUrl){
+    	return new Promise((resolve, reject) => {
+      	console.log(pathUrl)
+	    	// 1 录像
+	    	const downloadElement = document.createElement('a')
+	    	downloadElement.href = pathUrl
+	    	downloadElement.download=""
+	    	document.body.appendChild(downloadElement)
+	    	downloadElement.click()
+	    	document.body.removeChild(downloadElement)
+      	
+				resolve()
+      })
+    	
+    },
+    down2(pathUrl){
+    	return new Promise((resolve, reject) => {
+      	console.log(pathUrl)
+	    	// 2 录像
+	    	const downloadElement = document.createElement('a')
+	    	downloadElement.href = pathUrl
+	    	downloadElement.download=""
+	    	document.body.appendChild(downloadElement)
+	    	downloadElement.click()
+	    	document.body.removeChild(downloadElement)
+      	
+				resolve()
+      })
+    	
+    		
+    },
+    down3(pathUrl){
+    	return new Promise((resolve, reject) => {
+      	console.log(pathUrl)
+	    	// 3 录音
+	    	const downloadElement = document.createElement('a')
+	    	downloadElement.href = pathUrl
+	    	downloadElement.download=""
+	    	document.body.appendChild(downloadElement)
+	    	downloadElement.click()
+	    	document.body.removeChild(downloadElement)
+      	
+				resolve()
+      })
+    	
+    	
+    },
     closePlayDialog(){ 
     	var video1 = document.getElementById("video1")
     	if(video1.play){
@@ -544,6 +605,21 @@ export default {
       this.getZsAllList()
     },
     /** 查看所有注释 结束 */
+    
+    /** 录音操作 开始 */
+    palyTape(row) {
+    	this.callRecfileUrl = row.callRecfileUrl
+    	this.dialogTapeVisible = true
+    },
+    closeTapeDialog(){
+    	var audio1 = document.getElementById("audio1")
+    	if(audio1.play){
+    		audio1.currentTime = 0;
+        audio1.pause();
+    	}
+    },
+    
+    /** 录音操作 结束 */
     
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
