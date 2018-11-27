@@ -275,7 +275,6 @@ import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
 import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, exportExcel, findJqList, findJbList, findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList  } from '@/api/criminal'
 
 import moment from 'moment';
-import store from '@/store'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
 
@@ -476,7 +475,7 @@ export default {
     	}
     },
     setButtonRole() { //设置按钮的权限
-    	let roles = store.getters.roles
+    	let roles = sessionStorage.getItem("roles")
     	if(roles.includes('admin')){
     		this.buttonRole.addPermission= 1
     		this.buttonRole.editPermission= 1
@@ -488,7 +487,7 @@ export default {
     		this.buttonRole.editQsPermission= 1
     		this.buttonRole.deleteQsPermission= 1
     	}else{
-    		let buttonRoles = store.getters.buttonRoles
+    		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
     		let criminal = buttonRoles.criminal
     		if(criminal.length>0){
     			for(let value of criminal){

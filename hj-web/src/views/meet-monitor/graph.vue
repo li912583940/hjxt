@@ -98,7 +98,6 @@
 import { findPojo, UpdateSJ, GetHjServerList, GetMonitorVocList, AddMonitorFlag, GetZs, QieduanHj } from '@/api/meetMonitor'
 
 import moment from 'moment';
-import store from '@/store'
 import waves from '@/directive/waves' // 水波纹指令
 import { Message, MessageBox } from 'element-ui'
 
@@ -212,7 +211,7 @@ export default {
     },
     
     setButtonRole() { //设置按钮的权限
-    	let roles = store.getters.roles
+    	let roles = sessionStorage.getItem("roles")
     	if(roles.includes('admin')){
     		this.buttonRole.jiantingPermission= 1
     		this.buttonRole.qieduanPermission= 1
@@ -220,7 +219,7 @@ export default {
     		this.buttonRole.updateTimePermission= 1
     		this.buttonRole.zhushiPermission= 1
     	}else{
-    		let buttonRoles = store.getters.buttonRoles
+    		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
     		let meetMonitorGraph = buttonRoles.meetMonitorGraph
     		if(meetMonitorGraph.length>0){
     			for(let value of meetMonitorGraph){

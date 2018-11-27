@@ -139,7 +139,6 @@
 import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete } from '@/api/relatives'
 
 import moment from 'moment'
-import store from '@/store'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
 
@@ -267,14 +266,14 @@ export default {
       this.getList()
     },
     setButtonRole() { //设置按钮的权限
-    	let roles = store.getters.roles
+    	let roles = sessionStorage.getItem("roles")
     	if(roles.includes('admin')){
     		this.buttonRole.addPermission= 1
     		this.buttonRole.editPermission= 1
     		this.buttonRole.deletePermission= 1
     		this.buttonRole.exportPermission= 1
     	}else{
-    		let buttonRoles = store.getters.buttonRoles
+    		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
     		let relatives = buttonRoles.relatives
     		if(relatives.length>0){
     			for(let value of relatives){

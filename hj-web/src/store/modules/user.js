@@ -1,9 +1,8 @@
 import { loginByUsername, logout, getRoles, requestLogin } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken} from '@/utils/auth'
 
 const user = {
   state: {
-    user: '',
     status: '',
     code: '',
     token: getToken(),
@@ -11,7 +10,6 @@ const user = {
     avatar: '',
     introduction: '',
     roles: [],
-    buttonRoles: '',
     setting: {
       articlePlatform: []
     }
@@ -41,10 +39,8 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
-    },
-    SET_BUTTON_ROLES: (state, buttonRoles) => {
-    	state.buttonRoles = buttonRoles
     }
+ 
   },
 
   actions: {
@@ -54,6 +50,7 @@ const user = {
       	requestLogin(userInfo).then((res) => {
       		commit('SET_TOKEN', res.data.token)
 					setToken(res.data.token);
+					sessionStorage.setItem("user", JSON.stringify(res.data))
 					resolve()
 				})
        .catch(error => {
@@ -70,10 +67,11 @@ const user = {
 				}
       	getRoles(para).then((res) => {
       		if (res.data && res.data.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', res.data)
-            commit('SET_BUTTON_ROLES',res.buttonData)
+      			commit('SET_ROLES', res.data)
+      			sessionStorage.setItem("roles", JSON.stringify(res.data))
+      			sessionStorage.setItem("buttonRoles",  JSON.stringify(res.buttonData))
           } else {
-            reject('getInfo: roles must be a non-null array !')
+            reject('当前用户没有分配角色权限 !')
           }
 					commit('SET_NAME', 'admin')
           commit('SET_AVATAR', '超级管理员')
@@ -106,7 +104,6 @@ const user = {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('SET_TOKEN', '')
-          commit('SET_ROLES', [])
           removeToken()
           resolve()
         }).catch(error => {
@@ -120,6 +117,10 @@ const user = {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
         removeToken()
+        removeUser()
+        removeRoles()
+        removeButtonRoles()
+        
         resolve()
       })
     },
@@ -131,7 +132,6 @@ const user = {
         setToken(role)
         getUserInfo(role).then(response => {
           const data = response.data
-          commit('SET_ROLES', data.roles)
           commit('SET_NAME', data.name)
           commit('SET_AVATAR', data.avatar)
           commit('SET_INTRODUCTION', data.introduction)

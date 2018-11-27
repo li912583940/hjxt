@@ -39,7 +39,7 @@ public class JlHjRec implements java.io.Serializable {
 	private String frNo;
 	@DbField("FR_Name")
 	private String frName;
-	@DbField("QS_Info")
+	@DbField("QS_Info1")
 	private String qsInfo1;
 	@DbField("QS_Info2")
 	private String qsInfo2;

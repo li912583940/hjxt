@@ -159,7 +159,11 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 		jlHjRecRatingInfo.setCallId(callId);
 		jlHjRecRatingInfo.setUserNo(sysUser.getUserNo());
 		List<JlHjRecRatingInfoVO> list = jlHjRecRatingInfoSQL.findList(jlHjRecRatingInfo);
-		jlHjRecRatingInfo = list.get(0);
+		if(list.size()>0){
+			jlHjRecRatingInfo = list.get(0);
+		}else{
+			jlHjRecRatingInfo= new JlHjRecRatingInfoVO();
+		}
 		result.putJson("jlHjRecRatingInfo", jlHjRecRatingInfo);
 		return result.toResult();
 	}

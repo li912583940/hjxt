@@ -82,7 +82,6 @@
 import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, findDeptNameList} from '@/api/yjMessage'
 
 import moment from 'moment'
-import store from '@/store'
 import waves from '@/directive/waves' // 水波纹指令
 
 
@@ -174,13 +173,13 @@ export default {
     },
     
     setButtonRole() { //设置按钮的权限
-    	let roles = store.getters.roles
+    	let roles = sessionStorage.getItem("roles")
     	if(roles.includes('admin')){
     		this.buttonRole.addPermission= 1
     		this.buttonRole.editPermission= 1
     		this.buttonRole.deletePermission= 1
     	}else{
-    		let buttonRoles = store.getters.buttonRoles
+    		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
     		let yjMessage = buttonRoles.yjMessage
     		if(yjMessage.length>0){
     			for(let value of yjMessage){

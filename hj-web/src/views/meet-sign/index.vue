@@ -118,7 +118,6 @@
 import { findPojo, FpZw, QxFpZw, GetSurplusZw, RgFpZw, GrantCall, CancelGrantCall } from '@/api/meetSign'
 
 import moment from 'moment';
-import store from '@/store'
 import waves from '@/directive/waves' // 水波纹指令
 
 
@@ -198,7 +197,7 @@ export default {
     },
     
     setButtonRole() { //设置按钮的权限
-    	let roles = store.getters.roles
+    	let roles = sessionStorage.getItem("roles")
     	if(roles.includes('admin')){
     		this.buttonRole.distributionPermission= 1
     		this.buttonRole.cancelDistributionPermission= 1
@@ -206,7 +205,7 @@ export default {
     		this.buttonRole.grantPermission= 1
     		this.buttonRole.cancelGrantPermission= 1
     	}else{
-    		let buttonRoles = store.getters.buttonRoles
+    		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
     		let meetSign = buttonRoles.meetSign
     		if(meetSign.length>0){
     			for(let value of meetSign){

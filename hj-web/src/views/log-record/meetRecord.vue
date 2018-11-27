@@ -291,7 +291,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogRatingStateVisible = false">取 消</el-button>
-        <el-button v-else type="primary" @click="updateRatingStateData">确 定</el-button>
+        <el-button type="primary" @click="updateRatingStateData">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 录音评级 开始 -->
@@ -310,12 +310,12 @@
 	          <span>{{scope.row.userName}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="" align="center" label="注释摘要">
+	      <el-table-column width="" align="center" label="评级内容">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.writeTxt}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="180" align="center" label="摘要录入时间">
+	      <el-table-column width="180" align="center" label="评级时间">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.createTime | dateFormat}}</span>
 	        </template>
@@ -730,18 +730,19 @@ export default {
 	  },
 	  openRatingState(row){
 	  	this.resetFormRatingState()
-	  	
+	  	let user = JSON.parse(sessionStorage.getItem("user"))
 	  	let param= {
 	   		callId: row.callId
 	   	}
 	   	GetRatingState(param).then(res => {
 	   		let jlHjRecRatingInfo = res.jlHjRecRatingInfo
+	   		
 	   		this.dataFormRatingState.webId=row.webId
-		  	this.dataFormRatingState.callId= jlHjRecRatingInfo.callId,
-		  	this.dataFormRatingState.userNo= jlHjRecRatingInfo.userNo,
-		  	this.dataFormRatingState.userName= jlHjRecRatingInfo.userName,
-		  	this.dataFormRatingState.recRatingState= row.recRatingState,
-		  	this.dataFormRatingState.writeTxt= jlHjRecRatingInfo.writeTxt,
+		  	this.dataFormRatingState.callId= row.callId
+		  	this.dataFormRatingState.userNo= user.userNo
+		  	this.dataFormRatingState.userName= user.userName
+		  	this.dataFormRatingState.recRatingState= row.recRatingState
+		  	this.dataFormRatingState.writeTxt= jlHjRecRatingInfo.writeTxt
 	   	})
 	   	this.dialogRatingStateVisible = true
 	   	
@@ -756,10 +757,10 @@ export default {
 	  /** 录音评级 结束 */
 	 
 	  /** 查看所有录音评级 开始 */
-    zhushiAll(row){
-    	this.dialogRatingStateAllVisible= true
+    openRatingStateAll(row){
     	this.ratingStateAllListQuery.callId=row.callId
     	this.getRatingStateAllList()
+    	this.dialogRatingStateAllVisible= true
     },
     getRatingStateAllList(){ // 获取所有注释
     	GetRatingStateAllPojo(this.ratingStateAllListQuery).then(res => {

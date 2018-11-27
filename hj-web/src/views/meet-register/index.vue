@@ -115,7 +115,6 @@
 import { findPojo, RequestPrintXp, RequestCancelDj } from '@/api/meetRegister'
 
 import moment from 'moment';
-import store from '@/store'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
 
@@ -200,13 +199,13 @@ export default {
     },
     
     setButtonRole() { //设置按钮的权限
-    	let roles = store.getters.roles
+    	let roles = sessionStorage.getItem("roles")
     	if(roles.includes('admin')){
     		this.buttonRole.addPermission= 1
     		this.buttonRole.printXpPermission= 1
     		this.buttonRole.cancelDjPermission= 1
     	}else{
-    		let buttonRoles = store.getters.buttonRoles
+    		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
     		let meetRegister = buttonRoles.meetRegister
     		if(meetRegister.length>0){
     			for(let value of meetRegister){

@@ -202,7 +202,7 @@ export const asyncRouterMap = [
       path: 'index',
       component: () => import('@/views/meet-monitor/graph'),
       name: 'meetMonitorGraph',
-      meta: { title: '会见监控-图形化', icon: 'eye', roles:'meetMonitorGraph' }
+      meta: { title: 'meetMonitorGraph', icon: 'eye', roles:'meetMonitorGraph' }
     }]
   },
   
