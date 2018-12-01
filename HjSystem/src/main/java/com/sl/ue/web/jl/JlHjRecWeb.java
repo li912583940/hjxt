@@ -6,15 +6,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.sl.ue.entity.jl.vo.JlHjRecVO;
 import com.sl.ue.service.jl.JlHjRecService;
-import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
 
 /**
@@ -109,4 +106,23 @@ public class JlHjRecWeb extends Result{
 	public String updateRatingState(Long webId, Integer recRatingState, String writeTxt){
 		return jlHjRecSQL.updateRatingState(webId, recRatingState, writeTxt);
 	}
+	
+	/**
+	 * 说明 [获取当前会见记录的其它详情]
+	 * L_晓天  @2018年11月30日
+	 */
+	@RequestMapping("/getOtherInfo")
+	public String getOtherInfo(Long webId){
+		return jlHjRecSQL.getOtherInfo(webId);
+	}
+	
+	/**
+	 * 说明 [导出excel]
+	 * L_晓天  @2018年11月30日
+	 */
+	@RequestMapping("/exportExcel")
+    public void exportExcel(JlHjRecVO model,
+    		HttpServletRequest request, HttpServletResponse response) {
+		jlHjRecSQL.exportExcel(model, request, response);
+    }
 }

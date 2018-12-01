@@ -27,4 +27,18 @@ export const UpdateRatingState = params => { return request.post('/jlHjRec/updat
 // 获取当前会见记录所有录音评级
 export const GetRatingStateAllPojo = params => { return request.get('/jlHjRecRatingInfo/findPojo', { params: params } ).then(res => res) }
 
+// 获取当前会见记录的所有复听详情
+export const GetAllAssessmentPojo = params => { return request.get('/jlHjRecAssessmentInfo/findPojo', { params: params } ).then(res => res) }
 
+// 获取当前会见记录的其它详情
+export const GetOtherInfo = params => { return request.get('/jlHjRec/getOtherInfo', { params: params } ).then(res => res) }
+
+// 导出EXCEL
+export function exportExcel(param) {
+  return request({
+    url: '/jlHjRec/exportExcel',
+    method: 'post',
+    data: param,
+    responseType:'blob'
+  }).then(res => res)
+}

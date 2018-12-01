@@ -83,7 +83,9 @@ export default {
     number: '编号',
     name: '名称',
     fullName: '姓名',
+    frNo: '罪犯编号',
     frName: '罪犯姓名',
+    jqNo: '监区编号',
     jqName: '监区'
   },
   /* 服刑 */

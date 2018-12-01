@@ -141,13 +141,13 @@ public class SysRoleServiceImpl extends BaseSqlImpl<SysRoleVO> implements SysRol
 		List<JlJqVO> list = jlJqSQL.findList(jlJq);
 		JSONArray jArray1 = new JSONArray();
 		JSONObject jObject1 = new JSONObject();
-		jObject1.put("id", -1);
+		jObject1.put("id", -2);
 		jObject1.put("label", "全选");
 		
 		JSONArray jArray2 = new JSONArray();
 		for(JlJqVO t : list){
 			JSONObject jObject2 = new JSONObject();
-			jObject2.put("id", t.getWebId());
+			jObject2.put("id", t.getJqNo());
 			jObject2.put("label", t.getJqName());
 			jArray2.add(jObject2);
 		}
@@ -279,7 +279,7 @@ public class SysRoleServiceImpl extends BaseSqlImpl<SysRoleVO> implements SysRol
 		// 再添加
 		if(StringUtils.isNotBlank(jqs)){
 			for(String i : jqs.split(",")){
-				if("-1".equals(i)){
+				if("-2".equals(i)){
 					continue;
 				}
 				SysRoleJqVO t = new SysRoleJqVO();

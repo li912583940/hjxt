@@ -21,6 +21,7 @@ import com.sl.ue.util.Constants;
 import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.WebContextUtil;
+import com.sl.ue.util.http.token.JqRoleManager;
 import com.sl.ue.util.http.token.TokenManager;
 import com.sl.ue.util.http.token.TokenUser;
 
@@ -55,6 +56,15 @@ public class Login extends Result{
 			loginUser.setTokenTime(overdue);
 			sysUserSQL.edit(loginUser);
 			this.putJson(loginUser);
+			
+			// 存储监区权限
+			JqRoleManager jqRoleManager = new JqRoleManager();
+			if(loginUser.getIsSuper()==1){
+				jqRoleManager.putJqRole(token, "admin");
+			}else{
+				String jqs = sysUserSQL.getJqs(loginUser.getWebId());
+				jqRoleManager.putJqRole(token, jqs);
+			}
 			return this.toResult();
 		}
 		this.msg("账号或密码错误");
@@ -75,6 +85,10 @@ public class Login extends Result{
 		}
 		TokenManager tokenManager = new TokenManager();
 		tokenManager.deleteToken(token);
+		
+		JqRoleManager jqRoleManager = new JqRoleManager();
+		jqRoleManager.deleteJq(token);
+		
 		return this.toResult();
 	}
 }

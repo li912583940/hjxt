@@ -207,7 +207,7 @@ export default {
     	}else{
     		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
     		let meetRegister = buttonRoles.meetRegister
-    		if(meetRegister.length>0){
+    		if(meetRegister != undefined && meetRegister.length>0){
     			for(let value of meetRegister){
     				if(value=='addPermission'){
     					this.buttonRole.addPermission= 1

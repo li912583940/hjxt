@@ -86,7 +86,7 @@
     </el-dialog>
     
     
-    <!-- 设置权限 -->
+    <!-- 设置权限 --> <!--default-expand-all-->
     <el-dialog title="设置权限" :visible.sync="dialogAuthorityVisible">
     	<el-row >
     		<el-col :span="12">
@@ -98,7 +98,7 @@
 				        <el-tree
 						  :data="menuData"
 						  show-checkbox
-						  default-expand-all
+						  :default-expanded-keys="menuCheckedKeys"
 						  check-on-click-node
 						  :default-checked-keys="menuCheckedKeys"
 						  node-key="id"

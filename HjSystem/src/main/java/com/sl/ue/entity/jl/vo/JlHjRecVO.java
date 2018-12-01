@@ -8,6 +8,8 @@ public class JlHjRecVO extends JlHjRec{
     private static final long serialVersionUID = 1L;
 
     private String qsName; // 亲属  查询条件 
+    private Integer qsIndex; //亲属个数
+    private String qsInfo; // 亲属信息
     
     private String callRecfileUrl;
 	private String callVideofile1Url;
@@ -21,6 +23,22 @@ public class JlHjRecVO extends JlHjRec{
   		this.qsName = qsName;
   	}
   	
+	public Integer getQsIndex() {
+		return qsIndex;
+	}
+
+	public void setQsIndex(Integer qsIndex) {
+		this.qsIndex = qsIndex;
+	}
+
+	public String getQsInfo() {
+		return qsInfo;
+	}
+
+	public void setQsInfo(String qsInfo) {
+		this.qsInfo = qsInfo;
+	}
+
 	public String getCallRecfileUrl() {
 		return callRecfileUrl;
 	}

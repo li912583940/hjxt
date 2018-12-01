@@ -14,11 +14,13 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sl.ue.entity.sys.vo.SysResourceVO;
+import com.sl.ue.entity.sys.vo.SysRoleJqVO;
 import com.sl.ue.entity.sys.vo.SysRoleVO;
 import com.sl.ue.entity.sys.vo.SysUserRoleVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.sys.SysResourceService;
+import com.sl.ue.service.sys.SysRoleJqService;
 import com.sl.ue.service.sys.SysRoleService;
 import com.sl.ue.service.sys.SysUserRoleService;
 import com.sl.ue.service.sys.SysUserService;
@@ -35,6 +37,8 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 	private SysResourceService SysResourceSQL;
 	@Autowired
 	private SysUserRoleService sysUserRoleSQL;
+	@Autowired
+	private SysRoleJqService sysRoleJqSQL;
 	
 	@Override
 	public Map<String, Object> findPojoJoin(SysUserVO model, Integer pageSize, Integer pageNum){
@@ -58,30 +62,28 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 		JSONObject obj = new JSONObject();
 		
 		SysUserVO sysUser = TokenUser.getUser();
-		
-		// 查询当前用户是否为管理员权限
-		SysRoleVO sysRole = new SysRoleVO();
-		sysRole.setLeftJoinTable(" left join sys_user_role b ON a.id=b.role_id");
-		sysRole.setLeftJoinWhere(" AND b.user_id="+sysUser.getWebId());
-		List<SysRoleVO>  roleList = SysRoleSQL.findList(sysRole);
-		if(roleList.size() == 0){
-			result.error(Result.error_103, "当前账号无权限");
-			return result.toResult();
-		}
 		String isAdmin = ""; 
-		String roleIds = ""; // 角色id  “,”分割
-		for(SysRoleVO t : roleList){
-			if(t.getIsAdmin() == -1 || t.getIsAdmin()==1 ){ //-1：超级管理员， 1：管理员
-				isAdmin="admin";
-				break;
-			}
-			roleIds += t.getId()+",";
+		if(sysUser.getIsSuper()==1){
+			isAdmin="admin";
 		}
 		if(StringUtils.isNotBlank(isAdmin)){
 			roles.add(isAdmin);
 			result.putJson(roles);
 			return result.toResult();
 		}
+		// 查询当前用户是否为管理员权限
+		SysUserRoleVO userRole = new SysUserRoleVO();
+		userRole.setUserId(sysUser.getWebId());
+		List<SysUserRoleVO> userRoleList = sysUserRoleSQL.findList(userRole);
+		if(userRoleList.size() == 0){
+			result.error(Result.error_103, "当前账号无权限");
+			return result.toResult();
+		}
+		String roleIds = ""; // 角色id  “,”分割
+		for(SysUserRoleVO t : userRoleList){
+			roleIds += t.getRoleId()+",";
+		}
+	
 		//  非管理员权限，查询当前用户权限所能访问的资源
 		SysResourceVO sysResource = new SysResourceVO();
 		sysResource.setLeftJoinTable(" left join sys_role_resource b ON a.id=b.resource_id");
@@ -157,5 +159,27 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 			}
 		}
 		return result.toResult();
+	}
+	
+	public String getJqs(Integer userId){
+		
+		SysUserRoleVO sysUserRole = new SysUserRoleVO();
+		sysUserRole.setUserId(userId);
+		List<SysUserRoleVO> roleList = sysUserRoleSQL.findList(sysUserRole);
+		String roles = "";
+		for(SysUserRoleVO t : roleList){
+			roles+=t.getRoleId()+",";
+		}
+		if(StringUtils.isBlank(roles)){
+			return "";
+		}
+		SysRoleJqVO roleJq = new SysRoleJqVO();
+		roleJq.setLeftJoinWhere(" AND a.role_id in ("+StringUtil.lastComma(roles)+")");
+		List<SysRoleJqVO> roleJqList = sysRoleJqSQL.findList(roleJq);
+		String jqs = "";
+		for(SysRoleJqVO t : roleJqList){
+			jqs+=t.getJqId()+",";
+		}
+		return StringUtil.lastComma(jqs);
 	}
 }

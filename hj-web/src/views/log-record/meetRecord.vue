@@ -27,7 +27,7 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="listQuery.qsName">
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
+      <el-button v-if="buttonRole.exportPermission==1" class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
@@ -42,9 +42,9 @@
           <span>{{scope.row.callTimeEnd}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" label="通话时长">
+      <el-table-column width="160" align="center" label="通话时长(秒)">
         <template slot-scope="scope">
-          <span>{{scope.row.callTimeLen}}秒</span>
+          <span>{{scope.row.callTimeLen}}</span>
         </template>
       </el-table-column>
       <el-table-column width="140" align="center" label="座位名称">
@@ -54,31 +54,31 @@
       </el-table-column>
       <el-table-column width="140" align="center" label="会见类型">
         <template slot-scope="scope">
-          <span v-if="scope.row.type==1">普见</span>
-          <span v-if="scope.row.type==2">宽见</span>
+          <span v-if="scope.row.hjType==1">严见</span>
+          <span v-if="scope.row.hjType==2">宽见</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="监区名称">
+      <el-table-column width="140" align="center" :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300" align="center" label="罪犯编号">
+      <el-table-column width="200" align="center" :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="罪犯姓名">
+      <el-table-column width="200" align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="亲属个数">
+      <el-table-column width="140" align="center" label="亲属个数">
         <template slot-scope="scope">
           <span>{{scope.row.qsIndex}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="亲属信息">
+      <el-table-column width="300" align="center" label="亲属信息">
         <template slot-scope="scope">
           <span>{{scope.row.qsInfo}}</span>
         </template>
@@ -88,57 +88,57 @@
           <span>{{scope.row.yjNo}}/{{scope.row.yjName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="280" align="center" label="音视频操作">
+      <el-table-column v-if="buttonRole.playAudioVideoPermission==1 || buttonRole.downAudioVideoPermission==1" width="280" align="center" label="音视频操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="playRecor(scope.row)">播放录音录像</el-button>
-          <el-button type="primary" size="mini" @click="downRecord(scope.row)">下载录音录像</el-button>
+          <el-button v-if="buttonRole.playAudioVideoPermission==1" type="primary" size="mini" @click="playRecor(scope.row)">播放录音录像</el-button>
+          <el-button v-if="buttonRole.downAudioVideoPermission==1" type="primary" size="mini" @click="downRecord(scope.row)">下载录音录像</el-button>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="摘要操作">
+      <el-table-column v-if="buttonRole.notesPermission==1 || buttonRole.seeNotesPermission==1" width="200" align="center" label="摘要操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="zhushi(scope.row)">注释</el-button>
-          <el-button type="primary" size="mini" @click="zhushiAll(scope.row)">查看所有注释</el-button>
+          <el-button v-if="buttonRole.notesPermission==1" type="primary" size="mini" @click="zhushi(scope.row)">注释</el-button>
+          <el-button v-if="buttonRole.seeNotesPermission==1" type="primary" size="mini" @click="zhushiAll(scope.row)">查看所有注释</el-button>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="录音操作">
+      <el-table-column v-if="buttonRole.playAudioPermission==1 || buttonRole.downAudioPermission==1" width="200" align="center" label="录音操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="palyTape(scope.row)">播放录音</el-button>
-          <el-button type="primary" size="mini" @click="down3(scope.row.callRecfileUrl)">下载录音</el-button>
+          <el-button v-if="buttonRole.playAudioPermission==1" type="primary" size="mini" @click="palyTape(scope.row)">播放录音</el-button>
+          <el-button v-if="buttonRole.downAudioPermission==1" type="primary" size="mini" @click="down3(scope.row.callRecfileUrl)">下载录音</el-button>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="录音评级">
+      <el-table-column width="140" align="center" label="录音评级">
         <template slot-scope="scope">
           <span v-if="scope.row.recRatingState==0">未评</span>
           <span v-if="scope.row.recRatingState==1">异常</span>
           <span v-if="scope.row.recRatingState==2">正常</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="评级操作">
+      <el-table-column v-if="buttonRole.ratingPermission==1 || buttonRole.seeRatingPermission==1" width="200" align="center" label="评级操作">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="openRatingState(scope.row)">评级</el-button>
-          <el-button type="primary" size="mini" @click="openRatingStateAll(scope.row)">查看所有评级</el-button>
+          <el-button v-if="buttonRole.ratingPermission==1" type="primary" size="mini" @click="openRatingState(scope.row)">评级</el-button>
+          <el-button v-if="buttonRole.seeRatingPermission==1" type="primary" size="mini" @click="openRatingStateAll(scope.row)">查看所有评级</el-button>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="复听状态">
+      <el-table-column width="140" align="center" label="复听状态">
         <template slot-scope="scope">
           <span v-if="scope.row.recAssessmentState==0">未听</span>
           <span v-if="scope.row.recAssessmentState==1">已听</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="复听详情">
+      <el-table-column  v-if="buttonRole.seeAssessmentPermission==1" width="140" align="center" label="复听详情">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">查看</el-button>
+          <el-button type="primary" size="mini" @click="openAllAssessment(scope.row)">查看</el-button>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="复听超时">
+      <el-table-column width="140" align="center" label="复听超时">
         <template slot-scope="scope">
           <span v-if="scope.row.recordOverTime==0">未超时</span>
           <span v-if="scope.row.recordOverTime==1">已超时</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="其它详情">
+      <el-table-column v-if="buttonRole.seeOtherPermission==1" width="140" align="center" label="其它详情">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">查看</el-button>
+          <el-button type="primary" size="mini" @click="openOtherInfo(scope.row)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -332,11 +332,117 @@
     </el-dialog>
     <!-- 查看所有录音评级  结束  -->
     
+    
+    <!-- 复听详情  开始  -->
+    <el-dialog title="复听详情" :visible.sync="dialogAllAssessmentVisible" width="50%">
+      <el-table :key='allAssessmentTableKey' :data="allAssessmentList" v-loading="allAssessmentListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
+	      style="width: 100%">
+	      <el-table-column width="160" align="center" label="用户编号">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.userNo}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="160" align="center" label="用户姓名">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.userName}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="" align="center" label="评级内容">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.writeTxt}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="180" align="center" label="评级时间">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.createTime | dateFormat}}</span>
+	        </template>
+	      </el-table-column>
+	    </el-table>
+	    <!-- 分页 -->
+	    <div class="pagination-container">
+	      <el-pagination background @size-change="handleAllAssessmentSizeChange" @current-change="handleAllAssessmentCurrentChange" :current-page="allAssessmentListQuery.pageNum" :page-sizes="[10,20,30, 50]" :page-size="allAssessmentListQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="allAssessmentTotal">
+	      </el-pagination>
+	    </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogAllAssessmentVisible = false">关闭</el-button>
+      </span>
+    </el-dialog>
+    <!-- 复听详情  结束  -->
+    
+    <!-- 其他详情  开始  -->
+    <el-dialog title="其他详情" :visible.sync="dialogOtherInfoVisible" width="50%">
+      <el-card class="box-card">
+	      <el-table :key='otherInfoTableKey' :data="otherInfoList" v-loading="otherInfoListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
+		      style="width: 100%">
+		      <el-table-column width="160" align="center" label="会见登记人">
+		        <template slot-scope="scope">
+		          <span>{{scope.row.djUser}}</span>
+		        </template>
+		      </el-table-column>
+		      <el-table-column width="160" align="center" label="登记时间">
+		        <template slot-scope="scope">
+		          <span>{{scope.row.djTime | dateFormat}}</span>
+		        </template>
+		      </el-table-column>
+		      <el-table-column width="" align="center" label="会见室审核人">
+		        <template slot-scope="scope">
+		          <span>{{scope.row.frInUser}}</span>
+		        </template>
+		      </el-table-column>
+		      <el-table-column width="180" align="center" label="到达进入时间">
+		        <template slot-scope="scope">
+		          <span>{{scope.row.frInTime | dateFormat}}</span>
+		        </template>
+		      </el-table-column>
+		      <el-table-column width="180" align="center" label="会见说明">
+		        <template slot-scope="scope">
+		          <span>{{scope.row.hjInfo}}</span>
+		        </template>
+		      </el-table-column>
+		    </el-table>
+		  </el-card>
+		  
+	    <el-card class="box-card">
+	    	<el-table :key='otherQsInfoTableKey' :data="otherQsInfoList" v-loading="otherQsInfoListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
+		      style="width: 100%">
+		      <el-table-column width="160" align="center" label="亲属姓名">
+		        <template slot-scope="scope">
+		          <span>{{scope.row.qsName}}</span>
+		        </template>
+		      </el-table-column>
+		      <el-table-column width="160" align="center" label="身份证号码">
+		        <template slot-scope="scope">
+		          <span>{{scope.row.qsSfz}}</span>
+		        </template>
+		      </el-table-column>
+		      <el-table-column width="" align="center" label="关系">
+		        <template slot-scope="scope">
+		          <span>{{scope.row.gx}}</span>
+		        </template>
+		      </el-table-column>
+		      <el-table-column width="180" align="center" label="性别">
+		        <template slot-scope="scope">
+		          <span>{{scope.row.xb}}</span>
+		        </template>
+		      </el-table-column>
+		      <el-table-column width="180" align="center" label="照片">
+		        <template slot-scope="scope">
+		          <span>{{scope.row.zp}}</span>
+		        </template>
+		      </el-table-column>
+		    </el-table>
+	    </el-card>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogOtherInfoVisible = false">关闭</el-button>
+      </span>
+    </el-dialog>
+    <!-- 其他详情  结束  -->
+    
   </div>
 </template>
 
 <script>
-import { findPojo, findOne, findJqList, GetZs, AddRecordFlag, GetZsAllPojo, GetRatingState, UpdateRatingState, GetRatingStateAllPojo } from '@/api/meetRecord'
+import { findPojo, findOne, findJqList, GetZs, AddRecordFlag, GetZsAllPojo, GetRatingState, UpdateRatingState, GetRatingStateAllPojo, GetAllAssessmentPojo, GetOtherInfo, exportExcel } from '@/api/meetRecord'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -490,6 +596,47 @@ export default {
 		    callId: undefined
 		  },
 		  /**  查看所有录音评级  结束 */
+		 
+		  /**  复听详情 开始 */
+		  dialogAllAssessmentVisible: false,
+		  allAssessmentTableKey: 0,
+		  allAssessmentList: null,
+		  allAssessmentTotal: null,
+		  allAssessmentListLoading: true,
+		  allAssessmentListQuery: {
+		    pageNum: 1,
+		    pageSize: 10,
+		    callId: undefined
+		  },
+		  /**  复听详情  结束 */
+		 
+		  /**  其他详情 开始 */
+		  dialogOtherInfoVisible: false,
+		  otherInfoTableKey: 0,
+		  otherInfoList: null,
+		  otherInfoListLoading: true,
+		  
+		  otherQsInfoTableKey: 1,
+		  otherQsInfoList: null,
+		  otherQsInfoListLoading: true,
+		  /**  其他详情  结束 */
+		 
+		  //按钮权限   1：有权限， 0：无权限
+      buttonRole: { 
+      	queryPermission: 1, 
+      	exportPermission: 0, //导出
+      	playAudioVideoPermission: 0, //播放录音录像
+      	downAudioVideoPermission: 0, //下载录音录像
+      	notesPermission: 0, //注释
+      	seeNotesPermission: 0, //查看所有注释
+      	playAudioPermission: 0, //播放录音
+      	downAudioPermission: 0, //下载录音
+      	ratingPermission: 0, //评级
+      	seeRatingPermission: 0, //查看所有评级
+      	seeAssessmentPermission: 0, //查看复听详情
+      	seeOtherPermission: 0 //查看其它详情
+      },
+      
     }
   },
   filters: {
@@ -504,6 +651,9 @@ export default {
   created() {
     this.getList()
     this.getJqList()
+  },
+  mounted() {
+    this.setButtonRole()
   },
   methods: {
     getList() {
@@ -750,7 +900,7 @@ export default {
 	  
 	  updateRatingStateData() {
 	  	UpdateRatingState(this.dataFormRatingState).then(res => {
-	  		
+	  		this.getList()
 	  	})
 	  	this.dialogRatingStateVisible = false
 	  },
@@ -781,6 +931,126 @@ export default {
     },
     /** 查看所有录音评级 结束 */
    
+    /** 复听详情 开始 */
+    openAllAssessment(row){
+    	this.allAssessmentListQuery.callId=row.callId
+    	this.getAllAssessmentList()
+    	this.dialogAllAssessmentVisible= true
+    },
+    getAllAssessmentList(){ // 获取所有注释
+    	GetAllAssessmentPojo(this.allAssessmentListQuery).then(res => {
+    		 this.allAssessmentList = res.pojo.list
+      	 this.allAssessmentTotal = res.pojo.count
+      	 this.allAssessmentListLoading = false
+      }).catch(error => {
+         this.allAssessmentListLoading = false
+      })
+    },
+    handleAllAssessmentSizeChange(val) {
+      this.allAssessmentListQuery.pageSize = val
+      this.getAllAssessmentList()
+    },
+    handleAllAssessmentCurrentChange(val) {
+      this.allAssessmentListQuery.pageNum = val
+      this.getAllAssessmentList()
+    },
+    /** 复听详情 结束 */
+   
+    /** 其它详情 开始 */
+    openOtherInfo(row) {
+    	this.dialogOtherInfoVisible = true
+    	let param ={
+    		webId: row.webId
+    	}
+    	GetOtherInfo(param).then(res => {
+    		this.otherInfoList = res.jlHjDjList
+    		this.otherQsInfoList = jlHjDjQsList
+    		
+    	})
+    	this.otherInfoListLoading = false
+    	this.otherQsInfoListLoading = false
+    },
+    /** 其它详情 结束 */
+    
+    /** 导出EXCEL 开始 */
+    handleDownload() {
+			if(!this.listQuery.frName){
+      	this.listQuery.frName = undefined
+      }
+      if(!this.listQuery.frNo){
+      	this.listQuery.frNo = undefined
+      }
+      if(!this.listQuery.jq){
+      	this.listQuery.jq = undefined
+      }
+      
+			exportExcel(this.listQuery).then(res => {
+				console.log(res)
+	      const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
+	     	const downloadElement = document.createElement('a')
+	     	const href = window.URL.createObjectURL(blob)
+	     	downloadElement.href = href
+	     	downloadElement.download = '会见记录.xls'
+	     	document.body.appendChild(downloadElement)
+	     	downloadElement.click()
+     		document.body.removeChild(downloadElement) // 下载完成移除元素
+	     	window.URL.revokeObjectURL(href) // 释放掉blob对象
+			}).catch(error => {
+         console.log(error)
+      })
+
+
+    },
+    /** 导出EXCEL 结束 */
+   
+    /** 设置权限 开始 */
+    setButtonRole() { //设置按钮的权限
+    	let roles = sessionStorage.getItem("roles")
+    	if(roles.includes('admin')){
+    		this.exportPermission= 1
+      	this.playAudioVideoPermission= 1
+      	this.downAudioVideoPermission= 1
+      	this.notesPermission= 1
+      	this.seeNotesPermission= 1
+      	this.playAudioPermission= 1
+      	this.downAudioPermission= 1
+      	this.ratingPermission= 1
+      	this.seeRatingPermission= 1
+      	this.seeAssessmentPermission= 1
+      	this.seeOtherPermission= 1
+    	}else{
+    		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
+    		let meetRecord = buttonRoles.meetRecord
+    		if(meetRecord != undefined && meetRecord.length>0){
+    			for(let value of meetRecord){
+    				if(value=='exportPermission'){
+    					this.buttonRole.exportPermission= 1
+    				}else if(value=='playAudioVideoPermission'){
+    					this.buttonRole.playAudioVideoPermission= 1
+    				}else if(value=='downAudioVideoPermission'){
+    					this.buttonRole.downAudioVideoPermission= 1
+    				}else if(value=='notesPermission'){
+    					this.buttonRole.notesPermission= 1
+    				}else if(value=='seeNotesPermission'){
+    					this.buttonRole.seeNotesPermission= 1
+    				}else if(value=='playAudioPermission'){
+    					this.buttonRole.playAudioPermission= 1
+    				}else if(value=='downAudioPermission'){
+    					this.buttonRole.downAudioPermission= 1
+    				}else if(value=='ratingPermission'){
+    					this.buttonRole.ratingPermission= 1
+    				}else if(value=='seeRatingPermission'){
+    					this.buttonRole.seeRatingPermission= 1
+    				}else if(value=='seeAssessmentPermission'){
+    					this.buttonRole.seeAssessmentPermission= 1
+    				}else if(value=='seeOtherPermission'){
+    					this.buttonRole.seeOtherPermission= 1
+    				}
+    			}
+    		}
+    	}
+    },
+    /** 设置权限 结束 */
    
     dateFormat(row, column) {
 			//时间格式化  
@@ -805,3 +1075,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.box-card {
+  margin: 10px;
+  }
+</style>

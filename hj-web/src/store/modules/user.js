@@ -117,10 +117,6 @@ const user = {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
         removeToken()
-        removeUser()
-        removeRoles()
-        removeButtonRoles()
-        
         resolve()
       })
     },

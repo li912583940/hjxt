@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlHjRecVO;
 import com.sl.ue.service.base.BaseService;
 
@@ -36,4 +37,15 @@ public interface JlHjRecService extends BaseService<JlHjRecVO>{
 	 */
 	public String updateRatingState(Long webId, Integer recRatingState, String writeTxt);
 	
+	/**
+	 * 说明 [获取当前会见记录的其它详情]
+	 * L_晓天  @2018年11月30日
+	 */
+	public String getOtherInfo(Long webId);
+	
+	/**
+	 * 说明 [导出excel]
+	 * L_晓天  @2018年11月30日
+	 */
+	public void exportExcel(JlHjRecVO model, HttpServletRequest request, HttpServletResponse response);
 }

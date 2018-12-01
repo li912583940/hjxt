@@ -22,17 +22,17 @@
           <span>{{scope.row.webId}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" :label="$t('currency.number')">
+      <el-table-column width="140" align="center" :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" :label="$t('criminal.name')">
+      <el-table-column width="160" align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" :label="$t('criminal.prisonArea')">
+      <el-table-column width="140" align="center" :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
         </template>
@@ -92,17 +92,17 @@
     <!-- 新增或编辑 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="80px" style='width: 400px; margin-left:25%;' >
-        <el-form-item label="编号" prop="frNo">
+        <el-form-item :label="$t('currency.frNo')" prop="frNo">
           <el-input v-if="dialogStatus=='create'" v-model="dataForm.frNo"></el-input>
           <el-input v-else v-model="dataForm.frNo" :disabled="true"></el-input>
         </el-form-item>
-        <el-form-item label="姓名" prop="frName">
+        <el-form-item :label="$t('currency.frName')" prop="frName">
           <el-input v-model="dataForm.frName"></el-input>
         </el-form-item>
         <el-form-item label="IC卡号" prop="frCard">
           <el-input v-model="dataForm.frCard"></el-input>
         </el-form-item>
-        <el-form-item label="监区" prop="jq">
+        <el-form-item :label="$t('currency.jqName')" prop="jq">
           <el-select class="filter-item" v-model="dataForm.jq" placeholder="请选择">
             <el-option v-for="item in  jqs" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
@@ -648,8 +648,7 @@ export default {
       	this.listQuery.jq = undefined
       }
       
-			let url = '/jlFr/exportExcel'
-			exportExcel(url,this.listQuery).then(res => {
+			exportExcel(this.listQuery).then(res => {
 				console.log(res)
 	      const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
 	     	const downloadElement = document.createElement('a')

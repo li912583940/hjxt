@@ -26,4 +26,10 @@ public interface SysUserService extends BaseService<SysUserVO>{
 	 * L_晓天  @2018年11月1日
 	 */
 	public String addUserRole(Integer userId, String roles);
+	
+	/**
+	 * 说明 [获取用户的监区权限]
+	 * L_晓天  @2018年12月1日
+	 */
+	public String getJqs(Integer userId);
 }

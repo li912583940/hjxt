@@ -69,6 +69,10 @@ public class JlFrWeb extends Result{
         return this.toResult();
     }
 
+    /**
+     * 说明 [导出excel]
+     * L_晓天  @2018年11月30日
+     */
     @RequestMapping("/exportExcel")
     public void exportExcel(JlFrVO model,
     		HttpServletRequest request, HttpServletResponse response) {

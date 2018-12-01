@@ -13,9 +13,9 @@ export const RequestEdit = params => { return request.post('/jlFr/edit', params 
 export const RequestDelete = params => { return request.post('/jlFr/delete', params ).then(res => res) }
 
 // 导出EXCEL
-export function exportExcel(url,param) {
+export function exportExcel(param) {
   return request({
-    url: url,
+    url: '/jlFr/exportExcel',
     method: 'post',
     data: param,
     responseType:'blob'

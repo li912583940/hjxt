@@ -82,8 +82,10 @@ export default {
   currency: {
   	number: 'Number',
     name: 'Name',
+    frNo: 'Criminal No',
     fullName: 'Full Name',
     frName: 'Criminal Name',
+    jqNo: 'Prison No',
     jqName: 'Prison Name'
   },
   /* 服刑 */
