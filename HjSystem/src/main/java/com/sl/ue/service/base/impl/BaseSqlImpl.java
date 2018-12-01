@@ -26,11 +26,14 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import com.sl.ue.service.base.BaseService;
+import com.sl.ue.util.Constants;
 import com.sl.ue.util.HumpCrossUnderline;
 import com.sl.ue.util.StringUtil;
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
 import com.sl.ue.util.anno.Table;
+import com.sl.ue.util.http.WebContextUtil;
+import com.sl.ue.util.http.token.JqRoleManager;
 
 /**
  * 说明 [持久层 实现类 SQL Server]
@@ -112,32 +115,57 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				e.printStackTrace();
 			}
 			try {
+				boolean jq_qx = false;
+				String jq_name = "";
 				for(Field field : fields){
 					if(field.getName().equals("serialVersionUID"))
 						continue;
-					String table_filed = field.getAnnotation(DbField.class).value();
+					String table_field = field.getAnnotation(DbField.class).value();
 					// 处理主键  区分单个主键 和 复合 主键
 					if(field.isAnnotationPresent(Id.class)){
-						id_field = table_filed;
+						id_field = table_field;
 						if(StringUtils.isBlank(id_fields)){
-							id_fields=table_filed;
+							id_fields=table_field;
 						}else{
-							id_fields = id_fields+"+"+table_filed;
+							id_fields = id_fields+"+"+table_field;
 						}
 						
 					}
 					if(StringUtils.isBlank(d_id_field)){
-						d_id_field = table_filed;
+						d_id_field = table_field;
 					}
 					// 拼接SQL字段
-					table_fileds.append(table_filed+",");
+					table_fileds.append(table_field+",");
 					// 处理SQL where条件
 					field.setAccessible(true);
 					if(field.get(model) != null  && !"".equals(field.get(model))){
 						params.add(field.get(model));
-						where_fields.append(" and "+table_filed+"=?");
+						where_fields.append(" and "+table_field+"=?");
 					}
+					
+					/** 监区权限 开始 */
+					String field_name = table_field.toLowerCase();
+					if("jq".equals(field_name) || "jq_no".equals(field_name)){
+						jq_qx= true;
+						jq_name=field_name;
+					}
+					/** 监区权限 结束 */
 				}
+				
+				/** 监区权限 开始 */
+				boolean ljw_qx = false;
+				String leftJoinWhere_qx = leftJoinWhere.toLowerCase();
+				if(leftJoinWhere_qx.indexOf("jq")!=-1 || leftJoinWhere_qx.indexOf("jq_no")!=-1){
+					jq_qx= true;
+					ljw_qx=true;
+				}
+				if(jq_qx){
+					String token = WebContextUtil.getRequest().getHeader(Constants.TOKEN_NAME);
+					JqRoleManager jqRoleManager = new JqRoleManager();
+					String jqs = jqRoleManager.getJqs(token);
+					leftJoinWhere+=" AND a."+jq_name+" in ("+jqs+")";
+				}
+				/** 监区权限 结束 */
 			} catch (Exception e) {
 			}
 			// 如果是复合主键

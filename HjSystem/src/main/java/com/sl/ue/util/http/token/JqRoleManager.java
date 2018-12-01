@@ -1,6 +1,5 @@
 package com.sl.ue.util.http.token;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
