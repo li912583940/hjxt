@@ -4,6 +4,8 @@ import request from '@/utils/request'
 
 export const findPojo = params => { return request.get('/jlHjRec/findPojo', { params: params } ).then(res => res) }
 
+export const findCount = params => { return request.get('/jlHjRec/findCount', { params: params } ).then(res => res) }
+
 export const findOne = params => { return request.get('/jlHjRec/findOne', { params: params } ).then(res => res) }
 
 // 获得监区集合
@@ -42,3 +44,6 @@ export function exportExcel(param) {
     responseType:'blob'
   }).then(res => res)
 }
+
+// 获取一个星期内每天会见总数
+export const GetWeekCount = params => { return request.get('/jlHjRec/getWeekCount', { params: params } ).then(res => res) }

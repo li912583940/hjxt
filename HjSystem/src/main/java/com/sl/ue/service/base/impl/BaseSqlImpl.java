@@ -153,17 +153,18 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				}
 				
 				/** 监区权限 开始 */
-				boolean ljw_qx = false;
-				String leftJoinWhere_qx = leftJoinWhere.toLowerCase();
-				if(leftJoinWhere_qx.indexOf("jq")!=-1 || leftJoinWhere_qx.indexOf("jq_no")!=-1){
-					jq_qx= true;
-					ljw_qx=true;
-				}
 				if(jq_qx){
 					String token = WebContextUtil.getRequest().getHeader(Constants.TOKEN_NAME);
 					JqRoleManager jqRoleManager = new JqRoleManager();
 					String jqs = jqRoleManager.getJqs(token);
-					leftJoinWhere+=" AND a."+jq_name+" in ("+jqs+")";
+					if("admin".equals(jqs)){
+						
+					}else if(StringUtils.isBlank(jqs)){
+						leftJoinWhere+=" AND 1<>1 ";
+					}else if(StringUtils.isNotBlank(jqs)){
+						leftJoinWhere+=" AND a."+jq_name+" in ("+jqs+") ";
+					}
+					
 				}
 				/** 监区权限 结束 */
 			} catch (Exception e) {
@@ -260,32 +261,57 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				e.printStackTrace();
 			} 
 			try {
+				boolean jq_qx = false;
+				String jq_name = "";
 				for(Field field : fields){
 					if(field.getName().equals("serialVersionUID"))
 						continue;
-					String table_filed = field.getAnnotation(DbField.class).value();
+					String table_field = field.getAnnotation(DbField.class).value();
 					// 处理主键  区分单个主键 和 复合 主键
 					if(field.isAnnotationPresent(Id.class)){
-						id_field = table_filed;
+						id_field = table_field;
 						if(StringUtils.isBlank(id_fields)){
-							id_fields=table_filed;
+							id_fields=table_field;
 						}else{
-							id_fields = id_fields+"+"+table_filed;
+							id_fields = id_fields+"+"+table_field;
 						}
 						
 					}
 					if(StringUtils.isBlank(d_id_field)){
-						d_id_field = table_filed;
+						d_id_field = table_field;
 					}
 					// 拼接SQL字段
-					table_fileds.append(table_filed+",");
+					table_fileds.append(table_field+",");
 					// 处理SQL where条件
 					field.setAccessible(true);
 					if(field.get(model) != null && !"".equals(field.get(model))){
 						params.add(field.get(model));
-						where_fields.append(" and a."+table_filed+"=?");
+						where_fields.append(" and a."+table_field+"=?");
+					}
+					
+					/** 监区权限 开始 */
+					String field_name = table_field.toLowerCase();
+					if("jq".equals(field_name) || "jq_no".equals(field_name)){
+						jq_qx= true;
+						jq_name=field_name;
+					}
+					/** 监区权限 结束 */
+				}
+				
+				/** 监区权限 开始 */
+				if(jq_qx){
+					String token = WebContextUtil.getRequest().getHeader(Constants.TOKEN_NAME);
+					JqRoleManager jqRoleManager = new JqRoleManager();
+					String jqs = jqRoleManager.getJqs(token);
+					if("admin".equals(jqs)){
+					}else if(StringUtils.isBlank(jqs)){
+						leftJoinWhere+=" AND 1<>1 ";
+					}else if(StringUtils.isNotBlank(jqs)){
+						leftJoinWhere+=" AND a."+jq_name+" in ("+jqs+") ";
 					}
 				}
+				/** 监区权限 结束 */
+				
 			} catch (Exception e) {
 			}
 			// 如果是复合主键
@@ -345,22 +371,73 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			Field[] fields = clazz.getDeclaredFields(); // 实体类的属性字段
 			StringBuffer where_fields = new StringBuffer(); // SQL的条件
 			List<Object> params = new ArrayList<Object>(); // jdbc 需要的条件参数值
+			
+			String leftJoinTable = ""; // 关联表
+			String leftJoinWhere = ""; // 关联表条件
+			
 			try {
+				Field[] voFields = clazzVO.getDeclaredFields();
+				for(Field field : voFields) {
+					if(field.getName().equals("leftJoinTable")) {
+						field.setAccessible(true);
+						if(field.get(model) != null) {
+							leftJoinTable = field.get(model).toString();
+						}
+						continue;
+					}
+					if(field.getName().equals("leftJoinWhere")) {
+						field.setAccessible(true);
+						if(field.get(model) != null) {
+							leftJoinWhere = field.get(model).toString();
+						}
+						continue;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+			
+			try {
+				boolean jq_qx = false;
+				String jq_name = "";
 				for(Field field : fields){
 					if(field.getName().equals("serialVersionUID"))
 						continue;
-					String table_filed = field.getAnnotation(DbField.class).value();
+					String table_field = field.getAnnotation(DbField.class).value();
 					// 处理SQL where条件
 					field.setAccessible(true);
 					if(field.get(model) != null){
 						params.add(field.get(model));
-						where_fields.append(" and "+table_filed+"=?");
+						where_fields.append(" and "+table_field+"=?");
+					}
+					
+					/** 监区权限 开始 */
+					String field_name = table_field.toLowerCase();
+					if("jq".equals(field_name) || "jq_no".equals(field_name)){
+						jq_qx= true;
+						jq_name=field_name;
+					}
+					/** 监区权限 结束 */
+					
+				}
+				
+				/** 监区权限 开始 */
+				if(jq_qx){
+					String token = WebContextUtil.getRequest().getHeader(Constants.TOKEN_NAME);
+					JqRoleManager jqRoleManager = new JqRoleManager();
+					String jqs = jqRoleManager.getJqs(token);
+					if("admin".equals(jqs)){
+					}else if(StringUtils.isBlank(jqs)){
+						leftJoinWhere+=" AND 1<>1 ";
+					}else if(StringUtils.isNotBlank(jqs)){
+						leftJoinWhere+=" AND a."+jq_name+" in ("+jqs+") ";
 					}
 				}
+				/** 监区权限 结束 */
+				
 			} catch (Exception e) {
 			}
-			
-			String countSql = "select ISNULL(count(*),0) AS count from " + tableName+"  where 1=1 " + where_fields.toString();
+			String countSql = "select ISNULL(count(*),0) AS count from " + tableName+" a "+leftJoinTable+"  where 1=1 " + where_fields.toString()+" "+leftJoinWhere;
 			System.out.println("执行查询count语句: [ "+countSql+" ]");
 			System.out.println("参数："+params);
 			SqlRowSet rowSet = jdbcTemplate.queryForRowSet(countSql, params.toArray());
@@ -370,7 +447,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			}
 			return count;
 		}
-		return null;
+		return 0;
 	
 	}
 	

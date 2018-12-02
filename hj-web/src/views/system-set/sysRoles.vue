@@ -48,16 +48,14 @@
       </el-table-column>
       <el-table-column align="center" :label="$t('criminal.actions')" width="200" >
         <template slot-scope="scope">
-          <span v-if="scope.row.isAdmin ==-1">超级管理员不能更改</span>
-          <el-button v-if="scope.row.isAdmin !=-1" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button v-if="scope.row.isAdmin !=-1"  size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
       <el-table-column align="center" label="权限设置" width="240" >
         <template slot-scope="scope">
-          <span v-if="scope.row.isAdmin ==-1">超级管理员不能更改</span>
-          <el-button v-if="scope.row.isAdmin !=-1"  size="mini" type="info" icon="el-icon-setting" @click="openAuthority(scope.row)">分配权限</el-button>
-          <el-button v-if="scope.row.isAdmin !=-1" type="info" size="mini" icon="el-icon-plus" @click="openUser(scope.row)">添加用户</el-button>
+          <el-button size="mini" type="info" icon="el-icon-setting" @click="openAuthority(scope.row)">分配权限</el-button>
+          <el-button type="info" size="mini" icon="el-icon-plus" @click="openUser(scope.row)">添加用户</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -98,7 +96,6 @@
 				        <el-tree
 						  :data="menuData"
 						  show-checkbox
-						  :default-expanded-keys="menuCheckedKeys"
 						  check-on-click-node
 						  :default-checked-keys="menuCheckedKeys"
 						  node-key="id"

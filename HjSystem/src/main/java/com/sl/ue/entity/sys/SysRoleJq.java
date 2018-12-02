@@ -18,7 +18,7 @@ public class SysRoleJq implements java.io.Serializable{
     /** 监区id */
     @Id
     @DbField("jq_id")
-    private Integer jqId;
+    private String jqId;
 
     public Integer getRoleId() {
         return this.roleId;
@@ -27,11 +27,11 @@ public class SysRoleJq implements java.io.Serializable{
     public void setRoleId(Integer roleId) {
         this.roleId = roleId;
     }
-    public Integer getJqId() {
+    public String getJqId() {
         return this.jqId;
     }
 
-    public void setJqId(Integer jqId) {
+    public void setJqId(String jqId) {
         this.jqId = jqId;
     }
 }

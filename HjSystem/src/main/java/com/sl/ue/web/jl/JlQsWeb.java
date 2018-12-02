@@ -3,13 +3,17 @@ package com.sl.ue.web.jl;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.service.jl.JlQsService;
+import com.sl.ue.util.Constants;
 import com.sl.ue.util.http.Result;
+import com.sl.ue.util.http.WebContextUtil;
+import com.sl.ue.util.http.token.JqRoleManager;
 
 @RestController
 @RequestMapping("/jlQs")
@@ -34,6 +38,20 @@ public class JlQsWeb extends Result{
 
     @RequestMapping("/findCount")
     public String findCount(JlQsVO model){
+    	StringBuffer leftJoinTable = new StringBuffer();
+    	StringBuffer leftJoinWhere = new StringBuffer();
+    	String token = WebContextUtil.getRequest().getHeader(Constants.TOKEN_NAME);
+		JqRoleManager jqRoleManager = new JqRoleManager();
+		String jqs = jqRoleManager.getJqs(token);
+		if("admin".equals(jqs)){
+		}else if(StringUtils.isBlank(jqs)){
+			leftJoinWhere.append(" AND 1<>1 ");
+		}else if(StringUtils.isNotBlank(jqs)){
+			leftJoinTable.append(" LEFT JOIN JL_FR AS b ON a.FR_No=b.FR_No");
+			leftJoinWhere.append(" AND b.JQ in("+jqs+")");
+		}
+		model.setLeftJoinTable(leftJoinTable.toString());
+		model.setLeftJoinWhere(leftJoinWhere.toString());
         Integer count = jlQsSQL.count(model);
         this.putJson("count", count);
         return this.toResult();

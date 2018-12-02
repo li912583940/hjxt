@@ -4,6 +4,8 @@ import request from '@/utils/request'
 
 export const findPojo = params => { return request.get('/sysUser/findPojo', { params: params } ).then(res => res) }
 
+export const findCount = params => { return request.get('/sysUser/findCount', { params: params } ).then(res => res) }
+
 export const findOne = params => { return request.get('/sysUser/findOne', { params: params } ).then(res => res) }
 
 export const RequestAdd = params => { return request.post('/sysUser/add', params ).then(res => res) }

@@ -48,4 +48,10 @@ public interface JlHjRecService extends BaseService<JlHjRecVO>{
 	 * L_晓天  @2018年11月30日
 	 */
 	public void exportExcel(JlHjRecVO model, HttpServletRequest request, HttpServletResponse response);
+	
+	/**
+	 * 说明 [获取一个星期内每天会见总数]
+	 * L_晓天  @2018年12月2日
+	 */
+	public String getWeekCount();
 }

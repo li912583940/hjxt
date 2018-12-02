@@ -161,10 +161,12 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 		return result.toResult();
 	}
 	
-	public String getJqs(Integer userId){
-		
+	public String getJqs(SysUserVO loginUser){
+		if(loginUser.getIsSuper()==1){
+			return "admin";
+		}
 		SysUserRoleVO sysUserRole = new SysUserRoleVO();
-		sysUserRole.setUserId(userId);
+		sysUserRole.setUserId(loginUser.getWebId());
 		List<SysUserRoleVO> roleList = sysUserRoleSQL.findList(sysUserRole);
 		String roles = "";
 		for(SysUserRoleVO t : roleList){
@@ -178,7 +180,7 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 		List<SysRoleJqVO> roleJqList = sysRoleJqSQL.findList(roleJq);
 		String jqs = "";
 		for(SysRoleJqVO t : roleJqList){
-			jqs+=t.getJqId()+",";
+			jqs+="'"+t.getJqId()+"',";
 		}
 		return StringUtil.lastComma(jqs);
 	}

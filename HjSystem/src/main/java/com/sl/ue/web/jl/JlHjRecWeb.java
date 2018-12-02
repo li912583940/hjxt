@@ -125,4 +125,14 @@ public class JlHjRecWeb extends Result{
     		HttpServletRequest request, HttpServletResponse response) {
 		jlHjRecSQL.exportExcel(model, request, response);
     }
+	
+	/**
+	 * 说明 [获取一个星期内每天会见总数]
+	 * L_晓天  @2018年12月2日
+	 */
+	@RequestMapping("/getWeekCount")
+	public String getWeekCount(){
+		return jlHjRecSQL.getWeekCount();
+	}
+
 }

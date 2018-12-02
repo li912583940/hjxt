@@ -31,5 +31,5 @@ public interface SysUserService extends BaseService<SysUserVO>{
 	 * 说明 [获取用户的监区权限]
 	 * L_晓天  @2018年12月1日
 	 */
-	public String getJqs(Integer userId);
+	public String getJqs(SysUserVO loginUser);
 }

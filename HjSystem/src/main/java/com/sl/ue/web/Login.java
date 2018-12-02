@@ -62,7 +62,7 @@ public class Login extends Result{
 			if(loginUser.getIsSuper()==1){
 				jqRoleManager.putJqRole(token, "admin");
 			}else{
-				String jqs = sysUserSQL.getJqs(loginUser.getWebId());
+				String jqs = sysUserSQL.getJqs(loginUser);
 				jqRoleManager.putJqRole(token, jqs);
 			}
 			return this.toResult();

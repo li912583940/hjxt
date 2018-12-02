@@ -192,7 +192,7 @@ public class SysRoleServiceImpl extends BaseSqlImpl<SysRoleVO> implements SysRol
 		sysRoleJq.setRoleId(roleId);
 		List<SysRoleJqVO> list = sysRoleJqSQL.findList(sysRoleJq);
 		
-		List<Integer> reList = new ArrayList<Integer>();
+		List<String> reList = new ArrayList<String>();
 		for(SysRoleJqVO t : list){
 			reList.add(t.getJqId());
 		}
@@ -284,7 +284,7 @@ public class SysRoleServiceImpl extends BaseSqlImpl<SysRoleVO> implements SysRol
 				}
 				SysRoleJqVO t = new SysRoleJqVO();
 				t.setRoleId(roleId);
-				t.setJqId(Integer.parseInt(i));
+				t.setJqId(i);
 				sysRoleJqSQL.add(t);
 			}
 			authorityJq=1;

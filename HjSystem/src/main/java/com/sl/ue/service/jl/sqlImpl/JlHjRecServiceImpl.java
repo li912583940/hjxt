@@ -438,4 +438,18 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 		
 	
     }
+    
+    
+    public String getWeekCount(){
+    	Result result = new Result();
+    	String sql = "SELECT count(*) AS count,timedate from"
+    			+ " (SELECT  CONVERT(VARCHAR(10),Call_Time_Start,111) as timedate"
+    			+ 	" FROM JL_HJ_REC"
+    			+ 	" where Call_Time_Start>= convert(varchar(10),dateadd(day,-7,getdate()),120)"
+    			+ 	" ) as aa"
+    			+ " group by aa.timedate";
+    	List<Map<String, Object>> list = this.jdbcTemplate.queryForList(sql);
+    	result.putData(list);
+    	return result.toResult();
+    }
 }
