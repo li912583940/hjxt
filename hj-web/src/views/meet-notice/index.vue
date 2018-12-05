@@ -116,6 +116,18 @@ export default {
   created() {
     this.getList()
   },
+  mounted() {
+  	if(this.timer){
+  		this.clearInterval(this.timer)
+  	}else{
+  		this.timer = setInterval(() =>{
+  			this.getList()
+  		}, 10000)
+  	}
+  },
+  destroyed() {
+  	clearInterval(this.timer)
+  },
   methods: {
     getList() {
       findPojo(this.listQuery).then((res) => {

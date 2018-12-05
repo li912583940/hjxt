@@ -46,7 +46,10 @@ import com.sl.ue.service.jl.JlHjRecRatingInfoService;
 import com.sl.ue.service.jl.JlHjRecService;
 import com.sl.ue.service.sys.SysHjServerService;
 import com.sl.ue.util.Config;
+import com.sl.ue.util.Constants;
 import com.sl.ue.util.http.Result;
+import com.sl.ue.util.http.WebContextUtil;
+import com.sl.ue.util.http.token.JqRoleManager;
 import com.sl.ue.util.http.token.TokenUser;
 
 @Service("jlHjRecSQL")
@@ -442,10 +445,22 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     
     public String getWeekCount(){
     	Result result = new Result();
-    	String sql = "SELECT count(*) AS count,timedate from"
+    	String where = "";
+    	String token = WebContextUtil.getRequest().getHeader(Constants.TOKEN_NAME);
+		JqRoleManager jqRoleManager = new JqRoleManager();
+		String jqs = jqRoleManager.getJqs(token);
+		if("admin".equals(jqs)){
+		}else if(StringUtils.isBlank(jqs)){
+			where+=" AND 1<>1 ";
+		}else if(StringUtils.isNotBlank(jqs)){
+			where+=" AND JQ_No in ("+jqs+") ";
+		}
+		
+    	String sql = "SELECT ISNULL(count(*),0) AS count,timedate from"
     			+ " (SELECT  CONVERT(VARCHAR(10),Call_Time_Start,111) as timedate"
     			+ 	" FROM JL_HJ_REC"
     			+ 	" where Call_Time_Start>= convert(varchar(10),dateadd(day,-7,getdate()),120)"
+    			+   where
     			+ 	" ) as aa"
     			+ " group by aa.timedate";
     	List<Map<String, Object>> list = this.jdbcTemplate.queryForList(sql);

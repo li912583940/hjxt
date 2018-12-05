@@ -57,6 +57,9 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
+
+import { findNotTzList } from '@/api/meetNotice'
+
 export default {
   components: {
     Breadcrumb,
@@ -75,6 +78,23 @@ export default {
       'device'
     ])
   },
+  mounted() {
+  	if(this.setButtonRole()==1){
+  		if(this.timer){
+	  		this.clearInterval(this.timer)
+	  	}else{
+	  		this.timer = setInterval(() =>{
+	  			this.getNoticeList()
+	  		}, 30000)
+	  	}
+  	}
+  	
+  },
+  destroyed() {
+  	if(this.timer){
+  		clearInterval(this.timer)
+  	}
+  },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('toggleSideBar')
@@ -83,7 +103,36 @@ export default {
       this.$store.dispatch('LogOut').then(() => {
         location.reload()// In order to re-instantiate the vue-router object to avoid bugs
       })
+    },
+    getNoticeList(){
+    	findNotTzList({}).then(res => {
+    		let list = res.list
+    		if(list.length>0){
+    			let obj = list[0]
+    			this.$notify({
+          title: '会见通知',
+          message: obj.jqName+' '+obj.frName+" 有亲属登记会见，请在《会见通知》菜单查看",
+          position: 'bottom-right',
+          type: 'warning'
+        });
+    		}
+    		
+    	})
+    },
+    setButtonRole() { //设置按钮的权限
+    	let bool = 0
+    	let roles = sessionStorage.getItem("roles")
+    	if(roles.includes('admin')){
+    		bool=1
+    	}else{
+    		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
+    		if(buttonRoles.meetNotice){
+    			bool=1
+    		}
+    	}
+    	return bool
     }
+   
   }
 }
 </script>

@@ -7,6 +7,7 @@ import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import { debounce } from '@/utils'
 
+import {GetWeekCount } from '@/api/meetRecord'
 
 export default {
   props: {
@@ -20,79 +21,59 @@ export default {
     },
     height: {
       type: String,
-      default: '350px'
+      default: '400px'
     },
     autoResize: {
       type: Boolean,
       default: true
-    },
-    chartData: {
-      type: Object,
-      required: true
     }
+
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      weekCount: [],
+      weekDate: []
     }
   },
-  watch: {
-    chartData: {
-      deep: true,
-      handler(val) {
-        this.setOptions(val)
-      }
-    }
+
+  created() {
+     this.getWeekCount()
   },
   mounted() {
-    this.initChart()
-    if (this.autoResize) {
-      this.__resizeHandler = debounce(() => {
-        if (this.chart) {
-          this.chart.resize()
-        }
-      }, 100)
-      window.addEventListener('resize', this.__resizeHandler)
-    }
-
-    // 监听侧边栏的变化
-    const sidebarElm = document.getElementsByClassName('sidebar-container')[0]
-    sidebarElm.addEventListener('transitionend', this.sidebarResizeHandler)
-  },
-  beforeDestroy() {
-    if (!this.chart) {
-      return
-    }
-    if (this.autoResize) {
-      window.removeEventListener('resize', this.__resizeHandler)
-    }
-
-    const sidebarElm = document.getElementsByClassName('sidebar-container')[0]
-    sidebarElm.removeEventListener('transitionend', this.sidebarResizeHandler)
-
-    this.chart.dispose()
-    this.chart = null
   },
   methods: {
-    sidebarResizeHandler(e) {
-      if (e.propertyName === 'width') {
-        this.__resizeHandler()
-      }
-    },
-    setOptions({ expectedData, actualData } = {}) {
-      this.chart.setOption({
+    getWeekCount(){
+  		GetWeekCount({}).then(res => {
+  			let list = res.list
+  			for(let x of list){
+  				this.weekCount.push(x.count)
+  				this.weekDate.push(x.timedate)
+  			}
+  			this.initChart()
+  		})
+  	},
+  	
+    initChart() {
+      this.chart = echarts.init(this.$el, 'macarons')
+//    this.setOptions(this.chartData)
+			this.chart.setOption({
+				title : {
+	        text: '一周内会见次数变化',
+	        subtext: '只能查看权限内数据'
+    		},
         xAxis: {
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: this.weekDate,
           boundaryGap: false,
           axisTick: {
             show: false
           }
         },
         grid: {
-          left: 10,
-          right: 10,
+          left: 20,
+          right: 30,
           bottom: 20,
-          top: 30,
+          top: 60,
           containLabel: true
         },
         tooltip: {
@@ -107,50 +88,28 @@ export default {
             show: false
           }
         },
-        legend: {
-          data: ['expected', 'actual']
-        },
-        series: [{
-          name: 'expected', itemStyle: {
-            normal: {
-              color: '#FF005A',
-              lineStyle: {
-                color: '#FF005A',
-                width: 2
-              }
-            }
-          },
-          smooth: true,
-          type: 'line',
-          data: expectedData,
-          animationDuration: 2800,
-          animationEasing: 'cubicInOut'
-        },
-        {
-          name: 'actual',
-          smooth: true,
-          type: 'line',
-          itemStyle: {
-            normal: {
-              color: '#3888fa',
-              lineStyle: {
-                color: '#3888fa',
-                width: 2
-              },
-              areaStyle: {
-                color: '#f3f8ff'
-              }
-            }
-          },
-          data: actualData,
-          animationDuration: 2800,
-          animationEasing: 'quadraticOut'
-        }]
+//      legend: {
+//        data: ['expected', 'actual']
+//      },
+        series: [
+	        {
+	          name: '次数', itemStyle: {
+	            normal: {
+	              color: '#FF005A',
+	              lineStyle: {
+	                color: '#FF005A',
+	                width: 2
+	              }
+	            }
+	          },
+	          smooth: true,
+	          type: 'line',
+	          data: this.weekCount,
+	          animationDuration: 2800,
+	          animationEasing: 'cubicInOut'
+	        }
+        ] 
       })
-    },
-    initChart() {
-      this.chart = echarts.init(this.$el, 'macarons')
-      this.setOptions(this.chartData)
     }
   }
 }

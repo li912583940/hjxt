@@ -1,5 +1,6 @@
 package com.sl.ue.web.hj;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,4 +30,14 @@ public class HjNoticeWeb extends Result{
         this.putPojo(map);
         return this.toResult();
     }
+	
+	@RequestMapping("/findNotTzList")
+	public String findNotTzList(){
+		JlHjDjVO jlHjDj = new JlHjDjVO();
+		jlHjDj.setState(0);
+		jlHjDj.setPageTzState(0);
+		List<JlHjDjVO> list = jlHjDjSQL.findList(jlHjDj);
+		this.putData(list);
+		return this.toResult();
+	}
 }
