@@ -13,7 +13,7 @@ import com.sl.ue.hj.util.StringUtil;
  */
 public class WebBean {
 
-	private String path ="G:\\声联项目\\hjxt\\HjSystem\\src\\main\\java\\com\\sl\\ue\\web";
+	private String path ="G:\\声联项目\\ycsp\\SpSystem\\src\\main\\java\\com\\sl\\ue\\web";
 	
 	public void execute(String fileName,  String pick){
 		String startPath = path+"\\"+pick;

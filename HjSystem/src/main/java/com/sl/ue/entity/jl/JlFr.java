@@ -97,7 +97,7 @@ public class JlFr implements java.io.Serializable {
 	@DbField("HJ_STOP_TIME")
 	private Date hjStopTime;
 	@DbField("HJ_STOP_SM")
-	private String hjStopSM;
+	private String hjStopSm;
 
 	
 	public Integer getWebId() {
@@ -436,12 +436,12 @@ public class JlFr implements java.io.Serializable {
 		this.hjStopTime = hjStopTime;
 	}
 
-	public String getHjStopSM() {
-		return hjStopSM;
+	public String getHjStopSm() {
+		return hjStopSm;
 	}
 
-	public void setHjStopSM(String hjStopSM) {
-		this.hjStopSM = hjStopSM;
+	public void setHjStopSm(String hjStopSm) {
+		this.hjStopSm = hjStopSm;
 	}
 
 }

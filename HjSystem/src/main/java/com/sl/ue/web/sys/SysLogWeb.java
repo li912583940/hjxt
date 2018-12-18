@@ -27,7 +27,7 @@ public class SysLogWeb extends Result{
 
     @RequestMapping("/findPojo")
     public String findPojo(SysLogVO model, Integer pageSize, Integer pageNum){
-        Map<String, Object> map = sysLogSQL.findPojo(model, pageSize, pageNum);
+        Map<String, Object> map = sysLogSQL.findPojoLeft(model, pageSize, pageNum);
         this.putPojo(map);
         return this.toResult();
     }

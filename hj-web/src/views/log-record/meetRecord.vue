@@ -94,13 +94,13 @@
           <el-button v-if="buttonRole.downAudioVideoPermission==1" type="primary" size="mini" @click="downRecord(scope.row)">下载录音录像</el-button>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.notesPermission==1 || buttonRole.seeNotesPermission==1" width="200" align="center" label="摘要操作">
+      <el-table-column v-if="buttonRole.notesPermission==1 || buttonRole.seeNotesPermission==1" width="220" align="center" label="摘要操作">
         <template slot-scope="scope">
           <el-button v-if="buttonRole.notesPermission==1" type="primary" size="mini" @click="zhushi(scope.row)">注释</el-button>
           <el-button v-if="buttonRole.seeNotesPermission==1" type="primary" size="mini" @click="zhushiAll(scope.row)">查看所有注释</el-button>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.playAudioPermission==1 || buttonRole.downAudioPermission==1" width="200" align="center" label="录音操作">
+      <el-table-column v-if="buttonRole.playAudioPermission==1 || buttonRole.downAudioPermission==1" width="220" align="center" label="录音操作">
         <template slot-scope="scope">
           <el-button v-if="buttonRole.playAudioPermission==1" type="primary" size="mini" @click="palyTape(scope.row)">播放录音</el-button>
           <el-button v-if="buttonRole.downAudioPermission==1" type="primary" size="mini" @click="down3(scope.row.callRecfileUrl)">下载录音</el-button>
@@ -113,7 +113,7 @@
           <span v-if="scope.row.recRatingState==2">正常</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.ratingPermission==1 || buttonRole.seeRatingPermission==1" width="200" align="center" label="评级操作">
+      <el-table-column v-if="buttonRole.ratingPermission==1 || buttonRole.seeRatingPermission==1" width="220" align="center" label="评级操作">
         <template slot-scope="scope">
           <el-button v-if="buttonRole.ratingPermission==1" type="primary" size="mini" @click="openRatingState(scope.row)">评级</el-button>
           <el-button v-if="buttonRole.seeRatingPermission==1" type="primary" size="mini" @click="openRatingStateAll(scope.row)">查看所有评级</el-button>
@@ -522,9 +522,6 @@ export default {
 	    /** 播放录音录像 开始 */
 	    dialogPlayVisible: false,
 	    
-	    asl: '/阳光电影www.ygdy8.com.巴比龙.BD.720p.中英双字幕.mkv',
-	    asla: '/20180707154146278_011@1.mp4',
-	    aslb: 'F:/DD/Lollipop.mp3',
 	    dialogPlayDownVisible: false,
 	    callRecfileUrl: undefined,
 	    callVideofile1Url: undefined,
@@ -718,8 +715,7 @@ export default {
     /** 播放录音录像 开始 */
     playRecor(row){ //播放录音录像
     	this.dialogPlayVisible =true
-    	//this.callRecfileUrl = row.callRecfile
-    	this.callRecfileUrl = "/api/file"+this.asl
+    	this.callRecfileUrl = row.callRecfileUrl
     },
     downRecord(row){ //下载录音录像
     	var userAgent = navigator.userAgent.toLowerCase();
@@ -1005,19 +1001,21 @@ export default {
    
     /** 设置权限 开始 */
     setButtonRole() { //设置按钮的权限
+    	console.log(111)
     	let roles = sessionStorage.getItem("roles")
+    	console.log(roles)
     	if(roles.includes('admin')){
-    		this.exportPermission= 1
-      	this.playAudioVideoPermission= 1
-      	this.downAudioVideoPermission= 1
-      	this.notesPermission= 1
-      	this.seeNotesPermission= 1
-      	this.playAudioPermission= 1
-      	this.downAudioPermission= 1
-      	this.ratingPermission= 1
-      	this.seeRatingPermission= 1
-      	this.seeAssessmentPermission= 1
-      	this.seeOtherPermission= 1
+    		this.buttonRole.exportPermission= 1
+      	this.buttonRole.playAudioVideoPermission= 1
+      	this.buttonRole.downAudioVideoPermission= 1
+      	this.buttonRole.notesPermission= 1
+      	this.buttonRole.seeNotesPermission= 1
+      	this.buttonRole.playAudioPermission= 1
+      	this.buttonRole.downAudioPermission= 1
+      	this.buttonRole.ratingPermission= 1
+      	this.buttonRole.seeRatingPermission= 1
+      	this.buttonRole.seeAssessmentPermission= 1
+      	this.buttonRole.seeOtherPermission= 1
     	}else{
     		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
     		let meetRecord = buttonRoles.meetRecord

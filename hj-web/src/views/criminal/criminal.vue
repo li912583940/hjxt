@@ -9,20 +9,37 @@
         <el-option v-for="item in jqs" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.jbNo" placeholder="选择级别">
+        <el-option v-for="item in jbNos" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入IC卡号" v-model="listQuery.frCard" clearable>
+      </el-input>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.state" placeholder="选择服刑状态">
+        <el-option v-for="item in states" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.hjJb" placeholder="选择会见级别">
+        <el-option v-for="item in hjJbs" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.stateZdzf" placeholder="选择重点罪犯">
+        <el-option v-for="item in stateZdzfs" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
       <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('criminal.add')}}</el-button>
       <el-button v-if="buttonRole.exportPermission==1" class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
-      <el-checkbox class="filter-item" style='margin-left:15px;' @change='tableKey=tableKey+1' v-model="showReviewer">{{$t('criminal.reviewer')}}</el-checkbox>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 100%">
-      <el-table-column align="center" :label="$t('criminal.id')" width="80">
+      style="width: 2061px">
+      <el-table-column align="center" :label="$t('criminal.id')" width="160">
         <template slot-scope="scope">
           <span>{{scope.row.webId}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" :label="$t('currency.frNo')">
+      <el-table-column width="160" align="center" :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
@@ -32,48 +49,49 @@
           <span>{{scope.row.frName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" :label="$t('currency.jqName')">
+      <el-table-column width="160" align="center" :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="级别">
+      <el-table-column width="160" align="center" label="IC卡号">
+        <template slot-scope="scope">
+          <span>{{scope.row.frCard}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="160" align="center" label="级别">
         <template slot-scope="scope">
           <span>{{scope.row.jbName}}</span>
         </template>
       </el-table-column>
-      
-      <el-table-column width="140" align="center" label="当月会见次数">
+      <el-table-column width="160" align="center" label="当月会见次数">
         <template slot-scope="scope">
           <span>{{scope.row.hjUse}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="当月剩余次数">
+      <el-table-column width="160" align="center" label="当月剩余次数">
         <template slot-scope="scope">
           <span>{{scope.row.hjLeft}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" label="入监时间">
+      <el-table-column width="180" align="center" label="入监时间">
         <template slot-scope="scope">
           <span>{{scope.row.infoRjsj}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" label="亲属人数">
+      <el-table-column width="160" align="center" label="重点罪犯">
         <template slot-scope="scope">
-          <span>{{scope.row.qsNum}}</span>
+          <span v-if="scope.row.stateZdzf==1" style="color: red;">是</span>
+          <span v-if="scope.row.stateZdzf==0">否</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" label="重点罪犯">
+      <el-table-column width="160" align="center" label="会见级别">
         <template slot-scope="scope">
-          <span>{{scope.row.infoZdzf}}</span>
+          <span v-if="scope.row.hjJb==1">正常</span>
+          <span v-if="scope.row.hjJb==-1" style="color: red;">禁止</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" label="会见级别">
-        <template slot-scope="scope">
-          <span>{{scope.row.hjJb}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column v-if="buttonRole.queryQsPermission==1 || buttonRole.editPermission==1 || buttonRole.deletePermission==1" align="center" :label="$t('criminal.actions')" width="240" class-name="small-padding fixed-width" fixed="right">
+      <el-table-column v-if="buttonRole.queryQsPermission==1 || buttonRole.editPermission==1 || buttonRole.deletePermission==1" align="center" :label="$t('criminal.actions')" width="280" fixed="right">
         <template slot-scope="scope">
         	<el-button v-if="buttonRole.queryQsPermission==1" type="primary" size="mini" @click="handleQsManage(scope.row)">亲属</el-button>
           <el-button v-if="buttonRole.editPermission==1" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">{{$t('criminal.edit')}}</el-button>
@@ -91,7 +109,7 @@
 
     <!-- 新增或编辑 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="80px" style='width: 400px; margin-left:25%;' >
+      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="100px" style='width: 400px; margin-left:25%;' >
         <el-form-item :label="$t('currency.frNo')" prop="frNo">
           <el-input v-if="dialogStatus=='create'" v-model="dataForm.frNo"></el-input>
           <el-input v-else v-model="dataForm.frNo" :disabled="true"></el-input>
@@ -115,13 +133,23 @@
           </el-select>
         </el-form-item>
         <el-form-item label="会见级别" prop="hjJb">
-          <el-select class="filter-item" v-model="dataForm.hjJb" placeholder="请选择">
-            <el-option v-for="item in  hjJbs" :key="item.id" :label="item.name" :value="item.id">
+          <el-select class="filter-item" v-model="dataForm.hjJb" placeholder="请选择" @change="hjJbChange">
+            <el-option v-for="item in hjJbs" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="禁止时间" prop="hjStopTime">
+          <el-date-picker v-if="dataForm.hjJb==-1" v-model="dataForm.hjStopTime" type="datetime" placeholder="请选取禁止时间" >
+          </el-date-picker>
+          <el-date-picker v-else v-model="dataForm.hjStopTime" type="datetime" placeholder="请选取禁止时间" :disabled="true">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="禁止说明" prop="hjStopSm">
+          <el-input  v-if="dataForm.hjJb==-1" v-model="dataForm.hjStopSm"></el-input>
+          <el-input  v-else v-model="dataForm.hjStopSm" :disabled="true"></el-input>
+        </el-form-item>
         <el-form-item label="入监时间" prop="infoRjsj">
-          <el-date-picker v-model="dataForm.infoRjsj" type="datetime" placeholder="请选取时间">
+          <el-date-picker v-model="dataForm.infoRjsj" type="datetime" placeholder="请选取入监时间">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="罪名" prop="infoZm">
@@ -131,7 +159,7 @@
           <el-input v-model="dataForm.infoXq"></el-input>
         </el-form-item>
         <el-form-item label="出生日期" prop="infoCsrq">
-          <el-date-picker v-model="dataForm.infoCsrq" type="datetime" placeholder="请选取时间">
+          <el-date-picker v-model="dataForm.infoCsrq" type="datetime" placeholder="请选取出生日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="住址" prop="infoHome">
@@ -161,17 +189,12 @@
     </el-dialog>
 
     <!-- 亲属弹框  -->
-    <el-dialog :title="qs_frname" :visible.sync="dialogQsVisible" width="70%">
+    <el-dialog :title="qs_frname" :visible.sync="dialogQsVisible" width="1381px">
     	<div class="filter-container">
 	      <el-button v-if="buttonRole.addQsPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleQsCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
 	    </div>
       <el-table :key='qsTableKey' :data="qsList" v-loading="qsListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-	      style="width: 100%">
-	      <el-table-column align="center" :label="$t('criminal.id')" width="80">
-	        <template slot-scope="scope">
-	          <span>{{scope.row.webId}}</span>
-	        </template>
-	      </el-table-column>
+	      style="width: 1281px;margin-left: 10px;">
 	      <el-table-column width="160" align="center" label="亲属姓名">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.qsName}}</span>
@@ -202,7 +225,7 @@
 	          <span>{{scope.row.bz}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column v-if="buttonRole.editQsPermission==1 || buttonRole.deleteQsPermission==1" align="center" :label="$t('criminal.actions')" width="180" class-name="small-padding fixed-width" fixed="right">
+	      <el-table-column v-if="buttonRole.editQsPermission==1 || buttonRole.deleteQsPermission==1" align="center" :label="$t('criminal.actions')" width="200"  fixed="right">
 	        <template slot-scope="scope">
 	          <el-button v-if="buttonRole.editQsPermission==1" type="primary" size="mini" icon="el-icon-edit" @click="handleQsUpdate(scope.row)">编辑</el-button>
 	          <el-button v-if="buttonRole.deleteQsPermission==1" size="mini" type="danger" icon="el-icon-delete" @click="handleQsDelete(scope.row)">删除</el-button>
@@ -295,20 +318,25 @@ export default {
         pageSize: 10,
         frNo: undefined,
         frName: undefined,
-        jq: undefined
+        jq: undefined,
+        jbNo: undefined,
+        frCard: undefined,
+        state: undefined,
+        isHjStop: undefined,
+        stateZdzf: undefined
       },
-      statusOptions: ['published', 'draft', 'deleted'],
-      showReviewer: false,
+      
       // 新增或编辑弹窗
       dataForm: { 
         webId: undefined,
         frName: undefined,
-        frNo: '',
+        frNo: undefined,
         frCard: undefined,
-        jy: '测试监狱',
-        jq: '-1',
+        jq: undefined,
         jbNo: undefined,
         hjJb: 1,
+        hjStopTime: undefined,
+        hjStopSm: undefined,
         infoRjsj: undefined,
         infoZm: undefined,
         infoXq: undefined,
@@ -323,6 +351,16 @@ export default {
       jbNos: [ //犯人级别下拉框
       
       ],
+      states: [
+      	{
+      		id: 0,
+      		name: '服刑中'
+      	},
+      	{
+      		id: 1,
+      		name: '已出狱'
+      	}
+      ],
       hjJbs: [
         {
         	id: 1,
@@ -331,6 +369,16 @@ export default {
       	{
       		id: -1,
       		name: '禁止'
+      	}
+      ],
+      stateZdzfs: [
+        {
+        	id: 1,
+        	name: '是'
+        },
+      	{
+      		id: 0,
+      		name: '否'
       	}
       ],
       dialogFormVisible: false,
@@ -538,10 +586,11 @@ export default {
 	    this.dataForm.frName= undefined,
 	    this.dataForm.frNo= '',
 	    this.dataForm.frCard= undefined,
-	    this.dataForm.jy= '测试监狱',
 	    this.dataForm.jq= this.jqs.length === 0?undefined:this.jqs[0].id ,
 	    this.dataForm.jbNo= this.jbNos.length === 0?undefined:this.jbNos[0].id,
 	    this.dataForm.hjJb= 1,
+	    this.dataForm.hjStopTime = undefined,
+      this.dataForm.hjStopSm = undefined,
 	    this.dataForm.infoRjsj= undefined,
 	    this.dataForm.infoZm= undefined,
 	    this.dataForm.infoXq= undefined,
@@ -549,6 +598,12 @@ export default {
 	    this.dataForm.infoHome= undefined,
 	    this.dataForm.monitorFlag= '0',
 	    this.dataForm.stateZdzf= 1
+	  },
+	  hjJbChange(val) { // 会见级别 正常 清空禁止时间 禁止说明
+	  	if(val==1){
+	  		this.dataForm.hjStopTime=undefined
+	  		this.dataForm.hjStopSm=undefined
+	  	}
 	  },
     handleCreate() {
       this.dialogStatus = 'create'
@@ -589,6 +644,8 @@ export default {
         this.dataForm.jq = res.data.jq,
         this.dataForm.jbNo = res.data.jbNo,
         this.dataForm.hjJb = res.data.hjJb,
+        this.dataForm.hjStopTime =  res.data.hjStopTime,
+        this.dataForm.hjStopSm = res.data.hjStopSm,
         this.dataForm.infoRjsj = res.data.infoRjsj,
         this.dataForm.infoZm = res.data.infoZm,
         this.dataForm.infoXq = res.data.infoXq,

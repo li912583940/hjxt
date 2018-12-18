@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class Entity {
 
-	static final String url = "G:\\声联项目\\hjxt\\HjSystem";
+	static final String url = "G:\\声联项目\\ycsp\\SpSystem";
 	// key:表名, value:类名
 	static final Map<String, String> enMap = new HashMap<String, String>();
 	static{
@@ -21,7 +21,8 @@ public class Entity {
 		//enMap.put("JL_QS_GX", "JlQsGx");
 		
 		//enMap.put("sys_role_jq", "SysRoleJq");
-		enMap.put("JL_HJ_SP_FR", "JlHjSpFr");
+		//enMap.put("JL_HJ_SP_FR", "JlHjSpFr");
+		enMap.put("sp_access_token", "SpAccessToken");
 	}
 	
 	
