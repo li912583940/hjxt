@@ -8,7 +8,7 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 1651px">
+      style="width: 1671px">
       <el-table-column width="100" align="center"  :label="$t('criminal.id')">
         <template slot-scope="scope">
           <span>{{scope.row.id}}</span>
@@ -52,7 +52,7 @@
           <el-button size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="权限设置" width="240" >
+      <el-table-column align="center" label="权限设置" width="260" >
         <template slot-scope="scope">
           <el-button size="mini" type="info" icon="el-icon-setting" @click="openAuthority(scope.row)">分配权限</el-button>
           <el-button type="info" size="mini" icon="el-icon-plus" @click="openUser(scope.row)">添加用户</el-button>

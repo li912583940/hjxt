@@ -17,4 +17,13 @@ public interface JlFrService extends BaseService<JlFrVO>{
 	 * @作者 LXT @2018年9月30日
 	 */
 	public void exportExcel(JlFrVO model, HttpServletRequest request, HttpServletResponse response);
+	
+	/**
+	 * 说明 [导入excel]
+	 * @param request
+	 * @param response
+	 * @return
+	 * L_晓天  @2018年12月19日
+	 */
+	public String importExcel(HttpServletRequest request, HttpServletResponse response);
 }

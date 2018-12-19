@@ -29,7 +29,17 @@
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
       <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('criminal.add')}}</el-button>
-      <el-button v-if="buttonRole.exportPermission==1" class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
+      <el-button v-if="buttonRole.exportPermission==1" class="filter-item" style="margin-left: 10px;" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
+    	<el-upload
+    		v-if="buttonRole.importPermission==1"
+    		ref="upload"
+			  class="filter-item"
+			  :action="excelPath"
+			  :on-success="excelSuccess"
+			  :on-error="excelError"
+			  multiple>
+			  <el-button icon="el-icon-upload2" style="margin-left: 10px;" type="primary">导入</el-button>
+			</el-upload>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
@@ -300,6 +310,8 @@ import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, exportExcel,
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
+import { getToken } from '@/utils/auth'
+import { Message, MessageBox } from 'element-ui'
 
 
 export default {
@@ -381,6 +393,8 @@ export default {
       		name: '否'
       	}
       ],
+      excelPath: process.env.BASE_API+"/jlFr/importExcel", //罪犯excel导入地址
+      
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -455,7 +469,7 @@ export default {
       	editPermission: 0,
       	deletePermission: 0,
       	exportPermission: 0,
-      	
+      	importPermission: 0,
       	//亲属相关的
       	queryQsPermission: 0,
       	addQsPermission: 0,
@@ -488,6 +502,21 @@ export default {
       if(!this.listQuery.jq){
       	this.listQuery.jq = undefined
       }
+   		if(!this.listQuery.jbNo){
+   			this.listQuery.jbNo = undefined
+   		}
+   		if(!this.listQuery.frCard){
+   			this.listQuery.frCard = undefined
+   		}
+   		if(!this.listQuery.state){
+   			this.listQuery.state = undefined
+   		}
+   		if(!this.listQuery.isHjStop){
+   			this.listQuery.isHjStop = undefined
+   		}
+   		if(!this.listQuery.stateZdzf){
+   			this.listQuery.stateZdzf = undefined
+   		}
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count
@@ -529,6 +558,7 @@ export default {
     		this.buttonRole.editPermission= 1
     		this.buttonRole.deletePermission= 1
     		this.buttonRole.exportPermission= 1
+    		this.buttonRole.importPermission= 1
     		
     		this.buttonRole.queryQsPermission= 1
     		this.buttonRole.addQsPermission= 1
@@ -547,6 +577,8 @@ export default {
     					this.buttonRole.deletePermission= 1
     				}else if(value=='exportPermission'){
     					this.buttonRole.exportPermission= 1
+    				}else if(value=='importPermission'){
+    					this.buttonRole.importPermission= 1
     				}
     				else if(value=='queryQsPermission'){
     					this.buttonRole.queryQsPermission= 1
@@ -576,6 +608,23 @@ export default {
     handleCurrentChange(val) {
       this.listQuery.pageNum = val
       this.getList()
+    },
+    excelSuccess() {
+    	this.$refs.upload.clearFiles()
+    	Message({
+        message: '文件已上传至服务器，请等待十秒钟左右查询信息。',
+	      type: 'success',
+	      duration: 5 * 1000
+      });
+      
+    },
+    excelError() {
+    	this.$refs.upload.clearFiles()
+    	Message({
+        message: '文件上传失败，请检查文件是否为符合要求的EXCEL表格！',
+	      type: 'error',
+	      duration: 5 * 1000
+      });
     },
     //重置表单
 		resetForm(formName) {
@@ -704,14 +753,27 @@ export default {
       if(!this.listQuery.jq){
       	this.listQuery.jq = undefined
       }
-      
+      if(!this.listQuery.jbNo){
+   			this.listQuery.jbNo = undefined
+   		}
+   		if(!this.listQuery.frCard){
+   			this.listQuery.frCard = undefined
+   		}
+   		if(!this.listQuery.state){
+   			this.listQuery.state = undefined
+   		}
+   		if(!this.listQuery.isHjStop){
+   			this.listQuery.isHjStop = undefined
+   		}
+   		if(!this.listQuery.stateZdzf){
+   			this.listQuery.stateZdzf = undefined
+   		}
 			exportExcel(this.listQuery).then(res => {
-				console.log(res)
 	      const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
 	     	const downloadElement = document.createElement('a')
 	     	const href = window.URL.createObjectURL(blob)
 	     	downloadElement.href = href
-	     	downloadElement.download = '服刑人员记录.xls'
+	     	downloadElement.download = '罪犯信息.xls'
 	     	document.body.appendChild(downloadElement)
 	     	downloadElement.click()
      		document.body.removeChild(downloadElement) // 下载完成移除元素

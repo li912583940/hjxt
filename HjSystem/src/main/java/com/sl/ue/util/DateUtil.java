@@ -11,6 +11,15 @@ import java.util.Date;
  */
 public class DateUtil {
 
+	/**
+	 * 说明 [返回当前日期的字符串类型:默认格式  yyyy-MM-dd HH:mm:ss]
+	 * @return
+	 * L_晓天  @2018年12月19日
+	 */
+	public static String getDefaultNow(){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return sdf.format(new Date());
+	}
 	
 	/**
 	 * 说明 [返回日期的字符串类型:默认格式  yyyy-MM-dd HH:mm:ss]

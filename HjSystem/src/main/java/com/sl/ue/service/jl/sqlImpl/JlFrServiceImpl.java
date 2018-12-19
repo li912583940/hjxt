@@ -1,11 +1,19 @@
 package com.sl.ue.service.jl.sqlImpl;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,20 +26,20 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.sl.ue.entity.jl.vo.JlFrVO;
-import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlFrService;
-import com.sl.ue.service.jl.JlQsService;
+import com.sl.ue.util.Config;
+import com.sl.ue.util.DateUtil;
+import com.sl.ue.util.business.FrThread;
 
 @Service("jlFrSQL")
 public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 	
-	@Autowired
-	private JlQsService jlQsSQL;
 	@Override
 	public Map<String, Object> findPojoJoin(JlFrVO model, Integer pageSize, Integer pageNum) {
 		StringBuffer field = new StringBuffer(); // sql关联字段
@@ -63,6 +71,7 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 //		}
 		return map;
 	}
+	
 	@Override
 	public void exportExcel(JlFrVO model, HttpServletRequest request, HttpServletResponse response) {
 		StringBuffer field = new StringBuffer();
@@ -91,7 +100,7 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 //			return ;
 //		}
 		
-		String fileName =  "服刑人员记录.xls";
+		String fileName =  "罪犯信息.xls";
 		
 		OutputStream out = null;
 		
@@ -104,7 +113,7 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 			cellStyle.setDataFormat(book.createDataFormat().getFormat("yyyy-MM-dd"));
 			// 设置标题
 			List<String> title = new ArrayList<String>();
-			title.add("编号");
+			title.add("罪犯编号");
 			title.add("姓名");
 			title.add("监区");
 			title.add("级别");
@@ -181,5 +190,85 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 		
 	}
 
-
+	
+	public String importExcel(HttpServletRequest request, HttpServletResponse response){
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+		MultipartFile mFile = null;
+		for (Iterator<?> i = fileMap.keySet().iterator(); i.hasNext();) {
+			Object obj = i.next();
+			mFile = (MultipartFile) fileMap.get(obj);
+		}
+		String datePath = Config.getPropertiesValue("file.path")+"/excelfile";
+	    String nowStr = DateUtil.getFormat(new Date(), "yyyyMMddHHmmss");
+		BufferedInputStream in =null;
+		BufferedOutputStream out = null;
+		String excelFilePath = null;
+		try {
+			// 得到上传的文件的文件名
+			String filename = mFile.getOriginalFilename();
+			// 获取文件后缀名
+			if (filename == null || ("").equals(filename)) {
+				return "上传文件不存在";
+			}
+			File file = new File(datePath);
+			if(!file.exists()){
+				file.mkdirs();
+			}
+			boolean isPattern = false;
+			String fileExt = filename.substring(filename.lastIndexOf(".")+1);
+			if("xls".equals(fileExt) || "xlsx".equals(fileExt)){
+				isPattern = true;
+			}
+			if(isPattern == false){
+				return "不支持此格式";
+			}
+			excelFilePath = datePath+"/"+nowStr+"."+fileExt;//excel文件临时存储路径
+			System.out.println("路径： "+excelFilePath);
+			File saveFile = new File(excelFilePath);
+			int l = 10*1024*1024;//1M 默认，可在配置文件中设置此值大小
+			String typeBufferSize = Config.getPropertiesValue("file.buffer.size");
+			if(!"".equals(typeBufferSize)){
+				int tfz =Integer.parseInt(typeBufferSize.trim());
+				l = tfz*1024;
+			}
+			in = new BufferedInputStream(mFile.getInputStream());
+			out = new BufferedOutputStream(new FileOutputStream(saveFile));
+			int byteCount = 0;
+			byte[] buffer = new byte[l];
+			int bytesRead = -1;//文件大小
+			while ((bytesRead = in.read(buffer)) != -1) {
+				out.write(buffer, 0, bytesRead);
+				byteCount += bytesRead;
+			}
+			out.flush();
+		} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		}finally {
+			// 启动线程 处理罪犯信息
+			if(StringUtils.isNotBlank(excelFilePath)){
+				FrThread frThread = new FrThread(excelFilePath);
+				frThread.start();
+			}
+			try {
+				if(in!=null){
+					in.close();
+				}
+			}
+			catch (IOException ex) {
+			}
+			try {
+				if(out!=null){
+					out.close();
+				}
+			}
+			catch (IOException ex) {
+			}
+		}
+		
+		System.out.println("成功 ");
+		return "";
+	
+	}
 }

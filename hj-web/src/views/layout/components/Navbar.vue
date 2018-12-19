@@ -85,7 +85,7 @@ export default {
 	  	}else{
 	  		this.timer = setInterval(() =>{
 	  			this.getNoticeList()
-	  		}, 30000)
+	  		}, 300000)
 	  	}
   	}
   	

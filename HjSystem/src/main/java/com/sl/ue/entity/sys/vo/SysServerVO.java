@@ -1,27 +1,17 @@
-package com.sl.ue.entity.jl.vo;
+package com.sl.ue.entity.sys.vo;
 
-import com.sl.ue.entity.jl.JlQs;
+import com.sl.ue.entity.sys.SysServer;
 
-public class JlQsVO extends JlQs{
+public class SysServerVO extends SysServer{
 
     /** 序列化 */
     private static final long serialVersionUID = 1L;
 
-    private String frName; // 犯人姓名
-    
-    public String getFrName() {
-		return frName;
-	}
 
-	public void setFrName(String frName) {
-		this.frName = frName;
-	}
 
     /*---------------------------  处理关联表  -----------------------------*/
 
-   
-
-	private String leftJoinField; // 关联表字段
+    private String leftJoinField; // 关联表字段
 
     private String leftJoinTable; // 关联表
 

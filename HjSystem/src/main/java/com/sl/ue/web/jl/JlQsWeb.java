@@ -3,14 +3,19 @@ package com.sl.ue.web.jl;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.util.Constants;
+import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.WebContextUtil;
 import com.sl.ue.util.http.token.JqRoleManager;
@@ -82,4 +87,10 @@ public class JlQsWeb extends Result{
         return this.toResult();
     }
 
+    
+    @RequestMapping(value="/importExcel",method={RequestMethod.GET,RequestMethod.POST})
+    @IgnoreSecurity
+    public String importExcel(HttpServletRequest request, HttpServletResponse response){
+    	return jlQsSQL.importExcel(request, response);
+    }
 }

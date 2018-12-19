@@ -10,7 +10,16 @@
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
       <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('criminal.add')}}</el-button>
       <el-button v-if="buttonRole.exportPermission==1" class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
-      <el-checkbox class="filter-item" style='margin-left:15px;' @change='tableKey=tableKey+1' v-model="showReviewer">{{$t('criminal.reviewer')}}</el-checkbox>
+    	<el-upload
+    		v-if="buttonRole.importPermission==1"
+    		ref="upload"
+			  class="filter-item"
+			  :action="excelPath"
+			  :on-success="excelSuccess"
+			  :on-error="excelError"
+			  multiple>
+			  <el-button icon="el-icon-upload2" style="margin-left: 10px;" type="primary">导入</el-button>
+			</el-upload>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
@@ -136,12 +145,12 @@
 </template>
 
 <script>
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete } from '@/api/relatives'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, exportExcel } from '@/api/relatives'
 
 import moment from 'moment'
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
-
+import { Message, MessageBox } from 'element-ui'
 
 export default {
   name: 'relatives',
@@ -169,10 +178,10 @@ export default {
       	editPermission: 0,
       	deletePermission: 0,
       	exportPermission: 0,
+      	importPermission: 0,
       },
+      excelPath: process.env.BASE_API+"/jlQs/importExcel", //罪犯excel导入地址
       
-      statusOptions: ['published', 'draft', 'deleted'],
-      showReviewer: false,
       // 新增或编辑弹窗
       dataForm: { 
         webId: undefined,
@@ -265,6 +274,24 @@ export default {
       this.listQuery.pageNum = val
       this.getList()
     },
+    excelSuccess() {
+    	this.$refs.upload.clearFiles()
+    	Message({
+        message: '文件已上传至服务器，请等待十秒钟左右查询信息',
+	      type: 'success',
+	      duration: 5 * 1000
+      });
+      
+    },
+    excelError() {
+    	this.$refs.upload.clearFiles()
+    	Message({
+        message: '文件上传失败，请检查文件是否为符合要求的EXCEL表格！',
+	      type: 'error',
+	      duration: 5 * 1000
+      });
+    },
+    
     setButtonRole() { //设置按钮的权限
     	let roles = sessionStorage.getItem("roles")
     	if(roles.includes('admin')){
@@ -272,6 +299,7 @@ export default {
     		this.buttonRole.editPermission= 1
     		this.buttonRole.deletePermission= 1
     		this.buttonRole.exportPermission= 1
+    		this.buttonRole.importPermission= 1
     	}else{
     		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
     		let relatives = buttonRoles.relatives
@@ -285,6 +313,8 @@ export default {
     					this.buttonRole.deletePermission= 1
     				}else if(value=='exportPermission'){
     					this.buttonRole.exportPermission= 1
+    				}else if(value=='importPermission'){
+    					this.buttonRole.importPermission= 1
     				}
     			}
     		}
@@ -390,6 +420,32 @@ export default {
         })
         this.downloadLoading = false
       })
+    },
+    handleDownload() {
+			if(!this.listQuery.frName){
+      	this.listQuery.frName = undefined
+      }
+      if(!this.listQuery.frNo){
+      	this.listQuery.frNo = undefined
+      }
+      if(!this.listQuery.qsName){
+      	this.listQuery.qsName = undefined
+      }
+			exportExcel(this.listQuery).then(res => {
+	      const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
+	     	const downloadElement = document.createElement('a')
+	     	const href = window.URL.createObjectURL(blob)
+	     	downloadElement.href = href
+	     	downloadElement.download = '亲属信息.xls'
+	     	document.body.appendChild(downloadElement)
+	     	downloadElement.click()
+     		document.body.removeChild(downloadElement) // 下载完成移除元素
+	     	window.URL.revokeObjectURL(href) // 释放掉blob对象
+			}).catch(error => {
+         console.log(error)
+      })
+
+
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {

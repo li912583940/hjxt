@@ -13,3 +13,13 @@ export const RequestAdd = params => { return request.post('/jlQs/add', params ).
 export const RequestEdit = params => { return request.post('/jlQs/edit', params ).then(res => res) }
 
 export const RequestDelete = params => { return request.post('/jlQs/delete', params ).then(res => res) }
+
+// 导出EXCEL
+export function exportExcel(param) {
+  return request({
+    url: '/jlQs/exportExcel',
+    method: 'post',
+    data: param,
+    responseType:'blob'
+  }).then(res => res)
+}

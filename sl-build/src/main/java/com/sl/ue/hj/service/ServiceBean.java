@@ -10,7 +10,7 @@ import com.sl.ue.hj.util.StringUtil;
 
 public class ServiceBean {
 
-	private String path ="G:\\声联项目\\ycsp\\SpSystem\\src\\main\\java\\com\\sl\\ue\\service";
+	private String path ="G:\\声联项目\\hjxt\\HjSystem\\src\\main\\java\\com\\sl\\ue\\service";
 	
 	public void execute(String fileName, String pick){
 		String startPath = path+"\\"+pick; // 文件夹
