@@ -24,14 +24,19 @@
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
       style="width: 100%">
-      <el-table-column width="80" align="center"  :label="$t('criminal.id')">
+      <el-table-column width="140" align="center"  :label="$t('currency.frNo')">
         <template slot-scope="scope">
-          <span>{{scope.row.webId}}</span>
+          <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
       <el-table-column width="140" align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="180" align="center" label="证件号码">
+        <template slot-scope="scope">
+          <span>{{scope.row.qsSfz}}</span>
         </template>
       </el-table-column>
       <el-table-column width="160" align="center" label="亲属姓名">
@@ -59,12 +64,12 @@
           <span>{{scope.row.dz}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="备注">
+      <el-table-column width="300" align="center" label="备注">
         <template slot-scope="scope">
           <span>{{scope.row.bz}}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.editPermission==1 || buttonRole.deletePermission==1" align="center" :label="$t('criminal.actions')" width="180" class-name="small-padding fixed-width">
+      <el-table-column v-if="buttonRole.editPermission==1 || buttonRole.deletePermission==1" align="center" :label="$t('criminal.actions')" width="200" fixed="right">
         <template slot-scope="scope">
           <el-button v-if="buttonRole.editPermission==1" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button v-if="buttonRole.deletePermission==1" size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>

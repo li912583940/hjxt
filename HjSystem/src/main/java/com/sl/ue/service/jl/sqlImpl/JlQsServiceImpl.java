@@ -33,6 +33,7 @@ import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.util.Config;
 import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.business.FrThread;
+import com.sl.ue.util.business.QsThread;
 
 @Service("jlQsSQL")
 public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
@@ -254,8 +255,8 @@ public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
 		}finally {
 			// 启动线程 处理罪犯信息
 			if(StringUtils.isNotBlank(excelFilePath)){
-				FrThread frThread = new FrThread(excelFilePath);
-				frThread.start();
+				QsThread qsThread = new QsThread(excelFilePath);
+				qsThread.start();
 			}
 			try {
 				if(in!=null){
