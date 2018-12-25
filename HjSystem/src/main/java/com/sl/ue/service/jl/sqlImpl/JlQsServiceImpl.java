@@ -32,8 +32,9 @@ import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.util.Config;
 import com.sl.ue.util.DateUtil;
-import com.sl.ue.util.business.FrThread;
-import com.sl.ue.util.business.QsThread;
+import com.sl.ue.util.business.FrThreadXLS;
+import com.sl.ue.util.business.QsThreadXLS;
+import com.sl.ue.util.business.QsThreadXLSX;
 
 @Service("jlQsSQL")
 public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
@@ -176,7 +177,8 @@ public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
 			if(userAgent.indexOf("Chrome")!=-1 || userAgent.indexOf("Safari")!=-1 || userAgent.indexOf("Firefox")!=-1){
 				fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
 			}else{
-				fileName = URLEncoder.encode(fileName,"UTF8");
+				fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+				//fileName = URLEncoder.encode(fileName,"UTF8");
 			}
 			response.setHeader("Content-Disposition", "attachment;filename="+fileName);
 			response.setHeader("Cache-Control","no-cache");//设置头
@@ -194,7 +196,7 @@ public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
 				}
 			}
 		}
-		
+		System.out.println("导出完成");
 	}
 
 	
@@ -211,6 +213,7 @@ public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
 		BufferedInputStream in =null;
 		BufferedOutputStream out = null;
 		String excelFilePath = null;
+		String fileExt = null;
 		try {
 			// 得到上传的文件的文件名
 			String filename = mFile.getOriginalFilename();
@@ -223,7 +226,7 @@ public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
 				file.mkdirs();
 			}
 			boolean isPattern = false;
-			String fileExt = filename.substring(filename.lastIndexOf(".")+1);
+			fileExt = filename.substring(filename.lastIndexOf(".")+1);
 			if("xls".equals(fileExt) || "xlsx".equals(fileExt)){
 				isPattern = true;
 			}
@@ -231,7 +234,6 @@ public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
 				return "不支持此格式";
 			}
 			excelFilePath = datePath+"/"+nowStr+"."+fileExt;//excel文件临时存储路径
-			System.out.println("路径： "+excelFilePath);
 			File saveFile = new File(excelFilePath);
 			int l = 10*1024*1024;//1M 默认，可在配置文件中设置此值大小
 			String typeBufferSize = Config.getPropertiesValue("file.buffer.size");
@@ -254,9 +256,15 @@ public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
 		e.printStackTrace();
 		}finally {
 			// 启动线程 处理罪犯信息
-			if(StringUtils.isNotBlank(excelFilePath)){
-				QsThread qsThread = new QsThread(excelFilePath);
-				qsThread.start();
+			if(StringUtils.isNotBlank(excelFilePath) && StringUtils.isNotBlank(fileExt)){
+				if("xls".equals(fileExt)){
+					QsThreadXLS qsThread = new QsThreadXLS(excelFilePath);
+					qsThread.start();
+				}else if("xlsx".equals(fileExt)){
+					QsThreadXLSX qsThread = new QsThreadXLSX(excelFilePath);
+					qsThread.start();
+				}
+				
 			}
 			try {
 				if(in!=null){

@@ -163,7 +163,19 @@ export const asyncRouterMap = [
       meta: { title: 'meetRegister', icon: 'excel', roles:'meetRegister' }
     }]
   },
-  
+  { // 身份验证
+    path: '/sfYz',
+    component: Layout,
+    meta: {
+      roles:'sfYz'
+    },
+    children: [{
+      path: 'index',
+      component: () => import('@/views/sfYz/index'),
+      name: 'sfYz',
+      meta: { title: 'sfYz', icon: 'form', roles:'sfYz' }
+    }]
+  },
   { // 会见签到 -- 座位分配
     path: '/meetSign',
     component: Layout,

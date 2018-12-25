@@ -7,23 +7,29 @@
   <div class="app-container">
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
       style="width: 1401px">
-      <el-table-column width="200" align="center" label="电话编号">
+      <el-table-column width="200" align="center" label="线路编号">
         <template slot-scope="scope">
           <span>{{scope.row.lineNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="线路状态">
+      <el-table-column width="140" align="center" label="线路状态">
         <template slot-scope="scope">
-          <span v-if="scope.row.state==0">关闭</span>
+          <span v-if="scope.row.state==0" style="color: red;">关闭</span>
           <span v-if="scope.row.state==1">开启</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="服务器名称">
+      <el-table-column width="140" align="center" label="线路模式">
+        <template slot-scope="scope">
+          <span v-if="scope.row.model==0">正常</span>
+          <span v-if="scope.row.model==1" style="color: red;">特殊</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="140" align="center" label="服务器名称">
         <template slot-scope="scope">
           <span>{{scope.row.jy}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="座位名称">
+      <el-table-column width="140" align="center" label="座位名称">
         <template slot-scope="scope">
           <span>{{scope.row.zw}}</span>
         </template>
@@ -54,7 +60,7 @@
 	<!-- 新增或编辑 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="180px" style='width: 400px; margin-left:25%;' >
-        <el-form-item label="电话编号">
+        <el-form-item label="线路编号">
           <el-input v-model="dataForm.lineNo" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="线路逻辑号">
@@ -73,6 +79,12 @@
           <el-radio-group v-model="dataForm.state">
 		    <el-radio :label="0">关闭</el-radio>
 		    <el-radio :label="1">开启</el-radio>
+		  </el-radio-group>
+        </el-form-item>
+        <el-form-item label="线路模式">
+          <el-radio-group v-model="dataForm.model">
+		    <el-radio :label="0">正常</el-radio>
+		    <el-radio :label="1">特殊</el-radio>
 		  </el-radio-group>
         </el-form-item>
       </el-form>
@@ -113,7 +125,8 @@ export default {
       dataForm: { 
         webId: undefined,
         dkq: undefined,
-        state: 1
+        state: 1,
+        model: 0
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -184,13 +197,14 @@ export default {
     		id: row.webId
     	}
     	findOne(param).then((res) =>{
-    		this.dataForm.webId = res.data.webId,
-	        this.dataForm.lineNo =  res.data.lineNo,
-	        this.dataForm.line = res.data.line,
+    		this.dataForm.webId = res.data.webId
+	        this.dataForm.lineNo =  res.data.lineNo
+	        this.dataForm.line = res.data.line
 	        this.dataForm.jy = res.data.jy
 	        this.dataForm.zw = res.data.zw
 	        this.dataForm.dkq = res.data.dkq
 	        this.dataForm.state = res.data.state
+	        this.dataForm.model = res.data.model
     	})
 	    this.dialogStatus = 'update'
 	    this.dialogFormVisible = true

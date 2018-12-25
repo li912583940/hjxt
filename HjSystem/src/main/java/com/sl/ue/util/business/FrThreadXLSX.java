@@ -4,15 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlJbVO;
@@ -25,15 +22,15 @@ import com.sl.ue.service.sys.SysServerService;
 import com.sl.ue.util.component.SpringTool;
 
 /**
- * 说明 [罪犯excel导入线程]
- * L_晓天  @2018年12月19日
+ * 说明 [罪犯excel导入线程--后缀为xlsx的excel表格]
+ * L_晓天  @2018年12月20日
  */
-public class FrThread implements Runnable {
+public class FrThreadXLSX implements Runnable{
 
 	private Thread thread;
 	private String path;
 
-	public FrThread(String path) {
+	public FrThreadXLSX(String path) {
 		this.path = path;
 	}
 	public void start() {
@@ -62,24 +59,24 @@ public class FrThread implements Runnable {
 		List<JlJbVO> jlJbList = jlJbSQL.findList(new JlJbVO());
 		/** 级别 结束 */
 		
-		HSSFWorkbook workbook = null;
+		XSSFWorkbook workbook = null;
 		try {
-			workbook = new HSSFWorkbook(new FileInputStream(path));
+			workbook = new XSSFWorkbook(new FileInputStream(path));
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		int sheetIn = 0;
-		while(true){
-			HSSFSheet sheet = workbook.getSheetAt(sheetIn); // 读取工作表
+		int sheets = workbook.getNumberOfSheets();
+		for(int i=0;i<sheets;i++){
+			XSSFSheet sheet = workbook.getSheetAt(i); // 读取工作表
 			if(sheet == null){
 				break;
 			}
 			
 			int index = 1;
 			while (true) {
-				HSSFRow row = sheet.getRow(index);
+				XSSFRow row = sheet.getRow(index);
 				if(row == null){
 					break;
 				}
@@ -124,7 +121,6 @@ public class FrThread implements Runnable {
 				}
 				index++;
 			}
-			sheetIn++;
 		}
 		
 		//最后删除文件

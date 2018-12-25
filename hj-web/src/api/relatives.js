@@ -20,6 +20,7 @@ export function exportExcel(param) {
     url: '/jlQs/exportExcel',
     method: 'post',
     data: param,
+    timeout: 600000,
     responseType:'blob'
   }).then(res => res)
 }

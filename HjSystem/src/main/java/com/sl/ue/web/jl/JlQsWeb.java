@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.util.Constants;
@@ -87,6 +88,11 @@ public class JlQsWeb extends Result{
         return this.toResult();
     }
 
+    @RequestMapping("/exportExcel")
+    public void exportExcel(JlQsVO model,
+    		HttpServletRequest request, HttpServletResponse response) {
+    	jlQsSQL.exportExcel(model, request, response);
+    }
     
     @RequestMapping(value="/importExcel",method={RequestMethod.GET,RequestMethod.POST})
     @IgnoreSecurity

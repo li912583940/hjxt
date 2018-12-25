@@ -10,6 +10,7 @@ export default {
     relatives: 'Relatives', // 亲属
     meetRegister: 'Meet Register', // 会见登记
     addMeetRegister: 'Add Meet Register', // 添加会见登记
+    sfYz: 'Verification',// 身份验证
     meetSign: 'Meet Sign', // 会见签到
     meetNotice: 'Meet Notice', // 会见通知
     meetMonitor: 'Meet Monitor', // 会见监控

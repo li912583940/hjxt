@@ -69,7 +69,9 @@ public class SysHjLine implements java.io.Serializable {
 	private String videochan2Server;
 	@DbField("VideoChan2_No")
 	private Integer videochan2No;
-
+	@DbField("model")
+	private Integer model; //特殊线路 0：正常，1：特殊，默认0
+	
 	public Integer getWebId() {
 		return this.webId;
 	}
@@ -300,6 +302,14 @@ public class SysHjLine implements java.io.Serializable {
 
 	public void setVideochan2No(Integer videochan2No) {
 		this.videochan2No = videochan2No;
+	}
+
+	public Integer getModel() {
+		return model;
+	}
+
+	public void setModel(Integer model) {
+		this.model = model;
 	}
 
 	

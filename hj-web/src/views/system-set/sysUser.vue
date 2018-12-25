@@ -73,7 +73,7 @@
 
 		 <!-- 添加角色 -->
 		<el-dialog title="添加角色" :visible.sync="dialogRoleVisible">
-			<el-card style="width: 62%; margin-left: 19%;">
+			<el-card style="width: 540px; margin-left: 19%;">
 				<el-transfer
 			    filterable
 			    :filter-method="roleFilter"

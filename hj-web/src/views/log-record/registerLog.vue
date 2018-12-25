@@ -1,14 +1,29 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-    	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员编号" v-model="listQuery.frNo" clearable>
+    	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入罪犯编号" v-model="listQuery.frNo" clearable>
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员姓名" v-model="listQuery.frName" clearable>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入罪犯姓名" v-model="listQuery.frName" clearable>
       </el-input>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="listQuery.qsName" clearable>
       </el-input>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.jqNo" placeholder="选择监区">
+        <el-option v-for="item in jqs" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.state" placeholder="选择会见状态">
+        <el-option v-for="item in states" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.hjType" placeholder="选择会见类型">
+        <el-option v-for="item in hjTypes" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.hjMode" placeholder="选择会见类型">
+        <el-option v-for="item in hjModes" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('criminal.add')}}</el-button>
       <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
     </div>
 
@@ -29,14 +44,38 @@
           <span>{{scope.row.frName}}</span>
         </template>
       </el-table-column>
+      <el-table-column width="400" align="center" label="亲属">
+        <template slot-scope="scope">
+          <span>{{scope.row.qsInfo1}}</span>
+        </template>
+      </el-table-column>
       <el-table-column width="160" align="center" label="会见编号">
         <template slot-scope="scope">
           <span>{{scope.row.hjIndex}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="400" align="center" label="亲属">
+      <el-table-column width="160" align="center" label="会见类型">
         <template slot-scope="scope">
-          <span>{{scope.row.qsInfo1}}</span>
+          <span v-if="scope.row.hjType==1">严见</span>
+          <span v-if="scope.row.hjType==2">宽见</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="160" align="center" label="会见类型">
+        <template slot-scope="scope">
+          <span v-if="scope.row.hjMode==1">隔离会见</span>
+          <span v-if="scope.row.hjMode==2">非隔离会见</span>
+          <span v-if="scope.row.hjMode==3">远程视频会见</span>
+          <span v-if="scope.row.hjMode==9">其他方式</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="140" align="center" label="会见说明">
+        <template slot-scope="scope">
+          <span>{{scope.row.hjInfo}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="140" align="center" label="登记时间">
+        <template slot-scope="scope">
+          <span>{{scope.row.djTime | dateFormat}}</span>
         </template>
       </el-table-column>
       <el-table-column width="140" align="center" label="物品">
@@ -67,11 +106,10 @@
 </template>
 
 <script>
-import { findPojo, findOne} from '@/api/registerLog'
+import { findPojo, findOne, findJqList} from '@/api/registerLog'
 
 import moment from 'moment'
 import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
 
 
 export default {
@@ -90,30 +128,100 @@ export default {
         pageSize: 20,
         frNo: undefined,
         frName: undefined,
-        qsName: undefined
+        qsName: undefined,
+        state: undefined,
+        hjType: undefined,
+        jqNo: undefined,
+        hjMode: undefined,
       },
-      downloadLoading: false
+      downloadLoading: false,
+      
+      states:[
+        {
+      		id: 0,
+      		name: '未完成会见'
+      	},
+      	{
+      		id: 1,
+      		name: '已完成会见'
+      	},
+      	{
+      		id: 2,
+      		name: '已取消会见 '
+      	}
+      ],
+      hjTypes:[
+        {
+      		id: 1,
+      		name: '严见'
+      	},
+      	{
+      		id: 2,
+      		name: '宽见'
+      	},
+      ],
+      jqs: [ // 监区下拉选框
+      
+      ],
+      hjModes:[
+      {
+      		id: 1,
+      		name: '隔离会见'
+      	},
+      	{
+      		id: 2,
+      		name: '非隔离会见'
+      	},
+      	{
+      		id: 3,
+      		name: '远程视频会见'
+      	},
+      	{
+      		id: 9,
+      		name: '其他方式'
+      	},
+      ],
+      
     }
   },
   filters: {
-    
+  	dateFormat(date) {
+		  //时间格式化  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+	  }
   },
   created() {
     this.getList()
+    this.getJqList()
   },
   mounted() {
   },
   methods: {
     getList() {
       this.listLoading = true
-      if(!this.listQuery.frName){
+      if(this.listQuery.frName== undefined || this.listQuery.frName== ''){
       	this.listQuery.frName = undefined
       }
-      if(!this.listQuery.frNo){
+      if(this.listQuery.frNo== undefined || this.listQuery.frNo==''){
       	this.listQuery.frNo = undefined
       }
-      if(!this.listQuery.qsName){
+      if(this.listQuery.qsName== undefined || this.listQuery.qsName== ''){
       	this.listQuery.qsName = undefined
+      }
+      if(this.listQuery.state==undefined || this.listQuery.state==''){
+      	this.listQuery.state = undefined
+      }
+      if(this.listQuery.hjType==undefined || this.listQuery.hjType==''){
+      	this.listQuery.hjType = undefined
+      }
+      if(this.listQuery.jqNo==undefined || this.listQuery.jqNo==''){
+      	this.listQuery.jqNo = undefined
+      }
+      if(this.listQuery.hjMode==undefined || this.listQuery.hjMode==''){
+      	this.listQuery.hjMode = undefined
       }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
@@ -135,7 +243,19 @@ export default {
       this.listQuery.pageNum = val
       this.getList()
     },
-    
+    getJqList() { //监区下拉框
+    	if(this.jqs.length === 0) {
+    		findJqList({}).then((res) => {
+	    		let list = res.list
+	    		for(let x of list){
+					  let value = {}
+					  value.id = x.jqNo
+					  value.name = x.jqName
+					  this.jqs.push(value)
+					}
+	    	})
+    	}
+    },
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {

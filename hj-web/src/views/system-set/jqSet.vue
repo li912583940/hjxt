@@ -1,7 +1,5 @@
 <!--
-	作者：912583940@qq.com
-	时间：2018-11-01
-	描述： 服刑人员管理
+监区
 -->
 <template>
   <div class="app-container">
@@ -24,7 +22,12 @@
           <span>{{scope.row.jqName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="会见星期时间">
+      <el-table-column width="200" align="center" label="楼层">
+        <template slot-scope="scope">
+          <span>{{scope.row.floor}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="300" align="center" label="会见星期时间">
         <template slot-scope="scope">
           <span>{{scope.row.jqWeek}}</span>
         </template>
@@ -32,10 +35,10 @@
       <el-table-column width="200" align="center" label="特殊监区">
         <template slot-scope="scope">
           <span v-if="scope.row.isTs==0">否</span>
-          <span v-if="scope.row.isTs==1">是</span>
+          <span v-if="scope.row.isTs==1" style="color: red;">是</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="360">
+      <el-table-column align="center" :label="$t('criminal.actions')" width="360" fixed="right">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
@@ -59,6 +62,9 @@
         <el-form-item label="监区名称" prop="jqName">
           <el-input v-model="dataForm.jqName"></el-input>
         </el-form-item>
+        <el-form-item label="楼层" prop="floor">
+          <el-input v-model="dataForm.floor"></el-input>
+        </el-form-item>
         <el-form-item label="特殊监区">
           <el-radio-group v-model="dataForm.isTs">
 		    <el-radio :label="0">否</el-radio>
@@ -75,7 +81,7 @@
     
     <!-- 设置会见星期 -->
 	<el-dialog title="设置会见星期" :visible.sync="dialogWeekVisible">
-		<el-card style="width: 62%; margin-left: 19%;">
+		<el-card style="width: 540px; margin-left: 19%;">
 			<el-transfer
 		    v-model="weekValue"
 		    :data="weekData"
@@ -118,7 +124,8 @@ export default {
         webId: undefined,
         jqNo: undefined,
         jqName: undefined,
-        isTs: 0
+        isTs: 0,
+        floor: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -205,10 +212,11 @@ export default {
     		id: row.webId
     	}
     	findOne(param).then((res) =>{
-    		this.dataForm.webId = res.data.webId,
-	        this.dataForm.jqNo =  res.data.jqNo,
-	        this.dataForm.jqName = res.data.jqName,
+    		this.dataForm.webId = res.data.webId
+	        this.dataForm.jqNo =  res.data.jqNo
+	        this.dataForm.jqName = res.data.jqName
 	        this.dataForm.isTs = res.data.isTs
+	        this.dataForm.floor = res.data.floor
     	})
 	    this.dialogStatus = 'update'
 	    this.dialogFormVisible = true

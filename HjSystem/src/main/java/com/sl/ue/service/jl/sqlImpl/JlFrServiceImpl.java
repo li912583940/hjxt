@@ -35,7 +35,8 @@ import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlFrService;
 import com.sl.ue.util.Config;
 import com.sl.ue.util.DateUtil;
-import com.sl.ue.util.business.FrThread;
+import com.sl.ue.util.business.FrThreadXLS;
+import com.sl.ue.util.business.FrThreadXLSX;
 
 @Service("jlFrSQL")
 public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
@@ -204,6 +205,7 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 		BufferedInputStream in =null;
 		BufferedOutputStream out = null;
 		String excelFilePath = null;
+		String fileExt = null;
 		try {
 			// 得到上传的文件的文件名
 			String filename = mFile.getOriginalFilename();
@@ -216,7 +218,7 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 				file.mkdirs();
 			}
 			boolean isPattern = false;
-			String fileExt = filename.substring(filename.lastIndexOf(".")+1);
+			fileExt = filename.substring(filename.lastIndexOf(".")+1);
 			if("xls".equals(fileExt) || "xlsx".equals(fileExt)){
 				isPattern = true;
 			}
@@ -247,9 +249,15 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 		e.printStackTrace();
 		}finally {
 			// 启动线程 处理罪犯信息
-			if(StringUtils.isNotBlank(excelFilePath)){
-				FrThread frThread = new FrThread(excelFilePath);
-				frThread.start();
+			if(StringUtils.isNotBlank(excelFilePath) && StringUtils.isNotBlank(fileExt)){
+				if("xls".equals(fileExt)){
+					FrThreadXLS frThread = new FrThreadXLS(excelFilePath);
+					frThread.start();
+				}else if("xlsx".equals(fileExt)){
+					FrThreadXLSX frThread = new FrThreadXLSX(excelFilePath);
+					frThread.start();
+				}
+				
 			}
 			try {
 				if(in!=null){

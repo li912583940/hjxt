@@ -7,24 +7,20 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.util.component.SpringTool;
 
-/**
- * 说明 [亲属excel导入线程]
- * L_晓天  @2018年12月20日
- */
-public class QsThread implements Runnable {
+public class QsThreadXLSX implements Runnable {
 	
 	private Thread thread;
 	private String path;
 
-	public QsThread(String path) {
+	public QsThreadXLSX(String path) {
 		this.path = path;
 	}
 	public void start() {
@@ -37,24 +33,24 @@ public class QsThread implements Runnable {
 	public void run() {
 		JlQsService jlQsSQL = (JlQsService) SpringTool.getBean("jlQsSQL");
 		
-		HSSFWorkbook workbook = null;
+		XSSFWorkbook workbook = null;
 		try {
-			workbook = new HSSFWorkbook(new FileInputStream(path));
+			workbook = new XSSFWorkbook(new FileInputStream(path));
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 		
-		int sheetIn = 0;
-		while(true){
-			HSSFSheet sheet = workbook.getSheetAt(sheetIn); // 读取工作表
+		int sheets = workbook.getNumberOfSheets();
+		for(int i=0;i<sheets;i++){
+			XSSFSheet sheet = workbook.getSheetAt(i); // 读取工作表
 			if(sheet == null){
 				break;
 			}
 			int index = 1;
 			while (true) {
-				HSSFRow row = sheet.getRow(index);
+				XSSFRow row = sheet.getRow(index);
 				if(row == null){
 					break;
 				}
@@ -88,7 +84,6 @@ public class QsThread implements Runnable {
 				}
 				index++;
 			}
-			sheetIn++;
 		}
 		
 		

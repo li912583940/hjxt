@@ -685,4 +685,37 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		
 		return result.toResult();
 	}
+	
+	
+	public Map<String, Object> findPojoByLog(JlHjDjVO model, Integer pageSize, Integer pageNum){
+		StringBuffer where = new StringBuffer();
+		if(StringUtils.isNotBlank(model.getFrNo())){
+			String str = model.getFrNo();
+			where.append(" AND a.FR_No LIKE '%"+str+"%' ");
+			model.setFrNo(null);
+		}
+		if(StringUtils.isNotBlank(model.getFrName())){
+			String str = model.getFrName();
+			where.append(" AND a.FR_Name LIKE '%"+str+"%' ");
+			model.setFrName(null);
+		}
+		if(StringUtils.isNotBlank(model.getQsName())){
+			String str = model.getQsName();
+			where.append(" AND ("
+					+ "a.QS_Info1 LIKE '%"+str+"%' "
+					+ "OR a.QS_Info2  LIKE '%"+str+"%' "
+					+ "OR a.QS_Info3  LIKE '%"+str+"%' "
+					+ "OR a.QS_Info4  LIKE '%"+str+"%' "
+					+ "OR a.QS_Info5  LIKE '%"+str+"%' "
+					+ "OR a.QS_Info6  LIKE '%"+str+"%' "
+					+ "OR a.QS_Info7  LIKE '%"+str+"%' "
+					+ "OR a.QS_Info8  LIKE '%"+str+"%' "
+					+ "OR a.QS_Info9  LIKE '%"+str+"%' "
+					+ ") ");
+			model.setQsName(null);
+		}
+		
+		Map<String, Object> map =this.findPojo(model, pageSize, pageNum);
+		return map;
+	}
 }

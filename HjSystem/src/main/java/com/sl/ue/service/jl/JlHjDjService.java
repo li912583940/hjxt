@@ -84,4 +84,14 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 	 * L_晓天  @2018年11月12日
 	 */
 	public String cancelGrantCall(Long hjId, HttpServletRequest request);
+	
+	/**
+	 * 说明 [登记记录查询]
+	 * @param model
+	 * @param pageSize
+	 * @param pageNum
+	 * @return
+	 * L_晓天  @2018年12月25日
+	 */
+	public Map<String, Object> findPojoByLog(JlHjDjVO model, Integer pageSize, Integer pageNum);
 }

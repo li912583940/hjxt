@@ -29,7 +29,8 @@ public class JlJq implements java.io.Serializable {
 	private Integer useTimeLen;
 	@DbField("LastTime")
 	private Date lastTime;
-
+	@DbField("floor")
+	private String floor; //楼层
 	public Integer getWebId() {
 		return this.webId;
 	}
@@ -94,4 +95,13 @@ public class JlJq implements java.io.Serializable {
 		this.lastTime = lastTime;
 	}
 
+	public String getFloor() {
+		return floor;
+	}
+
+	public void setFloor(String floor) {
+		this.floor = floor;
+	}
+
+	
 }

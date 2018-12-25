@@ -34,6 +34,14 @@
           <span>{{scope.row.frName}}</span>
         </template>
       </el-table-column>
+      <el-table-column width="180" align="center" label="证件类别">
+        <template slot-scope="scope">
+          <span v-if="scope.row.qsZjlb==1">身份证</span>
+          <span v-if="scope.row.qsZjlb==2">警官证</span>
+          <span v-if="scope.row.qsZjlb==3">工作证</span>
+          <span v-if="scope.row.qsZjlb==4">其他</span>
+        </template>
+      </el-table-column>
       <el-table-column width="180" align="center" label="证件号码">
         <template slot-scope="scope">
           <span>{{scope.row.qsSfz}}</span>
@@ -64,6 +72,17 @@
           <span>{{scope.row.dz}}</span>
         </template>
       </el-table-column>
+      <el-table-column width="140" align="center" label="禁止时间">
+        <template slot-scope="scope">
+          <span>{{scope.row.hjStopTime | dateFormat}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="140" align="center" label="审批状态">
+        <template slot-scope="scope">
+          <span v-if="scope.row.spState==1">已通过</span>
+          <span v-if="scope.row.spState==0" style="color: red;">未通过</span>
+        </template>
+      </el-table-column>
       <el-table-column width="300" align="center" label="备注">
         <template slot-scope="scope">
           <span>{{scope.row.bz}}</span>
@@ -84,12 +103,19 @@
     </div>
 
     <!-- 新增或编辑 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="dialogClose">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
       	<el-input v-if="false" v-model="dataForm.frNo" ></el-input>
         <el-form-item :label="$t('currency.frName')" prop="frName">
           <el-input v-model="dataForm.frName"></el-input>
         </el-form-item>
+        <video id="video" width="96" height="64" controls>
+			  </video>
+			  <canvas id="canvas" width="96" height="64"></canvas>
+			  <div>
+			    <button id="capture" @click="paizhao">拍照</button>
+			  </div>
+			  
         <el-form-item label="证件类别" prop="qsZjlb">
           <el-select class="filter-item" v-model="dataForm.qsZjlb" placeholder="请选择">
             <el-option v-for="item in qsZjlbs" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -125,6 +151,10 @@
         <el-form-item label="审批状态">
           <el-input v-model="dataForm.spState" :disabled="true"></el-input>
         </el-form-item>
+        <el-form-item label="禁止会见时间" prop="hjStopTime">
+          <el-date-picker v-model="dataForm.hjStopTime" type="datetime" placeholder="请选取禁止会见时间">
+          </el-date-picker>
+        </el-form-item>
         <el-form-item label="备注" prop="bz">
           <el-input v-model="dataForm.bz"></el-input>
         </el-form-item>
@@ -145,6 +175,7 @@
         <el-button type="primary" @click="dialogPvVisible = false">{{$t('criminal.confirm')}}</el-button>
       </span>
     </el-dialog>
+
 
   </div>
 </template>
@@ -170,7 +201,7 @@ export default {
       listLoading: true,
       listQuery: {
         pageNum: 1,
-        pageSize: 20,
+        pageSize: 10,
         frNo: undefined,
         frName: undefined,
         qsName: undefined
@@ -187,6 +218,7 @@ export default {
       },
       excelPath: process.env.BASE_API+"/jlQs/importExcel", //罪犯excel导入地址
       
+      mediaStreamTrack: undefined,
       // 新增或编辑弹窗
       dataForm: { 
         webId: undefined,
@@ -201,7 +233,8 @@ export default {
         xb: undefined,
         tele: undefined,
         spState: undefined,
-        bz: undefined
+        bz: undefined,
+        hjStopTime: undefined
       },
       gxs: [ // 关系
       	
@@ -239,7 +272,13 @@ export default {
     }
   },
   filters: {
-    
+  	dateFormat(date) {
+		  //时间格式化  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+	  }
   },
   created() {
     this.getList()
@@ -325,6 +364,81 @@ export default {
     		}
     	}
     },
+    openVideo(){
+			let video = document.getElementById('video');
+	    if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
+	      if (navigator.mediaDevices.getUserMedia) {
+	        //最新的标准API
+	        //调用用户媒体设备, 访问摄像头
+		      navigator.mediaDevices.getUserMedia({video : {width: 96, height: 64}}).then(function(stream){
+			      //兼容webkit核心浏览器
+			      var URL = window.URL || window.webkitURL;
+			      //将视频流设置为video元素的源
+			      //video.src = URL.createObjectURL(stream);
+			      this.mediaStreamTrack=stream;
+			      video.srcObject = stream;
+			      video.play();
+		    	 }).catch(function(error){
+		      	console.log(error);
+		    	 });
+	      } else if (navigator.webkitGetUserMedia) {
+	        //webkit核心浏览器
+	        navigator.webkitGetUserMedia({video : {width: 96, height: 64}}, 
+	        	function(stream){
+	        		//兼容webkit核心浏览器
+				      var URL = window.URL || window.webkitURL;
+				      //将视频流设置为video元素的源
+				      //video.src = URL.createObjectURL(stream);
+				      this.mediaStreamTrack=stream;
+				      video.srcObject = stream;
+				      video.play();
+	          }, 
+	          function(error){
+	          	console.log(error);
+	          })
+	      } else if (navigator.mozGetUserMedia) {
+	        //firfox浏览器
+	        navigator.mozGetUserMedia({video : {width: 96, height: 64}}, 
+	        function(stream){
+	        		//兼容webkit核心浏览器
+				      var URL = window.URL || window.webkitURL;
+				      //将视频流设置为video元素的源
+				      //video.src = URL.createObjectURL(stream);
+				      video.srcObject = stream;
+				      video.play();
+	          }, 
+	          function(error){
+	          	console.log(error);
+	          });
+	      } else if (navigator.getUserMedia) {
+	        //旧版API
+	        navigator.getUserMedia({video : {width: 96, height: 64}}, 
+	        function(stream){
+	        		//兼容webkit核心浏览器
+				      var URL = window.URL || window.webkitURL;
+				      //将视频流设置为video元素的源
+				      //video.src = URL.createObjectURL(stream);
+				      video.srcObject = stream;
+				      video.play();
+	          }, 
+	          function(error){
+	          	console.log(error);
+	          });
+	      }
+	    } else {
+	      alert('不支持访问用户媒体');
+	    }
+
+    },
+    paizhao(){
+    	let video = document.getElementById('video');
+      let canvas = document.getElementById('canvas');
+      let context = canvas.getContext('2d');
+    	context.drawImage(video, 0, 0, 96, 64); 
+    },
+		dialogClose(){
+			this.mediaStreamTrack.getTracks().forEach(function (track) {track.stop()})
+		},
     
     //重置表单
 		resetForm(formName) {
@@ -334,6 +448,7 @@ export default {
 			this.dataForm.webId = undefined
 	  },
     handleCreate() {
+    	this.openVideo()
       this.dialogStatus = 'create'
       this.resetForm('dataForm')
       this.dialogFormVisible = true
@@ -360,6 +475,7 @@ export default {
       })
     },
     handleUpdate(row) {
+    	this.openVideo()
     	let param = {
     		id: row.webId
     	}
@@ -412,20 +528,6 @@ export default {
 	      })
 			})
 		},
-    handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp']
-        const filterVal = ['timestamp']
-        const data = this.formatJson(filterVal, this.list)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
-      })
-    },
     handleDownload() {
 			if(!this.listQuery.frName){
       	this.listQuery.frName = undefined

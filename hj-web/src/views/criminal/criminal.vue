@@ -187,6 +187,16 @@
 				    <el-radio :label="1">是</el-radio>
 				  </el-radio-group>
         </el-form-item>
+        <el-form-item label="服刑状态" >
+        	<el-radio-group v-model="dataForm.state">
+				    <el-radio :label="0">服刑中</el-radio>
+				    <el-radio :label="1">已出狱</el-radio>
+				  </el-radio-group>
+        </el-form-item>
+        <el-form-item label="出狱时间" prop="outTime">
+          <el-date-picker v-model="dataForm.outTime" type="datetime" placeholder="请选取出狱时间">
+          </el-date-picker>
+        </el-form-item>
         <el-form-item label="备注" prop="zdzfType">
           <el-input v-model="dataForm.zdzfType"></el-input>
         </el-form-item>
@@ -355,7 +365,9 @@ export default {
         infoCsrq: undefined,
         infoHome: undefined,
         monitorFlag: '0',
-        stateZdzf: 1
+        stateZdzf: 1,
+        state: 0,
+        outTime: undefined,
       },
       jqs: [ // 监区下拉选框
       
@@ -631,22 +643,24 @@ export default {
 //			if(this.$refs[formName] !== undefined){
 //				this.$refs[formName].resetFields();
 //			}
-			this.dataForm.webId= undefined,
-	    this.dataForm.frName= undefined,
-	    this.dataForm.frNo= '',
-	    this.dataForm.frCard= undefined,
-	    this.dataForm.jq= this.jqs.length === 0?undefined:this.jqs[0].id ,
-	    this.dataForm.jbNo= this.jbNos.length === 0?undefined:this.jbNos[0].id,
-	    this.dataForm.hjJb= 1,
-	    this.dataForm.hjStopTime = undefined,
-      this.dataForm.hjStopSm = undefined,
-	    this.dataForm.infoRjsj= undefined,
-	    this.dataForm.infoZm= undefined,
-	    this.dataForm.infoXq= undefined,
-	    this.dataForm.infoCsrq= undefined,
-	    this.dataForm.infoHome= undefined,
-	    this.dataForm.monitorFlag= '0',
+			this.dataForm.webId= undefined
+	    this.dataForm.frName= undefined
+	    this.dataForm.frNo= ''
+	    this.dataForm.frCard= undefined
+	    this.dataForm.jq= this.jqs.length === 0?undefined:this.jqs[0].id
+	    this.dataForm.jbNo= this.jbNos.length === 0?undefined:this.jbNos[0].id
+	    this.dataForm.hjJb= 1
+	    this.dataForm.hjStopTime = undefined
+      this.dataForm.hjStopSm = undefined
+	    this.dataForm.infoRjsj= undefined
+	    this.dataForm.infoZm= undefined
+	    this.dataForm.infoXq= undefined
+	    this.dataForm.infoCsrq= undefined
+	    this.dataForm.infoHome= undefined
+	    this.dataForm.monitorFlag= '0'
 	    this.dataForm.stateZdzf= 1
+	    this.dataForm.state= 0
+	    this.dataForm.outTime=undefined
 	  },
 	  hjJbChange(val) { // 会见级别 正常 清空禁止时间 禁止说明
 	  	if(val==1){
@@ -671,6 +685,9 @@ export default {
         	if(this.dataForm.infoCsrq){
         		this.dataForm.infoCsrq = this.dateFormats(this.dataForm.infoCsrq);
         	}
+        	if(this.dataForm.outTime){
+        		this.dataForm.outTime = this.dateFormats(this.dataForm.outTime);
+        	}
           RequestAdd(this.dataForm).then(() => {
             this.dialogFormVisible = false
             this.getList()
@@ -685,23 +702,25 @@ export default {
     		id: row.webId
     	}
     	findOne(param).then((res) =>{
-    		this.dataForm.webId = res.data.webId,
-        this.dataForm.frName =  res.data.frName,
-        this.dataForm.frNo = res.data.frNo,
-        this.dataForm.frCard = res.data.frCard,
-        this.dataForm.jy = res.data.jy,
-        this.dataForm.jq = res.data.jq,
-        this.dataForm.jbNo = res.data.jbNo,
-        this.dataForm.hjJb = res.data.hjJb,
-        this.dataForm.hjStopTime =  res.data.hjStopTime,
-        this.dataForm.hjStopSm = res.data.hjStopSm,
-        this.dataForm.infoRjsj = res.data.infoRjsj,
-        this.dataForm.infoZm = res.data.infoZm,
-        this.dataForm.infoXq = res.data.infoXq,
-        this.dataForm.infoCsrq = res.data.infoCsrq,
-        this.dataForm.infoHome = res.data.infoHome,
-        this.dataForm.monitorFlag = res.data.monitorFlag,
+    		this.dataForm.webId = res.data.webId
+        this.dataForm.frName =  res.data.frName
+        this.dataForm.frNo = res.data.frNo
+        this.dataForm.frCard = res.data.frCard
+        this.dataForm.jy = res.data.jy
+        this.dataForm.jq = res.data.jq
+        this.dataForm.jbNo = res.data.jbNo
+        this.dataForm.hjJb = res.data.hjJb
+        this.dataForm.hjStopTime =  res.data.hjStopTime
+        this.dataForm.hjStopSm = res.data.hjStopSm
+        this.dataForm.infoRjsj = res.data.infoRjsj
+        this.dataForm.infoZm = res.data.infoZm
+        this.dataForm.infoXq = res.data.infoXq
+        this.dataForm.infoCsrq = res.data.infoCsrq
+        this.dataForm.infoHome = res.data.infoHome
+        this.dataForm.monitorFlag = res.data.monitorFlag
         this.dataForm.stateZdzf = res.data.stateZdzf
+        this.dataForm.state = res.data.state
+        this.dataForm.outTime = res.data.outTime
     	})
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
@@ -717,6 +736,9 @@ export default {
         	}
         	if(this.dataForm.infoCsrq){
         		this.dataForm.infoCsrq = this.dateFormats(this.dataForm.infoCsrq);
+        	}
+        	if(this.dataForm.outTime){
+        		this.dataForm.outTime = this.dateFormats(this.dataForm.outTime);
         	}
           RequestEdit(this.dataForm).then(() => {
             this.dialogFormVisible = false

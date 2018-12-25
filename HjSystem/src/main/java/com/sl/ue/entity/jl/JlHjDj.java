@@ -179,6 +179,8 @@ public class JlHjDj implements java.io.Serializable {
 	private Date fpTimeQs;
 	@DbField("SH_State")
 	private Integer shState; //授权状态 
+	@DbField("hj_mode")
+	private Integer hjMode; //会见方式。1：隔离会见，2：非隔离会见，3：远程视频会见，9：其他方式. 默认1
 	// Constructors
 
 	

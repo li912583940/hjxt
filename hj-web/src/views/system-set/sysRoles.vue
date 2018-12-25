@@ -137,7 +137,7 @@
     <!-- 添加用户 -->
 		<el-dialog title="添加用户" :visible.sync="dialogUserVisible">
 			<!--<el-card style="width: 80%; margin-left: 30px;">-->
-				<el-transfer style="width: 600px; margin-left: 20%;"
+				<el-transfer style="width: 540px; margin-left: 19%;"
 			    filterable
 			    :filter-method="userFilter"
 			    filter-placeholder="请输入关键字搜索"
