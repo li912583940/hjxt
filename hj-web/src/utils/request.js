@@ -49,7 +49,6 @@ if(getToken()){
 service.interceptors.response.use(
     response => {
     	const res = response.data;
-    	console.log(res)
     	//debugger
     	// 如果文件流 就直接返回 （下载excel）
     	if(res.type=='application/octet-stream' || res.type=='application/octet-stream;charset=UTF-8'){

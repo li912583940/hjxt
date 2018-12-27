@@ -46,7 +46,7 @@
       </el-table-column>
       <el-table-column width="400" align="center" label="亲属">
         <template slot-scope="scope">
-          <span>{{scope.row.qsInfo1}}</span>
+          <span>{{scope.row.qsInfo}}</span>
         </template>
       </el-table-column>
       <el-table-column width="160" align="center" label="会见编号">
@@ -56,16 +56,22 @@
       </el-table-column>
       <el-table-column width="160" align="center" label="会见类型">
         <template slot-scope="scope">
-          <span v-if="scope.row.hjType==1">严见</span>
-          <span v-if="scope.row.hjType==2">宽见</span>
+          <span v-if="scope.row.hjType==1">亲属会见</span>
+          <span v-else-if="scope.row.hjType==2">监护人会见</span>
+          <span v-else-if="scope.row.hjType==3">律师会见</span>
+          <span v-else-if="scope.row.hjType==4">使领馆探视</span>
+          <span v-else-if="scope.row.hjType==5">提审会见</span>
+          <span v-else-if="scope.row.hjType==6">公务会见</span>
+          <span v-else-if="scope.row.hjType==9">特批会见</span>
+          <span v-else-if="scope.row.hjType==99">其他会见</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" label="会见类型">
+      <el-table-column width="160" align="center" label="会见方式">
         <template slot-scope="scope">
           <span v-if="scope.row.hjMode==1">隔离会见</span>
-          <span v-if="scope.row.hjMode==2">非隔离会见</span>
-          <span v-if="scope.row.hjMode==3">远程视频会见</span>
-          <span v-if="scope.row.hjMode==9">其他方式</span>
+          <span v-else-if="scope.row.hjMode==2">非隔离会见</span>
+          <span v-else-if="scope.row.hjMode==3">远程视频会见</span>
+          <span v-else-if="scope.row.hjMode==9">其他方式</span>
         </template>
       </el-table-column>
       <el-table-column width="140" align="center" label="会见说明">
@@ -106,7 +112,7 @@
 </template>
 
 <script>
-import { findPojo, findOne, findJqList} from '@/api/registerLog'
+import { findPojo, findOne, findJqList, exportExcel} from '@/api/registerLog'
 
 import moment from 'moment'
 import waves from '@/directive/waves' // 水波纹指令
@@ -153,11 +159,35 @@ export default {
       hjTypes:[
         {
       		id: 1,
-      		name: '严见'
+      		name: '亲属会见'
       	},
       	{
       		id: 2,
-      		name: '宽见'
+      		name: '监护人会见'
+      	},
+      	{
+      		id: 3,
+      		name: '律师会见'
+      	},
+      	{
+      		id: 4,
+      		name: '使领馆探视'
+      	},
+      	{
+      		id: 5,
+      		name: '提审会见'
+      	},
+      	{
+      		id: 6,
+      		name: '公务会见'
+      	},
+      	{
+      		id: 9,
+      		name: '特批会见'
+      	},
+      	{
+      		id: 99,
+      		name: '其他会见'
       	},
       ],
       jqs: [ // 监区下拉选框
@@ -257,17 +287,39 @@ export default {
     	}
     },
     handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp']
-        const filterVal = ['timestamp']
-        const data = this.formatJson(filterVal, this.list)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        })
-        this.downloadLoading = false
+      if(this.listQuery.frName== undefined || this.listQuery.frName== ''){
+      	this.listQuery.frName = undefined
+      }
+      if(this.listQuery.frNo== undefined || this.listQuery.frNo==''){
+      	this.listQuery.frNo = undefined
+      }
+      if(this.listQuery.qsName== undefined || this.listQuery.qsName== ''){
+      	this.listQuery.qsName = undefined
+      }
+      if(this.listQuery.state==undefined || this.listQuery.state==''){
+      	this.listQuery.state = undefined
+      }
+      if(this.listQuery.hjType==undefined || this.listQuery.hjType==''){
+      	this.listQuery.hjType = undefined
+      }
+      if(this.listQuery.jqNo==undefined || this.listQuery.jqNo==''){
+      	this.listQuery.jqNo = undefined
+      }
+      if(this.listQuery.hjMode==undefined || this.listQuery.hjMode==''){
+      	this.listQuery.hjMode = undefined
+      }
+			exportExcel(this.listQuery).then(res => {
+	      const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
+	     	const downloadElement = document.createElement('a')
+	     	const href = window.URL.createObjectURL(blob)
+	     	downloadElement.href = href
+	     	downloadElement.download = '登记记录.xls'
+	     	document.body.appendChild(downloadElement)
+	     	downloadElement.click()
+     		document.body.removeChild(downloadElement) // 下载完成移除元素
+	     	window.URL.revokeObjectURL(href) // 释放掉blob对象
+			}).catch(error => {
+         console.log(error)
       })
     },
     formatJson(filterVal, jsonData) {

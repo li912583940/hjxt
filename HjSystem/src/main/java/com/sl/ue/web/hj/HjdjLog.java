@@ -2,6 +2,9 @@ package com.sl.ue.web.hj;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,4 +30,10 @@ public class HjdjLog extends Result{
         this.putPojo(map);
         return this.toResult();
     }
+	
+	@RequestMapping("/exportExcel")
+	public void exportExcel(JlHjDjVO model, 
+			HttpServletRequest request, HttpServletResponse response){
+		jlHjDjSQL.exportExcelByLog(model, request, response);
+	}
 }

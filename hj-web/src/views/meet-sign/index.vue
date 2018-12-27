@@ -32,13 +32,24 @@
           <span v-if="scope.row.stateZdzf!='否'">是</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="会见类型">
+      <el-table-column width="160" align="center" label="会见类型">
         <template slot-scope="scope">
-          <span v-if="scope.row.hjType ==1">电话会见</span>
-          <span v-else-if="scope.row.hjType ==2">面对面会见</span>
-          <span v-else-if="scope.row.hjType ==3">视频会见</span>
-          <span v-else-if="scope.row.hjType ==4">帮教</span>
-          <span v-else-if="scope.row.hjType ==5">提审</span>
+          <span v-if="scope.row.hjType==1">亲属会见</span>
+          <span v-else-if="scope.row.hjType==2">监护人会见</span>
+          <span v-else-if="scope.row.hjType==3">律师会见</span>
+          <span v-else-if="scope.row.hjType==4">使领馆探视</span>
+          <span v-else-if="scope.row.hjType==5">提审会见</span>
+          <span v-else-if="scope.row.hjType==6">公务会见</span>
+          <span v-else-if="scope.row.hjType==9">特批会见</span>
+          <span v-else-if="scope.row.hjType==99">其他会见</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="160" align="center" label="会见方式">
+        <template slot-scope="scope">
+          <span v-if="scope.row.hjMode==1">隔离会见</span>
+          <span v-else-if="scope.row.hjMode==2">非隔离会见</span>
+          <span v-else-if="scope.row.hjMode==3">远程视频会见</span>
+          <span v-else-if="scope.row.hjMode==9">其他方式</span>
         </template>
       </el-table-column>
       <el-table-column width="300" align="center" label="会见说明">

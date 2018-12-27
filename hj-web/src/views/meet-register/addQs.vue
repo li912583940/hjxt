@@ -17,6 +17,9 @@
 		        <el-form-item label="证件号码" prop="qsSfz">
 		          <el-input v-model="dataQsForm.qsSfz"></el-input>
 		        </el-form-item>
+		        <el-form-item label="frNo" prop="frNo">
+		          <el-input v-model="dataQsForm.frNo"></el-input>
+		        </el-form-item>
 		        <el-form-item label="亲属姓名" prop="qsName">
 		          <el-input v-model="dataQsForm.qsName"></el-input>
 		        </el-form-item>
@@ -69,7 +72,7 @@ export default {
       // 新增或编辑弹窗
       dataQsForm: { 
         webId: undefined,
-        frNo: undefined,
+        frNo: this.$route.query.frNo,
         qsZjlb: 1,
         qsSfz: undefined,
         qsName: undefined,
@@ -137,13 +140,10 @@ export default {
     createQsData() {
       this.$refs['dataQsForm'].validate((valid) => {
         if (valid) {
-        	this.dataQsForm.frNo = this.qsListQuery.frNo
           RequestQsAdd(this.dataQsForm).then(() => {
-            this.dialogQsFormVisible = false
-            this.getQsList()
+            this.returnPrevious()
           }).catch(error => {
-		        this.dialogQsFormVisible = false
-		      })
+	      })
         }
       })
     },
@@ -156,7 +156,7 @@ export default {
     	}
     	findQsOne(param).then((res) =>{
     	this.dataQsForm.webId = res.data.webId
-        this.dataQsForm.frNo = this.qsListQuery.frNo
+        this.dataQsForm.frNo = this.$route.params.frNo
         this.dataQsForm.qsZjlb = res.data.qsZjlb
         this.dataQsForm.qsSfz = res.data.qsSfz
         this.dataQsForm.qsName = res.data.qsName

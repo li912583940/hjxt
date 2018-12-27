@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
@@ -29,6 +30,22 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 	 * L_晓天  @2018年10月17日
 	 */
 	public String printXp(Long id);
+	
+	/**
+	 * 说明 [获取当前会见登记的亲属id集合]
+	 * @param hjid
+	 * @return
+	 * L_晓天  @2018年12月27日
+	 */
+	public String getQsListByHjid(Long hjid);
+	
+	/**
+	 * 说明 [修改会见登记]
+	 * @param model
+	 * @return
+	 * L_晓天  @2018年12月27日
+	 */
+	public String editDj(Long hjid, Integer hjTime, Integer hjType, String hjInfo, String qsIds);
 	
 	/**
 	 * 说明 [取消登记]
@@ -94,4 +111,7 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 	 * L_晓天  @2018年12月25日
 	 */
 	public Map<String, Object> findPojoByLog(JlHjDjVO model, Integer pageSize, Integer pageNum);
+	
+	public void exportExcelByLog(JlHjDjVO model, 
+			HttpServletRequest request, HttpServletResponse response);
 }

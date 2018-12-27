@@ -19,5 +19,11 @@ export const RequestAddHjdj = params => { return request.post('/jlHjDj/addHjdj',
 // 打印小票
 export const RequestPrintXp = params => { return request.post('/jlHjDj/printXp', params ).then(res => res) }
 
+// 修改会见登记
+export const RequestEditDj = params => { return request.post('/jlHjDj/editDj', params ).then(res => res) }
+
 // 取消登记
 export const RequestCancelDj = params => { return request.post('/jlHjDj/cancelDj', params ).then(res => res) }
+
+// 获取当前会见登记的亲属集合
+export const GetQsIdsByHjid = params => { return request.get('/jlHjDj/getQsIdsByHjid', { params: params } ).then(res => res) }

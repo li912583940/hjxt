@@ -10,6 +10,9 @@ public class JlHjDjVO extends JlHjDj{
     private String zw; // 座位号
 
     private String qsName; // 亲属姓名 ，登记查询中的条件
+    
+    private String qsInfo; // 登记中的亲属信息
+    
     public String getZw() {
 		return zw;
 	}
@@ -26,12 +29,17 @@ public class JlHjDjVO extends JlHjDj{
 		this.qsName = qsName;
 	}
 	
+	public String getQsInfo() {
+		return qsInfo;
+	}
+
+	public void setQsInfo(String qsInfo) {
+		this.qsInfo = qsInfo;
+	}
+
     /*---------------------------  处理关联表  -----------------------------*/
 
-   
-
-
-
+	
 	private String leftJoinField; // 关联表字段
 
     private String leftJoinTable; // 关联表

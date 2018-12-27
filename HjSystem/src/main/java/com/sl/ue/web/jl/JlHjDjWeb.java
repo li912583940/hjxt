@@ -130,6 +130,29 @@ public class JlHjDjWeb extends Result{
 		return jlHjDjSQL.printXp(hjid);
 	}
 	
+	/**
+	 * 说明 [获取当前会见登记的亲属id集合]
+	 * @return
+	 * L_晓天  @2018年12月27日
+	 */
+	@RequestMapping("/getQsIdsByHjid")
+	public String getQsListByHjid(Long hjid){
+		if(hjid == null){
+			this.error(error_102);
+			return this.toResult();
+		}
+		return jlHjDjSQL.getQsListByHjid(hjid);
+	}
+	/**
+	 * 说明 [修改会见登记]
+	 * @param model
+	 * @return
+	 * L_晓天  @2018年12月27日
+	 */
+	@RequestMapping("/editDj")
+	public String editDj(Long hjid, Integer hjTime, Integer hjType, String hjInfo, String qsIds){
+		return jlHjDjSQL.editDj(hjid, hjTime, hjType, hjInfo, qsIds);
+	}
 	
 	/**
 	 * 说明 [取消登记]

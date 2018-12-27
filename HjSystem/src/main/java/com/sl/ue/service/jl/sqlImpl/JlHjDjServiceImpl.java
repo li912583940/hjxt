@@ -1,5 +1,8 @@
 package com.sl.ue.service.jl.sqlImpl;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -9,8 +12,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
@@ -133,11 +142,12 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 				addJlHjDj.setDjType(1);
 			}
 		}
-		if(addJlHjDj.getHjType() == 1){
-			addJlHjDj.setState(0); // 登记状态，0 未完成会见，1已完成会见，2 已取消会见 默认值：0
-		}else{
-			addJlHjDj.setState(1);
-		}
+		addJlHjDj.setState(0);
+//		if(addJlHjDj.getHjType() == 1){
+//			addJlHjDj.setState(0); // 登记状态，0 未完成会见，1已完成会见，2 已取消会见 默认值：0
+//		}else{
+//			addJlHjDj.setState(1);
+//		}
 		Long hjIndex = (Long) jdbcTemplate.execute(  // 调用存储过程 获取会见批次号
 		     new CallableStatementCreator() {
 				@Override
@@ -304,7 +314,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			result.putJson(0);
 			return result.toResult();
 		}else if(jlHjDj.getFpFlag()==1){
-			String sql="update SysHjLine set hjid=null where hjid="+jlHjDj.getHjid();
+			String sql="update SYS_HJ_LINE set hjid=null where hjid="+jlHjDj.getHjid();
 			this.jdbcTemplate.update(sql);
 			
 			jlHjDj.setState(2);
@@ -330,6 +340,38 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		model.setLeftJoinField(leftJoinField.toString());
 		model.setLeftJoinWhere(leftJoinWhere.toString());
 		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
+		List<JlHjDjVO> list = (List<JlHjDjVO>) map.get("list");
+		String qsInfo="";
+		for(JlHjDjVO t :list){
+			if(StringUtils.isNotBlank(t.getQsInfo1())){
+				qsInfo+=t.getQsInfo1()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo2())){
+				qsInfo+=t.getQsInfo2()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo3())){
+				qsInfo+=t.getQsInfo3()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo4())){
+				qsInfo+=t.getQsInfo4()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo5())){
+				qsInfo+=t.getQsInfo5()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo6())){
+				qsInfo+=t.getQsInfo6()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo7())){
+				qsInfo+=t.getQsInfo7()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo8())){
+				qsInfo+=t.getQsInfo8()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo9())){
+				qsInfo+=t.getQsInfo9()+";";
+			}
+			t.setQsInfo(qsInfo);
+		}
 		return map;
 	}
 
@@ -714,8 +756,335 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 					+ ") ");
 			model.setQsName(null);
 		}
-		
+		model.setLeftJoinWhere(where.toString());
 		Map<String, Object> map =this.findPojo(model, pageSize, pageNum);
+		List<JlHjDjVO> list = (List<JlHjDjVO>) map.get("list");
+		for(JlHjDjVO t : list){
+			String qsInfo = "";
+			if(StringUtils.isNotBlank(t.getQsInfo1())){
+				qsInfo+=t.getQsInfo1()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo2())){
+				qsInfo+=t.getQsInfo2()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo3())){
+				qsInfo+=t.getQsInfo3()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo4())){
+				qsInfo+=t.getQsInfo4()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo5())){
+				qsInfo+=t.getQsInfo5()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo6())){
+				qsInfo+=t.getQsInfo6()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo7())){
+				qsInfo+=t.getQsInfo7()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo8())){
+				qsInfo+=t.getQsInfo8()+";";
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo9())){
+				qsInfo+=t.getQsInfo9()+";";
+			}
+			t.setQsInfo(qsInfo);
+		}
 		return map;
+	}
+	
+	public void exportExcelByLog(JlHjDjVO model, 
+			HttpServletRequest request, HttpServletResponse response){
+
+		StringBuffer where = new StringBuffer();
+		if(StringUtils.isNotBlank(model.getFrNo())){
+			String str = model.getFrNo();
+			where.append(" AND a.FR_No LIKE '%"+str+"%' ");
+			model.setFrNo(null);
+		}
+		if(StringUtils.isNotBlank(model.getFrName())){
+			String str = model.getFrName();
+			where.append(" AND a.FR_Name LIKE '%"+str+"%' ");
+			model.setFrName(null);
+		}
+		if(StringUtils.isNotBlank(model.getQsName())){
+			String str = model.getQsName();
+			where.append(" AND ("
+					+ "a.QS_Info1 LIKE '%"+str+"%' "
+					+ "OR a.QS_Info2  LIKE '%"+str+"%' "
+					+ "OR a.QS_Info3  LIKE '%"+str+"%' "
+					+ "OR a.QS_Info4  LIKE '%"+str+"%' "
+					+ "OR a.QS_Info5  LIKE '%"+str+"%' "
+					+ "OR a.QS_Info6  LIKE '%"+str+"%' "
+					+ "OR a.QS_Info7  LIKE '%"+str+"%' "
+					+ "OR a.QS_Info8  LIKE '%"+str+"%' "
+					+ "OR a.QS_Info9  LIKE '%"+str+"%' "
+					+ ") ");
+			model.setQsName(null);
+		}
+		model.setLeftJoinWhere(where.toString());
+		List<JlHjDjVO> list = this.findList(model);
+		
+		String fileName =  "登记记录.xls";
+		
+		OutputStream out = null;
+		
+		try {
+			
+			// EXCEL START
+			HSSFWorkbook book = new HSSFWorkbook();
+			HSSFSheet sheet = book.createSheet();
+			CellStyle cellStyle = book.createCellStyle();
+			cellStyle.setDataFormat(book.createDataFormat().getFormat("yyyy-MM-dd"));
+			// 设置标题
+			List<String> title = new ArrayList<String>();
+			title.add("会见编号");
+			title.add("监区");
+			title.add("罪犯编号");
+			title.add("罪犯姓名");
+			title.add("亲属信息");
+			title.add("会见时长(分钟)");
+			title.add("会见类型");
+			title.add("会见说明");
+			title.add("登记时间");
+			title.add("登记人");
+			title.add("取消原因");
+			title.add("会见方式");
+			// 标题 start
+			HSSFRow row1 = sheet.createRow(0);
+			for(int i=0; i<title.size(); i++){
+				String t = title.get(i);
+				HSSFCell cell = row1.createCell(i);
+				cell.setCellValue(t);
+			}
+			// 标题 end
+			
+			// 记录 start
+			for(int i=0; i<list.size(); i++){
+				JlHjDjVO jlHjDj = list.get(i);
+				HSSFRow row2 = sheet.createRow(i+1);
+				
+				HSSFCell cell0 = row2.createCell(0);
+				cell0.setCellValue(jlHjDj.getHjIndex()+"");
+					
+				HSSFCell cell1 = row2.createCell(1);
+				cell1.setCellValue(jlHjDj.getJqName()!=null?jlHjDj.getJqName():"");
+				
+				HSSFCell cell2 = row2.createCell(2);
+				cell2.setCellValue(jlHjDj.getFrNo());
+				
+				HSSFCell cell3 = row2.createCell(3);
+				cell3.setCellValue(jlHjDj.getFrName()!=null?jlHjDj.getFrName():"");
+				
+				String qsInfo = "";
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo1())){
+					qsInfo+=jlHjDj.getQsInfo1()+";";
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo2())){
+					qsInfo+=jlHjDj.getQsInfo2()+";";
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo3())){
+					qsInfo+=jlHjDj.getQsInfo3()+";";
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo4())){
+					qsInfo+=jlHjDj.getQsInfo4()+";";
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo5())){
+					qsInfo+=jlHjDj.getQsInfo5()+";";
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo6())){
+					qsInfo+=jlHjDj.getQsInfo6()+";";
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo7())){
+					qsInfo+=jlHjDj.getQsInfo7()+";";
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo8())){
+					qsInfo+=jlHjDj.getQsInfo8()+";";
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo9())){
+					qsInfo+=jlHjDj.getQsInfo9()+";";
+				}
+				HSSFCell cell4 = row2.createCell(4);
+				cell4.setCellValue(qsInfo);
+				
+				HSSFCell cell5 = row2.createCell(5);
+				cell5.setCellValue(jlHjDj.getHjTime()!=null?jlHjDj.getHjTime()/60:0);
+				
+				String hjType="";
+				if(jlHjDj.getHjType()==1){
+					hjType="亲属会见";
+				}else if(jlHjDj.getHjType()==2){
+					hjType="监护人会见";
+				}else if(jlHjDj.getHjType()==3){
+					hjType="律师会见";
+				}else if(jlHjDj.getHjType()==4){
+					hjType="使领馆探视";
+				}else if(jlHjDj.getHjType()==5){
+					hjType="提审会见";
+				}else if(jlHjDj.getHjType()==6){
+					hjType="公务会见";
+				}else if(jlHjDj.getHjType()==9){
+					hjType="特批会见";
+				}else if(jlHjDj.getHjType()==99){
+					hjType="其他会见";
+				}
+				HSSFCell cell6 = row2.createCell(6);
+				cell6.setCellValue(hjType);
+				
+				HSSFCell cell7 = row2.createCell(7);
+				cell7.setCellValue(jlHjDj.getHjInfo()!=null?jlHjDj.getHjInfo():"");
+				
+				HSSFCell cell8 = row2.createCell(8);
+				cell8.setCellValue(jlHjDj.getDjTime()!=null?DateUtil.getDefault(jlHjDj.getDjTime()):"");
+				
+				HSSFCell cell9 = row2.createCell(9);
+				cell9.setCellValue(jlHjDj.getDjUser()!=null?jlHjDj.getDjUser():"");
+				
+				HSSFCell cell10 = row2.createCell(10);
+				cell10.setCellValue(jlHjDj.getCancelInfo()!=null?jlHjDj.getCancelInfo():"");
+				
+				String hjMode="";
+				if(jlHjDj.getHjMode()!=null && jlHjDj.getHjMode()==1){
+					hjMode = "隔离会见";
+				}else if(jlHjDj.getHjMode()!=null && jlHjDj.getHjMode()==2){
+					hjMode = "非隔离会见";
+				}else if(jlHjDj.getHjMode()!=null && jlHjDj.getHjMode()==3){
+					hjMode = "远程视频会见";
+				}else if(jlHjDj.getHjMode()!=null && jlHjDj.getHjMode()==4){
+					hjMode = "其他方式";
+				}
+				HSSFCell cell11 = row2.createCell(11);
+				cell11.setCellValue(hjMode);
+			}
+			
+			// 处理不同浏览器中文名称编码
+			String userAgent=request.getHeader("USER-AGENT");
+			if(userAgent.indexOf("Chrome")!=-1 || userAgent.indexOf("Safari")!=-1 || userAgent.indexOf("Firefox")!=-1){
+				fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+			}else{
+				//fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+				fileName = URLEncoder.encode(fileName,"UTF8");
+			}
+			response.setHeader("Content-Disposition", "attachment;filename="+fileName);
+			response.setHeader("Cache-Control","no-cache");//设置头
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("application/octet-stream");
+			out = response.getOutputStream();
+			book.write(out);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally{
+			if(out != null){
+				try {
+					out.close();
+				} catch (IOException e2) {
+				}
+			}
+		}
+		System.out.println("导出完成");
+	
+	}
+	
+	public String getQsListByHjid(Long hjid){
+		Result result = new Result();
+		
+		JlHjDjVO jlHjDj = this.findOne(hjid);
+		if(StringUtils.isNotBlank(jlHjDj.getFrNo())){
+			JlQsVO jlQs = new JlQsVO();
+			jlQs.setFrNo(jlHjDj.getFrNo());
+			List<JlQsVO> qsList = jlQsSQL.findList(jlQs);
+			List<JlQsVO> checkedQsList = new ArrayList<>();
+			for(JlQsVO t : qsList){
+				if(jlHjDj.getQsInfo1() != null && t.getQsName().equals(jlHjDj.getQsInfo1().substring(jlHjDj.getQsInfo1().indexOf("]")+1))){
+					checkedQsList.add(t);
+				}
+				else if(jlHjDj.getQsInfo2() != null && t.getQsName().equals(jlHjDj.getQsInfo2().substring(jlHjDj.getQsInfo2().indexOf("]")+1))){
+					checkedQsList.add(t);
+				}
+				else if(jlHjDj.getQsInfo3() != null && t.getQsName().equals(jlHjDj.getQsInfo3().substring(jlHjDj.getQsInfo3().indexOf("]")+1))){
+					checkedQsList.add(t);
+				}
+				else if(jlHjDj.getQsInfo4() != null && t.getQsName().equals(jlHjDj.getQsInfo4().substring(jlHjDj.getQsInfo4().indexOf("]")+1))){
+					checkedQsList.add(t);
+				}
+				else if(jlHjDj.getQsInfo5() != null && t.getQsName().equals(jlHjDj.getQsInfo5().substring(jlHjDj.getQsInfo5().indexOf("]")+1))){
+					checkedQsList.add(t);
+				}
+				else if(jlHjDj.getQsInfo6() != null && t.getQsName().equals(jlHjDj.getQsInfo6().substring(jlHjDj.getQsInfo6().indexOf("]")+1))){
+					checkedQsList.add(t);
+				}
+				else if(jlHjDj.getQsInfo7() != null && t.getQsName().equals(jlHjDj.getQsInfo7().substring(jlHjDj.getQsInfo7().indexOf("]")+1))){
+					checkedQsList.add(t);
+				}
+				else if(jlHjDj.getQsInfo8() != null && t.getQsName().equals(jlHjDj.getQsInfo8().substring(jlHjDj.getQsInfo8().indexOf("]")+1))){
+					checkedQsList.add(t);
+				}
+				else if(jlHjDj.getQsInfo9() != null && t.getQsName().equals(jlHjDj.getQsInfo9().substring(jlHjDj.getQsInfo9().indexOf("]")+1))){
+					checkedQsList.add(t);
+				}
+			}
+			result.putData(checkedQsList);
+		}
+		return result.toResult();
+	}
+	
+	public String editDj(Long hjid, Integer hjTime, Integer hjType, String hjInfo, String qsIds){
+		Result result = new Result();
+		JlHjDjVO model = new JlHjDjVO();
+		if(hjid==null){
+			result.error(Result.error_102);
+			return result.toResult();
+		}
+		model.setHjid(hjid);
+		if(hjTime!=null){
+			model.setHjTime(hjTime*60);
+		}
+		model.setHjType(hjType);
+		model.setHjInfo(hjInfo);
+		String[] qsIdss = qsIds.split(",");
+		for(int i=0; i<qsIdss.length;i++){ // 亲属
+			JlQsVO jlQs = jlQsSQL.findOne(qsIdss[i]);
+			String gx = StringUtils.isNotBlank(jlQs.getGx())?"["+jlQs.getGx()+"]":"";
+			String name = StringUtils.isNotBlank(jlQs.getQsName())?jlQs.getQsName():"";
+			if(i==0){
+				model.setQsInfo1(gx+name);
+				model.setQsZp1(jlQs.getJz());
+				model.setQsCard1(jlQs.getQsCard());
+			}else if(i==1){
+				model.setQsInfo2(gx+name);
+				model.setQsZp2(jlQs.getJz());
+				model.setQsCard2(jlQs.getQsCard());
+			}else if(i==2){
+				model.setQsInfo3(gx+name);
+				model.setQsZp3(jlQs.getJz());
+				model.setQsCard3(jlQs.getQsCard());
+			}else if(i==3){
+				model.setQsInfo4(gx+name);
+				model.setQsZp4(jlQs.getJz());
+				model.setQsCard4(jlQs.getQsCard());
+			}else if(i==4){
+				model.setQsInfo5(gx+name);
+				model.setQsZp5(jlQs.getJz());
+				model.setQsCard5(jlQs.getQsCard());
+			}else if(i==5){
+				model.setQsInfo6(gx+name);
+				model.setQsZp6(jlQs.getJz());
+				model.setQsCard6(jlQs.getQsCard());
+			}else if(i==6){
+				model.setQsInfo7(gx+name);
+				model.setQsZp7(jlQs.getJz());
+				model.setQsCard7(jlQs.getQsCard());
+			}else if(i==7){
+				model.setQsInfo8(gx+name);
+				model.setQsZp8(jlQs.getJz());
+				model.setQsCard8(jlQs.getQsCard());
+			}else if(i==8){
+				model.setQsInfo9(gx+name);
+				model.setQsZp9(jlQs.getJz());
+				model.setQsCard9(jlQs.getQsCard());
+			}
+		}
+		this.edit(model);
+		return result.toResult();
 	}
 }

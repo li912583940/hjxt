@@ -473,7 +473,7 @@ export default {
     qsRowClick(row){ // 单击亲属表格得某一行  让多选框处于选中事件
       this.$refs.qsMultipleTable.toggleRowSelection(row);
     },
-  	qsAllSelectionChange(rows){ // 亲属表格 全选事件
+  	qsAllSelectionChange(rows){ // 亲属表格 多选框选中触发这个事件
   		this.qsSelections = rows;
   	},
   	cardEvent() {// 设置读卡器监听事件  并根据亲属身份证信息查询犯人
@@ -508,7 +508,7 @@ export default {
 	  	
   	},
   	handleAddQs(row) { //打开亲属
-    	this.$router.push({ path: '/addQs' })
+    	this.$router.push({ path: '/addQs', query: {frNo: row.frNo} })
 		}
 
     

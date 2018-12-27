@@ -849,4 +849,12 @@ public class JlHjDj implements java.io.Serializable {
 		this.shState = shState;
 	}
 
+	public Integer getHjMode() {
+		return hjMode;
+	}
+
+	public void setHjMode(Integer hjMode) {
+		this.hjMode = hjMode;
+	}
+
 }
