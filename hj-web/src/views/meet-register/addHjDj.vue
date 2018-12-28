@@ -21,6 +21,19 @@
       
     </div>
     
+    <div class="filter-container">
+      <el-select style="width: 200px"  v-model="formdata.hjType" placeholder="选择会见类型">
+        <el-option v-for="item in hjTypes" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+      <el-select style="width: 200px" v-model="formdata.hjMode" placeholder="选择会见方式">
+        <el-option v-for="item in hjModes" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+      <el-input style="width: 200px;"  placeholder="输入会见说明" v-model="formdata.hjInfo" clearable>
+      </el-input>
+    </div>
+    
 		<!-- 服刑人员开始 -->
 		<el-card class="box-card">
 	    <el-table :key='frTableKey' ref="frMultipleTable" :data="frList" v-loading="frListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
@@ -254,7 +267,10 @@ export default {
       
       formdata: {// 提交会见登记表单
       	frNo: undefined,
-      	qsIds: []
+      	qsIds: [],
+      	hjType: 1,
+      	hjMode: 1,
+      	hjInfo: undefined
       },
       qsSelections: [],
       
@@ -263,9 +279,61 @@ export default {
       //按钮权限   1：有权限， 0：无权限
       buttonRole: { 
       	addQsPermission: 0
-      }
+      },
       
+      hjTypes:[
+        {
+      		id: 1,
+      		name: '亲属会见'
+      	},
+      	{
+      		id: 2,
+      		name: '监护人会见'
+      	},
+      	{
+      		id: 3,
+      		name: '律师会见'
+      	},
+      	{
+      		id: 4,
+      		name: '使领馆探视'
+      	},
+      	{
+      		id: 5,
+      		name: '提审会见'
+      	},
+      	{
+      		id: 6,
+      		name: '公务会见'
+      	},
+      	{
+      		id: 9,
+      		name: '特批会见'
+      	},
+      	{
+      		id: 99,
+      		name: '其他会见'
+      	},
+      ],
       
+      hjModes: [
+      	{
+      		id: 1,
+      		name: '隔离会见'
+      	},
+      	{
+      		id: 2,
+      		name: '非隔离会见'
+      	},
+      	{
+      		id: 3,
+      		name: '远程视频会见'
+      	},
+      	{
+      		id: 9,
+      		name: '其他方式'
+      	},
+      ],
     }
   },
   filters: {

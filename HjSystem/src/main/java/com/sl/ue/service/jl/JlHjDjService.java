@@ -18,8 +18,9 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 			String frNo, // 罪犯编号
 			String qsIds, // 亲属id集合
 			Integer hjsc, // 会见时长  单位：分钟
-			String hjsm, // 会见说明
+			String hjInfo, // 会见说明
 			Integer hjType, // 会见类型
+			Integer hjMode, //会见方式
 			Integer callNo, //排队号
 			Integer tpQsNum, //特批亲属个数
 			Integer qzSp // 强制审批
@@ -112,6 +113,21 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 	 */
 	public Map<String, Object> findPojoByLog(JlHjDjVO model, Integer pageSize, Integer pageNum);
 	
+	/**
+	 * 说明 [登记记录导出]
+	 * @param model
+	 * @param request
+	 * @param response
+	 * L_晓天  @2018年12月28日
+	 */
 	public void exportExcelByLog(JlHjDjVO model, 
 			HttpServletRequest request, HttpServletResponse response);
+	
+	/**
+	 * 说明 [会见通知修改通知状态]
+	 * @param model
+	 * @return
+	 * L_晓天  @2018年12月28日
+	 */
+	public String editTz(JlHjDjVO model);
 }

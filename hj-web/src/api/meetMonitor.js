@@ -6,6 +6,9 @@ export const findPojo = params => { return request.get('/hjMonitor/findPojo', { 
 // 修改时间
 export const UpdateSJ = params => { return request.post('/hjMonitor/updateSJ', params ).then(res => res) }
 
+// 更新监听警察信息
+export const UpdateYJ = params => { return request.post('/hjMonitor/updateYJ', params ).then(res => res) }
+
 //  获取服务器
 export const GetHjServerList = params => { return request.get('/sysHjServer/findList', { params: params } ).then(res => res) }
 

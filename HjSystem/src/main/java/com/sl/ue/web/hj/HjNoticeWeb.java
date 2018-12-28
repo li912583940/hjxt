@@ -40,4 +40,9 @@ public class HjNoticeWeb extends Result{
 		this.putData(list);
 		return this.toResult();
 	}
+	
+	@RequestMapping("/editTz")
+	public String editTz(JlHjDjVO model){
+		return jlHjDjSQL.editTz(model);
+	}
 }

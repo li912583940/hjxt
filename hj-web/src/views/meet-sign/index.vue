@@ -130,7 +130,7 @@ import { findPojo, FpZw, QxFpZw, GetSurplusZw, RgFpZw, GrantCall, CancelGrantCal
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
-
+import { Message, MessageBox } from 'element-ui'
 
 export default {
   name: 'meetSign',
@@ -246,6 +246,7 @@ export default {
           type: 'success',
           duration: 5 * 1000
 	      });
+	      this.getList()
     	})
     },
     
@@ -259,6 +260,8 @@ export default {
           type: 'success',
           duration: 5 * 1000
 	      });
+	      
+	      this.getList()
     	})
     },
     
@@ -306,7 +309,12 @@ export default {
     		hjId: row.hjid
     	}
     	GrantCall(param).then(res => {
-    		
+    		Message({
+          message: res.errMsg,
+          type: 'success',
+          duration: 5 * 1000
+	      });
+	      
     		this.getList();
     	})
     },
@@ -316,20 +324,16 @@ export default {
     		hjId: row.hjid
     	}
     	CancelGrantCall(param).then(res => {
-    		
+    		Message({
+          message: res.errMsg,
+          type: 'success',
+          duration: 5 * 1000
+	      });
     		this.getList();
     	})
     	
     },
     
-    dateFormat(row, column) {
-			//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-		},
 		dateFormats: function (val) {
 			if(!val){
 				return undefined

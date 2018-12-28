@@ -69,8 +69,9 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			String frNo, // 罪犯编号
 			String qsIds, // 亲属id集合
 			Integer hjsc, // 会见时长  单位：分钟
-			String hjsm, // 会见说明
+			String hjInfo, // 会见说明
 			Integer hjType, // 会见类型
+			Integer hjMode, //会见方式
 			Integer callNo, //排队号
 			Integer tpQsNum, //特批亲属个数
 			Integer qzSp // 强制审批
@@ -116,14 +117,14 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		}else{
 			addJlHjDj.setHjType(hjType); // 会见类型   1 严见，2 宽见
 		}
-		
+		addJlHjDj.setHjMode(hjMode);
 		addJlHjDj.setDjTime(new Date());
 		if(hjsc == null){
 			addJlHjDj.setHjTime(30*60); // 单位：秒  , 30分钟
 		}else{
 			addJlHjDj.setHjTime(hjsc*60); // 单位：秒
 		}
-		addJlHjDj.setHjInfo(hjsm); // 会见说明
+		addJlHjDj.setHjInfo(hjInfo); // 会见说明
 		addJlHjDj.setDjUser(TokenUser.getUser().getUserNo()); // 登记人
 		addJlHjDj.setFpFlag(0);
 		addJlHjDj.setFpTzfrFlag(0);
@@ -337,6 +338,11 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		StringBuffer leftJoinWhere = new StringBuffer();
 		leftJoinWhere.append(" AND (a.state=0 OR a.state=3)"); // 条件
 		
+		if(StringUtils.isNotBlank(model.getFrName())){
+    		String str = model.getFrName();
+    		leftJoinWhere.append(" AND (a.FR_Name LIKE '%"+str+"%' OR dbo.f_get_fryp(a.FR_Name,'"+str+"') =1 )");
+    		model.setFrName(null);
+    	}
 		model.setLeftJoinField(leftJoinField.toString());
 		model.setLeftJoinWhere(leftJoinWhere.toString());
 		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
@@ -384,8 +390,8 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			queryJlQs.setQsSfz(qsSfz);
 			StringBuffer WhereJlQs = new StringBuffer(); // sql条件
 			if(StringUtils.isNotBlank(qsName)){
-				WhereJlQs.append(" AND a.QS_Name LIKE '%"+qsName+"%' ");
-			}
+	    		WhereJlQs.append(" AND (a.QS_Name LIKE '%"+qsName+"%' OR dbo.f_get_fryp(a.QS_Name,'"+qsName+"') =1 )");
+	    	}
 			queryJlQs.setLeftJoinWhere(WhereJlQs.toString());
 			List<JlQsVO> jlQsList = jlQsSQL.findList(queryJlQs, pageSize, pageNum);
 			if(jlQsList.size()>0){
@@ -414,7 +420,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		StringBuffer Where = new StringBuffer(); // sql条件
     	if(StringUtils.isNotBlank(model.getFrName())){
     		String str = model.getFrName();
-    		Where.append(" AND a.FR_Name LIKE '%"+str+"%' ");
+    		Where.append(" AND (a.FR_Name LIKE '%"+str+"%' OR dbo.f_get_fryp(a.FR_Name,'"+str+"') =1 )");
     		model.setFrName(null);
     	}
     	if(StringUtils.isNotBlank(frNos)){
@@ -555,7 +561,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		}else if(jlHjDj.getFpFlag()==0){
 			
 		}else{
-			String sql="update SysHjLine set hjid=null where hjid="+jlHjDj.getHjid();
+			String sql="update SYS_HJ_LINE set hjid=null where hjid="+jlHjDj.getHjid();
 			this.jdbcTemplate.update(sql);
 			
 			/** 原会见系统的逻辑*/
@@ -694,7 +700,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		jlHjDj.setFrInUser(user.getUserNo());
 		jlHjDj.setFrInTime(new Date());
 		this.edit(jlHjDj);
-		
+		result.msg("授权成功");
 		return result.toResult();
 	}
 	
@@ -724,7 +730,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		}
 		jlHjDj.setShState(0);
 		this.edit(jlHjDj);
-		
+		result.msg("已取消授权");
 		return result.toResult();
 	}
 	
@@ -1041,6 +1047,35 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		}
 		model.setHjType(hjType);
 		model.setHjInfo(hjInfo);
+		
+		model.setQsInfo1("");
+		model.setQsZp1(null);
+		model.setQsCard1("");
+		model.setQsInfo2("");
+		model.setQsZp2(null);
+		model.setQsCard2("");
+		model.setQsInfo3("");
+		model.setQsZp3(null);
+		model.setQsCard3("");
+		model.setQsInfo4("");
+		model.setQsZp4(null);
+		model.setQsCard4("");
+		model.setQsInfo5("");
+		model.setQsZp5(null);
+		model.setQsCard5("");
+		model.setQsInfo6("");
+		model.setQsZp6(null);
+		model.setQsCard6("");
+		model.setQsInfo7("");
+		model.setQsZp7(null);
+		model.setQsCard7("");
+		model.setQsInfo8("");
+		model.setQsZp8(null);
+		model.setQsCard8("");
+		model.setQsInfo9("");
+		model.setQsZp9(null);
+		model.setQsCard9("");
+		
 		String[] qsIdss = qsIds.split(",");
 		for(int i=0; i<qsIdss.length;i++){ // 亲属
 			JlQsVO jlQs = jlQsSQL.findOne(qsIdss[i]);
@@ -1084,6 +1119,12 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 				model.setQsCard9(jlQs.getQsCard());
 			}
 		}
+		this.edit(model);
+		return result.toResult();
+	}
+	
+	public String editTz(JlHjDjVO model){
+		Result result = new Result();
 		this.edit(model);
 		return result.toResult();
 	}

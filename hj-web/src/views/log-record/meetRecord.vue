@@ -2,6 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
     	<el-date-picker
+    		style="width: 200px"
     		class="filter-item"
 	      v-model="listQuery.callTimeStart"
 	      align="right"
@@ -10,6 +11,7 @@
 	      :picker-options="pickerOptionsStart">
 	    </el-date-picker>
 	    <el-date-picker
+	    	style="width: 200px"
 	    	class="filter-item"
 	      v-model="listQuery.callTimeEnd"
 	      align="right"
@@ -26,6 +28,26 @@
       </el-input>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="listQuery.qsName">
       </el-input>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.recRatingState" placeholder="选择评级状态">
+        <el-option v-for="item in recRatingStates" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.zw" placeholder="请选择座位">
+        <el-option v-for="item in zws" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.hjType" placeholder="请选择会见类型">
+        <el-option v-for="item in hjTypes" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.recordOverTime" placeholder="请选择复听超时">
+        <el-option v-for="item in recordOverTimes" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.recAssessmentState" placeholder="请选择复听状态">
+        <el-option v-for="item in recAssessmentStates" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
       <el-button v-if="buttonRole.exportPermission==1" class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
     </div>
@@ -54,8 +76,14 @@
       </el-table-column>
       <el-table-column width="140" align="center" label="会见类型">
         <template slot-scope="scope">
-          <span v-if="scope.row.hjType==1">严见</span>
-          <span v-if="scope.row.hjType==2">宽见</span>
+          <span v-if="scope.row.hjType==1">亲属会见</span>
+          <span v-else-if="scope.row.hjType==2">监护人会见</span>
+          <span v-else-if="scope.row.hjType==3">律师会见</span>
+          <span v-else-if="scope.row.hjType==4">使领馆探视</span>
+          <span v-else-if="scope.row.hjType==5">提审会见</span>
+          <span v-else-if="scope.row.hjType==6">公务会见</span>
+          <span v-else-if="scope.row.hjType==9">特批会见</span>
+          <span v-else-if="scope.row.hjType==99">其他会见</span>
         </template>
       </el-table-column>
       <el-table-column width="140" align="center" :label="$t('currency.jqName')">
@@ -442,7 +470,8 @@
 </template>
 
 <script>
-import { findPojo, findOne, findJqList, GetZs, AddRecordFlag, GetZsAllPojo, GetRatingState, UpdateRatingState, GetRatingStateAllPojo, GetAllAssessmentPojo, GetOtherInfo, exportExcel } from '@/api/meetRecord'
+import { findPojo, findOne, findJqList, GetZwList, GetZs, AddRecordFlag, GetZsAllPojo, GetRatingState, UpdateRatingState, 
+	GetRatingStateAllPojo, GetAllAssessmentPojo, GetOtherInfo, exportExcel } from '@/api/meetRecord'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -468,12 +497,88 @@ export default {
         jq: undefined,
         frNo: undefined,
         frName: undefined,
-        qsName: undefined
+        qsName: undefined,
+        recRatingState: undefined,
+        zw: undefined,
+        hjType: undefined,
+        recordOverTime: undefined,
+        recAssessmentState: undefined,
       },
-      statusOptions: ['published', 'draft', 'deleted'],
       jqs: [ // 监区下拉选框
       
       ],
+      recRatingStates: [
+      	{
+      		id: 0,
+      		name: '未评'
+      	},
+      	{
+      		id: 1,
+      		name: '异常'
+      	},
+      	{
+      		id: 2,
+      		name: '正常'
+      	}
+      ],
+      zws: [ //座位
+      
+      ],
+      hjTypes:[
+        {
+      		id: 1,
+      		name: '亲属会见'
+      	},
+      	{
+      		id: 2,
+      		name: '监护人会见'
+      	},
+      	{
+      		id: 3,
+      		name: '律师会见'
+      	},
+      	{
+      		id: 4,
+      		name: '使领馆探视'
+      	},
+      	{
+      		id: 5,
+      		name: '提审会见'
+      	},
+      	{
+      		id: 6,
+      		name: '公务会见'
+      	},
+      	{
+      		id: 9,
+      		name: '特批会见'
+      	},
+      	{
+      		id: 99,
+      		name: '其他会见'
+      	},
+      ],
+      recordOverTimes: [
+        {
+      		id: 0,
+      		name: '未超时'
+      	},
+      	{
+      		id: 1,
+      		name: '已超时'
+      	},
+      ],
+      recAssessmentStates:[
+        {
+      		id: 0,
+      		name: '未听'
+      	},
+      	{
+      		id: 1,
+      		name: '已听'
+      	},
+      ],
+      
       downloadLoading: false,
 	    pickerOptionsStart: {
 	      shortcuts: [{
@@ -648,6 +753,7 @@ export default {
   created() {
     this.getList()
     this.getJqList()
+    this.getZwList()
   },
   mounted() {
     this.setButtonRole()
@@ -698,6 +804,19 @@ export default {
 					  this.jqs.push(value)
 					}
 	    	})
+    	}
+    },
+    getZwList(){ // 座位下拉框
+    	if(this.zws.length === 0){
+    		GetZwList({}).then(res =>{
+    			let list = res.list
+	    		for(let x of list){
+					  let value = {}
+					  value.id = x.zw
+					  value.name = x.zw
+					  this.zws.push(value)
+					}
+    		})
     	}
     },
     handleFilter() {

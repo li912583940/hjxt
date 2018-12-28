@@ -2,6 +2,14 @@
   <div class="app-container">
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
       style="width: 100%">
+       <el-table-column  align="center" :label="$t('criminal.actions')" width="160" fixed="left" >
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="sdNotice(scope.row)">
+	          <span v-if="scope.row.pageTzState==0">已通知</span>
+	          <span v-if="scope.row.pageTzState==1">未通知</span>
+          </el-button>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="罪犯监区" width="140">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
@@ -25,17 +33,20 @@
       </el-table-column>
       <el-table-column width="140px" align="center" label="会见通知 接收状态">
         <template slot-scope="scope">
-          <span v-if="scope.row.pageTzState==0" @click="sdNotice">未接收</span>
+          <span v-if="scope.row.pageTzState==0" style="color: red;">未接收</span>
           <span v-if="scope.row.pageTzState==1">已接收</span>
         </template>
       </el-table-column>
       <el-table-column width="140px" align="center" label="会见类型">
         <template slot-scope="scope">
-          <span v-if="scope.row.hjType ==1">电话会见</span>
-          <span v-else-if="scope.row.hjType ==2">面对面会见</span>
-          <span v-else-if="scope.row.hjType ==3">视频会见</span>
-          <span v-else-if="scope.row.hjType ==4">帮教</span>
-          <span v-else-if="scope.row.hjType ==5">提审</span>
+          <span v-if="scope.row.hjType==1">亲属会见</span>
+          <span v-else-if="scope.row.hjType==2">监护人会见</span>
+          <span v-else-if="scope.row.hjType==3">律师会见</span>
+          <span v-else-if="scope.row.hjType==4">使领馆探视</span>
+          <span v-else-if="scope.row.hjType==5">提审会见</span>
+          <span v-else-if="scope.row.hjType==6">公务会见</span>
+          <span v-else-if="scope.row.hjType==9">特批会见</span>
+          <span v-else-if="scope.row.hjType==99">其他会见</span>
         </template>
       </el-table-column>
       <el-table-column width="300px" align="center" label="会见说明">
@@ -87,11 +98,10 @@
 </template>
 
 <script>
-import { findPojo } from '@/api/meetNotice'
+import { findPojo, RequestEditTz } from '@/api/meetNotice'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
 
 
 export default {
@@ -111,7 +121,13 @@ export default {
     }
   },
   filters: {
-    
+    dateFormat(date) {
+		//时间格式化  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+	  }
   },
   created() {
     this.getList()
@@ -143,15 +159,19 @@ export default {
       this.listQuery.pageNum = val
       this.getList()
     },
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
+		sdNotice(row){
+			let tz=1
+			if(row.pageTzState==1){
+				tz=0
+			}
+			let param ={
+				hjid: row.hjid,
+				pageTzState: tz
+			}
+			RequestEditTz(param).then(res =>{
+				this.getList()
+			})
+		},
     dateFormat(row, column) {
 			//时间格式化  
 	    let date = row[column.property];  

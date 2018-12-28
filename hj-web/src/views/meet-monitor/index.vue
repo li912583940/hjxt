@@ -44,6 +44,11 @@
           <span>{{scope.row.monitorTime}}</span>
         </template>
       </el-table-column>
+      <el-table-column width="200px" align="center" label="监听警察">
+        <template slot-scope="scope">
+          <span>{{scope.row.yjName}}</span>
+        </template>
+      </el-table-column>
       <el-table-column v-if="buttonRole.jiantingPermission==1 || buttonRole.qieduanPermission==1" align="center" :label="$t('criminal.actions')" width="220">
         <template slot-scope="scope">
           <el-button v-if="jtState==1 && buttonRole.jiantingPermission==1" type="primary" size="mini" icon="el-icon-service" @click="jianting(scope.row)">监听</el-button>
@@ -123,7 +128,7 @@
 
 <script>
 	
-import { findPojo, UpdateSJ, GetHjServerList, GetMonitorVocList, AddMonitorFlag, GetZs, QieduanHj } from '@/api/meetMonitor'
+import { findPojo, UpdateSJ, UpdateYJ, GetHjServerList, GetMonitorVocList, AddMonitorFlag, GetZs, QieduanHj } from '@/api/meetMonitor'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -145,7 +150,7 @@ export default {
         pageSize: 20
       },
       
-       jtState: 1,
+      jtState: 1, //监听状态
       
       /** 修改时间 开始 */ 
       dialogSJVisible: false,
@@ -271,6 +276,10 @@ export default {
     /** 监听 开始 */
     jianting(row){
     	if(row.monitorState=='通话'){
+    		UpdateYJ({webId:row.webId, state:1}).then(res =>{
+    			this.getList()
+    		})
+    		
     		document.getElementById(row.jy).ListenTele(row.lineNo);
     		this.jtState = 2
     	}
@@ -279,6 +288,9 @@ export default {
    
     /** 停止监听 开始 */
     jiantingStop(row){
+    	UpdateYJ({webId:row.webId, state:0}).then(res =>{
+				this.getList()
+			})
     	document.getElementById(row.jy).ListenStop(row.lineNo);
     	this.jtState = 1
     },
@@ -293,6 +305,10 @@ export default {
 				hjid:row.hjid
 			}
 			QieduanHj(param).then(res => {
+				UpdateYJ({webId:row.webId, state:0}).then(res =>{
+    			this.getList()
+    		})
+				
 				this.jtState = 1
 				this.getList()
 			})

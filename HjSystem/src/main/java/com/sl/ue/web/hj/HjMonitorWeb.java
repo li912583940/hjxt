@@ -37,6 +37,18 @@ public class HjMonitorWeb extends Result{
 	}
 	
 	/**
+	 * 说明 [更新监听警察信息]
+	 * @param webId
+	 * @param state 1:添加警察信息， 0:清除警察信息
+	 * @return
+	 * L_晓天  @2018年12月28日
+	 */
+	@RequestMapping("/updateYJ")
+	public String updateYJ(Integer webId, Integer state){
+		return sysHjLineSQL.updateYJ(webId, state);
+	}
+	
+	/**
 	 * 说明 [获取当前用户在此次通话的注释]
 	 * L_晓天  @2018年11月21日
 	 */

@@ -115,6 +115,28 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 		return result.toResult();
 	}
 	
+	public String updateYJ(Integer webId, Integer state){
+		Result result = new Result();
+		if(webId == null){
+			result.error(Result.error_102, "webId为NULL");
+			return result.toResult();
+		}
+		SysHjLineVO sysHjLine = this.findOne(webId);
+		
+		if(sysHjLine == null){
+			result.error(Result.error_103, "查询不到此记录");
+			return result.toResult();
+		}
+		if(state==1){
+			SysUserVO user = TokenUser.getUser();
+			sysHjLine.setMonitorYj(user.getUserName());
+		}else{
+			sysHjLine.setMonitorYj("");
+		}
+		this.edit(sysHjLine);
+		return result.toResult();
+	}
+	
 	public String getZs(String monitorCallid){
 		Result result = new Result();
 		if(StringUtils.isBlank(monitorCallid)){

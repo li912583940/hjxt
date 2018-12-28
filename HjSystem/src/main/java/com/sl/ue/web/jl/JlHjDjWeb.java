@@ -106,13 +106,14 @@ public class JlHjDjWeb extends Result{
 			String frNo, // 罪犯编号
 			String qsIds, // 亲属id集合
 			Integer hjsc, // 会见时长  单位：分钟
-			String hjsm, // 会见说明
+			String hjInfo, // 会见说明
 			Integer hjType, // 会见类型
+			Integer hjMode, //会见方式
 			Integer callNo, //排队号
 			Integer tpQsNum, //特批亲属个数
 			Integer qzSp // 强制审批
 			){
-		return jlHjDjSQL.addHjdj(frNo, qsIds, hjsc, hjsm, hjType, callNo, tpQsNum, qzSp);
+		return jlHjDjSQL.addHjdj(frNo, qsIds, hjsc, hjInfo, hjType, hjMode, callNo, tpQsNum, qzSp);
 		
 	}
 	

@@ -8,4 +8,5 @@ import com.sl.ue.service.base.BaseService;
 public interface SysLogService extends BaseService<SysLogVO>{
 
 	public Map<String, Object> findPojoLeft(SysLogVO model, Integer pageSize, Integer pageNum);
+	
 }

@@ -72,6 +72,7 @@ public class HjSignWeb extends Result{
 	 * 说明 [授权才能使用电话]
 	 * L_晓天  @2018年11月12日
 	 */
+	@RequestMapping("/grantCall")
 	public String grantCall(Long hjId, HttpServletRequest request){
 		return jlHjDjSQL.grantCall(hjId, request);
 	}
@@ -80,6 +81,7 @@ public class HjSignWeb extends Result{
 	 * 说明 [取消授权才能使用电话]
 	 * L_晓天  @2018年11月12日
 	 */
+	@RequestMapping("/cancelGrantCall")
 	public String cancelGrantCall(Long hjId, HttpServletRequest request){
 		return jlHjDjSQL.cancelGrantCall(hjId, request);
 	}
