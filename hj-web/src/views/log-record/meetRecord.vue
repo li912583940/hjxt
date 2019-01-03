@@ -1100,16 +1100,20 @@ export default {
       }
       
 			exportExcel(this.listQuery).then(res => {
-				console.log(res)
-	      const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
-	     	const downloadElement = document.createElement('a')
-	     	const href = window.URL.createObjectURL(blob)
-	     	downloadElement.href = href
-	     	downloadElement.download = '会见记录.xls'
-	     	document.body.appendChild(downloadElement)
-	     	downloadElement.click()
-     		document.body.removeChild(downloadElement) // 下载完成移除元素
-	     	window.URL.revokeObjectURL(href) // 释放掉blob对象
+	      var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
+	     	if (window.navigator && window.navigator.msSaveOrOpenBlob) { // IE浏览器
+        	window.navigator.msSaveOrOpenBlob(blob, '会见记录.xls');
+    		}else{ //非IE浏览器
+    			var downloadElement = document.createElement('a')
+		     	var href = window.URL.createObjectURL(blob)
+		     	downloadElement.href = href
+		     	downloadElement.download = '会见记录.xls'
+		     	document.body.appendChild(downloadElement)
+		     	downloadElement.click()
+	     		document.body.removeChild(downloadElement) // 下载完成移除元素
+		     	window.URL.revokeObjectURL(href) // 释放掉blob对象
+    		}
+	     	
 			}).catch(error => {
          console.log(error)
       })

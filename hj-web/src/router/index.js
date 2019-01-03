@@ -73,32 +73,32 @@ export const constantRouterMap = [
       meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
     }]
   },
-  {
-    path: '/documentation',
-    component: Layout,
-    redirect: '/documentation/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/documentation/index'),
-        name: 'Documentation',
-        meta: { title: 'documentation', icon: 'documentation', noCache: true }
-      }
-    ]
-  },
-  {
-    path: '/guide',
-    component: Layout,
-    redirect: '/guide/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/guide/index'),
-        name: 'Guide',
-        meta: { title: 'guide', icon: 'guide', noCache: true }
-      }
-    ]
-  },
+//{
+//  path: '/documentation',
+//  component: Layout,
+//  redirect: '/documentation/index',
+//  children: [
+//    {
+//      path: 'index',
+//      component: () => import('@/views/documentation/index'),
+//      name: 'Documentation',
+//      meta: { title: 'documentation', icon: 'documentation', noCache: true }
+//    }
+//  ]
+//},
+//{
+//  path: '/guide',
+//  component: Layout,
+//  redirect: '/guide/index',
+//  children: [
+//    {
+//      path: 'index',
+//      component: () => import('@/views/guide/index'),
+//      name: 'Guide',
+//      meta: { title: 'guide', icon: 'guide', noCache: true }
+//    }
+//  ]
+//},
   { // 添加会见登记
     path: '/addHjDj',
     component: Layout,
@@ -303,7 +303,7 @@ export const asyncRouterMap = [
     children: [
       { path: 'operationLog', component: () => import('@/views/log-record/operationLog'), name: 'operationLog', meta: { title: 'operationLog', icon: 'form', roles:'operationLog' }}, //操作日志
       { path: 'registerLog', component: () => import('@/views/log-record/registerLog'), name: 'registerLog', meta: { title: 'registerLog' , icon: 'form', roles:'registerLog'}}, //登记记录
-      { path: 'entranceGuard', component: () => import('@/views/log-record/entranceGuard'), name: 'entranceGuard', meta: { title: 'entranceGuard', icon: 'form', roles:'entranceGuard' }} // 门禁记录
+//    { path: 'entranceGuard', component: () => import('@/views/log-record/entranceGuard'), name: 'entranceGuard', meta: { title: 'entranceGuard', icon: 'form', roles:'entranceGuard' }} // 门禁记录
       
     ]
   },

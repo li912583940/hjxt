@@ -9,7 +9,7 @@
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
       <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('criminal.add')}}</el-button>
-      <el-button v-if="buttonRole.exportPermission==1" class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
+      <el-button v-if="buttonRole.exportPermission==1" class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload" >{{$t('criminal.export')}}</el-button>
     	<el-upload
     		v-if="buttonRole.importPermission==1"
     		ref="upload"
@@ -529,25 +529,30 @@ export default {
 			})
 		},
     handleDownload() {
-			if(!this.listQuery.frName){
+			if(this.listQuery.frName==undefined || this.listQuery.frName==''){
       	this.listQuery.frName = undefined
       }
-      if(!this.listQuery.frNo){
+      if(this.listQuery.frNo==undefined || this.listQuery.frNo==''){
       	this.listQuery.frNo = undefined
       }
-      if(!this.listQuery.qsName){
+      if(this.listQuery.qsName==undefined || this.listQuery.qsName==''){
       	this.listQuery.qsName = undefined
       }
+
 			exportExcel(this.listQuery).then(res => {
-	      const blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
-	     	const downloadElement = document.createElement('a')
-	     	const href = window.URL.createObjectURL(blob)
-	     	downloadElement.href = href
-	     	downloadElement.download = '亲属信息.xls'
-	     	document.body.appendChild(downloadElement)
-	     	downloadElement.click()
-     		document.body.removeChild(downloadElement) // 下载完成移除元素
-	     	window.URL.revokeObjectURL(href) // 释放掉blob对象
+	      var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
+	     	if (window.navigator && window.navigator.msSaveOrOpenBlob) { // IE浏览器
+        	window.navigator.msSaveOrOpenBlob(blob, '亲属信息.xls');
+    		}else{ //非IE浏览器
+	     		var downloadElement = document.createElement('a')
+		     	var href = window.URL.createObjectURL(blob)
+		     	downloadElement.href = href
+		     	downloadElement.download = '亲属信息.xls'
+		     	document.body.appendChild(downloadElement)
+		     	downloadElement.click()
+	     		document.body.removeChild(downloadElement) // 下载完成移除元素
+		     	window.URL.revokeObjectURL(href) // 释放掉blob对象
+	     	}
 			}).catch(error => {
          console.log(error)
       })
