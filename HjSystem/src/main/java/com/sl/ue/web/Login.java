@@ -50,7 +50,6 @@ public class Login extends Result{
 			SysUserVO loginUser = list.get(0);
 			TokenManager tokenManager = new TokenManager();
 			String token = tokenManager.createToken(username);
-			System.out.println("token: "+token);
 			loginUser.setToken(token);
 			Date overdue = DateUtils.addHours(new Date(), Constants.TOKEN_EXPIRES_HOURS); // token 到期时间
 			loginUser.setTokenTime(overdue);
@@ -67,7 +66,7 @@ public class Login extends Result{
 			}
 			return this.toResult();
 		}
-		this.msg("账号或密码错误");
+		this.error(error_102, "账号或密码错误");
 		return this.toResult();
 	}
 	
@@ -80,7 +79,7 @@ public class Login extends Result{
 	public String logout(HttpServletRequest request){
 		String token = request.getHeader(Constants.TOKEN_NAME);
 		if(StringUtils.isBlank(token)){
-			this.error(error_102);
+			this.error(error_101);
 			return this.toResult();
 		}
 		TokenManager tokenManager = new TokenManager();
@@ -89,6 +88,25 @@ public class Login extends Result{
 		JqRoleManager jqRoleManager = new JqRoleManager();
 		jqRoleManager.deleteJq(token);
 		
+		return this.toResult();
+	}
+	
+	@RequestMapping("/editPassword")
+	public String editPassword(Integer webId, String userPwdOld, String userPwdNew){
+		if(webId == null || StringUtils.isBlank(userPwdOld) || StringUtils.isBlank(userPwdNew)){
+			this.error(error_102);
+			return this.toResult();
+		}
+		SysUserVO userOld =  sysUserSQL.findOne(webId);
+		if(userPwdOld.equals(userOld.getUserPwd())){
+			SysUserVO userNew = new SysUserVO();
+			userNew.setWebId(webId);
+			userNew.setUserPwd(userPwdNew);
+			sysUserSQL.edit(userNew);
+		}else{
+			this.error(error_103, "原始密码输入有误，请重新输入");
+			return this.toResult();
+		}
 		return this.toResult();
 	}
 }

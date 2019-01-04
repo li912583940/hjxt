@@ -19,7 +19,7 @@ const service = axios.create({
 service.interceptors.request.use(config => {
 	config.headers['Accept'] = 'text/plain';
   //config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-	config.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+	config.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 	
 	
   // Do something before request is sent

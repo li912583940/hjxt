@@ -4,9 +4,9 @@
       <svg-icon class-name="size-icon" icon-class="size" />
     </div>
     <el-dropdown-menu slot="dropdown">
-      <el-dropdown-item :disabled="size==='medium'" command="medium">Medium</el-dropdown-item>
-      <el-dropdown-item :disabled="size==='small'" command="small">Small</el-dropdown-item>
-      <el-dropdown-item :disabled="size==='mini'" command="mini">Mini</el-dropdown-item>
+      <el-dropdown-item :disabled="size==='medium'" command="medium">普通</el-dropdown-item>
+      <el-dropdown-item :disabled="size==='small'" command="small">小</el-dropdown-item>
+      <el-dropdown-item :disabled="size==='mini'" command="mini">迷你</el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
 </template>
@@ -24,7 +24,7 @@ export default {
       this.$store.dispatch('setSize', size)
       this.refreshView()
       this.$message({
-        message: 'Switch Size Success',
+        message: '切换大小成功',
         type: 'success'
       })
     },

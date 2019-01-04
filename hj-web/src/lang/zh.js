@@ -137,7 +137,7 @@ export default {
     size : '大小'
   },
   login: {
-    title: '系统登录',
+    title: 'VoxPMCC会见电话监控系统',
     logIn: '登录',
     username: '账号',
     password: '密码',

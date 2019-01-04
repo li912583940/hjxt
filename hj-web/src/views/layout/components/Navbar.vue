@@ -25,7 +25,7 @@
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img :src="imagephoto" class="user-avatar">
           <i class="el-icon-caret-bottom"/>
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -34,9 +34,9 @@
               {{ $t('navbar.dashboard') }}
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
+          <a target="_blank" @click="openEditUser">
             <el-dropdown-item>
-              {{ $t('navbar.github') }}
+              	修改密码
             </el-dropdown-item>
           </a>
           <el-dropdown-item divided>
@@ -45,6 +45,27 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    
+    
+    <!-- 新增或编辑 -->
+    <el-dialog title="修改密码" :visible.sync="dialogFormVisible">
+      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+        <el-form-item label="姓名">
+          <el-input v-model="dataForm.userName" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="原始密码" prop="userPwdOld">
+          <el-input v-model="dataForm.userPwdOld"></el-input>
+        </el-form-item>
+        <el-form-item label="新密码" prop="userPwdNew">
+          <el-input v-model="dataForm.userPwdNew"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updateData">确 定</el-button>
+      </div>
+    </el-dialog>
+    
   </div>
 </template>
 
@@ -59,6 +80,8 @@ import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
 
 import { findNotTzList } from '@/api/meetNotice'
+import { EditPassword } from '@/api/login'
+import { Message, MessageBox } from 'element-ui'
 
 export default {
   components: {
@@ -77,6 +100,23 @@ export default {
       'avatar',
       'device'
     ])
+  },
+  data() {
+    return {
+      imagephoto: '/static/image/user.jpg',
+    	
+    	dialogFormVisible: false,
+    	dataForm: { 
+        webId: undefined,
+        userName: undefined,
+        userPwdOld: undefined,
+        userPwdNew: undefined,
+      },
+      
+    	rules: {
+        password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
+      },
+    }
   },
   mounted() {
   	if(this.setButtonRole()==1){
@@ -131,8 +171,37 @@ export default {
     		}
     	}
     	return bool
+    },
+    
+    //重置表单
+		resetForm() {
+			this.dataForm.webId= undefined
+	    this.dataForm.userName= undefined
+	 		this.dataForm.userPwdOld= undefined
+	 		this.dataForm.userPwdNew= undefined
+	  },
+    openEditUser() { //打开修改密码弹框
+    	this.resetForm()
+    	
+    	this.dialogFormVisible = true
+    	let user = JSON.parse(sessionStorage.getItem("user"))
+    	if(user){
+    		this.dataForm.webId=user.webId
+    		this.dataForm.userName=user.userName
+    	}
+    },
+    
+    updateData() {
+    	EditPassword(this.dataForm).then(res =>{
+    		Message({
+	        message: '密码修改成功。',
+		      type: 'success',
+		      duration: 5 * 1000
+	      });
+    		this.dialogFormVisible = false
+    	})
+    	
     }
-   
   }
 }
 </script>

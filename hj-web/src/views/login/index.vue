@@ -1,63 +1,57 @@
 <template>
   <div class="login-container">
-
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-
-      <div class="title-container">
-        <h3 class="title">{{ $t('login.title') }}</h3>
-        <lang-select class="set-language"/>
-      </div>
-
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          v-model="loginForm.username"
-          :placeholder="$t('login.username')"
-          name="username"
-          type="text"
-          auto-complete="on"
-        />
-      </el-form-item>
-
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          :type="passwordType"
-          v-model="loginForm.password"
-          :placeholder="$t('login.password')"
-          name="password"
-          auto-complete="on"
-          @keyup.enter.native="handleLogin" />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon icon-class="eye" />
-        </span>
-      </el-form-item>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">{{ $t('login.logIn') }}</el-button>
-
-      <!--<div class="tips">
-        <span>{{ $t('login.username') }} : admin</span>
-        <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-      </div>
-      <div class="tips">
-        <span style="margin-right:18px;">{{ $t('login.username') }} : editor</span>
-        <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-      </div>-->
-
-      <!--<el-button class="thirdparty-button" type="primary" @click="showDialog=true">{{ $t('login.thirdparty') }}</el-button>-->
-    </el-form>
-
-    <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog" append-to-body>
-      {{ $t('login.thirdpartyTips') }}
-      <br>
-      <br>
-      <br>
-      <social-sign />
-    </el-dialog>
+  	<center>
+	    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+				
+	      <div class="title-container">
+	        <h3 class="title">{{ $t('login.title') }}</h3>
+	        <!--<lang-select class="set-language"/>-->
+	      </div>
+	
+	      <el-form-item prop="username">
+	        <span class="svg-container">
+	          <svg-icon icon-class="user" />
+	        </span>
+	        <el-input
+	          v-model="loginForm.username"
+	          :placeholder="$t('login.username')"
+	          name="username"
+	          type="text"
+	          auto-complete="on"
+	        />
+	      </el-form-item>
+	
+	      <el-form-item prop="password">
+	        <span class="svg-container">
+	          <svg-icon icon-class="password" />
+	        </span>
+	        <el-input
+	          :type="passwordType"
+	          v-model="loginForm.password"
+	          :placeholder="$t('login.password')"
+	          name="password"
+	          auto-complete="on"
+	          @keyup.enter.native="handleLogin" />
+	        <span class="show-pwd" @click="showPwd">
+	          <svg-icon icon-class="eye" />
+	        </span>
+	      </el-form-item>
+	
+	      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">{{ $t('login.logIn') }}</el-button>
+	
+	      <!--<div class="tips">
+	        <span>{{ $t('login.username') }} : admin</span>
+	        <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
+	      </div>
+	      <div class="tips">
+	        <span style="margin-right:18px;">{{ $t('login.username') }} : editor</span>
+	        <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
+	      </div>-->
+	
+	      <!--<el-button class="thirdparty-button" type="primary" @click="showDialog=true">{{ $t('login.thirdparty') }}</el-button>-->
+	    </el-form>
+	    
+	    </center>
 
   </div>
 </template>
@@ -68,6 +62,7 @@ import LangSelect from '@/components/LangSelect'
 import SocialSign from './socialsignin'
 import { requestLogin } from '@/api/login'
 import { setToken } from '@/utils/auth'
+import { Message, MessageBox } from 'element-ui'
 
 export default {
   name: 'Login',
@@ -99,7 +94,6 @@ export default {
       },
       passwordType: 'password',
       loading: false,
-      showDialog: false,
       redirect: undefined
     }
   },
@@ -131,15 +125,24 @@ export default {
         if (valid) {
           this.loading = true
 	        this.$store.dispatch('RequestLogin', this.loginForm).then(() => {
-	        	console.log(1116)
+	          Message({
+			        message: '登录成功',
+				      type: 'success',
+				      duration: 5 * 1000
+			      });
 	          this.loading = false
 	          this.$router.push({ path: this.redirect || '/' })
-	        }).catch(() => {
+	        }).catch(res => {
+//	        	Message({
+//			        message: res.errMsg,
+//				      type: 'error',
+//				      duration: 5 * 1000
+//			      });
 	          this.loading = false
 	        })
 
         } else {
-          console.log('error submit!!')
+          console.log('错误')
           return false
         }
       })
@@ -171,8 +174,9 @@ export default {
   /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
   $bg:#283443;
-  $light_gray:#eee;
-  $cursor: #fff;
+  /*$light_gray:#eee;*/
+  $light_gray:#1E1E1E;
+  $cursor: #1E1E1E;
 
   @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
     .login-container .el-input input{
@@ -215,9 +219,10 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 /*$bg:#2d3a4b;*/
-$bg:#00F5FF;
-$dark_gray:#889aa4;
-$light_gray:#eee;
+$bg:#FFFAFA;
+/*$dark_gray:#889aa4;*/
+$dark_gray:#1E1E1E;
+$light_gray:#1E1E1E;
 $bgImg:url(/static/image/hj_logo.jpg);
 
 .login-container {
@@ -225,13 +230,17 @@ $bgImg:url(/static/image/hj_logo.jpg);
   height: 100%;
   width: 100%;
   background-image: $bgImg;
-  background-repeat: no-repeat;
+	background-repeat: no-repeat;
+	background-size:100% 100%;
+	/*background-position:center;*/
   background-color: $bg;
-  .login-form {
+.login-form {
     position: absolute;
+    top: 0;
     left: 0;
     right: 0;
-    width: 520px;
+    /*width: 520px;*/
+    width: 420px;
     max-width: 100%;
     padding: 35px 35px 15px 35px;
     margin: 150px auto;
@@ -278,10 +287,6 @@ $bgImg:url(/static/image/hj_logo.jpg);
     cursor: pointer;
     user-select: none;
   }
-  .thirdparty-button {
-    position: absolute;
-    right: 35px;
-    bottom: 28px;
-  }
+ 
 }
 </style>
