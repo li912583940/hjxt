@@ -109,9 +109,9 @@
         <el-form-item :label="$t('currency.frName')" prop="frName">
           <el-input v-model="dataForm.frName"></el-input>
         </el-form-item>
-        <video id="video" width="96" height="64" controls>
+        <video id="video" width="192" height="128" controls>
 			  </video>
-			  <canvas id="canvas" width="96" height="64"></canvas>
+			  <canvas id="canvas" width="192" height="128"></canvas>
 			  <div>
 			    <button id="capture" @click="paizhao">拍照</button>
 			  </div>
@@ -218,7 +218,6 @@ export default {
       },
       excelPath: process.env.BASE_API+"/jlQs/importExcel", //罪犯excel导入地址
       
-      mediaStreamTrack: undefined,
       // 新增或编辑弹窗
       dataForm: { 
         webId: undefined,
@@ -370,12 +369,11 @@ export default {
 	      if (navigator.mediaDevices.getUserMedia) {
 	        //最新的标准API
 	        //调用用户媒体设备, 访问摄像头
-		      navigator.mediaDevices.getUserMedia({video : {width: 96, height: 64}}).then(function(stream){
+		      navigator.mediaDevices.getUserMedia({video : {width: 192, height: 128}}).then(function(stream){
 			      //兼容webkit核心浏览器
 			      var URL = window.URL || window.webkitURL;
 			      //将视频流设置为video元素的源
 			      //video.src = URL.createObjectURL(stream);
-			      this.mediaStreamTrack=stream;
 			      video.srcObject = stream;
 			      video.play();
 		    	 }).catch(function(error){
@@ -383,13 +381,12 @@ export default {
 		    	 });
 	      } else if (navigator.webkitGetUserMedia) {
 	        //webkit核心浏览器
-	        navigator.webkitGetUserMedia({video : {width: 96, height: 64}}, 
+	        navigator.webkitGetUserMedia({video : {width: 192, height: 128}}, 
 	        	function(stream){
 	        		//兼容webkit核心浏览器
 				      var URL = window.URL || window.webkitURL;
 				      //将视频流设置为video元素的源
 				      //video.src = URL.createObjectURL(stream);
-				      this.mediaStreamTrack=stream;
 				      video.srcObject = stream;
 				      video.play();
 	          }, 
@@ -398,7 +395,7 @@ export default {
 	          })
 	      } else if (navigator.mozGetUserMedia) {
 	        //firfox浏览器
-	        navigator.mozGetUserMedia({video : {width: 96, height: 64}}, 
+	        navigator.mozGetUserMedia({video : {width: 192, height: 128}}, 
 	        function(stream){
 	        		//兼容webkit核心浏览器
 				      var URL = window.URL || window.webkitURL;
@@ -412,7 +409,7 @@ export default {
 	          });
 	      } else if (navigator.getUserMedia) {
 	        //旧版API
-	        navigator.getUserMedia({video : {width: 96, height: 64}}, 
+	        navigator.getUserMedia({video : {width: 192, height: 128}}, 
 	        function(stream){
 	        		//兼容webkit核心浏览器
 				      var URL = window.URL || window.webkitURL;
@@ -434,10 +431,9 @@ export default {
     	let video = document.getElementById('video');
       let canvas = document.getElementById('canvas');
       let context = canvas.getContext('2d');
-    	context.drawImage(video, 0, 0, 96, 64); 
+    	context.drawImage(video, 0, 0, 192, 128); 
     },
 		dialogClose(){
-			this.mediaStreamTrack.getTracks().forEach(function (track) {track.stop()})
 		},
     
     //重置表单
@@ -448,13 +444,12 @@ export default {
 			this.dataForm.webId = undefined
 	  },
     handleCreate() {
-    	this.openVideo()
-      this.dialogStatus = 'create'
-      this.resetForm('dataForm')
-      this.dialogFormVisible = true
-//    this.$nextTick(() => {
-//      this.$refs['dataForm'].clearValidate()
-//    })
+//  	this.openVideo()
+//    this.dialogStatus = 'create'
+//    this.resetForm('dataForm')
+//    this.dialogFormVisible = true
+
+		  this.$router.push({ path: '/addCriQs' })
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {

@@ -1,8 +1,14 @@
 package com.sl.ue.web.jl;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.service.jl.JlQsService;
+import com.sl.ue.util.Config;
 import com.sl.ue.util.Constants;
+import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.WebContextUtil;
@@ -72,6 +80,29 @@ public class JlQsWeb extends Result{
 
     @RequestMapping("/add")
     public String add(JlQsVO model){
+    	System.out.println(model.getJzBase64());
+    	if(StringUtils.isNotBlank(model.getJzBase64())){
+    		byte[] b = Base64.getDecoder().decode(model.getJzBase64());
+    		ByteArrayInputStream bais = new ByteArrayInputStream(b);
+    		BufferedImage bi1;
+    		String qsJzImage = Config.getPropertiesValue("file.path");
+    		String qs_jz = "/qs_jz";
+			try {
+				File f = new File(qsJzImage+qs_jz);
+				if(!f.exists()){
+					f.mkdirs();
+				}
+				String relativeUrl="/qs_jz/"+System.currentTimeMillis()+".png";
+				bi1 = ImageIO.read(bais);
+				File w2 = new File(qsJzImage+relativeUrl);
+	            ImageIO.write(bi1, "png", w2);
+	            model.setJzUrl(relativeUrl);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+    	}
         jlQsSQL.add(model);
         return this.toResult();
     }

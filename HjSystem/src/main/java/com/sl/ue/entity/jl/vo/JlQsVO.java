@@ -9,6 +9,8 @@ public class JlQsVO extends JlQs{
 
     private String frName; // 犯人姓名
     
+    private String jzBase64;
+    
     public String getFrName() {
 		return frName;
 	}
@@ -16,10 +18,21 @@ public class JlQsVO extends JlQs{
 	public void setFrName(String frName) {
 		this.frName = frName;
 	}
+	
+	public String getJzBase64() {
+		return jzBase64;
+	}
+
+	public void setJzBase64(String jzBase64) {
+		this.jzBase64 = jzBase64;
+	}
 
     /*---------------------------  处理关联表  -----------------------------*/
 
    
+
+	
+
 
 	private String leftJoinField; // 关联表字段
 

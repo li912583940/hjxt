@@ -109,4 +109,21 @@ public class Login extends Result{
 		}
 		return this.toResult();
 	}
+	
+	@RequestMapping("/resetUserPassword")
+	public String resetUserPassword(Integer webId){
+		if(webId == null){
+			this.error(error_102);
+			return this.toResult();
+		}
+		SysUserVO user =  sysUserSQL.findOne(webId);
+		if(user != null){
+			user.setUserPwd("123456");
+			sysUserSQL.edit(user);
+		}else{
+			this.error(error_103, "查询不到用户信息，密码重置失败。");
+		}
+		return this.toResult();
+	}
+	
 }

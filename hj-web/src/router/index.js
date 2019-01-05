@@ -113,7 +113,7 @@ export const constantRouterMap = [
     hidden: true
   },
 
-  { // 添加家属
+  { // 会见登记-添加家属
     path: '/addQs',
     component: Layout,
     children: [
@@ -123,7 +123,19 @@ export const constantRouterMap = [
       }
     ],
     hidden: true
-  }
+  },
+  
+  { // 罪犯管理-添加家属
+    path: '/addCriQs',
+    component: Layout,
+    children: [
+      {
+        path: '/addCriQs',
+        component: () => import('@/views/criminal/addQs'),
+      }
+    ],
+    hidden: true
+  },
 ]
 
 export default new Router({

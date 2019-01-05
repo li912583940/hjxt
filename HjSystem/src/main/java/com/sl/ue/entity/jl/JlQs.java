@@ -65,8 +65,8 @@ public class JlQs implements java.io.Serializable {
 	private Date hjStopTime;
 	@DbField("ZP_URL")
 	private String zpUrl;
-
-	
+	@DbField("jzUrl")
+	private String jzUrl;
 
 	public Integer getWebId() {
 		return this.webId;
@@ -274,6 +274,14 @@ public class JlQs implements java.io.Serializable {
 
 	public void setZpUrl(String zpUrl) {
 		this.zpUrl = zpUrl;
+	}
+
+	public String getJzUrl() {
+		return jzUrl;
+	}
+
+	public void setJzUrl(String jzUrl) {
+		this.jzUrl = jzUrl;
 	}
 
 }

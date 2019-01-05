@@ -39,6 +39,11 @@
               	修改密码
             </el-dropdown-item>
           </a>
+          <a target="_blank" @click="resetUserPassword">
+            <el-dropdown-item>
+              	重置密码
+            </el-dropdown-item>
+          </a>
           <el-dropdown-item divided>
             <span style="display:block;" @click="logout">{{ $t('navbar.logOut') }}</span>
           </el-dropdown-item>
@@ -80,7 +85,7 @@ import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
 
 import { findNotTzList } from '@/api/meetNotice'
-import { EditPassword } from '@/api/login'
+import { EditPassword, ResetUserPassword } from '@/api/login'
 import { Message, MessageBox } from 'element-ui'
 
 export default {
@@ -194,13 +199,36 @@ export default {
     updateData() {
     	EditPassword(this.dataForm).then(res =>{
     		Message({
-	        message: '密码修改成功。',
+	        message: '密码修改成功，下次登录时请使用新密码。',
 		      type: 'success',
 		      duration: 5 * 1000
 	      });
     		this.dialogFormVisible = false
     	})
     	
+    },
+    
+    resetUserPassword(){ //重置密码
+    	this.$confirm('确认重置密码吗?', '提示', {
+				type: 'warning'
+			}).then(() => {
+				let user = JSON.parse(sessionStorage.getItem("user"))
+	    	if(user){
+	    		let param = {
+	    		webId: user.webId
+	    	}
+				ResetUserPassword(param).then((res) => {
+					Message({
+		        message: '密码重置成功。新的密码为123456，下次登录时请使用新密码。',
+			      type: 'success',
+			      duration: 5 * 1000
+		      });
+	    	}).catch(error => {
+	    		
+	      })
+	    	}
+				
+			})
     }
   }
 }

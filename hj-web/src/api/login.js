@@ -25,3 +25,5 @@ export const requestLogin = params => { return request.post('/login', params).th
 export const getRoles = params => { return request.get('/sysUser/getRoles', { params: params }).then(res => res); };
 
 export const EditPassword = params => { return request.post('/editPassword', params).then(res => res) }
+
+export const ResetUserPassword = params => { return request.post('/resetUserPassword', params).then(res => res) }
