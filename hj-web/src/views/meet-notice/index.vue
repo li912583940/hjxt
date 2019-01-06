@@ -10,34 +10,34 @@
           </el-button>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="罪犯监区" width="140">
+      <el-table-column align="center" :label="$t('currency.jqName')" width="90">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="罪犯编号">
+      <el-table-column width="100" align="center" :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160px" align="center" label="罪犯姓名">
+      <el-table-column width="100" align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="会见窗口">
+      <el-table-column width="100" align="center" label="会见窗口">
         <template slot-scope="scope">
           <span v-if="scope.row.fpFlag ==0">未分配</span>
           <span else>{{scope.row.zw}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="会见通知 接收状态">
+      <el-table-column width="100px" align="center" label="会见通知">
         <template slot-scope="scope">
           <span v-if="scope.row.pageTzState==0" style="color: red;">未接收</span>
           <span v-if="scope.row.pageTzState==1">已接收</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="会见类型">
+      <el-table-column width="110px" align="center" label="会见类型">
         <template slot-scope="scope">
           <span v-if="scope.row.hjType==1">亲属会见</span>
           <span v-else-if="scope.row.hjType==2">监护人会见</span>
@@ -49,38 +49,38 @@
           <span v-else-if="scope.row.hjType==99">其他会见</span>
         </template>
       </el-table-column>
-      <el-table-column width="300px" align="center" label="会见说明">
+      <el-table-column width="200" align="center" label="会见说明">
         <template slot-scope="scope">
           <span>{{scope.row.hjInfo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="登记时间" :formatter="dateFormat">
+      <el-table-column width="160" align="center" label="登记时间">
         <template slot-scope="scope">
-          <span>{{scope.row.djTime}}</span>
+          <span>{{scope.row.djTime | dateFormat}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="亲属信息">
+      <el-table-column width="300" align="center" label="亲属信息">
         <template slot-scope="scope">
           <span>{{scope.row.qsInfo1}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="会见状态">
+      <el-table-column width="100" align="center" label="会见状态">
         <template slot-scope="scope">
           <span v-if="scope.row.fpFlag==2">已在会见</span>
           <span v-if="scope.row.fpFlag!=2">未在会见</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="会见通知 接收人">
+      <el-table-column width="100" align="center" label="接收人">
         <template slot-scope="scope">
           <span>{{scope.row.pageTzUserName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="接收 时间" :formatter="dateFormat">
+      <el-table-column width="160" align="center" label="接收时间">
         <template slot-scope="scope">
-          <span>{{scope.row.pageTzTime}}</span>
+          <span>{{scope.row.pageTzTime| dateFormat}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="接收通知 是否超时">
+      <el-table-column width="100" align="center" label="通知超时">
         <template slot-scope="scope">
           <span v-if="scope.row.isOverTime==0">未超时</span>
           <span v-if="scope.row.isOverTime==1">已超时</span>
@@ -164,11 +164,11 @@ export default {
 			if(row.pageTzState==1){
 				tz=0
 			}
-			let param ={
-				hjid: row.hjid,
+			let param = {
+    		hjid: row.hjid,
 				pageTzState: tz
-			}
-			RequestEditTz(param).then(res =>{
+    	}
+			RequestEditTz(param).then((res) =>{
 				this.getList()
 			})
 		},

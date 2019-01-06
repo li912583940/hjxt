@@ -43,6 +43,7 @@ public class SecurityAspect extends Result{
 			error(error_101);
 			return this.toResult();
 		}
+		tokenManager.refDate(token); // 刷新token
 		// 调用目标方法
 		return pjp.proceed();
 	}

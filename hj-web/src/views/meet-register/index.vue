@@ -5,30 +5,28 @@
       </el-input>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员姓名" v-model="listQuery.frName">
       </el-input>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="listQuery.qsName">
-      </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
       <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary">添加会见登记</el-button>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
       style="width: 100%">
-      <el-table-column width="140" align="center"  label="监区">
+      <el-table-column width="100" align="center" :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="会见编号">
+      <el-table-column width="120" align="center" label="会见编号">
         <template slot-scope="scope">
           <span>{{scope.row.hjIndex}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" label="罪犯编号">
+      <el-table-column width="100" align="center" :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="罪犯姓名">
+      <el-table-column width="100" align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
         </template>
@@ -38,34 +36,34 @@
           <span>{{scope.row.qsInfo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="会见时长">
+      <el-table-column width="90" align="center" label="会见时长">
         <template slot-scope="scope">
           <span>{{scope.row.hjTime | hjTimeFilter}}分钟</span>
         </template>
       </el-table-column>
-      <el-table-column width="180" align="center" label="登记时间">
+      <el-table-column width="160" align="center" label="登记时间">
         <template slot-scope="scope">
           <span>{{scope.row.djTime | dateFormat}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="登记人">
+      <el-table-column width="110" align="center" label="登记人">
         <template slot-scope="scope">
           <span>{{scope.row.djUser}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="座位">
+      <el-table-column width="90" align="center" label="座位">
         <template slot-scope="scope">
           <span>{{scope.row.zw}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="会见状态">
+      <el-table-column width="90" align="center" label="会见状态">
         <template slot-scope="scope">
           <span v-if="scope.row.state==0">未完成</span>
           <span v-else-if="scope.row.state==1">已完成</span>
           <span v-else-if="scope.row.state==2">已取消</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="会见类型">
+      <el-table-column width="110" align="center" label="会见类型">
         <template slot-scope="scope">
           <span v-if="scope.row.hjType==1">亲属会见</span>
           <span v-else-if="scope.row.hjType==2">监护人会见</span>
@@ -77,7 +75,7 @@
           <span v-else-if="scope.row.hjType==99">其他会见</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="会见方式">
+      <el-table-column width="110" align="center" label="会见方式">
         <template slot-scope="scope">
           <span v-if="scope.row.hjMode==1">隔离会见</span>
           <span v-else-if="scope.row.hjMode==2">非隔离会见</span>
@@ -85,7 +83,7 @@
           <span v-else-if="scope.row.hjMode==9">其他方式</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="会见说明">
+      <el-table-column width="200" align="center" label="会见说明">
         <template slot-scope="scope">
           <span>{{scope.row.hjInfo}}</span>
         </template>
@@ -243,8 +241,7 @@ export default {
         pageNum: 1,
         pageSize: 20,
         frNo: undefined,
-        frName: undefined,
-        qsName: undefined
+        frName: undefined
       },
       
       dialogFormVisible: false,
@@ -318,6 +315,8 @@ export default {
         frNo: undefined
       },
       /** 修改会见登记  亲属表格 结束 */
+     
+     refreshZ: this.$route.query.refreshZ, //监控页面是否刷新
     }
   },
   filters: {
@@ -341,6 +340,13 @@ export default {
   mounted() {
     this.setButtonRole()
   },
+  watch: {
+      refreshZ(now, before){
+        if(now!=before){
+   				this.reload()
+        }
+      }
+  },
   methods: {
     getList() {
       this.listLoading = true
@@ -349,9 +355,6 @@ export default {
       }
       if(!this.listQuery.frNo){
       	this.listQuery.frNo = undefined
-      }
-      if(!this.listQuery.qsName){
-      	this.listQuery.qsName = undefined
       }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list

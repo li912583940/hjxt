@@ -11,28 +11,28 @@
         </template>
       </el-table-column>
       
-      <el-table-column width="140" align="center" label="监区">
+      <el-table-column width="90" align="center" label="监区">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" label="分管等级">
+      <el-table-column width="90" align="center" label="分管等级">
         <template slot-scope="scope">
           <span>{{scope.row.jbName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="服刑人员姓名">
+      <el-table-column width="100" align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="重点犯">
+      <el-table-column width="100" align="center" label="重点犯">
         <template slot-scope="scope">
           <span v-if="scope.row.stateZdzf=='否'">否</span>
           <span v-if="scope.row.stateZdzf!='否'">是</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" label="会见类型">
+      <el-table-column width="110" align="center" label="会见类型">
         <template slot-scope="scope">
           <span v-if="scope.row.hjType==1">亲属会见</span>
           <span v-else-if="scope.row.hjType==2">监护人会见</span>
@@ -44,7 +44,7 @@
           <span v-else-if="scope.row.hjType==99">其他会见</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" label="会见方式">
+      <el-table-column width="110" align="center" label="会见方式">
         <template slot-scope="scope">
           <span v-if="scope.row.hjMode==1">隔离会见</span>
           <span v-else-if="scope.row.hjMode==2">非隔离会见</span>
@@ -52,19 +52,19 @@
           <span v-else-if="scope.row.hjMode==9">其他方式</span>
         </template>
       </el-table-column>
-      <el-table-column width="300" align="center" label="会见说明">
+      <el-table-column width="200" align="center" label="会见说明">
         <template slot-scope="scope">
           <span>{{scope.row.hjInfo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="座位">
+      <el-table-column width="90" align="center" label="座位">
         <template slot-scope="scope">
           <span v-if="scope.row.fpFlag ==0">未分配</span>
           <span else>{{scope.row.zw}}</span>
         </template>
       </el-table-column>
       
-      <el-table-column width="140" align="center" label="罪犯编号">
+      <el-table-column width="100" align="center" label="罪犯编号">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
@@ -74,9 +74,9 @@
           <span>{{scope.row.qsInfo1}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="会见时长">
+      <el-table-column width="90" align="center" label="会见时长">
         <template slot-scope="scope">
-          <span>{{scope.row.hjTime}}分钟</span>
+          <span>{{scope.row.hjTime| hjTimeFilter}}分钟</span>
         </template>
       </el-table-column>
       <el-table-column width="160" align="center" label="登记时间">
@@ -84,7 +84,7 @@
           <span>{{scope.row.djTime | dateFormat}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="授权状态">
+      <el-table-column width="100" align="center" label="授权状态">
         <template slot-scope="scope">
           <span v-if="scope.row.shState=='1'">已授权</span>
           <span v-if="scope.row.shState=='0'">未授权</span>
@@ -179,6 +179,12 @@ export default {
 	      return "";  
 	    }  
 	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+	  },
+	  hjTimeFilter(d){ //会见时长
+	  	if(d == undefined){
+	  		return "";
+	  	}
+	  	return d/60
 	  }
   },
   created() {

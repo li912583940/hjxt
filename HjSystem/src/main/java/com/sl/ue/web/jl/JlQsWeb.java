@@ -45,7 +45,7 @@ public class JlQsWeb extends Result{
 
     @RequestMapping("/findPojo")
     public String findPojo(JlQsVO model, Integer pageSize, Integer pageNum){
-        Map<String, Object> map = jlQsSQL.findPojo(model, pageSize, pageNum);
+        Map<String, Object> map = jlQsSQL.findPojoJoin(model, pageSize, pageNum);
         this.putPojo(map);
         return this.toResult();
     }

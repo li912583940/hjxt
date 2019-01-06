@@ -64,17 +64,17 @@
           <span>{{scope.row.callTimeEnd}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" label="通话时长(秒)">
+      <el-table-column width="110" align="center" label="通话时长(秒)">
         <template slot-scope="scope">
           <span>{{scope.row.callTimeLen}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="座位名称">
+      <el-table-column width="90" align="center" label="座位名称">
         <template slot-scope="scope">
           <span>{{scope.row.zw}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="会见类型">
+      <el-table-column width="110" align="center" label="会见类型">
         <template slot-scope="scope">
           <span v-if="scope.row.hjType==1">亲属会见</span>
           <span v-else-if="scope.row.hjType==2">监护人会见</span>
@@ -86,22 +86,22 @@
           <span v-else-if="scope.row.hjType==99">其他会见</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" :label="$t('currency.jqName')">
+      <el-table-column width="90" align="center" :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" :label="$t('currency.frNo')">
+      <el-table-column width="100" align="center" :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" :label="$t('currency.frName')">
+      <el-table-column width="120" align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="亲属个数">
+      <el-table-column width="90" align="center" label="亲属个数">
         <template slot-scope="scope">
           <span>{{scope.row.qsIndex}}</span>
         </template>
@@ -111,21 +111,21 @@
           <span>{{scope.row.qsInfo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="警察信息">
+      <el-table-column width="160" align="center" label="警察信息">
         <template slot-scope="scope">
           <span>{{scope.row.yjNo}}/{{scope.row.yjName}}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.playAudioVideoPermission==1 || buttonRole.downAudioVideoPermission==1" width="280" align="center" label="音视频操作">
+      <el-table-column v-if="buttonRole.playAudioVideoPermission==1 || buttonRole.downAudioVideoPermission==1" width="260" align="center" label="音视频操作">
         <template slot-scope="scope">
           <el-button v-if="buttonRole.playAudioVideoPermission==1" type="primary" size="mini" @click="playRecor(scope.row)">播放录音录像</el-button>
           <el-button v-if="buttonRole.downAudioVideoPermission==1" type="primary" size="mini" @click="downRecord(scope.row)">下载录音录像</el-button>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.notesPermission==1 || buttonRole.seeNotesPermission==1" width="220" align="center" label="摘要操作">
+      <el-table-column v-if="buttonRole.notesPermission==1 || buttonRole.seeNotesPermission==1" width="150" align="center" label="摘要操作">
         <template slot-scope="scope">
           <el-button v-if="buttonRole.notesPermission==1" type="primary" size="mini" @click="zhushi(scope.row)">注释</el-button>
-          <el-button v-if="buttonRole.seeNotesPermission==1" type="primary" size="mini" @click="zhushiAll(scope.row)">查看所有注释</el-button>
+          <el-button v-if="buttonRole.seeNotesPermission==1" type="primary" size="mini" @click="zhushiAll(scope.row)">查看</el-button>
         </template>
       </el-table-column>
       <el-table-column v-if="buttonRole.playAudioPermission==1 || buttonRole.downAudioPermission==1" width="220" align="center" label="录音操作">
@@ -134,31 +134,31 @@
           <el-button v-if="buttonRole.downAudioPermission==1" type="primary" size="mini" @click="down3(scope.row.callRecfileUrl)">下载录音</el-button>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="录音评级">
+      <el-table-column width="100" align="center" label="录音评级">
         <template slot-scope="scope">
           <span v-if="scope.row.recRatingState==0">未评</span>
           <span v-if="scope.row.recRatingState==1">异常</span>
           <span v-if="scope.row.recRatingState==2">正常</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.ratingPermission==1 || buttonRole.seeRatingPermission==1" width="220" align="center" label="评级操作">
+      <el-table-column v-if="buttonRole.ratingPermission==1 || buttonRole.seeRatingPermission==1" width="150" align="center" label="评级操作">
         <template slot-scope="scope">
           <el-button v-if="buttonRole.ratingPermission==1" type="primary" size="mini" @click="openRatingState(scope.row)">评级</el-button>
-          <el-button v-if="buttonRole.seeRatingPermission==1" type="primary" size="mini" @click="openRatingStateAll(scope.row)">查看所有评级</el-button>
+          <el-button v-if="buttonRole.seeRatingPermission==1" type="primary" size="mini" @click="openRatingStateAll(scope.row)">查看</el-button>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="复听状态">
+      <el-table-column width="100" align="center" label="复听状态">
         <template slot-scope="scope">
           <span v-if="scope.row.recAssessmentState==0">未听</span>
           <span v-if="scope.row.recAssessmentState==1">已听</span>
         </template>
       </el-table-column>
-      <el-table-column  v-if="buttonRole.seeAssessmentPermission==1" width="140" align="center" label="复听详情">
+      <el-table-column  v-if="buttonRole.seeAssessmentPermission==1" width="100" align="center" label="复听详情">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="openAllAssessment(scope.row)">查看</el-button>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="复听超时">
+      <el-table-column width="100" align="center" label="复听超时">
         <template slot-scope="scope">
           <span v-if="scope.row.recordOverTime==0">未超时</span>
           <span v-if="scope.row.recordOverTime==1">已超时</span>
@@ -476,7 +476,7 @@ import { findPojo, findOne, findJqList, GetZwList, GetZs, AddRecordFlag, GetZsAl
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
-
+import { Message, MessageBox } from 'element-ui'
 
 export default {
   name: 'meetRecord',
@@ -838,11 +838,10 @@ export default {
     },
     downRecord(row){ //下载录音录像
     	var userAgent = navigator.userAgent.toLowerCase();
-    	console.log(userAgent)
     	if(userAgent.indexOf("chrome")>-1 || userAgent.indexOf("firefox")>-1) { 
        	this.down1(row.callRecfileUrl).then(() => {
-	    		this.down2(row.callVideofile2Url).then(() => {
-	    			  this.down3(row.callRecfileUrl).then(() => {
+	    		this.down2(row.callVideofile1Url).then(() => {
+	    			  this.down3(row.callVideofile2Url).then(() => {
 	    			})
 	    		})
 	    	})
@@ -856,14 +855,22 @@ export default {
     },
     down1(pathUrl){
     	return new Promise((resolve, reject) => {
-      	console.log(pathUrl)
-	    	// 1 录像
-	    	const downloadElement = document.createElement('a')
-	    	downloadElement.href = pathUrl
-	    	downloadElement.download=""
-	    	document.body.appendChild(downloadElement)
-	    	downloadElement.click()
-	    	document.body.removeChild(downloadElement)
+    		if(pathUrl=='' ){
+    			Message({
+		        message: '录像文件1已被删除，无法下载。',
+			      type: 'error',
+			      duration: 5 * 1000
+		      });
+    		}else{
+    			// 1 录像
+		    	const downloadElement = document.createElement('a')
+		    	downloadElement.href = pathUrl
+		    	downloadElement.download=""
+		    	document.body.appendChild(downloadElement)
+		    	downloadElement.click()
+		    	document.body.removeChild(downloadElement)
+    		}
+	    	
       	
 				resolve()
       })
@@ -871,14 +878,22 @@ export default {
     },
     down2(pathUrl){
     	return new Promise((resolve, reject) => {
-      	console.log(pathUrl)
-	    	// 2 录像
-	    	const downloadElement = document.createElement('a')
-	    	downloadElement.href = pathUrl
-	    	downloadElement.download=""
-	    	document.body.appendChild(downloadElement)
-	    	downloadElement.click()
-	    	document.body.removeChild(downloadElement)
+    		if(pathUrl=='' ){
+    			Message({
+		        message: '录像文件2已被删除，无法下载。',
+			      type: 'error',
+			      duration: 5 * 1000
+		      });
+    		}else{
+    			// 2 录像
+		    	const downloadElement = document.createElement('a')
+		    	downloadElement.href = pathUrl
+		    	downloadElement.download=""
+		    	document.body.appendChild(downloadElement)
+		    	downloadElement.click()
+		    	document.body.removeChild(downloadElement)
+    		}
+	    	
       	
 				resolve()
       })
@@ -887,14 +902,22 @@ export default {
     },
     down3(pathUrl){
     	return new Promise((resolve, reject) => {
-      	console.log(pathUrl)
-	    	// 3 录音
-	    	const downloadElement = document.createElement('a')
-	    	downloadElement.href = pathUrl
-	    	downloadElement.download=""
-	    	document.body.appendChild(downloadElement)
-	    	downloadElement.click()
-	    	document.body.removeChild(downloadElement)
+    		if(pathUrl=='' ){
+    			Message({
+		        message: '录音文件已被删除，无法下载。',
+			      type: 'error',
+			      duration: 5 * 1000
+		      });
+    		}else{
+    			// 3 录音
+		    	const downloadElement = document.createElement('a')
+		    	downloadElement.href = pathUrl
+		    	downloadElement.download=""
+		    	document.body.appendChild(downloadElement)
+		    	downloadElement.click()
+		    	document.body.removeChild(downloadElement)
+    		}
+	    	
       	
 				resolve()
       })
@@ -1124,9 +1147,7 @@ export default {
    
     /** 设置权限 开始 */
     setButtonRole() { //设置按钮的权限
-    	console.log(111)
     	let roles = sessionStorage.getItem("roles")
-    	console.log(roles)
     	if(roles.includes('admin')){
     		this.buttonRole.exportPermission= 1
       	this.buttonRole.playAudioVideoPermission= 1

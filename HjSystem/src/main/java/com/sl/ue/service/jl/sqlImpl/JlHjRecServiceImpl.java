@@ -93,29 +93,45 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     	String callVideoPath1 = Config.getPropertiesValue("callVideofile1");
     	String callVideoPath2 = Config.getPropertiesValue("callVideofile2");
     	for(JlHjRecVO hjRec : list){
+    		hjRec.setCallRecfileUrl("");
+    		hjRec.setCallVideofile1Url("");
+    		hjRec.setCallVideofile2Url("");
+    		
     		// 录音 录像文件路径处理
     		for(SysHjServerVO hjServer: sysHjServerList){
     			if(hjRec.getJy().equals(hjServer.getServerName())){
     				if(StringUtils.isNotBlank(hjRec.getCallRecfile())){
-    					String end =hjRec.getCallRecfile().replace("\\", "/");
-        				end = end.substring(end.indexOf("/")+1);
-        				end = end.substring(end.indexOf("/"));
-        				String url = hjServer.getRecUrl()+callRecPath+end;
-        				hjRec.setCallRecfileUrl(url);
+    					//先查看文件是否存在， 不存在就直接提示了
+    					File file = new File(hjRec.getCallRecfile());
+    					if(file.exists()){
+    						String end =hjRec.getCallRecfile().replace("\\", "/");
+            				end = end.substring(end.indexOf("/")+1);
+            				end = end.substring(end.indexOf("/"));
+            				String url = hjServer.getRecUrl()+callRecPath+end;
+            				hjRec.setCallRecfileUrl(url);
+    					}
     				}
     				if(StringUtils.isNotBlank(hjRec.getCallVideofile1())){
-    					String end = hjRec.getCallVideofile1().replace("\\", "/");
-    					end = end.substring(end.indexOf("/")+1);
-        				end = end.substring(end.indexOf("/"));
-        				String url = hjServer.getRecUrl()+callVideoPath1+end;
-        				hjRec.setCallVideofile1Url(url);
+    					File file = new File(hjRec.getCallVideofile1());
+    					if(file.exists()){
+    						String end = hjRec.getCallVideofile1().replace("\\", "/");
+        					end = end.substring(end.indexOf("/")+1);
+            				end = end.substring(end.indexOf("/"));
+            				String url = hjServer.getRecUrl()+callVideoPath1+end;
+            				hjRec.setCallVideofile1Url(url);
+    					}
+    					
     				}
     				if(StringUtils.isNotBlank(hjRec.getCallVideofile2())){
-    					String end = hjRec.getCallVideofile2().replace("\\", "/");
-    					end = end.substring(end.indexOf("/")+1);
-        				end = end.substring(end.indexOf("/"));
-        				String url = hjServer.getRecUrl()+callVideoPath2+end;
-        				hjRec.setCallVideofile2Url(url);
+    					File file = new File(hjRec.getCallVideofile2());
+    					if(file.exists()){
+    						String end = hjRec.getCallVideofile2().replace("\\", "/");
+        					end = end.substring(end.indexOf("/")+1);
+            				end = end.substring(end.indexOf("/"));
+            				String url = hjServer.getRecUrl()+callVideoPath2+end;
+            				hjRec.setCallVideofile2Url(url);
+    					}
+    					
     				}
     			}
     		}

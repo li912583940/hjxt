@@ -2,49 +2,49 @@
   <div class="app-container">
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row max-height="700"
       style="width: 100%">
-      <el-table-column width="140px" align="center" label="服务器名称">
+      <el-table-column width="100" align="center" label="服务器名称">
         <template slot-scope="scope">
           <span>{{scope.row.jy}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="通道">
+      <el-table-column width="100" align="center" label="通道">
         <template slot-scope="scope">
           <span>{{scope.row.lineNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160px" align="center" label="座位号">
+      <el-table-column width="100px" align="center" label="座位号">
         <template slot-scope="scope">
           <span>{{scope.row.zw}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="状态">
+      <el-table-column width="100" align="center" label="状态">
         <template slot-scope="scope">
           <span v-if="scope.row.monitorState =='通话'">通话</span>
           <span v-if="scope.row.monitorState =='空闲'">空闲</span>
           <span v-if="scope.row.monitorState =='应答'">应答</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="罪犯监区">
+      <el-table-column width="90" align="center" :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.monitorJq}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140px" align="center" label="罪犯姓名">
+      <el-table-column width="120" align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.monitorFr}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300px" align="center" label="亲属信息">
+      <el-table-column width="300" align="center" label="亲属信息">
         <template slot-scope="scope">
           <span>{{scope.row.monitorQs}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="剩余时间">
+      <el-table-column width="100" align="center" label="剩余时间">
         <template slot-scope="scope">
           <span>{{scope.row.monitorTime}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="监听警察">
+      <el-table-column width="120" align="center" label="监听警察">
         <template slot-scope="scope">
           <span>{{scope.row.yjName}}</span>
         </template>

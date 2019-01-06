@@ -11,18 +11,18 @@
     </div>
     
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
-      style="width: 100%">
-      <el-table-column width="200" align="center" label="监区编号">
+      style="width: 1061px">
+      <el-table-column width="100" align="center" :label="$t('currency.jqNo')">
         <template slot-scope="scope">
           <span>{{scope.row.jqNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="监区名称">
+      <el-table-column width="100" align="center" :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="楼层">
+      <el-table-column width="100" align="center" label="楼层">
         <template slot-scope="scope">
           <span>{{scope.row.floor}}</span>
         </template>
@@ -32,7 +32,7 @@
           <span>{{scope.row.jqWeek}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="特殊监区">
+      <el-table-column width="100" align="center" label="特殊监区">
         <template slot-scope="scope">
           <span v-if="scope.row.isTs==0">否</span>
           <span v-if="scope.row.isTs==1" style="color: red;">是</span>

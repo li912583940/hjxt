@@ -7,10 +7,11 @@ Vue.use(Router)
 import Layout from '@/views/layout/Layout'
 
 /* Router Modules */
-import componentsRouter from './modules/components'
-import chartsRouter from './modules/charts'
-import tableRouter from './modules/table'
-import nestedRouter from './modules/nested'
+
+//import componentsRouter from './modules/components'
+//import chartsRouter from './modules/charts'
+//import tableRouter from './modules/table'
+//import nestedRouter from './modules/nested'
 
 /** note: Submenu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -99,20 +100,17 @@ export const constantRouterMap = [
 //    }
 //  ]
 //},
-  { // 添加会见登记
-    path: '/addHjDj',
+  {
+  	path: '/addHjDj',
     component: Layout,
-    children: [
-      {
-        path: '/addHjDj',
-        component: () => import('@/views/meet-register/addHjDj'),
-//      name: 'addMeetRegister',
-//      meta: { title: 'addMeetRegister', icon: 'excel' }
-      }
-    ],
-    hidden: true
+  	children: [
+	  	{
+	  		path: '/addHjDj',
+	  		component: () => import('@/views/meet-register/addHjDj'),
+	  	}
+  	],
+  	hidden: true
   },
-
   { // 会见登记-添加家属
     path: '/addQs',
     component: Layout,
@@ -149,7 +147,7 @@ export const asyncRouterMap = [
   { // 服刑人员管理
     path: '/criminal',
     component: Layout,
-    redirect: '/criminal',
+    //redirect: '/criminal',
     name: 'criminalManage',
     meta: {
       title: 'criminalManage',
@@ -305,7 +303,7 @@ export const asyncRouterMap = [
   { // 日志记录
     path: '/logRecord',
     component: Layout,
-    redirect: '/logRecord',
+    //redirect: '/logRecord',
     name: 'logRecord',
     meta: {
       title: 'logRecord',
@@ -324,7 +322,7 @@ export const asyncRouterMap = [
   { // 系统设置
     path: '/systemSet',
     component: Layout,
-    redirect: '/systemSet',
+    //redirect: '/systemSet',
     name: 'systemSet',
     meta: {
       title: 'systemSet',

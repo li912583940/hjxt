@@ -337,7 +337,11 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		
 		StringBuffer leftJoinWhere = new StringBuffer();
 		leftJoinWhere.append(" AND (a.state=0 OR a.state=3)"); // 条件
-		
+		if(StringUtils.isNotBlank(model.getFrNo())){
+			String str = model.getFrNo();
+			leftJoinWhere.append(" AND a.FR_No LIKE '%"+str+"%'");
+			model.setFrNo(null);
+		}
 		if(StringUtils.isNotBlank(model.getFrName())){
     		String str = model.getFrName();
     		leftJoinWhere.append(" AND (a.FR_Name LIKE '%"+str+"%' OR dbo.f_get_fryp(a.FR_Name,'"+str+"') =1 )");

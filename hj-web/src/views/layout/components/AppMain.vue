@@ -17,6 +17,7 @@ export default {
     },
     key() {
       return this.$route.fullPath
+      //return this.$route.name !== undefined? this.$route.name + +new Date(): this.$route + +new Date()
     }
   }
 }

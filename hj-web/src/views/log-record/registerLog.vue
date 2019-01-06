@@ -29,17 +29,17 @@
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
       style="width: 100%">
-      <el-table-column width="180" align="center"  :label="$t('currency.jqName')">
+      <el-table-column width="100" align="center"  :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center"  :label="$t('currency.frNo')">
+      <el-table-column width="100" align="center"  :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" :label="$t('currency.frName')">
+      <el-table-column width="100" align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
         </template>
@@ -49,12 +49,12 @@
           <span>{{scope.row.qsInfo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" label="会见编号">
+      <el-table-column width="120" align="center" label="会见编号">
         <template slot-scope="scope">
           <span>{{scope.row.hjIndex}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" label="会见类型">
+      <el-table-column width="110" align="center" label="会见类型">
         <template slot-scope="scope">
           <span v-if="scope.row.hjType==1">亲属会见</span>
           <span v-else-if="scope.row.hjType==2">监护人会见</span>
@@ -66,7 +66,7 @@
           <span v-else-if="scope.row.hjType==99">其他会见</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" label="会见方式">
+      <el-table-column width="110" align="center" label="会见方式">
         <template slot-scope="scope">
           <span v-if="scope.row.hjMode==1">隔离会见</span>
           <span v-else-if="scope.row.hjMode==2">非隔离会见</span>
@@ -79,12 +79,12 @@
           <span>{{scope.row.hjInfo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="登记时间">
+      <el-table-column width="160" align="center" label="登记时间">
         <template slot-scope="scope">
           <span>{{scope.row.djTime | dateFormat}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="物品">
+      <el-table-column width="120" align="center" label="物品">
         <template slot-scope="scope">
           <span>{{scope.row.infoWp}}</span>
         </template>
@@ -131,7 +131,7 @@ export default {
       listLoading: true,
       listQuery: {
         pageNum: 1,
-        pageSize: 20,
+        pageSize: 10,
         frNo: undefined,
         frName: undefined,
         qsName: undefined,

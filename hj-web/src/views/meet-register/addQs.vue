@@ -1,8 +1,8 @@
 <template>
 	<div class="app-container">
 		<!-- 亲属新增或编辑 -->
-		<el-card shadow="always" style="width: 40%; margin-left: 30%;">
-			<el-form :rules="rulesQs" :model="dataQsForm" ref="dataQsForm" label-position="right" label-width="120px" style='width: 400px; margin-left:12%;' >
+		<el-card shadow="always" style="width: 50%; margin-left: 25%;">
+			<el-form :rules="rulesQs" :model="dataQsForm" ref="dataQsForm" label-position="right" label-width="120px" style='width: 440px; margin-left:12%;' >
 		        <el-form-item label="证件类别" prop="qsZjlb">
 		          <el-select class="filter-item" v-model="dataQsForm.qsZjlb" placeholder="请选择">
 		            <el-option v-for="item in qsZjlbs" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -10,15 +10,23 @@
 		        </el-form-item>
 		        <el-form-item label="证件图像" prop="zp">
 		          <img :src="sfzImg" id="zp" name="zp" width="100px" height="126px" />
+		          <span v-if="dataQsForm.jzUrl!=null || dataQsForm.jzUrl!=undefined">
+		          	<img src="dataQsForm.jzUrl"  width="100px" height="126px" />
+		          </span>
 		        </el-form-item>
-		        <el-form-item label="">
-		          <el-button id="shibie1" name="shibie1" size="mini" type="primary" @click="shibie">识别</el-button>
+		        <el-form-item label="近照" >
+		         <video id="video" autoplay width="150" height="110" controls>
+				</video>
+				<canvas id="canvas" width="150" height="110"></canvas>
+				<div>
+				  <button id="capture" @click="paizhao">拍照</button>
+				</div>
 		        </el-form-item>
 		        <el-form-item label="证件号码" prop="qsSfz">
 		          <el-input v-model="dataQsForm.qsSfz"></el-input>
 		        </el-form-item>
-		        <el-form-item label="frNo" prop="frNo">
-		          <el-input v-model="dataQsForm.frNo"></el-input>
+		        <el-form-item label="罪犯编号" prop="frNo">
+		          <el-input v-model="dataQsForm.frNo" :disabled="true"></el-input>
 		        </el-form-item>
 		        <el-form-item label="亲属姓名" prop="qsName">
 		          <el-input v-model="dataQsForm.qsName"></el-input>
@@ -54,6 +62,7 @@
 			        <el-button type="primary" @click="createQsData">确 定</el-button>
 				</el-form-item>
 	        </el-form>
+	        
         </el-card>
         
         <object width="0px" height="0px" id="IDCard2" name="IDCard2"  codebase="../../ocx/SynCardOcx.CAB#version=1,0,0,1" classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039">
@@ -82,7 +91,10 @@ export default {
         xb: '男',
         tele: undefined,
         spState: undefined,
-        bz: undefined
+        bz: undefined,
+        jzBase64: undefined,
+        zpBase64: undefined,
+        jzUrl: undefined,
       },
       gxs: [ // 关系
       	
@@ -108,7 +120,9 @@ export default {
       rulesQs:{
         qsName: [{ required: true, message: '亲属姓名不能为空', trigger: 'blur' }],
       },
-      scriptAddHjDj : undefined //身份证读卡器时间节点
+      scriptAddHjDj : undefined, //身份证读卡器时间节点
+      
+      photo: undefined,
     }
   },
   filters: {
@@ -118,10 +132,11 @@ export default {
   	this.getGxList()
   },
   mounted() {
-    this.openPort()
+    //this.openPort()
+    this.openVideo()
   },
   destroyed(){
-  	this.colsePort()
+  	//this.colsePort()
   },
   methods: {
 	getGxList() { // 获取关系
@@ -148,7 +163,8 @@ export default {
       })
     },
     returnPrevious(){ // 返回上一页
-    	history.go(-1)
+    	let frNo = this.dataQsForm.frNo
+    	this.$router.push({ path: '/addHjDj', query: {frNo:frNo} })
     },
     handleQsUpdate(row) {
     	let param = {
@@ -167,6 +183,7 @@ export default {
         this.dataQsForm.tele = res.data.tele
         this.dataQsForm.spState = res.data.spState
         this.dataQsForm.bz = res.data.bz
+        this.dataQsForm.jzUrl=res.data.jzUrl
     	})
       this.dialogStatus = 'update'
       this.dialogQsFormVisible = true
@@ -186,6 +203,87 @@ export default {
         }
       })
     },
+    
+     openVideo(){
+		let video = document.getElementById('video');
+	    if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
+	      if (navigator.mediaDevices.getUserMedia) {
+	        //最新的标准API
+	        //调用用户媒体设备, 访问摄像头
+		      navigator.mediaDevices.getUserMedia({video : {width: 150, height: 110}}).then(function(stream){
+			      //兼容webkit核心浏览器
+			      var URL = window.URL || window.webkitURL;
+			      //将视频流设置为video元素的源
+			      //video.src = URL.createObjectURL(stream);
+			      video.srcObject = stream;
+			      video.play();
+		    	 }).catch(function(error){
+		      	console.log(error);
+		    	 });
+	      } else if (navigator.webkitGetUserMedia) {
+	        //webkit核心浏览器
+	        navigator.webkitGetUserMedia({video : {width: 150, height: 110}}, 
+	        	function(stream){
+	        		//兼容webkit核心浏览器
+				      var URL = window.URL || window.webkitURL;
+				      //将视频流设置为video元素的源
+				      //video.src = URL.createObjectURL(stream);
+				      video.srcObject = stream;
+				      video.play();
+	          }, 
+	          function(error){
+	          	console.log(error);
+	          })
+	      } else if (navigator.mozGetUserMedia) {
+	        //firfox浏览器
+	        navigator.mozGetUserMedia({video : {width: 150, height: 110}}, 
+	        function(stream){
+	        		//兼容webkit核心浏览器
+				      var URL = window.URL || window.webkitURL;
+				      //将视频流设置为video元素的源
+				      //video.src = URL.createObjectURL(stream);
+				      video.srcObject = stream;
+				      video.play();
+	          }, 
+	          function(error){
+	          	console.log(error);
+	          });
+	      } else if (navigator.getUserMedia) {
+	        //旧版API
+	        navigator.getUserMedia({video : {width: 150, height: 110}}, 
+	        function(stream){
+	        		//兼容webkit核心浏览器
+				      var URL = window.URL || window.webkitURL;
+				      //将视频流设置为video元素的源
+				      //video.src = URL.createObjectURL(stream);
+				      video.srcObject = stream;
+				      video.play();
+	          }, 
+	          function(error){
+	          	console.log(error);
+	          });
+	      }
+	    } else {
+	      alert('不支持访问用户媒体');
+	    }
+
+    },
+    paizhao(){
+      let video = document.getElementById('video');
+      let canvas = document.getElementById('canvas');
+      let context = canvas.getContext('2d');
+      context.drawImage(video, 0, 0, 150, 110); 
+      
+	  //从画布上获取照片数据
+	  var imgData = canvas.toDataURL("image/png");
+	  
+	  //将图片转换为Base64
+	  //var BASE64= imgData.substr(22);
+	  this.dataQsForm.jzBase64= imgData.substr(22);
+	  console.log(this.dataQsForm.jzBase64)
+    },
+    
+    
     openPort(){ // 打开读卡器驱动
     	console.log('打开port')
 		//document.all.qsCard.focus();

@@ -33,16 +33,16 @@ public class BaseLogImpl<T> implements BaseLogService<T>{
 	
 	@Override
 	public void execute(String tableName, T model, String state) {
-		if("JL_FR".equals(tableName)){
-			JlFrVO t = (JlFrVO) model;
-			frExecute(t, state);
-		}else if("JL_HJ_DJ".equals(tableName)){
-			JlHjDjVO t = (JlHjDjVO) model;
-			jlHjDjExecute(t, state);
-		}else if("JL_QS".equals(tableName)){
-			JlQsVO t= (JlQsVO) model;
-			qsExecute(t, state);
-		}
+//		if("JL_FR".equals(tableName)){
+//			JlFrVO t = (JlFrVO) model;
+//			frExecute(t, state);
+//		}else if("JL_HJ_DJ".equals(tableName)){
+//			JlHjDjVO t = (JlHjDjVO) model;
+//			jlHjDjExecute(t, state);
+//		}else if("JL_QS".equals(tableName)){
+//			JlQsVO t= (JlQsVO) model;
+//			qsExecute(t, state);
+//		}
 		
 	}
 

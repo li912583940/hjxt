@@ -42,7 +42,10 @@ public class HjNoticeWeb extends Result{
 	}
 	
 	@RequestMapping("/editTz")
-	public String editTz(JlHjDjVO model){
-		return jlHjDjSQL.editTz(model);
+	public String editTz(Long hjid, Integer pageTzState){
+		JlHjDjVO jlHjDj = new JlHjDjVO();
+		jlHjDj.setHjid(hjid);
+		jlHjDj.setPageTzState(pageTzState);
+		return jlHjDjSQL.editTz(jlHjDj);
 	}
 }

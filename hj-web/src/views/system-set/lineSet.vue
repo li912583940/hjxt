@@ -6,45 +6,45 @@
 <template>
   <div class="app-container">
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
-      style="width: 1401px">
-      <el-table-column width="200" align="center" label="线路编号">
+      style="width: 1001px">
+      <el-table-column width="100" align="center" label="线路编号">
         <template slot-scope="scope">
           <span>{{scope.row.lineNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="线路状态">
+      <el-table-column width="100" align="center" label="线路状态">
         <template slot-scope="scope">
           <span v-if="scope.row.state==0" style="color: red;">关闭</span>
           <span v-if="scope.row.state==1">开启</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="线路模式">
+      <el-table-column width="100" align="center" label="线路模式">
         <template slot-scope="scope">
           <span v-if="scope.row.model==0">正常</span>
           <span v-if="scope.row.model==1" style="color: red;">特殊</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="服务器名称">
+      <el-table-column width="120" align="center" label="服务器名称">
         <template slot-scope="scope">
           <span>{{scope.row.jy}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="座位名称">
+      <el-table-column width="100" align="center" label="座位名称">
         <template slot-scope="scope">
           <span>{{scope.row.zw}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="读卡器">
+      <el-table-column width="160" align="center" label="读卡器">
         <template slot-scope="scope">
           <span>{{scope.row.dkq}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="IC卡号">
+      <el-table-column width="160" align="center" label="IC卡号">
         <template slot-scope="scope">
           <span>{{scope.row.cardNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="200">
+      <el-table-column align="center" :label="$t('criminal.actions')" width="160">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">配置</el-button>
         </template>

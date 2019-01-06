@@ -24,17 +24,17 @@
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
       style="width: 100%">
-      <el-table-column width="140" align="center"  :label="$t('currency.frNo')">
+      <el-table-column width="100" align="center"  :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" :label="$t('currency.frName')">
+      <el-table-column width="160" align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="180" align="center" label="证件类别">
+      <el-table-column width="100" align="center" label="证件类别">
         <template slot-scope="scope">
           <span v-if="scope.row.qsZjlb==1">身份证</span>
           <span v-if="scope.row.qsZjlb==2">警官证</span>
@@ -47,17 +47,17 @@
           <span>{{scope.row.qsSfz}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160" align="center" label="亲属姓名">
+      <el-table-column width="100" align="center" label="亲属姓名">
         <template slot-scope="scope">
           <span>{{scope.row.qsName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="关系">
+      <el-table-column width="100" align="center" label="关系">
         <template slot-scope="scope">
           <span>{{scope.row.gx}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="性别">
+      <el-table-column width="90" align="center" label="性别">
         <template slot-scope="scope">
           <span>{{scope.row.xb}}</span>
         </template>
@@ -72,18 +72,18 @@
           <span>{{scope.row.dz}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="禁止时间">
+      <el-table-column width="160" align="center" label="禁止时间">
         <template slot-scope="scope">
           <span>{{scope.row.hjStopTime | dateFormat}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="审批状态">
+      <el-table-column width="100" align="center" label="审批状态">
         <template slot-scope="scope">
           <span v-if="scope.row.spState==1">已通过</span>
           <span v-if="scope.row.spState==0" style="color: red;">未通过</span>
         </template>
       </el-table-column>
-      <el-table-column width="300" align="center" label="备注">
+      <el-table-column width="180" align="center" label="备注">
         <template slot-scope="scope">
           <span>{{scope.row.bz}}</span>
         </template>

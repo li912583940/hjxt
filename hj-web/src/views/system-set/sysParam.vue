@@ -107,8 +107,11 @@ export default {
       textMap: {
         update: '配 置',
         create: '新 增'
-      }
+      },
     
+      rules: {
+        ip: [{ required: true, message: 'ip不能为空', trigger: 'blur' }]
+      },
     }
   },
   filters: {

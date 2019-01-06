@@ -15,10 +15,9 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="frListQuery.qsName" clearable>
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button id="shibie1" name="shibie1" class="filter-item" type="primary" v-waves  @click="shibie">识别身份证</el-button>
       <el-button class="filter-item" type="primary" v-waves  @click="addHjdj">提交登记</el-button>
       <el-button class="filter-item" type="primary" v-waves  @click="returnPrevious">返回</el-button>
-      
+      {{this.refreshAddHjDj}}
     </div>
     
     <div class="filter-container">
@@ -45,12 +44,12 @@
 	          <span>{{scope.row.jqName}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="罪犯编号">
+	      <el-table-column width="100px" align="center" label="罪犯编号">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.frNo}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="160px" align="center" label="罪犯姓名">
+	      <el-table-column width="100px" align="center" label="罪犯姓名">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.frName}}</span>
 	        </template>
@@ -75,7 +74,7 @@
 	          <span>{{scope.row.infoRjsj}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="分管等级">
+	      <el-table-column width="90px" align="center" label="分管等级">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.jbName}}</span>
 	        </template>
@@ -90,7 +89,7 @@
 	          <span>{{scope.row.infoZm}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="家庭住址">
+	      <el-table-column width="320px" align="center" label="家庭住址">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.infoHome}}</span>
 	        </template>
@@ -100,7 +99,7 @@
 	          <span>{{scope.row.formerJQName}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="重点罪犯">
+	      <el-table-column width="90px" align="center" label="重点罪犯">
 	        <template slot-scope="scope">
 	          <span v-if="scope.row.stateZdzf=='0'">否</span>
 	          <span v-if="scope.row.stateZdzf=='1'">是</span>
@@ -148,12 +147,12 @@
 	          <span>{{scope.row.qsName}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="关系">
+	      <el-table-column width="100px" align="center" label="关系">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.gx}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="证件类别">
+	      <el-table-column width="100px" align="center" label="证件类别">
 	        <template slot-scope="scope">
 	          <span v-if="scope.row.qsZjlb==1">身份证</span>
 	          <span v-if="scope.row.qsZjlb==2">警官证</span>
@@ -176,12 +175,12 @@
 	          <span>{{scope.row.qsCard}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="160" align="center" label="性别">
+	      <el-table-column width="90" align="center" label="性别">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.xb}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="地址">
+	      <el-table-column width="320px" align="center" label="地址">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.dz}}</span>
 	        </template>
@@ -196,7 +195,7 @@
 	          <span>{{scope.row.bz}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="审批状态">
+	      <el-table-column width="100px" align="center" label="审批状态">
 	        <template slot-scope="scope">
 	          <span v-if="scope.row.spState==1">已通过</span>
 	          <span v-if="scope.row.spState==0">未通过</span>
@@ -242,7 +241,7 @@ export default {
       frListQuery: {
         pageNum: 1,
         pageSize: 5,
-        frNo: undefined,
+        frNo: this.$route.query.frNo,
         frName: undefined,
         jq: undefined,
         qsSfz: undefined, // 亲属身份证
@@ -334,6 +333,7 @@ export default {
       		name: '其他方式'
       	},
       ],
+      
     }
   },
   filters: {
@@ -374,13 +374,13 @@ export default {
       	 this.frList = res.pojo.list
       	 this.frTotal = res.pojo.count
       	 this.frListLoading = false
-      	 if( res.pojo.count > 0){ //默认查询第一个罪犯的亲属信息
-      	   this.qsListQuery.frNo = res.pojo.list[0].frNo
-      	   this.getQsFrList()
-      	 }else{
-      	 	this.qsList = null
-      	 	this.qsTotal = null
-      	 }
+//    	 if( res.pojo.count > 0){ //默认查询第一个罪犯的亲属信息
+//    	   this.qsListQuery.frNo = res.pojo.list[0].frNo
+//    	   this.getQsFrList()
+//    	 }else{
+//    	 	this.qsList = null
+//    	 	this.qsTotal = null
+//    	 }
       }).catch(error => {
           this.frListLoading = false
       })
@@ -399,15 +399,15 @@ export default {
       })
     },
     handleFilter() { // 罪犯查询
-      this.frListQuery.page = 1
+      this.frListQuery.pageNum = 1
       this.getFrList()
     },
     handleFrSizeChange(val) { // 罪犯分页
-      this.frListQuery.limit = val
+      this.frListQuery.pageSize = val
       this.getFrList()
     },
     handleFrCurrentChange(val) { // 罪犯分页
-      this.frListQuery.page = val
+      this.frListQuery.pageNum = val
       this.getFrList()
     },
     handleQsSizeChange(val) { // 亲属分页
@@ -507,8 +507,9 @@ export default {
 	    })
     	RequestAddHjdj(this.formdata).then((res) => {
     		loading.close();
-    		history.go(-1) 
-    		//this.$router.push({ path: '/meetRegister/index' })
+    		//history.go(-1) 
+    		let timestamp=new Date().getTime()
+    		this.$router.push({ path: '/meetRegister/index', query: {refreshZ:timestamp} })
     	}).catch(error =>{
     		loading.close();
     	})

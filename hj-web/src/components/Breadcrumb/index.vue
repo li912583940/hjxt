@@ -34,6 +34,7 @@ export default {
         matched = [{ path: '/dashboard', meta: { title: 'dashboard' }}].concat(matched)
       }
       this.levelList = matched
+      console.log(matched.length)
     }
   }
 }
