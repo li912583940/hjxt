@@ -56,7 +56,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       filename: 'index.html',
       template: 'index.html',
       inject: true,
-      favicon: resolve('favicon.ico'),
+      favicon: resolve('hjlogo.png'),
       title: '会见系统',
       path: config.dev.assetsPublicPath + config.dev.assetsSubDirectory
     })

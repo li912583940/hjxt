@@ -164,7 +164,7 @@ export default {
     },
     returnPrevious(){ // 返回上一页
     	let frNo = this.dataQsForm.frNo
-    	this.$router.push({ path: '/addHjDj', query: {frNo:frNo} })
+    	this.$router.push({ path: '/addHjDj', query: {frNoQuery:frNo} })
     },
     handleQsUpdate(row) {
     	let param = {
@@ -280,7 +280,6 @@ export default {
 	  //将图片转换为Base64
 	  //var BASE64= imgData.substr(22);
 	  this.dataQsForm.jzBase64= imgData.substr(22);
-	  console.log(this.dataQsForm.jzBase64)
     },
     
     

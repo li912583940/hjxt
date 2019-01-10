@@ -20,7 +20,29 @@
 						</video>
 						<canvas id="canvas" width="150" height="110"></canvas>
 		        	</span>
-					<span id="zp" style="width:160,height:176" v-if="ie==0"></span>
+		        	<span v-if="ie==0">
+		        		<!-- IE浏览器 flash控件 调用摄像头 -->
+				        <!--<object id="camera" classid="clsid:792FD9B8-5917-45D2-889D-C49FD174D4E0"
+						  codebase="../../ocx/capProj1.ocx#version=1,0,0,0"
+						  width=160
+						  height=176
+						  hspace=0
+						  vspace=0>
+				        </object>-->
+				        <!--<object style="z-index: 100" id="My_Cam" align="middle" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+					                codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"
+					                height="400" viewastext="在线拍照" width="500">
+					                <param name="allowScriptAccess" value="sameDomain" />
+					                <param name="movie" value="../../js/MyCamera.swf" />
+					                <param name="quality" value="high" />
+					                <param name="bgcolor" value="#ffffff" />
+					                <param name="wmode" value="transparent" />
+					                <embed style="z-index: 100" align="middle" allowscriptaccess="sameDomain" bgcolor="#ffffff" height="400"
+					                    name="My_Cam" pluginspage="http://www.macromedia.com/go/getflashplayer" quality="high"  wmode="transparent"
+					                    src="../../js/MyCamera.swf" type="application/x-shockwave-flash" width="500"></embed>
+					   	</object>-->
+		        		<span id="zp" style="width:160,height:176"></span>
+		        	</span>
 					<div>
 					  <button id="capture" @click="paizhao">拍照</button>
 					</div>
@@ -68,14 +90,7 @@
 	        
         </el-card>
         
-        <!-- IE浏览器 flash控件 调用摄像头 -->
-        <object id="camera" classid="clsid:792FD9B8-5917-45D2-889D-C49FD174D4E0"
-		  codebase="../../ocx/capProj1.ocx#version=1,0,0,0"
-		  width=160
-		  height=176
-		  hspace=0
-		  vspace=0>
-        </object>
+        
 							
         <object width="0px" height="0px" id="IDCard2" name="IDCard2"  codebase="../../ocx/SynCardOcx.CAB#version=1,0,0,1" classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039">
 		</object>
@@ -301,7 +316,7 @@ export default {
     		document.getElementById("camera").savefile("D:\\temp.jpg",150,176);
 			this.dataQsForm.jzBase64=document.getElementById("camera").jpegbase64;
 			//document.getElementById("jz").value = document.getElementById("MyFlexApps").paserbytes();
-			document.getElementById("zp").innerHTML="<img src=\"D:\\\\temp.jpg\"/>";
+			//document.getElementById("zp").innerHTML="<img src=\"D:\\\\temp.jpg\"/>";
     	}else{
     		let video = document.getElementById('video');
 		    let canvas = document.getElementById('canvas');
@@ -318,9 +333,8 @@ export default {
       
     },
     colseVideo() {
-    	if(this.track!=undefined){
-    		this.track.stop()
-    	}
+    	console.log("colse video")
+    	document.getElementById("camera").stop()
     	
     },
     openPort(){ // 打开读卡器驱动

@@ -27,6 +27,7 @@ export default {
     sysUser: '系统用户',
     sysRoles: '系统权限配置',
     jqSet: '监区设置',
+    spSet: '审批设置',
     lineSet: '线路设置',
     sysParam: '系统参数',
     permission: '权限测试页',
@@ -137,6 +138,7 @@ export default {
     size : '大小'
   },
   login: {
+//  title: '系统登录',
     title: 'VoxPMCC会见电话监控系统',
     logIn: '登录',
     username: '账号',

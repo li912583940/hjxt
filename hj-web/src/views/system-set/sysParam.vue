@@ -36,10 +36,10 @@
     </el-table>
 
 		<!-- 分页 -->
-    <div class="pagination-container">
+    <!--<div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.pageNum" :page-sizes="[10,20,30, 50]" :page-size="listQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
-    </div>
+    </div>-->
 
 	<!-- 新增或编辑 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">

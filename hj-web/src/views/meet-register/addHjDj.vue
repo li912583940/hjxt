@@ -17,7 +17,6 @@
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
       <el-button class="filter-item" type="primary" v-waves  @click="addHjdj">提交登记</el-button>
       <el-button class="filter-item" type="primary" v-waves  @click="returnPrevious">返回</el-button>
-      {{this.refreshAddHjDj}}
     </div>
     
     <div class="filter-container">
@@ -30,7 +29,7 @@
         </el-option>
       </el-select>
       <el-input style="width: 200px;"  placeholder="输入会见说明" v-model="formdata.hjInfo" clearable>
-      </el-input>
+      </el-input> {{this.refreshZ}}
     </div>
     
 		<!-- 服刑人员开始 -->
@@ -241,7 +240,7 @@ export default {
       frListQuery: {
         pageNum: 1,
         pageSize: 5,
-        frNo: this.$route.query.frNo,
+        frNo: this.$route.query.frNoQuery,
         frName: undefined,
         jq: undefined,
         qsSfz: undefined, // 亲属身份证
@@ -334,6 +333,7 @@ export default {
       	},
       ],
       
+      frNoQuery: this.$route.query.frNoQuery,
     }
   },
   filters: {
@@ -345,14 +345,24 @@ export default {
   mounted() {
   		this.setButtonRole()
   		
-      this.getFrList()
+      //this.getFrList()
+      this.noFrSearch()
+      
       this.getJqList()
       this.openPort()
   },
+
   destroyed(){
   	this.colsePort()
   },
   methods: {
+  	noFrSearch() {
+  		console.log(this.frNoQuery)
+  		if(this.frNoQuery!= undefined){
+  			this.getFrList()
+  		}
+  		this.frListLoading = false
+  	},
     getFrList() {
       this.frListLoading = true
       if(!this.frListQuery.frName){

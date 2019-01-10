@@ -1,13 +1,20 @@
 <template>
   <div class="login-container">
-  	<center>
+  	
+  	<div class="guohui">
+		  		<img src="/static/image/hjlogo.png" width="15%"  height="15%"/>
+		  		
+		  	</div>
+  	<!--<center>-->
 	    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 				
-	      <div class="title-container">
-	        <h3 class="title">{{ $t('login.title') }}</h3>
+	      <!--<div class="title-container">
+	        <!--<h3 class="title">{{ $t('login.title') }}</h3>-->
 	        <!--<lang-select class="set-language"/>-->
-	      </div>
-	
+	      <!--</div>-->
+				
+				
+  	
 	      <el-form-item prop="username">
 	        <span class="svg-container">
 	          <svg-icon icon-class="user" />
@@ -51,7 +58,7 @@
 	      <!--<el-button class="thirdparty-button" type="primary" @click="showDialog=true">{{ $t('login.thirdparty') }}</el-button>-->
 	    </el-form>
 	    
-	    </center>
+	    <!--</center>-->
 
   </div>
 </template>
@@ -223,7 +230,8 @@ $bg:#FFFAFA;
 /*$dark_gray:#889aa4;*/
 $dark_gray:#1E1E1E;
 $light_gray:#1E1E1E;
-$bgImg:url(/static/image/hj_logo.jpg);
+$bgImg:url(/static/image/bj_kuaiyu.jpg);
+
 
 .login-container {
   position: fixed;
@@ -234,6 +242,16 @@ $bgImg:url(/static/image/hj_logo.jpg);
 	background-size:100% 100%;
 	/*background-position:center;*/
   background-color: $bg;
+  
+.guohui {
+	  position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    /*margin: 200px auto;*/
+    margin-top: 100px;
+    margin-left: 46%;
+}
 .login-form {
     position: absolute;
     top: 0;
@@ -243,7 +261,8 @@ $bgImg:url(/static/image/hj_logo.jpg);
     width: 420px;
     max-width: 100%;
     padding: 35px 35px 15px 35px;
-    margin: 150px auto;
+    /*margin: 200px auto;*/
+    margin: 200px auto;
   }
   .tips {
     font-size: 14px;

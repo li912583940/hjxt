@@ -490,7 +490,9 @@ export default {
     
   },
   created() {
-    this.getList()
+    //this.getList()
+    this.noSearch()
+  	
     this.getJqList()
     this.getJbList()
   },
@@ -498,6 +500,9 @@ export default {
      this.setButtonRole()
   },
   methods: {
+  	noSearch() {
+  		this.listLoading = false
+  	},
     getList() { // 犯人列表
       this.listLoading = true
       if(!this.listQuery.frName){
@@ -785,6 +790,13 @@ export default {
    		if(!this.listQuery.stateZdzf){
    			this.listQuery.stateZdzf = undefined
    		}
+   		
+   		Message({
+        message: '已准备导出罪犯信息文件，请稍等几秒。',
+	      type: 'success',
+	      duration: 5 * 1000
+      });
+      
 			exportExcel(this.listQuery).then(res => {
 	      var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
 	     	if (window.navigator && window.navigator.msSaveOrOpenBlob) { // IE浏览器
@@ -803,7 +815,6 @@ export default {
 			}).catch(error => {
          console.log(error)
       })
-
 
     },
     

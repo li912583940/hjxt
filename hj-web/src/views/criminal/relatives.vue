@@ -280,12 +280,16 @@ export default {
 	  }
   },
   created() {
-    this.getList()
+    //this.getList()
+    this.noSearch()
   },
   mounted() {
     this.setButtonRole()
   },
   methods: {
+  	noSearch() {
+  		this.listLoading = false
+  	},
     getList() {
       this.listLoading = true
       if(!this.listQuery.frName){

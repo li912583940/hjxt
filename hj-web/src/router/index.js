@@ -173,19 +173,21 @@ export const asyncRouterMap = [
       meta: { title: 'meetRegister', icon: 'excel', roles:'meetRegister' }
     }]
   },
-  { // 身份验证
-    path: '/sfYz',
-    component: Layout,
-    meta: {
-      roles:'sfYz'
-    },
-    children: [{
-      path: 'index',
-      component: () => import('@/views/sfYz/index'),
-      name: 'sfYz',
-      meta: { title: 'sfYz', icon: 'form', roles:'sfYz' }
-    }]
-  },
+  
+//{ // 身份验证
+//  path: '/sfYz',
+//  component: Layout,
+//  meta: {
+//    roles:'sfYz'
+//  },
+//  children: [{
+//    path: 'index',
+//    component: () => import('@/views/sfYz/index'),
+//    name: 'sfYz',
+//    meta: { title: 'sfYz', icon: 'form', roles:'sfYz' }
+//  }]
+//},
+
   { // 会见签到 -- 座位分配
     path: '/meetSign',
     component: Layout,
@@ -334,6 +336,7 @@ export const asyncRouterMap = [
       { path: 'sysRoles', component: () => import('@/views/system-set/sysRoles'), name: 'sysRoles', meta: { title: 'sysRoles', icon: 'user', roles:'sysRoles'}}, //系统权限配置
       { path: 'criminalLevel', component: () => import('@/views/system-set/criminalLevel'), name: 'criminalLevel', meta: { title: 'criminalLevel', icon: 'tree', roles:'criminalLevel' }}, //服刑人员级别
       { path: 'jqSet', component: () => import('@/views/system-set/jqSet'), name: 'jqSet', meta: { title: 'jqSet', icon: 'tab', roles:'jqSet' }}, //监区设置
+     // { path: 'spSet', component: () => import('@/views/system-set/spSet'), name: 'spSet', meta: { title: 'spSet', icon: 'tab', roles:'spSet' }}, //审批设置
       { path: 'lineSet', component: () => import('@/views/system-set/lineSet'), name: 'lineSet', meta: { title: 'lineSet', icon: 'tab', roles:'lineSet' }}, // 线路设置
       { path: 'sysParam', component: () => import('@/views/system-set/sysParam'), name: 'sysParam', meta: { title: 'sysParam', icon: 'tab', roles:'sysParam' }} // 系统参数
     ]

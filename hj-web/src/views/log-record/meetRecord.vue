@@ -751,7 +751,9 @@ export default {
 	  }
   },
   created() {
-    this.getList()
+    //this.getList()
+    this.noSearch()
+    
     this.getJqList()
     this.getZwList()
   },
@@ -759,6 +761,9 @@ export default {
     this.setButtonRole()
   },
   methods: {
+  	noSearch() {
+  		this.listLoading = false
+  	},
     getList() {
       this.listLoading = true
       if(!this.listQuery.callTimeStart){

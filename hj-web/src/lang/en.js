@@ -27,6 +27,7 @@ export default {
     sysUser: 'Sys User', // 系统用户
     sysRoles: 'Sys Roles', // 系统权限配置
     jqSet: 'Jq Set', // 监区设置
+    spSet: 'Sp Set', //审批设置
     lineSet: 'Line Set', // 线路设置
     sysParam: 'sys Param', // 系统参数
     permission: 'Permission',

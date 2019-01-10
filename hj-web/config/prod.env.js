@@ -1,5 +1,5 @@
 module.exports = {
   NODE_ENV: '"production"',
   ENV_CONFIG: '"prod"',
-  BASE_API: '"http://192.168.0.101:8080/HjSystem"'
+  BASE_API: '"http://127.0.0.1:8080/HjSystem"'
 }
