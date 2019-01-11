@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 
 import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
-import com.sl.ue.entity.jl.vo.JlHjSpVO;
 import com.sl.ue.entity.jl.vo.JlJqVO;
 import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.entity.sys.vo.SysHjLineVO;
@@ -37,7 +36,6 @@ import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlFrService;
 import com.sl.ue.service.jl.JlHjDjService;
-import com.sl.ue.service.jl.JlHjSpService;
 import com.sl.ue.service.jl.JlJqService;
 import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.service.sys.SysHjLineService;
@@ -58,8 +56,6 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 	private JlQsService jlQsSQL;
 	@Autowired
 	private SysParamService sysParamSQL;
-	@Autowired
-	private JlHjSpService jlHjSpSQL;
 	@Autowired
 	private SysHjLineService sysHjLineSQL;
 	
@@ -307,10 +303,6 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			jlHjDj.setState(2);
 			jlHjDj.setCancelInfo(cancelInfo);
 			this.edit(jlHjDj);
-			
-			JlHjSpVO jlHjSp = new JlHjSpVO();
-			jlHjSp.setHjId(jlHjDj.getHjid());
-			jlHjSpSQL.delete(jlHjSp);
 			
 			result.putJson(0);
 			return result.toResult();

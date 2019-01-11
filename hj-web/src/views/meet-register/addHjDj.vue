@@ -349,11 +349,11 @@ export default {
       this.noFrSearch()
       
       this.getJqList()
-      this.openPort()
+      //this.openPort()
   },
 
   destroyed(){
-  	this.colsePort()
+  	//this.colsePort()
   },
   methods: {
   	noFrSearch() {

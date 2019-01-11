@@ -280,6 +280,7 @@ export default {
 		}
 		AddJqWeek(param).then(res => {
 			this.dialogWeekVisible = false
+			this.getList()
 		})
 	},
 	/**------------------ 设置会见星期日结束 ----------------------*/
