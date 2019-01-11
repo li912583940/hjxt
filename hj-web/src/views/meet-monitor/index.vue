@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-table :key='tableKey' :data="list"   border fit highlight-current-row max-height="700"
+    <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间"  border fit highlight-current-row
       style="width: 100%">
       <el-table-column width="100" align="center" label="服务器名称">
         <template slot-scope="scope">
@@ -49,16 +49,16 @@
           <span>{{scope.row.yjName}}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.jiantingPermission==1 || buttonRole.qieduanPermission==1" align="center" :label="$t('criminal.actions')" width="220">
+      <el-table-column v-if="buttonRole.jiantingPermission==1 || buttonRole.qieduanPermission==1 || buttonRole.chahuaPermission==1" align="center" :label="$t('criminal.actions')" width="300" fixed="right">
         <template slot-scope="scope">
           <el-button v-if="jtState==1 && buttonRole.jiantingPermission==1" type="primary" size="mini" icon="el-icon-service" @click="jianting(scope.row)">监听</el-button>
           <el-button v-if="jtState==2 && buttonRole.jiantingPermission==1" size="mini" type="info" icon="el-icon-phone" @click="jiantingStop(scope.row)">停止监听</el-button>
           <el-button v-if="jtState==2 && buttonRole.qieduanPermission==1" size="mini" type="danger" icon="el-icon-phone" @click="qieduan(scope.row)">切断</el-button>
+          <el-button v-if="buttonRole.chahuaPermission==1" type="primary" size="mini" icon="el-icon-phone-outline" @click="chahua(scope.row)">插话</el-button>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.chahuaPermission==1 || buttonRole.zhushiPermission==1 || buttonRole.updateTimePermission==1" align="center" label="功能" width="300">
+      <el-table-column v-if="buttonRole.chahuaPermission==1 || buttonRole.zhushiPermission==1 || buttonRole.updateTimePermission==1" align="center" label="功能" width="210" fixed="right">
         <template slot-scope="scope">
-          <el-button v-if="buttonRole.chahuaPermission==1" type="primary" size="mini" icon="el-icon-phone-outline" @click="chahua(scope.row)">插话</el-button>
           <el-button v-if="buttonRole.zhushiPermission==1" size="mini" type="info" icon="el-icon-document" @click="zhushi(scope.row)">注释</el-button>
           <el-button v-if="buttonRole.updateTimePermission==1" size="mini" type="info" icon="el-icon-time" @click="xiugaiTime(scope.row)">修改时间</el-button>
         </template>

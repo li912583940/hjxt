@@ -42,7 +42,7 @@
     </div>-->
 
 	<!-- 新增或编辑 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <el-dialog title="配 置" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="180px" style='width: 400px; margin-left:25%;' >
         <el-form-item label="服务器名称">
           <el-input v-model="dataForm.serverName" :disabled="true"></el-input>
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete} from '@/api/sysParam'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete} from '@/api/spSet'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -103,11 +103,6 @@ export default {
         recUrl: undefined
       },
       dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: '配 置',
-        create: '新 增'
-      },
     
       rules: {
         ip: [{ required: true, message: 'ip不能为空', trigger: 'blur' }]
@@ -115,7 +110,13 @@ export default {
     }
   },
   filters: {
-    
+    dateFormat(date) {
+		  //时间格式化  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+	  }
   },
   created() {
     this.getList()
@@ -140,31 +141,11 @@ export default {
       this.getList()
     },
     //重置表单
-	resetForm(formName) {
+	  resetForm(formName) {
 		if(this.$refs[formName] !== undefined){
 			this.$refs[formName].resetFields();
 		}
 		this.dataForm.webId = undefined
-    },
-    handleCreate() {
-      this.dialogStatus = 'create'
-      this.resetForm('dataForm')
-      this.dialogFormVisible = true
-//    this.$nextTick(() => {
-//      this.$refs['dataForm'].clearValidate()
-//    })
-    },
-    createData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          RequestAdd(this.dataForm).then(() => {
-            this.dialogFormVisible = false
-            this.getList()
-          }).catch(error => {
-		        this.dialogFormVisible = false
-		      })
-        }
-      })
     },
     handleUpdate(row) {
     	let param = {
@@ -196,37 +177,13 @@ export default {
         }
       })
     },
-    //删除
-	handleDelete(row) {
-		this.$confirm('确认删除该记录吗?', '提示', {
-			type: 'warning'
-		}).then(() => {
-			this.listLoading = true;
-			let param = {
-    			id: row.webId
-    		}
-			RequestDelete(param).then(() => {
-    		this.getList()
-    	}).catch(error => {
-	        this.dialogFormVisible = false
-	      })
-		})
-	},
 	
-    dateFormat(row, column) {
-			//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-	},
-	dateFormats: function (val) {
-		if(!val){
-			return undefined
+		dateFormats: function (val) {
+			if(!val){
+				return undefined
+			}
+			return moment(val).format("YYYY-MM-DD HH:mm:ss");
 		}
-		return moment(val).format("YYYY-MM-DD HH:mm:ss");
-	}
   }
 }
 </script>

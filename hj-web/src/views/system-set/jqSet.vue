@@ -153,7 +153,13 @@ export default {
     }
   },
   filters: {
-    
+    dateFormat(date) {
+		  //时间格式化  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+	  }
   },
   created() {
     this.getList()
@@ -284,21 +290,12 @@ export default {
 		})
 	},
 	/**------------------ 设置会见星期日结束 ----------------------*/
-	
-    dateFormat(row, column) {
-			//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-		},
-		dateFormats: function (val) {
-			if(!val){
-				return undefined
-			}
-			return moment(val).format("YYYY-MM-DD HH:mm:ss");
-		},
+	dateFormats: function (val) {
+		if(!val){
+			return undefined
+		}
+		return moment(val).format("YYYY-MM-DD HH:mm:ss");
+	},
   }
 }
 </script>
