@@ -46,6 +46,7 @@ public class SqlTypeTo {
 		importMap.put("Integer", ""); 
 		importMap.put("String", "");
 		importMap.put("byte[]", "");
+		importMap.put("Long", "");
 		
 		importMap.put("BigDecimal", "java.math.BigDecimal");
 		importMap.put("Date", "java.util.Date");

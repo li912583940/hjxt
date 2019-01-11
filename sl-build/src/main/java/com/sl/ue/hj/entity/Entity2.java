@@ -21,14 +21,14 @@ public class Entity2 {
 	}
 	
 	private void hj(){
-		System.out.println("读取文件夹： "+path+hj);
+		//System.out.println("读取文件夹： "+path+hj);
 		File file = new File(path+hj);
 		if(file.exists()){
 			File[] files = file.listFiles();
 			for(File f : files){
 				if(f.isFile()){
 					String filename = f.getName();
-					System.out.println(filename);
+					//System.out.println(filename);
 					Entity3 entity3 = new Entity3();
 					String[] s = filename.split("\\.");
 					entity3.executeVO(s[0], "hj");
@@ -38,14 +38,14 @@ public class Entity2 {
 	}
 	
 	private void jl(){
-		System.out.println("读取文件夹： "+path+jl);
+		//System.out.println("读取文件夹： "+path+jl);
 		File file = new File(path+jl);
 		if(file.exists()){
 			File[] files = file.listFiles();
 			for(File f : files){
 				if(f.isFile()){
 					String filename = f.getName();
-					System.out.println(filename);
+					//System.out.println(filename);
 					Entity3 entity3 = new Entity3();
 					String[] s = filename.split("\\.");
 					entity3.executeVO(s[0], "jl");
@@ -55,14 +55,14 @@ public class Entity2 {
 	}
 	
 	private void sys(){
-		System.out.println("读取文件夹： "+path+sys);
+		//System.out.println("读取文件夹： "+path+sys);
 		File file = new File(path+sys);
 		if(file.exists()){
 			File[] files = file.listFiles();
 			for(File f : files){
 				if(f.isFile()){
 					String filename = f.getName();
-					System.out.println(filename);
+					//System.out.println(filename);
 					Entity3 entity3 = new Entity3();
 					String[] s = filename.split("\\.");
 					entity3.executeVO(s[0], "sys");
@@ -72,14 +72,14 @@ public class Entity2 {
 	}
 	
 	private void other(){
-		System.out.println("读取文件夹： "+path+other);
+		//System.out.println("读取文件夹： "+path+other);
 		File file = new File(path+other);
 		if(file.exists()){
 			File[] files = file.listFiles();
 			for(File f : files){
 				if(f.isFile()){
 					String filename = f.getName();
-					System.out.println(filename);
+					//System.out.println(filename);
 					Entity3 entity3 = new Entity3();
 					String[] s = filename.split("\\.");
 					entity3.executeVO(s[0], "other");
@@ -89,14 +89,14 @@ public class Entity2 {
 	}
 	
 	private void sp(){
-		System.out.println("读取文件夹： "+path+sp);
+		//System.out.println("读取文件夹： "+path+sp);
 		File file = new File(path+sp);
 		if(file.exists()){
 			File[] files = file.listFiles();
 			for(File f : files){
 				if(f.isFile()){
 					String filename = f.getName();
-					System.out.println(filename);
+					//System.out.println(filename);
 					Entity3 entity3 = new Entity3();
 					String[] s = filename.split("\\.");
 					entity3.executeVO(s[0], "sp");

@@ -103,7 +103,6 @@ public class QueryDb {
 			}finally{
 				try {
 					if(stmt!=null)stmt.close();
-					if(conn!=null)conn.close();
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -111,6 +110,12 @@ public class QueryDb {
 			}
 		}
 		
+		try {
+			if(conn!=null)conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
