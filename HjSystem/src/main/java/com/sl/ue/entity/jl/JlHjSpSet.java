@@ -15,6 +15,9 @@ public class JlHjSpSet implements java.io.Serializable{
     @DbField("id")
     private Integer id;
 
+    @DbField("sp_no")
+    private String spNo;
+    
     /** 审批流程名称 */
     @DbField("sp_name")
     private String spName;
@@ -38,7 +41,16 @@ public class JlHjSpSet implements java.io.Serializable{
     public void setId(Integer id) {
         this.id = id;
     }
-    public String getSpName() {
+    
+    public String getSpNo() {
+		return spNo;
+	}
+
+	public void setSpNo(String spNo) {
+		this.spNo = spNo;
+	}
+
+	public String getSpName() {
         return this.spName;
     }
 

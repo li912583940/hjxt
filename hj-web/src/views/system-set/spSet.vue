@@ -2,35 +2,32 @@
 <template>
   <div class="app-container">
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
-      style="width: 1281px">
-      <el-table-column width="200" align="center" label="流程名称">
+      style="width: 1081px">
+      <el-table-column width="280" align="center" label="审批流程名称">
         <template slot-scope="scope">
-          <span>{{scope.row.serverName}}</span>
+          <span>{{scope.row.spName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="服务器IP">
+      <el-table-column width="200" align="center" label="审批流程说明">
         <template slot-scope="scope">
-          <span>{{scope.row.ip}}</span>
+          <span>{{scope.row.spExplain}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="状态端口">
+      <el-table-column width="200" align="center" label="启用状态">
         <template slot-scope="scope">
-          <span>{{scope.row.port}}</span>
+          <span v-if="scope.row.usable==1">启用</span>
+          <span v-if="scope.row.usable==0" style="color: red;">禁用</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="监听端口">
+      <el-table-column width="200" align="center" label="审批总阶段">
         <template slot-scope="scope">
-          <span>{{scope.row.audioPort}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="280" align="center" label="录音网络地址">
-        <template slot-scope="scope">
-          <span>{{scope.row.recUrl}}</span>
+          <span>{{scope.row.maxNum}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" :label="$t('criminal.actions')" width="200">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">配置</el-button>
+        	<!--<el-button type="primary" size="mini" icon="el-icon-edit" @click="search(scope.row)">查看</el-button>-->
+          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleConf(scope.row)">配置</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -41,29 +38,154 @@
       </el-pagination>
     </div>-->
 
+  <!--描述：查看流程 -->
+  <el-dialog title="查看流程" :visible.sync="dialogSearchVisible">
+  	<el-button style="margin-bottom: 12px;" @click="next">下一步</el-button>
+  	<el-steps :active="searchActive" >
+  			<el-step :title="add"></el-step>
+  			<el-step title="步骤 2"></el-step>
+  			<el-step title="步骤 3"></el-step>
+		</el-steps>
+		<div v-if="searchActive==0">
+			<el-card shadow="always" style="width: 40%; margin-top: 12px;">
+				<el-table :key='tableKey' :data="list"   border fit highlight-current-row style="width: 1081px">
+		      <el-table-column width="280" align="center" label="审批流程名称">
+		        <template slot-scope="scope">
+		          <span>{{scope.row.spName}}</span>
+		        </template>
+		      </el-table-column>
+		      <el-table-column width="200" align="center" label="审批流程说明">
+		        <template slot-scope="scope">
+		          <span>{{scope.row.spExplain}}</span>
+		        </template>
+		      </el-table-column>
+		      <el-table-column width="200" align="center" label="启用状态">
+		        <template slot-scope="scope">
+		          <span v-if="scope.row.usable==1">启用</span>
+		          <span v-if="scope.row.usable==0" style="color: red;">禁用</span>
+		        </template>
+		      </el-table-column>
+		      <el-table-column width="200" align="center" label="审批次数">
+		        <template slot-scope="scope">
+		          <span>{{scope.row.maxNum}}</span>
+		        </template>
+		      </el-table-column>
+		    </el-table>
+	    </el-card>
+		</div>
+  </el-dialog>
+  
 	<!-- 新增或编辑 -->
     <el-dialog title="配 置" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="180px" style='width: 400px; margin-left:25%;' >
-        <el-form-item label="服务器名称">
-          <el-input v-model="dataForm.serverName" :disabled="true"></el-input>
+      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="180px" style='width: 400px; margin-left:16%;' >
+        <el-form-item label="审批流程名称" prop="spName">
+          <el-input v-model="dataForm.spName" :disabled="true"></el-input>
         </el-form-item>
-        <el-form-item label="服务器IP" prop="ip">
-          <el-input v-model="dataForm.ip"></el-input>
+        <el-form-item label="审批流程说明" prop="spExplain">
+          <el-input v-model="dataForm.spExplain" ></el-input>
         </el-form-item>
-        <el-form-item label="状态端口" prop="port">
-          <el-input v-model="dataForm.port"></el-input>
+        <el-form-item label="是否启用" prop="usable">
+        	<el-radio-group v-model="dataForm.usable">
+				    <el-radio :label="0">关闭</el-radio>
+				    <el-radio :label="1">开启</el-radio>
+				  </el-radio-group>
         </el-form-item>
-        <el-form-item label="监听端口" prop="audioPort">
-          <el-input v-model="dataForm.audioPort"></el-input>
+        <el-form-item label="一级审批人">
+        	<el-popover
+					  placement="bottom"
+					  width="522"
+					  trigger="click">
+					  <el-transfer
+					  	filterable
+					    :filter-method="transferFilter"
+					    filter-placeholder="请输入关键字搜索"
+					    v-model="deptValue1"
+					    :data="deptData"
+					    :titles="['未拥有', '已拥有']">
+					  </el-transfer>
+					  <el-button slot="reference">添加部门</el-button>
+					</el-popover>
+					<el-popover
+					  placement="bottom"
+					  width="522"
+					  trigger="click">
+					  <el-transfer
+					  	filterable
+					    :filter-method="transferFilter"
+					    filter-placeholder="请输入关键字搜索"
+					    v-model="userValue1"
+					    :data="userData"
+					    :titles="['未拥有', '已拥有']">
+					  </el-transfer>
+					  <el-button slot="reference" style="margin-left: 20px;">添加用户</el-button>
+					</el-popover>
         </el-form-item>
-        <el-form-item label="录音网络地址" prop="recUrl">
-          <el-input v-model="dataForm.recUrl"></el-input>
+        
+        <el-form-item label="二级审批人">
+        	<el-popover
+					  placement="bottom"
+					  width="522"
+					  trigger="click">
+					  <el-transfer
+					  	filterable
+					    :filter-method="transferFilter"
+					    filter-placeholder="请输入关键字搜索"
+					    v-model="deptValue2"
+					    :data="deptData"
+					    :titles="['未拥有', '已拥有']">
+					  </el-transfer>
+					  <el-button slot="reference">添加部门</el-button>
+					</el-popover>
+					<el-popover
+					  placement="bottom"
+					  width="522"
+					  trigger="click">
+					  <el-transfer
+					  	filterable
+					    :filter-method="transferFilter"
+					    filter-placeholder="请输入关键字搜索"
+					    v-model="userValue2"
+					    :data="userData"
+					    :titles="['未拥有', '已拥有']">
+					  </el-transfer>
+					  <el-button slot="reference" style="margin-left: 20px;">添加用户</el-button>
+					</el-popover>
+        </el-form-item>
+        
+        <el-form-item label="三级审批人">
+        	<el-popover
+					  placement="bottom"
+					  width="522"
+					  trigger="click">
+					  <el-transfer
+					  	filterable
+					    :filter-method="transferFilter"
+					    filter-placeholder="请输入关键字搜索"
+					    v-model="deptValue3"
+					    :data="deptData"
+					    :titles="['未拥有', '已拥有']">
+					  </el-transfer>
+					  <el-button slot="reference">添加部门</el-button>
+					</el-popover>
+					<el-popover
+					  placement="bottom"
+					  width="522"
+					  trigger="click">
+					  <el-transfer
+					  	filterable
+					    :filter-method="transferFilter"
+					    filter-placeholder="请输入关键字搜索"
+					    v-model="userValue3"
+					    :data="userData"
+					    :titles="['未拥有', '已拥有']">
+					  </el-transfer>
+					  <el-button slot="reference" style="margin-left: 20px;">添加用户</el-button>
+					</el-popover>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">确 定</el-button>
-        <el-button v-else type="primary" @click="updateData">确 定</el-button>
+        <el-button type="primary" @click="updateData">确 定</el-button>
       </div>
     </el-dialog>
     
@@ -72,11 +194,11 @@
 </template>
 
 <script>
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete} from '@/api/spSet'
+import { findPojo, findDetails, RequestSpConf, GetDeptList, GetUserList} from '@/api/spSet'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
-
+import { Message, MessageBox } from 'element-ui'
 
 export default {
   name: 'criminal',
@@ -93,19 +215,33 @@ export default {
         pageNum: 1,
         pageSize: 20
       },
+      /** 查看流程 开始 */
+    	add:'adffg',
+      dialogSearchVisible: false,
+      searchActive: 0,
+      /** 查看流程 结束 */
+     
+     
       // 新增或编辑弹窗
       dataForm: { 
-        webId: undefined,
-        serverName: undefined,
-        ip: undefined,
-        port: undefined,
-        audioPort: undefined,
-        recUrl: undefined
+        id: undefined,
+        spName: undefined,
+        spExplain: undefined,
+        usable: 1
       },
       dialogFormVisible: false,
-    
+    	deptData: [],
+    	userData: [],
+    	
+    	deptValue1: [],
+	    userValue1: [],
+	    deptValue2: [],
+	    userValue2: [],
+	    deptValue3: [],
+	    userValue3: [],
+        
       rules: {
-        ip: [{ required: true, message: 'ip不能为空', trigger: 'blur' }]
+        
       },
     }
   },
@@ -120,6 +256,10 @@ export default {
   },
   created() {
     this.getList()
+  },
+  mounted() {
+    this.getDeptList()
+    this.getUserList()
   },
   methods: {
     getList() {
@@ -140,44 +280,136 @@ export default {
       this.listQuery.pageNum = val
       this.getList()
     },
-    //重置表单
-	  resetForm(formName) {
-		if(this.$refs[formName] !== undefined){
-			this.$refs[formName].resetFields();
-		}
-		this.dataForm.webId = undefined
-    },
-    handleUpdate(row) {
-    	let param = {
-    		id: row.webId
+    
+    getDeptList() {
+    	if(this.deptData.length ==0){ // 只查询一次
+    		GetDeptList({}).then(res =>{
+	    		let list = res.list
+	    		if(list == undefined){
+			 			return false;
+			 		}
+	    		
+	    		list.forEach((item, index) => {
+				 			this.deptData.push({
+				 				label: item.deptName,
+				 				key: item.id
+				 			})
+				 	})
+	    	})
     	}
-    	findOne(param).then((res) =>{
-    		this.dataForm.webId = res.data.webId,
-	        this.dataForm.serverName =  res.data.serverName,
-	        this.dataForm.ip = res.data.ip,
-	        this.dataForm.port = res.data.port,
-	        this.dataForm.audioPort = res.data.audioPort,
-	        this.dataForm.recUrl = res.data.recUrl
+    },
+    
+    getUserList() {
+    	if(this.userData.length ==0){ // 只查询一次
+    		GetUserList({}).then(res =>{
+	    		let list = res.list
+	    		if(list == undefined){
+			 			return false;
+			 		}
+	    		
+	    		list.forEach((item, index) => {
+				 			this.userData.push({
+				 				label: item.userName,
+				 				key: item.userNo
+				 			})
+				 	})
+	    	})
+    	}
+    },
+    
+    next() {
+	    if (this.searchActive++ >= 2) this.searchActive = 0;
+	  },
+    search() { //查看流程
+    	this.dialogSearchVisible = true
+    	
+    },
+    //重置表单
+	  resetForm() {
+			this.dataForm.id = undefined
+			this.dataForm.spName = undefined
+			this.dataForm.spExplain = undefined
+			this.dataForm.usable = 1
+			
+			this.deptValue1= []
+	    this.userValue1= []
+	    this.deptValue2= []
+	    this.userValue2= []
+	    this.deptValue3= []
+	    this.userValue3= []
+    },
+    handleConf(row) { // 打开配置面板
+    	this.resetForm()
+    	
+    	let param = {
+    		id: row.id
+    	}
+    	findDetails(param).then((res) =>{
+    		let jlHjSpSet = res.jlHjSpSet
+    		this.dataForm.id = jlHjSpSet.id
+        this.dataForm.spName =  jlHjSpSet.spName
+        this.dataForm.spExplain =  jlHjSpSet.spExplain
+        this.dataForm.usable =  jlHjSpSet.usable
+        
+        this.deptValue1 = res.deptList1
+        this.userValue1 = res.userList1
+        this.deptValue2 = res.deptList2
+        this.userValue2 = res.userList2
+        this.deptValue3 = res.deptList3
+        this.userValue3 = res.userList3
+        this.dialogFormVisible = true
+    	}).catch(() =>{
+    		this.dialogFormVisible = true
     	})
-	    this.dialogStatus = 'update'
-	    this.dialogFormVisible = true
-	    this.$nextTick(() => {
-        this.$refs['dataForm'].clearValidate()
-      })
+	    
     },
-    updateData() {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          RequestEdit(this.dataForm).then(() => {
-            this.dialogFormVisible = false
-            this.getList()
-          }).catch(error => {
-	        this.dialogFormVisible = false
-	      })
-        }
+    updateData() { // 配置
+    	if(this.deptValue2.length>0 || this.userValue2.length>0){
+    		if(this.deptValue1.length==0 && this.userValue1.length==0){
+    			Message({
+		        message: '您已设置二级审批人，但一级审批未设置。请设置一级审批人',
+			      type: 'error',
+			      duration: 5 * 1000
+		      });
+		      return false;
+    		}
+    	}
+    	if(this.deptValue3.length>0 || this.userValue3.length>0){
+    		if(this.deptValue2.length==0 && this.userValue2.length==0){
+    			Message({
+		        message: '您已设置三级审批人，但二级审批未设置。请设置二级审批人',
+			      type: 'error',
+			      duration: 5 * 1000
+		      });
+		      return false;
+    		}
+    	}
+    	
+    	let param = {
+    		id: this.dataForm.id,
+        spName: this.dataForm.spName,
+        spExplain: this.dataForm.spExplain,
+        usable: this.dataForm.usable,
+    		deptValue1 : this.deptValue1!=undefined?this.deptValue1.join():"",
+        userValue1 : this.userValue1!=undefined?this.userValue1.join():"",
+        deptValue2 : this.deptValue2!=undefined?this.deptValue2.join():"",
+        userValue2 : this.userValue2!=undefined?this.userValue2.join():"",
+        deptValue3 : this.deptValue3!=undefined?this.deptValue3.join():"",
+        userValue3 : this.userValue3!=undefined?this.userValue3.join():""
+    	}
+    	
+      RequestSpConf(param).then(() => {
+        this.dialogFormVisible = false
+        this.getList()
+      }).catch(error => {
+        this.dialogFormVisible = false
       })
+     
     },
-	
+		transferFilter(query, item){ //穿梭框搜索功能
+	  	return item.label.indexOf(query) > -1;
+	  },
+	  
 		dateFormats: function (val) {
 			if(!val){
 				return undefined

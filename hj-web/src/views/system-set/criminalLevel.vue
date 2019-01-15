@@ -186,6 +186,7 @@ export default {
     	}
     	findOne(param).then((res) =>{
     		this.dataForm.webId = res.data.webId,
+    		this.dataForm.jbNo = res.data.jbNo,
 	        this.dataForm.jbName =  res.data.jbName,
 	        this.dataForm.hjCount = res.data.hjCount,
 	        this.dataForm.hjTime = res.data.hjTime,

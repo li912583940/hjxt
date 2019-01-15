@@ -25,8 +25,10 @@ public class SysUser  implements Serializable{
 	private String userNo;
 	@DbField("User_Pwd")
 	private String userPwd;
-	@DbField("User_Depart")
-	private String userDepart;
+	@DbField("dept_id")
+	private String deptId;
+	@DbField("dept_name")
+	private String deptName;
 	@DbField("User_Name")
 	private String userName;
 	@DbField("Group_No")
@@ -66,12 +68,20 @@ public class SysUser  implements Serializable{
 		this.userPwd = userPwd;
 	}
 
-	public String getUserDepart() {
-		return userDepart;
+	public String getDeptId() {
+		return deptId;
 	}
 
-	public void setUserDepart(String userDepart) {
-		this.userDepart = userDepart;
+	public void setDeptId(String deptId) {
+		this.deptId = deptId;
+	}
+
+	public String getDeptName() {
+		return deptName;
+	}
+
+	public void setDeptName(String deptName) {
+		this.deptName = deptName;
 	}
 
 	public String getUserName() {

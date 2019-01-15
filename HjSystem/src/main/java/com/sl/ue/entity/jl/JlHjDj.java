@@ -100,7 +100,7 @@ public class JlHjDj implements java.io.Serializable {
 	@DbField("SP_User")
 	private String spUser;
 	@DbField("state")
-	private Integer state;
+	private Integer state; // 登记状态，0 未完成会见，1已完成会见，2 已取消会见，3 待审批  默认值：0
 	@DbField("Cancel_Info")
 	private String cancelInfo;
 	@DbField("Call_ID")

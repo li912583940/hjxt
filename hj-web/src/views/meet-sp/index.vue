@@ -2,7 +2,12 @@
   <div class="app-container">
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
       style="width: 100%">
-      <el-table-column width="160" align="center" label="所属监区">
+      <el-table-column width="280" align="center" label="审批名称">
+        <template slot-scope="scope">
+          <span>{{scope.row.setName}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" align="center" label="监区名称">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
         </template>
@@ -12,38 +17,35 @@
           <span>{{scope.row.frName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160px" align="center" label="审批申请人">
+      <el-table-column min-width="280" align="center" label="亲属信息">
         <template slot-scope="scope">
-          <span>{{scope.row.spTjUser}}[{{scope.row.spTjUserName}}]</span>
+          <span>{{scope.row.qsInfo}}</span>
         </template>
       </el-table-column>
       <el-table-column width="160px" align="center" label="申请时间">
         <template slot-scope="scope">
-          <span>{{scope.row.spTjTime}}</span>
+          <span>{{scope.row.djTime | dateFormat }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160px" align="center" label="审批部门">
+      <el-table-column width="100" align="center" label="审批总阶段">
         <template slot-scope="scope">
-          <span>{{scope.row.spGroupName}}</span>
+          <span>{{scope.row.maxNum}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160px" align="center" label="审批人">
+      <el-table-column width="110" align="center" label="当前审批阶段">
         <template slot-scope="scope">
-          <span>{{scope.row.spUserName}}</span>
+          <span>{{scope.row.speedProgress}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300px" align="center" label="审批状态">
+      <el-table-column width="160px" align="center" label="当前阶段能审批者">
         <template slot-scope="scope">
-          <span v-if="scope.row.spState==1">待审批</span>
-          <span v-else-if="scope.row.spState==2">通过</span>
-          <span v-else-if="scope.row.spState==3">不通过</span>
+          <span>查看</span>
         </template>
       </el-table-column>
       <el-table-column width="200px" align="center" label="操作">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="seeDetails(scope.row)">查看详情</el-button>
-          <el-button v-if="scope.row.spState==1" type="primary" size="mini" @click="toSp(scope.row)">我要审批</el-button>
-          <span v-if="scope.row.spState!=1" style="margin-left: 3px;">审批完毕</span>
+          <el-button v-if="scope.row.spPermission==1" type="primary" size="mini" @click="toSp(scope.row)">我要审批</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -151,7 +153,13 @@ export default {
     }
   },
   filters: {
-    
+    dateFormat(date) {
+		  //时间格式化  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+	  }
   },
   created() {
     this.getList()
@@ -201,15 +209,7 @@ export default {
     	
     },
     /** 审批 结束*/
-   
-    dateFormat(row, column) {
-			//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-		},
+
 		dateFormats: function (val) {
 			if(!val){
 				return undefined

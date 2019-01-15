@@ -16,17 +16,25 @@ public class JlHjSpUser implements java.io.Serializable{
     private Integer id;
 
     /** 审批设置主键 */
-    @DbField("sp_set_id")
-    private Integer spSetId;
+    @DbField("sp_set_no")
+    private String spSetNo;
 
     /** 审批人的编号，当类型为部门时，为部门编号；类型用户时，为用户编号 */
-    @DbField("sp_user_id")
-    private String spUserId;
+    @DbField("sp_user_no")
+    private String spUserNo;
 
     /** 审批人的名称，当类型为部门时，为部门名称；类型用户时，为用户名称 */
     @DbField("sp_user_name")
     private String spUserName;
-
+    
+    /** 审批部门id */
+    @DbField("sp_dept_id")
+    private Integer spDeptId;
+    
+    /** 审批部门名称 */
+    @DbField("sp_dept_name")
+    private String spDeptName;
+    
     /** 审批类型，0为用户，1为部门 */
     @DbField("sp_type")
     private Integer spType;
@@ -42,19 +50,21 @@ public class JlHjSpUser implements java.io.Serializable{
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getSpSetId() {
-        return this.spSetId;
+
+    public String getSpSetNo() {
+		return spSetNo;
+	}
+
+	public void setSpSetNo(String spSetNo) {
+		this.spSetNo = spSetNo;
+	}
+
+	public String getSpUserNo() {
+        return this.spUserNo;
     }
 
-    public void setSpSetId(Integer spSetId) {
-        this.spSetId = spSetId;
-    }
-    public String getSpUserId() {
-        return this.spUserId;
-    }
-
-    public void setSpUserId(String spUserId) {
-        this.spUserId = spUserId;
+    public void setSpUserNo(String spUserNo) {
+        this.spUserNo = spUserNo;
     }
     public String getSpUserName() {
         return this.spUserName;
@@ -63,7 +73,24 @@ public class JlHjSpUser implements java.io.Serializable{
     public void setSpUserName(String spUserName) {
         this.spUserName = spUserName;
     }
-    public Integer getSpType() {
+    
+    public Integer getSpDeptId() {
+		return spDeptId;
+	}
+
+	public void setSpDeptId(Integer spDeptId) {
+		this.spDeptId = spDeptId;
+	}
+
+	public String getSpDeptName() {
+		return spDeptName;
+	}
+
+	public void setSpDeptName(String spDeptName) {
+		this.spDeptName = spDeptName;
+	}
+
+	public Integer getSpType() {
         return this.spType;
     }
 

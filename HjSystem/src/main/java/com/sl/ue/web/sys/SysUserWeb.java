@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.sl.ue.entity.other.vo.DeptVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
+import com.sl.ue.service.other.DeptService;
 import com.sl.ue.service.sys.SysUserService;
 import com.sl.ue.util.http.Result;
 
@@ -17,7 +19,9 @@ public class SysUserWeb extends Result{
 
     @Autowired
     private SysUserService sysUserSQL;
-
+    @Autowired
+    private DeptService deptSQL;
+    
     @RequestMapping("/findList")
     public String findList(SysUserVO model,Integer pageSize, Integer pageNum){
         List<SysUserVO> list = sysUserSQL.findList(model, pageSize, pageNum);
@@ -49,12 +53,24 @@ public class SysUserWeb extends Result{
     @RequestMapping("/add")
     public String add(SysUserVO model){
     	model.setUserPwd("123456");
+    	if(model.getDeptId()!=null){
+    		DeptVO dept = deptSQL.findOne(model.getDeptId());
+    		if(dept!=null){
+    			model.setDeptName(dept.getDeptName());
+    		}
+    	}
         sysUserSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(SysUserVO model){
+    	if(model.getDeptId()!=null){
+    		DeptVO dept = deptSQL.findOne(model.getDeptId());
+    		if(dept!=null){
+    			model.setDeptName(dept.getDeptName());
+    		}
+    	}
         sysUserSQL.edit(model);
         return this.toResult();
     }

@@ -7,6 +7,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,11 @@ import org.springframework.stereotype.Service;
 
 import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
+import com.sl.ue.entity.jl.vo.JlHjJqWeekVO;
+import com.sl.ue.entity.jl.vo.JlHjRecVO;
+import com.sl.ue.entity.jl.vo.JlHjSpSetVO;
+import com.sl.ue.entity.jl.vo.JlHjSpVO;
+import com.sl.ue.entity.jl.vo.JlJbVO;
 import com.sl.ue.entity.jl.vo.JlJqVO;
 import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.entity.sys.vo.SysHjLineVO;
@@ -36,6 +42,11 @@ import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlFrService;
 import com.sl.ue.service.jl.JlHjDjService;
+import com.sl.ue.service.jl.JlHjJqWeekService;
+import com.sl.ue.service.jl.JlHjRecService;
+import com.sl.ue.service.jl.JlHjSpService;
+import com.sl.ue.service.jl.JlHjSpSetService;
+import com.sl.ue.service.jl.JlJbService;
 import com.sl.ue.service.jl.JlJqService;
 import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.service.sys.SysHjLineService;
@@ -53,12 +64,21 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 	@Autowired
 	private JlJqService jlJqSQL;
 	@Autowired
+	private JlHjJqWeekService jlHjJqWeekSQL;
+	@Autowired
 	private JlQsService jlQsSQL;
 	@Autowired
 	private SysParamService sysParamSQL;
 	@Autowired
 	private SysHjLineService sysHjLineSQL;
-	
+	@Autowired
+	private JlHjSpSetService jlHjSpSetSQL;
+	@Autowired
+	private JlHjSpService jlHjSpSQL;
+	@Autowired
+	private JlJbService jlJbSQL;
+	@Autowired
+	private JlHjRecService jlHjRecSQL;
 	
 	@Override
 	public String addHjdj(
@@ -101,84 +121,73 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			jlJq = jlJqList.get(0);
 		}
 		
-		
-		JlHjDjVO addJlHjDj = new JlHjDjVO(); // 创建会见登记
-		addJlHjDj.setJy(jlJq.getJy());
-		addJlHjDj.setJqNo(jlJq.getJqNo());
-		addJlHjDj.setJqName(jlJq.getJqName());
-		addJlHjDj.setFrNo(jlFr.getFrNo());
-		addJlHjDj.setFrName(jlFr.getFrName());
-		if(hjType == null ){
-			addJlHjDj.setHjType(1); // 会见类型   1 严见，2 宽见
-		}else{
-			addJlHjDj.setHjType(hjType); // 会见类型   1 严见，2 宽见
+		JlJbVO jlJb = new JlJbVO();
+		jlJb.setJbNo(jlFr.getJbNo());
+		List<JlJbVO> jlJbList = jlJbSQL.findList(jlJb);
+		if(jlJbList.size()>0){
+			jlJb = jlJbList.get(0);
 		}
-		addJlHjDj.setHjMode(hjMode);
-		addJlHjDj.setDjTime(new Date());
-		if(hjsc == null){
-			addJlHjDj.setHjTime(30*60); // 单位：秒  , 30分钟
-		}else{
-			addJlHjDj.setHjTime(hjsc*60); // 单位：秒
-		}
-		addJlHjDj.setHjInfo(hjInfo); // 会见说明
-		addJlHjDj.setDjUser(TokenUser.getUser().getUserNo()); // 登记人
-		addJlHjDj.setFpFlag(0);
-		addJlHjDj.setFpTzfrFlag(0);
-		addJlHjDj.setFpTzqsFlag(0);
-		addJlHjDj.setHjOrder(callNo);
-		addJlHjDj.setMonitorFlag("");
-		addJlHjDj.setPageTzState(0);
 		
-		SysParamVO sysParam = new SysParamVO();
-		sysParam.setParamName("HJ_Client1");
-		List<SysParamVO> sysParamList =  sysParamSQL.findList(sysParam);
-		addJlHjDj.setDjType(0); // 会见登记是否需要审批 0 否 1是
-		if(sysParamList.size()>0){
-			sysParam = sysParamList.get(0);
-			if(StringUtils.isNotBlank(sysParam.getParamData4()) && "1".equals(sysParam.getParamData4())){
-				addJlHjDj.setDjType(1);
+		// 将所有罪犯不满足的登记的条件存储起来
+		List<Integer> disNo = new ArrayList<Integer>();
+		
+		/** 查看当前罪犯是否符合会见登记条件 开始 */
+		if(jlJb.getHjCount() > 0){
+			JlHjRecVO jlHjRecQuery = new JlHjRecVO();
+			jlHjRecQuery.setFrNo(frNo);
+			Calendar c = Calendar.getInstance();    
+			c.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天 
+			String ymd = DateUtil.getFormat(c.getTime(), "yyyy-MM-dd");
+			ymd+=" 00:00:00";
+			jlHjRecQuery.setLeftJoinWhere(" AND a.Call_Time_Start>'"+ymd+"'");
+			int count = jlHjRecSQL.count(jlHjRecQuery); // 犯人当月会见次数
+			if(jlJb.getHjCount()<=count){
+				disNo.add(1); // 罪犯本月会见次数已用完
+			}
+		}else if(jlJb.getHjCount() == 0){
+			disNo.add(2); // 罪犯级别不允许会见
+		}
+		
+		if(jlFr.getHjStopTime()!=null){ // 当前罪犯处于会见禁止日期
+			if(new Date().before(jlFr.getHjStopTime())){  
+				disNo.add(3); // 罪犯当前被禁止会见
 			}
 		}
-		addJlHjDj.setState(0);
-//		if(addJlHjDj.getHjType() == 1){
-//			addJlHjDj.setState(0); // 登记状态，0 未完成会见，1已完成会见，2 已取消会见 默认值：0
-//		}else{
-//			addJlHjDj.setState(1);
-//		}
-		Long hjIndex = (Long) jdbcTemplate.execute(  // 调用存储过程 获取会见批次号
-		     new CallableStatementCreator() {
-				@Override
-				public CallableStatement createCallableStatement(Connection con) throws SQLException {
-					 String storedProc = "{call get_hj_index(?,?)}";// 调用的sql   
-			           CallableStatement cs = con.prepareCall(storedProc);   
-			           cs.setString(1, frNo);// 设置输入参数的值   
-			           cs.registerOutParameter(2, java.sql.Types.BIGINT);// 注册输出参数的类型   
-			           return cs;   
-				}
-			}, 
-		    new CallableStatementCallback<Long>() {  
-				@Override
-		        public Long doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException {   
-		           cs.execute();   
-		           return cs.getLong(2);// 获取输出参数的值   
-		        }   
-		});
-		addJlHjDj.setHjIndex(hjIndex);
-		addJlHjDj.setImportFlag(0);
-		if(tpQsNum == null){
-			addJlHjDj.setTpQsNum(0);
+		
+		// 查看当前罪犯所在监区是否是会见星期日
+		JlHjJqWeekVO jlHjJqWeekQuery = new JlHjJqWeekVO();
+		jlHjJqWeekQuery.setJqNo(jlJq.getJqNo());
+		List<JlHjJqWeekVO> jlHjJqWeekList = jlHjJqWeekSQL.findList(jlHjJqWeekQuery);
+		Calendar cal = Calendar.getInstance(); 
+		cal.setTime(new Date());
+		int week = cal.get(Calendar.DAY_OF_WEEK);
+		if(week==1){
+			week=7;
 		}else{
-			addJlHjDj.setTpQsNum(tpQsNum);
+			week = week-1;
 		}
-		if(qzSp == null){
-			addJlHjDj.setQzSp(0);
-		}else{
-			addJlHjDj.setQzSp(qzSp);
+		boolean is_week = false;
+		for(JlHjJqWeekVO t : jlHjJqWeekList){
+			if(t.getJqWeek()==week){
+				is_week=true;
+			}
+		}
+		if(is_week == false){
+			disNo.add(4); // 服刑人员当前监区不是会见日
 		}
 		
+		
+		/** 查看当前罪犯是否符合会见登记条件 结束 */
+		
+		
+		JlHjDjVO addJlHjDj = new JlHjDjVO(); // 创建会见登记
 		String[] qsIdss = qsIds.split(",");
+		boolean is_gx= false; //判断亲属关系是否为其他
 		for(int i=0; i<qsIdss.length;i++){ // 亲属
 			JlQsVO jlQs = jlQsSQL.findOne(qsIdss[i]);
+			if(StringUtils.isNotBlank(jlQs.getGx()) && "其他".equals(jlQs.getGx())){
+				is_gx=true;
+			}
 			String gx = StringUtils.isNotBlank(jlQs.getGx())?"["+jlQs.getGx()+"]":"";
 			String name = StringUtils.isNotBlank(jlQs.getQsName())?jlQs.getQsName():"";
 			if(i==0){
@@ -219,13 +228,181 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 				addJlHjDj.setQsCard9(jlQs.getQsCard());
 			}
 		}
+		
+		/** 查看当前罪犯是否需要审批 开始 */
+		boolean is_sp=false; //是否需要审批
+		String explain = ""; // 审批说明
+		JlHjSpSetVO jlHjSpSet = null;
+		JlHjSpSetVO jlHjSpSetQuery = new JlHjSpSetVO();
+		jlHjSpSetQuery.setUsable(1);
+		List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
+		if(jlHjSpSetList.size()>0){
+			for(JlHjSpSetVO t: jlHjSpSetList){
+				if(t.getSpNo().equals("1")){ // 罪犯本月会见次数已用完
+					if(disNo.contains(1)){ //条件满足
+						is_sp = true;
+						jlHjSpSet=t;
+						explain="罪犯本月会见次数已用完";
+					}
+				}else if(t.getSpNo().equals("2")){ // 罪犯级别不允许会见
+					if(disNo.contains(2)){ //条件满足
+						is_sp = true;
+						jlHjSpSet=t;
+						if(StringUtils.isNotBlank(explain)){
+							explain+=";罪犯级别不允许会见";
+						}else{
+							explain+="罪犯级别不允许会见";
+						}
+					}
+				}else if(t.getSpNo().equals("3")){ // 罪犯当前被禁止会见
+					if(disNo.contains(3)){ //条件满足
+						is_sp = true;
+						jlHjSpSet=t;
+						String sm = jlFr.getHjStopSm()!=null?jlFr.getHjStopSm():"";
+						if(StringUtils.isNotBlank(explain)){
+							explain+=";罪犯当前被禁止会见，禁止说明《"+sm+"》";
+						}else{
+							explain+="罪犯当前被禁止会见，禁止说明《"+sm+"》";
+						}
+					}
+				}else if(t.getSpNo().equals("4")){ // 服刑人员当前监区不是会见日
+					if(disNo.contains(3)){ //条件满足
+						is_sp = true;
+						jlHjSpSet=t;
+						if(StringUtils.isNotBlank(explain)){
+							explain+=";服刑人员当前监区不是会见日";
+						}else{
+							explain+="服刑人员当前监区不是会见日";
+						}
+					}
+				}else if(t.getSpNo().equals("5")){ // 亲属关系为“其他”
+					if(is_gx){
+						is_sp = true;
+						jlHjSpSet=t;
+						if(StringUtils.isNotBlank(explain)){
+							explain+=";亲属关系为“其他”";
+						}else{
+							explain="亲属关系为“其他”";
+						}
+					}
+				}
+			}
+			
+		}
+		/** 查看当前罪犯是否需要审批 结束 */
+		
+		if(is_sp==false){
+			if(disNo.contains(1)){
+				result.error(Result.error_103, "罪犯本月会见次数已用完");
+			}else if(disNo.contains(2)){
+				result.error(Result.error_103, "罪犯级别不允许会见");
+			}else if(disNo.contains(3)){
+				result.error(Result.error_103, "罪犯当前被禁止会见");
+			}else if(disNo.contains(4)){
+				result.error(Result.error_103, "服刑人员当前监区不是会见日");
+			}
+			return result.toResult();
+		}
+		
+		
+		addJlHjDj.setJy(jlJq.getJy());
+		addJlHjDj.setJqNo(jlJq.getJqNo());
+		addJlHjDj.setJqName(jlJq.getJqName());
+		addJlHjDj.setFrNo(jlFr.getFrNo());
+		addJlHjDj.setFrName(jlFr.getFrName());
+		if(hjType == null ){
+			addJlHjDj.setHjType(1); // 会见类型   1 严见，2 宽见
+		}else{
+			addJlHjDj.setHjType(hjType); // 会见类型   1 严见，2 宽见
+		}
+		addJlHjDj.setHjMode(hjMode);
+		addJlHjDj.setDjTime(new Date());
+		if(hjsc == null){
+			addJlHjDj.setHjTime(30*60); // 单位：秒  , 30分钟
+		}else{
+			addJlHjDj.setHjTime(hjsc*60); // 单位：秒
+		}
+		addJlHjDj.setHjInfo(hjInfo); // 会见说明
+		addJlHjDj.setDjUser(TokenUser.getUser().getUserNo()); // 登记人
+		addJlHjDj.setFpFlag(0);
+		addJlHjDj.setFpTzfrFlag(0);
+		addJlHjDj.setFpTzqsFlag(0);
+		addJlHjDj.setHjOrder(callNo);
+		addJlHjDj.setMonitorFlag("");
+		addJlHjDj.setPageTzState(0);
+		
+		SysParamVO sysParam = new SysParamVO();
+		sysParam.setParamName("HJ_Client1");
+		List<SysParamVO> sysParamList =  sysParamSQL.findList(sysParam);
+		addJlHjDj.setDjType(0); // 会见登记是否需要审批 0 否 1是
+		if(sysParamList.size()>0){
+			sysParam = sysParamList.get(0);
+			if(StringUtils.isNotBlank(sysParam.getParamData4()) && "1".equals(sysParam.getParamData4())){
+				addJlHjDj.setDjType(1);
+			}
+		}
+		if(is_sp){ // 需要审批
+			addJlHjDj.setState(3);
+		}else{
+			addJlHjDj.setState(0);
+		}
+		
+//		if(addJlHjDj.getHjType() == 1){
+//			addJlHjDj.setState(0); // 登记状态，0 未完成会见，1已完成会见，2 已取消会见 默认值：0
+//		}else{
+//			addJlHjDj.setState(1);
+//		}
+		Long hjIndex = (Long) jdbcTemplate.execute(  // 调用存储过程 获取会见批次号
+		     new CallableStatementCreator() {
+				@Override
+				public CallableStatement createCallableStatement(Connection con) throws SQLException {
+					 String storedProc = "{call get_hj_index(?,?)}";// 调用的sql   
+			           CallableStatement cs = con.prepareCall(storedProc);   
+			           cs.setString(1, frNo);// 设置输入参数的值   
+			           cs.registerOutParameter(2, java.sql.Types.BIGINT);// 注册输出参数的类型   
+			           return cs;   
+				}
+			}, 
+		    new CallableStatementCallback<Long>() {  
+				@Override
+		        public Long doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException {   
+		           cs.execute();   
+		           return cs.getLong(2);// 获取输出参数的值   
+		        }   
+		});
+		addJlHjDj.setHjIndex(hjIndex);
+		addJlHjDj.setImportFlag(0);
+		if(tpQsNum == null){
+			addJlHjDj.setTpQsNum(0);
+		}else{
+			addJlHjDj.setTpQsNum(tpQsNum);
+		}
+		if(qzSp == null){
+			addJlHjDj.setQzSp(0);
+		}else{
+			addJlHjDj.setQzSp(qzSp);
+		}
+		
+		
+		
+		
 		try {
 			addJlHjDj = this.add(addJlHjDj);
+			if(is_sp){
+				JlHjSpVO jlHjSp = new JlHjSpVO();
+				jlHjSp.setHjid(addJlHjDj.getHjid());
+				jlHjSp.setSetNo(jlHjSpSet.getSpNo());
+				jlHjSp.setSetName(jlHjSpSet.getSpName());
+				jlHjSp.setExplain(explain);
+				jlHjSp.setMaxNum(jlHjSpSet.getMaxNum());
+				jlHjSp.setSpeedProgress(1);
+				jlHjSp.setState(0);
+				jlHjSpSQL.add(jlHjSp);
+			}
 		} catch (Exception e) {
 			result.error(Result.error_103, "添加会见登记失败");
 			return result.toResult();
 		}
-		System.out.println(addJlHjDj.getHjid());
 		result.msg("提交登记成功");
 		return result.toResult();
 	}
@@ -304,11 +481,30 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			jlHjDj.setCancelInfo(cancelInfo);
 			this.edit(jlHjDj);
 			
+			// 查看当前会见登记是否有审批，有的话就删除
+			JlHjSpVO jlHjSpQuery = new JlHjSpVO();
+			jlHjSpQuery.setHjid(jlHjDj.getHjid());
+			List<JlHjSpVO> jlHjSpList = jlHjSpSQL.findList(jlHjSpQuery);
+			for(JlHjSpVO t : jlHjSpList){
+				t.setState(3);
+				t.setRemark("会见登记被人工取消");
+				jlHjSpSQL.edit(t);
+			}
 			result.putJson(0);
 			return result.toResult();
 		}else if(jlHjDj.getFpFlag()==1){
 			String sql="update SYS_HJ_LINE set hjid=null where hjid="+jlHjDj.getHjid();
 			this.jdbcTemplate.update(sql);
+			
+			// 查看当前会见登记是否有审批，有的话就删除
+			JlHjSpVO jlHjSpQuery = new JlHjSpVO();
+			jlHjSpQuery.setHjid(jlHjDj.getHjid());
+			List<JlHjSpVO> jlHjSpList = jlHjSpSQL.findList(jlHjSpQuery);
+			for(JlHjSpVO t : jlHjSpList){
+				t.setState(3);
+				t.setRemark("会见登记被人工取消");
+				jlHjSpSQL.edit(t);
+			}
 			
 			jlHjDj.setState(2);
 			jlHjDj.setCancelInfo(cancelInfo);

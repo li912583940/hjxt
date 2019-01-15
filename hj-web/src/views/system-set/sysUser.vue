@@ -3,8 +3,8 @@
     <div class="filter-container">
     	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入姓名" v-model="listQuery.userName" clearable>
       </el-input>
-      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.userDepart" placeholder="选择部门">
-        <el-option v-for="item in userDeparts" :key="item.id" :label="item.name" :value="item.id">
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.deptId" placeholder="选择部门">
+        <el-option v-for="item in depts" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
@@ -30,7 +30,7 @@
       </el-table-column>
       <el-table-column width="200" align="center" label="部门">
         <template slot-scope="scope">
-          <span>{{scope.row.userDepart}}</span>
+          <span>{{scope.row.deptName}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" :label="$t('criminal.actions')" width="300">
@@ -59,8 +59,8 @@
           <el-input v-model="dataForm.userName"></el-input>
         </el-form-item>
         <el-form-item label="部门" >
-          <el-select class="filter-item" v-model="dataForm.userDepart" placeholder="请选择部门">
-            <el-option v-for="item in userDeparts" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          <el-select class="filter-item" v-model="dataForm.deptId" placeholder="请选择部门">
+            <el-option v-for="item in depts" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -115,16 +115,16 @@ export default {
         pageNum: 1,
         pageSize: 20,
         userName: undefined,
-        userDepart: undefined
+        deptId: undefined
       },
-   		userDeparts: [], // 部门下拉选框
+   		depts: [], // 部门下拉选框
       
       // 新增或编辑弹窗
       dataForm: { 
         webId: undefined,
         userNo: undefined,
         userName: undefined,
-        userDepart: undefined
+        deptId: undefined
       },
      
       dialogFormVisible: false,
@@ -156,7 +156,7 @@ export default {
   },
   created() {
     this.getList()
-    this.getUserDepartList()
+    this.getDeptList()
   },
   methods: {
   	/**------------用户增删改查开始-1-----------*/
@@ -165,8 +165,8 @@ export default {
       if(!this.listQuery.userName){
       	this.listQuery.userName = undefined
       }
-      if(!this.listQuery.userDepart){
-      	this.listQuery.userDepart = undefined
+      if(!this.listQuery.deptId){
+      	this.listQuery.deptId = undefined
       }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
@@ -188,15 +188,15 @@ export default {
       this.listQuery.pageNum = val
       this.getList()
     },
-    getUserDepartList() { //部门下拉框
-    	if(this.userDeparts.length === 0) {
-    		FindUserDepartList({}).then((res) => {
+    getDeptList() { //部门下拉框
+    	if(this.depts.length === 0) {
+    		GetDeptList({}).then((res) => {
 	    		let list = res.list
 	    		for(let x of list){
 					  let value = {}
-					  value.id = x.deptName
+					  value.id = x.id
 					  value.name = x.deptName
-					  this.userDeparts.push(value)
+					  this.depts.push(value)
 					}
 	    	})
     	}
@@ -236,7 +236,7 @@ export default {
     		this.dataForm.webId = res.data.webId,
         this.dataForm.userNo =  res.data.userNo,
         this.dataForm.userName = res.data.userName,
-        this.dataForm.userDepart = res.data.userDepart
+        this.dataForm.deptId = res.data.deptId
        
     	})
       this.dialogStatus = 'update'
@@ -331,14 +331,6 @@ export default {
 	  
 	  /**------------添加角色结束-2-----------*/
 	 
-    dateFormat(row, column) {
-			//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-		},
 		dateFormats: function (val) {
 			if(!val){
 				return undefined

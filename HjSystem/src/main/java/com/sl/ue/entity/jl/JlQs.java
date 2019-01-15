@@ -2,6 +2,8 @@ package com.sl.ue.entity.jl;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
 import com.sl.ue.util.anno.Table;
@@ -43,12 +45,14 @@ public class JlQs implements java.io.Serializable {
 	private Integer spState;
 	@DbField("SP_UserNo")
 	private String spUserNo;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@DbField("SP_Time")
 	private Date spTime;
 	@DbField("SP_Info")
 	private String spInfo;
 	@DbField("SP_Mon")
 	private String spMon;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@DbField("CreateTime")
 	private Date createTime;
 	@DbField("Face_ZP")
@@ -61,6 +65,7 @@ public class JlQs implements java.io.Serializable {
 	private String qsSfzWlh;
 	@DbField("BZ")
 	private String bz;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@DbField("HJ_STOP_TIME")
 	private Date hjStopTime;
 	@DbField("ZP_URL")

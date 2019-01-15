@@ -3,10 +3,11 @@ import request from '@/utils/request'
 
 export const findPojo = params => { return request.get('/jlHjSpSet/findPojo', { params: params } ).then(res => res) }
 
-export const findOne = params => { return request.get('/jlHjSpSet/findOne', { params: params } ).then(res => res) }
+export const findDetails = params => { return request.get('/jlHjSpSet/findDetails', { params: params } ).then(res => res) }
 
-export const RequestAdd = params => { return request.post('/jlHjSpSet/add', params ).then(res => res) }
+export const RequestSpConf = params => { return request.post('/jlHjSpSet/spConf', params ).then(res => res) }
 
-export const RequestEdit = params => { return request.post('/jlHjSpSet/edit', params ).then(res => res) }
+export const GetDeptList = params => { return request.get('/dept/findList', { params: params } ).then(res => res) }
 
-export const RequestDelete = params => { return request.post('/jlHjSpSet/delete', params ).then(res => res) }
+export const GetUserList = params => { return request.get('/sysUser/findList', { params: params } ).then(res => res) }
+

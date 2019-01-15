@@ -688,6 +688,9 @@ export default {
         	if(this.dataForm.outTime){
         		this.dataForm.outTime = this.dateFormats(this.dataForm.outTime);
         	}
+        	if(this.dataForm.hjStopTime){
+        		this.dataForm.hjStopTime = this.dateFormats(this.dataForm.hjStopTime);
+        	}
           RequestAdd(this.dataForm).then(() => {
             this.dialogFormVisible = false
             this.getList()
@@ -706,7 +709,6 @@ export default {
         this.dataForm.frName =  res.data.frName
         this.dataForm.frNo = res.data.frNo
         this.dataForm.frCard = res.data.frCard
-        this.dataForm.jy = res.data.jy
         this.dataForm.jq = res.data.jq
         this.dataForm.jbNo = res.data.jbNo
         this.dataForm.hjJb = res.data.hjJb
@@ -739,6 +741,9 @@ export default {
         	}
         	if(this.dataForm.outTime){
         		this.dataForm.outTime = this.dateFormats(this.dataForm.outTime);
+        	}
+        	if(this.dataForm.hjStopTime){
+        		this.dataForm.hjStopTime = this.dateFormats(this.dataForm.hjStopTime);
         	}
           RequestEdit(this.dataForm).then(() => {
             this.dialogFormVisible = false
@@ -945,14 +950,6 @@ export default {
         }
       }))
     },
-    dateFormat(row, column) {
-			//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-		},
 		dateFormats: function (val) {
 			if(!val){
 				return undefined

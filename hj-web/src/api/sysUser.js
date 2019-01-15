@@ -14,7 +14,7 @@ export const RequestEdit = params => { return request.post('/sysUser/edit', para
 
 export const RequestDelete = params => { return request.post('/sysUser/delete', params ).then(res => res) }
 
-export const FindUserDepartList = params => { return request.get('/dept/findList', { params: params } ).then(res => res) }
+export const GetDeptList = params => { return request.get('/dept/findList', { params: params } ).then(res => res) }
 
 // 获取系统角色列表
 export const FindRoleList = params => { return request.get('/sysRole/findList', { params: params } ).then(res => res) }

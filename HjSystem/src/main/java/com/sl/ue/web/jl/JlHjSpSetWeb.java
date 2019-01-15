@@ -64,4 +64,33 @@ public class JlHjSpSetWeb extends Result{
         return this.toResult();
     }
 
+    
+    /**
+     * 说明 [查看审批详情]
+     * @param id
+     * @return
+     * L_晓天  @2019年1月13日
+     */
+    @RequestMapping("/findDetails")
+    public String findDetails(Integer id){
+        return jlHjSpSetSQL.findDetails(id);
+    }
+
+    
+    /**
+     * 说明 [审批设置配置]
+     * @return
+     * L_晓天  @2019年1月13日
+     */
+    @RequestMapping("/spConf")
+    public String spConf(Integer id, String spExplain, Integer usable,
+    		String deptValue1, String userValue1,
+    		String deptValue2, String userValue2,
+    		String deptValue3, String userValue3){
+        jlHjSpSetSQL.spConf(id, spExplain, usable, 
+        		deptValue1, userValue1,
+        		deptValue2, userValue2,
+        		deptValue3, userValue3);
+        return this.toResult();
+    }
 }

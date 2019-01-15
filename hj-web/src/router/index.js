@@ -315,6 +315,7 @@ export const asyncRouterMap = [
     children: [
       { path: 'operationLog', component: () => import('@/views/log-record/operationLog'), name: 'operationLog', meta: { title: 'operationLog', icon: 'form', roles:'operationLog' }}, //操作日志
       { path: 'registerLog', component: () => import('@/views/log-record/registerLog'), name: 'registerLog', meta: { title: 'registerLog' , icon: 'form', roles:'registerLog'}}, //登记记录
+      { path: 'spLog', component: () => import('@/views/log-record/spLog'), name: 'spLog', meta: { title: 'spLog' , icon: 'form', roles:'spLog'}}, //审批记录
 //    { path: 'entranceGuard', component: () => import('@/views/log-record/entranceGuard'), name: 'entranceGuard', meta: { title: 'entranceGuard', icon: 'form', roles:'entranceGuard' }} // 门禁记录
       
     ]

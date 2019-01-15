@@ -2,6 +2,8 @@ package com.sl.ue.entity.jl;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
 import com.sl.ue.util.anno.Table;
@@ -48,18 +50,21 @@ public class JlFr implements java.io.Serializable {
 	private Integer hjUse;
 	@DbField("HJ_Left")
 	private Integer hjLeft;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@DbField("HJ_Last_Time")
 	private Date hjLastTime;
 	@DbField("Monitor_Flag")
 	private String monitorFlag;
 	@DbField("State")
 	private Integer state;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@DbField("OutTime")
 	private Date outTime;
 	@DbField("SP_State")
 	private Integer spState;
 	@DbField("SP_UserNo")
 	private String spUserNo;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@DbField("SP_Time")
 	private Date spTime;
 	@DbField("SP_Info")
@@ -94,8 +99,9 @@ public class JlFr implements java.io.Serializable {
 	private String zdzfType;
 	@DbField("FR_GJ")
 	private String frGj;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@DbField("HJ_STOP_TIME")
-	private Date hjStopTime;
+	private Date hjStopTime; //会见禁止时间
 	@DbField("HJ_STOP_SM")
 	private String hjStopSm;
 

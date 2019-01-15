@@ -15,9 +15,9 @@ public class JlHjSp implements java.io.Serializable{
     @DbField("id")
     private Integer id;
 
-    /** 审批设置的id */
-    @DbField("set_id")
-    private Integer setId;
+    /** 审批设置的编号 */
+    @DbField("set_no")
+    private String setNo;
 
     /** 审批设置的名称 */
     @DbField("set_name")
@@ -31,14 +31,22 @@ public class JlHjSp implements java.io.Serializable{
     @DbField("hjid")
     private Long hjid;
 
-    /** 审批进行状态。0：进行中，1：审批通过，2：审批失败，默认 0 */
+    /** 审批进行状态。0：进行中，1：审批通过，2：审批失败， 3：取消审批；  默认 0 */
     @DbField("state")
     private Integer state;
 
     /** 进度。对应级别 */
     @DbField("speed_progress")
     private Integer speedProgress;
-
+    
+    /** 说明 添加审批记录时，对当前审批的补充说明 */
+    @DbField("explain")
+    private String explain;
+    
+    /** 评论 备注 */
+    @DbField("remark")
+    private String remark;
+    
     public Integer getId() {
         return this.id;
     }
@@ -46,12 +54,12 @@ public class JlHjSp implements java.io.Serializable{
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getSetId() {
-        return this.setId;
+    public String getSetNo() {
+        return this.setNo;
     }
 
-    public void setSetId(Integer setId) {
-        this.setId = setId;
+    public void setSetNo(String setNo) {
+        this.setNo = setNo;
     }
     public String getSetName() {
         return this.setName;
@@ -88,4 +96,21 @@ public class JlHjSp implements java.io.Serializable{
     public void setSpeedProgress(Integer speedProgress) {
         this.speedProgress = speedProgress;
     }
+
+	public String getExplain() {
+		return explain;
+	}
+
+	public void setExplain(String explain) {
+		this.explain = explain;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+    
 }
