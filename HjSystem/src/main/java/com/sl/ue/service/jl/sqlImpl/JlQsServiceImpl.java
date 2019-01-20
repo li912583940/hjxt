@@ -282,8 +282,22 @@ public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
 			}
 		}
 		
-		System.out.println("成功 ");
 		return "";
 	
+	}
+	
+	public boolean qsExist(String frNo, String qsSfz){
+		if(StringUtils.isNotBlank(qsSfz)){
+			String sql = "SELECT ISNULL(count(*),0) as count FROM JL_QS WHERE FR_No='"+frNo+"' AND QS_SFZ='"+qsSfz+"'";
+			Integer count = this.jdbcTemplate.queryForObject(sql, Integer.class);
+			if(count>0){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+		
 	}
 }

@@ -32,6 +32,12 @@ public class JlHjSpWeb extends Result{
         return this.toResult();
     }
 
+    @RequestMapping("/findPojoLog")
+    public String findPojoLog(JlHjSpVO model, Integer pageSize, Integer pageNum){
+        Map<String, Object> map = jlHjSpSQL.findPojoLog(model, pageSize, pageNum);
+        this.putPojo(map);
+        return this.toResult();
+    }
     @RequestMapping("/findCount")
     public String findCount(JlHjSpVO model){
         Integer count = jlHjSpSQL.count(model);
@@ -64,4 +70,8 @@ public class JlHjSpWeb extends Result{
         return this.toResult();
     }
 
+    @RequestMapping("/saveSpResult")
+    public String saveSpResult(Integer spId, Integer speedProgress, String explain, Integer state){
+    	return jlHjSpSQL.saveSpResult(spId, speedProgress, explain, state);
+    }
 }

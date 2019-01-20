@@ -265,7 +265,8 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        qsName: [{ required: true, message: '亲属姓名不能为空', trigger: 'blur' }]
+        qsName: [{ required: true, message: '亲属姓名不能为空', trigger: 'blur' }],
+        gx: [{ required: true, message: '亲属关系必选', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -288,19 +289,20 @@ export default {
   },
   methods: {
   	noSearch() {
+  		this.total=0
   		this.listLoading = false
   	},
     getList() {
       this.listLoading = true
-      if(!this.listQuery.frName){
-      	this.listQuery.frName = undefined
-      }
-      if(!this.listQuery.frNo){
-      	this.listQuery.frNo = undefined
-      }
-      if(!this.listQuery.qsName){
-      	this.listQuery.qsName = undefined
-      }
+//    if(!this.listQuery.frName){
+//    	this.listQuery.frName = undefined
+//    }
+//    if(!this.listQuery.frNo){
+//    	this.listQuery.frNo = undefined
+//    }
+//    if(!this.listQuery.qsName){
+//    	this.listQuery.qsName = undefined
+//    }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count
@@ -528,15 +530,15 @@ export default {
 			})
 		},
     handleDownload() {
-			if(this.listQuery.frName==undefined || this.listQuery.frName==''){
-      	this.listQuery.frName = undefined
-      }
-      if(this.listQuery.frNo==undefined || this.listQuery.frNo==''){
-      	this.listQuery.frNo = undefined
-      }
-      if(this.listQuery.qsName==undefined || this.listQuery.qsName==''){
-      	this.listQuery.qsName = undefined
-      }
+//			if(this.listQuery.frName==undefined || this.listQuery.frName==''){
+//    	this.listQuery.frName = undefined
+//    }
+//    if(this.listQuery.frNo==undefined || this.listQuery.frNo==''){
+//    	this.listQuery.frNo = undefined
+//    }
+//    if(this.listQuery.qsName==undefined || this.listQuery.qsName==''){
+//    	this.listQuery.qsName = undefined
+//    }
 
 			exportExcel(this.listQuery).then(res => {
 	      var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })

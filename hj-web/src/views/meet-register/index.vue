@@ -6,7 +6,7 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入服刑人员姓名" v-model="listQuery.frName">
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary">添加会见登记</el-button>
+      <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">添加会见登记</el-button>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
@@ -88,11 +88,11 @@
           <span>{{scope.row.hjInfo}}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.printXpPermission==1 || buttonRole.editDjPermission==1 || buttonRole.cancelDjPermission==1 " align="center" :label="$t('criminal.actions')" width="340" fixed="right">
+      <el-table-column v-if="buttonRole.printXpPermission==1 || buttonRole.editDjPermission==1 || buttonRole.cancelDjPermission==1 " align="center" :label="$t('criminal.actions')" width="220" fixed="right">
         <template slot-scope="scope">
-          <el-button v-if="buttonRole.printXpPermission==1" type="primary" size="mini" icon="el-icon-download" @click="printXp(scope.row)">打印小票</el-button>
-          <el-button v-if="buttonRole.editDjPermission==1" type="primary"  size="mini" icon="el-icon-edit" @click="handleOpenEditDj(scope.row)">修改登记</el-button>
-          <el-button v-if="buttonRole.cancelDjPermission==1" type="danger"  size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)">取消登记</el-button>
+          <el-button v-if="buttonRole.printXpPermission==1" type="primary" size="mini"  @click="printXp(scope.row)">打印</el-button>
+          <el-button v-if="buttonRole.editDjPermission==1" type="primary"  size="mini"  @click="handleOpenEditDj(scope.row)">修改</el-button>
+          <el-button v-if="buttonRole.cancelDjPermission==1" type="danger"  size="mini" @click="handleDelete(scope.row)">取消</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -472,6 +472,7 @@ export default {
           title: '错误',
           message: '提交登记时，至少选择一位家属'
         })
+    		return false
     	}
     	let qsid = ''
     	for(let x of this.qsSelections) {

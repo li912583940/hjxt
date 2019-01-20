@@ -26,4 +26,6 @@ public interface JlQsService extends BaseService<JlQsVO>{
 	 * L_晓天  @2018年12月19日
 	 */
 	public String importExcel(HttpServletRequest request, HttpServletResponse response);
+	
+	public boolean qsExist(String frNo, String qsSfz);
 }

@@ -162,7 +162,14 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 				cell7.setCellValue(jlFr.getInfoZdzf()!=null?jlFr.getInfoZdzf():"");
 				
 				HSSFCell cell8 = row2.createCell(8);
-				cell8.setCellValue(jlFr.getHjJb()!=null?jlFr.getHjJb():0);
+				if(jlFr.getHjJb()!=null && jlFr.getHjJb()==1){
+					cell8.setCellValue("正常");
+				}else if(jlFr.getHjJb()!=null && jlFr.getHjJb()==-1){
+					cell8.setCellValue("禁止");
+				}else{
+					cell8.setCellValue("未定义");
+				}
+				
 			}
 			
 			// 处理不同浏览器中文名称编码
@@ -275,8 +282,18 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 			}
 		}
 		
-		System.out.println("成功 ");
 		return "";
 	
+	}
+	
+	
+	public boolean frExist(String frNo){
+		String sql = "SELECT ISNULL(count(*),0) as count FROM JL_FR where FR_No='"+frNo+"'";
+		Integer count = this.jdbcTemplate.queryForObject(sql, Integer.class);
+		if(count>0){
+			return true;
+		}else{
+			return false;
+		}
 	}
 }

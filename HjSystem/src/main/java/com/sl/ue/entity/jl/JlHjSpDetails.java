@@ -29,8 +29,8 @@ public class JlHjSpDetails implements java.io.Serializable{
     private String userName;
 
     /** 审批人所在部门编号 */
-    @DbField("dept_no")
-    private String deptNo;
+    @DbField("dept_id")
+    private String deptId;
 
     /** 审批人所在部门名称 */
     @DbField("dept_name")
@@ -47,7 +47,11 @@ public class JlHjSpDetails implements java.io.Serializable{
     /** 审批时间 */
     @DbField("sp_time")
     private Date spTime;
-
+    
+    /** 进度，阶段，指在哪个阶段的审批 */
+    @DbField("speed_progress")
+    private Integer speedProgress;
+    
     public Integer getId() {
         return this.id;
     }
@@ -76,14 +80,16 @@ public class JlHjSpDetails implements java.io.Serializable{
     public void setUserName(String userName) {
         this.userName = userName;
     }
-    public String getDeptNo() {
-        return this.deptNo;
-    }
 
-    public void setDeptNo(String deptNo) {
-        this.deptNo = deptNo;
-    }
-    public String getDeptName() {
+    public String getDeptId() {
+		return deptId;
+	}
+
+	public void setDeptId(String deptId) {
+		this.deptId = deptId;
+	}
+
+	public String getDeptName() {
         return this.deptName;
     }
 
@@ -111,4 +117,13 @@ public class JlHjSpDetails implements java.io.Serializable{
     public void setSpTime(Date spTime) {
         this.spTime = spTime;
     }
+
+	public Integer getSpeedProgress() {
+		return speedProgress;
+	}
+
+	public void setSpeedProgress(Integer speedProgress) {
+		this.speedProgress = speedProgress;
+	}
+    
 }

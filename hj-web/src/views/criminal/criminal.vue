@@ -215,6 +215,19 @@
 	          <span>{{scope.row.qsName}}</span>
 	        </template>
 	      </el-table-column>
+	      <el-table-column width="100" align="center" label="证件类别">
+	        <template slot-scope="scope">
+	          <span v-if="scope.row.qsZjlb==1">身份证</span>
+	          <span v-if="scope.row.qsZjlb==2">警官证</span>
+	          <span v-if="scope.row.qsZjlb==3">工作证</span>
+	          <span v-if="scope.row.qsZjlb==4">其他</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="180" align="center" label="证件号码">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.qsSfz}}</span>
+	        </template>
+	      </el-table-column>
 	      <el-table-column width="140" align="center" label="关系">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.gx}}</span>
@@ -267,7 +280,7 @@
         </el-form-item>
         <el-form-item label="证件号码" prop="qsSfz">
           <el-input v-model="dataQsForm.qsSfz"></el-input>
-          <el-button  size="mini" type="primary" @click="handleDistinguish()">识别</el-button>
+          <!--<el-button  size="mini" type="primary" @click="handleDistinguish()">识别</el-button>-->
         </el-form-item>
         <el-form-item label="亲属姓名" prop="qsName">
           <el-input v-model="dataQsForm.qsName"></el-input>
@@ -411,8 +424,8 @@ export default {
       rules: {
       	frNo: [{ required: true, message: '编号不能为空', trigger: 'blur'}],
         frName: [{ required: true, message: this.$t('criminal.name'), trigger: 'blur' }],
-        jbNo: [{ required: true, message: '级别不能为空', trigger: 'change' }],
-        infoRjsj: [{  required: true, message: '请选择入监时间', trigger: 'change' }]
+        jbNo: [{ required: true, message: '级别不能为空', trigger: 'change' }]
+        
       },
       downloadLoading: false,
       
@@ -467,6 +480,7 @@ export default {
       ],
       rulesQs:{
         qsName: [{ required: true, message: '亲属姓名不能为空', trigger: 'blur' }],
+        gx: [{ required: true, message: '亲属关系必选', trigger: 'blur' }]
       },
       
       //按钮权限   1：有权限， 0：无权限
@@ -502,33 +516,34 @@ export default {
   methods: {
   	noSearch() {
   		this.listLoading = false
+  		this.total=0
   	},
     getList() { // 犯人列表
       this.listLoading = true
-      if(!this.listQuery.frName){
-      	this.listQuery.frName = undefined
-      }
-      if(!this.listQuery.frNo){
-      	this.listQuery.frNo = undefined
-      }
-      if(!this.listQuery.jq){
-      	this.listQuery.jq = undefined
-      }
-   		if(!this.listQuery.jbNo){
-   			this.listQuery.jbNo = undefined
-   		}
-   		if(!this.listQuery.frCard){
-   			this.listQuery.frCard = undefined
-   		}
-   		if(!this.listQuery.state){
-   			this.listQuery.state = undefined
-   		}
-   		if(!this.listQuery.isHjStop){
-   			this.listQuery.isHjStop = undefined
-   		}
-   		if(!this.listQuery.stateZdzf){
-   			this.listQuery.stateZdzf = undefined
-   		}
+//    if(this.listQuery.frName==undefined || this.listQuery.frName==''){
+//    	this.listQuery.frName = undefined
+//    }
+//    if(this.listQuery.frNo==undefined || this.listQuery.frNo==''){
+//    	this.listQuery.frNo = undefined
+//    }
+//    if(this.listQuery.jq==undefined || this.listQuery.jq=='' ){
+//    	this.listQuery.jq = undefined
+//    }
+// 		if(this.listQuery.jbNo==undefined || this.listQuery.jbNo==''){
+// 			this.listQuery.jbNo = undefined
+// 		}
+// 		if(this.listQuery.frCard==undefined || this.listQuery.frCard==''){
+// 			this.listQuery.frCard = undefined
+// 		}
+// 		if(this.listQuery.state==undefined || this.listQuery.state==''){
+// 			this.listQuery.state = undefined
+// 		}
+// 		if(this.listQuery.isHjStop==undefined || this.listQuery.isHjStop=='' ){
+// 			this.listQuery.isHjStop = undefined
+// 		}
+// 		if(this.listQuery.stateZdzf==undefined || this.listQuery.stateZdzf=='' ){
+// 			this.listQuery.stateZdzf = undefined
+// 		}
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count
@@ -691,11 +706,11 @@ export default {
         	if(this.dataForm.hjStopTime){
         		this.dataForm.hjStopTime = this.dateFormats(this.dataForm.hjStopTime);
         	}
-          RequestAdd(this.dataForm).then(() => {
+          RequestAdd(this.dataForm).then((res) => {
             this.dialogFormVisible = false
             this.getList()
           }).catch(error => {
-		        this.dialogFormVisible = false
+		        //this.dialogFormVisible = false
 		      })
         }
       })
@@ -771,30 +786,30 @@ export default {
 			})
 		},
     handleDownload() {
-			if(!this.listQuery.frName){
-      	this.listQuery.frName = undefined
-      }
-      if(!this.listQuery.frNo){
-      	this.listQuery.frNo = undefined
-      }
-      if(!this.listQuery.jq){
-      	this.listQuery.jq = undefined
-      }
-      if(!this.listQuery.jbNo){
-   			this.listQuery.jbNo = undefined
-   		}
-   		if(!this.listQuery.frCard){
-   			this.listQuery.frCard = undefined
-   		}
-   		if(!this.listQuery.state){
-   			this.listQuery.state = undefined
-   		}
-   		if(!this.listQuery.isHjStop){
-   			this.listQuery.isHjStop = undefined
-   		}
-   		if(!this.listQuery.stateZdzf){
-   			this.listQuery.stateZdzf = undefined
-   		}
+//			if(!this.listQuery.frName){
+//    	this.listQuery.frName = undefined
+//    }
+//    if(!this.listQuery.frNo){
+//    	this.listQuery.frNo = undefined
+//    }
+//    if(!this.listQuery.jq){
+//    	this.listQuery.jq = undefined
+//    }
+//    if(!this.listQuery.jbNo){
+// 			this.listQuery.jbNo = undefined
+// 		}
+// 		if(!this.listQuery.frCard){
+// 			this.listQuery.frCard = undefined
+// 		}
+// 		if(!this.listQuery.state){
+// 			this.listQuery.state = undefined
+// 		}
+// 		if(!this.listQuery.isHjStop){
+// 			this.listQuery.isHjStop = undefined
+// 		}
+// 		if(!this.listQuery.stateZdzf){
+// 			this.listQuery.stateZdzf = undefined
+// 		}
    		
    		Message({
         message: '已准备导出罪犯信息文件，请稍等几秒。',

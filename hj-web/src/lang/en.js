@@ -22,6 +22,7 @@ export default {
     meetReport: 'Meet Report', // 会见报表
     operationLog: 'Operation Log', // 操作日志
     registerLog: 'Register Log', // 登记记录
+    spLog: 'Sp Log', // 审批记录
     entranceGuard: 'Entrance Guard', // 门禁记录
     systemSet: 'System Set', // 系统设置
     sysUser: 'Sys User', // 系统用户

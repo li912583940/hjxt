@@ -26,7 +26,7 @@
       </el-table-column>
       <el-table-column align="center" :label="$t('criminal.actions')" width="200">
         <template slot-scope="scope">
-        	<!--<el-button type="primary" size="mini" icon="el-icon-edit" @click="search(scope.row)">查看</el-button>-->
+        <!--	<el-button type="primary" size="mini" icon="el-icon-edit" @click="search(scope.row)">查看</el-button>-->
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleConf(scope.row)">配置</el-button>
         </template>
       </el-table-column>
@@ -40,39 +40,31 @@
 
   <!--描述：查看流程 -->
   <el-dialog title="查看流程" :visible.sync="dialogSearchVisible">
-  	<el-button style="margin-bottom: 12px;" @click="next">下一步</el-button>
-  	<el-steps :active="searchActive" >
-  			<el-step :title="add"></el-step>
-  			<el-step title="步骤 2"></el-step>
-  			<el-step title="步骤 3"></el-step>
-		</el-steps>
-		<div v-if="searchActive==0">
-			<el-card shadow="always" style="width: 40%; margin-top: 12px;">
-				<el-table :key='tableKey' :data="list"   border fit highlight-current-row style="width: 1081px">
-		      <el-table-column width="280" align="center" label="审批流程名称">
-		        <template slot-scope="scope">
-		          <span>{{scope.row.spName}}</span>
-		        </template>
-		      </el-table-column>
-		      <el-table-column width="200" align="center" label="审批流程说明">
-		        <template slot-scope="scope">
-		          <span>{{scope.row.spExplain}}</span>
-		        </template>
-		      </el-table-column>
-		      <el-table-column width="200" align="center" label="启用状态">
-		        <template slot-scope="scope">
-		          <span v-if="scope.row.usable==1">启用</span>
-		          <span v-if="scope.row.usable==0" style="color: red;">禁用</span>
-		        </template>
-		      </el-table-column>
-		      <el-table-column width="200" align="center" label="审批次数">
-		        <template slot-scope="scope">
-		          <span>{{scope.row.maxNum}}</span>
-		        </template>
-		      </el-table-column>
-		    </el-table>
-	    </el-card>
-		</div>
+  	<el-tabs type="border-card" style="margin-left: 14px;">
+			  <el-tab-pane label="审批部门" v-if="is_seeDept==1">
+			    <el-table :key='tableKey' :data="seeDeptlist"   border fit highlight-current-row style="width: 281px">
+			      <el-table-column width="280" align="center" label="部门名称">
+			        <template slot-scope="scope">
+			          <span>{{scope.row.spDeptName}}</span>
+			        </template>
+			      </el-table-column>
+			    </el-table>
+			  </el-tab-pane>
+			  <el-tab-pane label="审批用户" v-if="is_seeUser==1">
+			  	<el-table :key='tableKey' :data="seeUserslist"   border fit highlight-current-row style="width: 401px">
+			      <el-table-column width="200" align="center" label="用户编号">
+			        <template slot-scope="scope">
+			          <span>{{scope.row.spUserNo}}</span>
+			        </template>
+			      </el-table-column>
+			      <el-table-column width="200" align="center" label="用户姓名">
+			        <template slot-scope="scope">
+			          <span>{{scope.row.spUserName}}</span>
+			        </template>
+			      </el-table-column>
+			    </el-table>
+			  </el-tab-pane>
+			</el-tabs>
   </el-dialog>
   
 	<!-- 新增或编辑 -->

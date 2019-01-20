@@ -26,4 +26,12 @@ public interface JlFrService extends BaseService<JlFrVO>{
 	 * L_晓天  @2018年12月19日
 	 */
 	public String importExcel(HttpServletRequest request, HttpServletResponse response);
+	
+	/**
+	 * 说明 [根据犯人编号查看当前罪犯是否存在]
+	 * @param frNo
+	 * @return
+	 * L_晓天  @2019年1月20日
+	 */
+	public boolean frExist(String frNo);
 }

@@ -64,9 +64,9 @@
 	        </el-form>
 	        
         </el-card>
-        
+        <button hidden="hidden" id="shibie1" @click="shibie()"></button>
         <object width="0px" height="0px" id="IDCard2" name="IDCard2"  codebase="../../ocx/SynCardOcx.CAB#version=1,0,0,1" classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039">
-		</object>
+					</object>
     </div>
 </template>
 
@@ -119,6 +119,7 @@ export default {
       ],
       rulesQs:{
         qsName: [{ required: true, message: '亲属姓名不能为空', trigger: 'blur' }],
+        gx: [{ required: true, message: '亲属关系必选', trigger: 'blur' }]
       },
       scriptAddHjDj : undefined, //身份证读卡器时间节点
       
@@ -129,16 +130,28 @@ export default {
     
   },
   created() {
-  	this.getGxList()
+  	
   },
   mounted() {
-    //this.openPort()
-    this.openVideo()
+  	this.swit()
+  	this.getGxList()
+    this.openPort()
+    //this.openVideo()
   },
   destroyed(){
-  	//this.colsePort()
+  	this.colsePort()
   },
   methods: {
+  	swit() {
+  		let i=0
+  		while(true){
+  			i++
+  			console.log(i)
+  			if(i>100){
+  				break;
+  			}
+  		}
+  	},
 	getGxList() { // 获取关系
     	if(this.gxs.length === 0) {
     		findGxList({}).then((res) => {
@@ -314,7 +327,8 @@ export default {
 	//	document.getElementById("WM1711").FunCloseCard();
 	},
   	cardEvent() {// 设置读卡器监听事件  并根据亲属身份证信息查询犯人
-  		console.log('cardEvent start')
+		
+		console.log('cardEvent start')
 		let handler =	document.createElement("script")
 		handler.setAttribute("for", "IDCard2");
 		handler.setAttribute("event","CardIn(State);")
@@ -324,13 +338,13 @@ export default {
 		handler.appendChild(document.createTextNode("}"))
 		handler.appendChild(document.createTextNode("}"))
 		document.body.appendChild(handler)
-		
+			
+		console.log(document.getElementById("IDCard2"))
+		console.log(handler)
 		this.scriptAddHjDj = handler
   	},
   	shibie(){ // 识别身份证信息并查询
   		console.log('shibieQs start')
-  		this.dataQsForm.qsSfz = 'sadadadaff'
-  		console.log(this.dataQsForm.qsSfz)
     	var IDCard2=document.getElementById("IDCard2");
     	
 		IDCard2.SetPhotoName(2);

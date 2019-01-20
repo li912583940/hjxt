@@ -762,6 +762,7 @@ export default {
   },
   methods: {
   	noSearch() {
+  		this.total=0
   		this.listLoading = false
   	},
     getList() {
@@ -776,20 +777,20 @@ export default {
       }else{
       	this.listQuery.callTimeEnd = this.dateFormatYMD(this.listQuery.callTimeEnd)+" 23:59:59";
       }
-      if(!this.listQuery.jq){
-      	this.listQuery.jq = undefined
-      }else{
-      	this.listQuery.jqNo = this.listQuery.jq
-      }
-      if(!this.listQuery.frName){
-      	this.listQuery.frName = undefined
-      }
-      if(!this.listQuery.frNo){
-      	this.listQuery.frNo = undefined
-      }
-      if(!this.listQuery.qsName){
-      	this.listQuery.qsName = undefined
-      }
+//    if(!this.listQuery.jq){
+//    	this.listQuery.jq = undefined
+//    }else{
+//    	this.listQuery.jqNo = this.listQuery.jq
+//    }
+//    if(!this.listQuery.frName){
+//    	this.listQuery.frName = undefined
+//    }
+//    if(!this.listQuery.frNo){
+//    	this.listQuery.frNo = undefined
+//    }
+//    if(!this.listQuery.qsName){
+//    	this.listQuery.qsName = undefined
+//    }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count
@@ -1117,15 +1118,31 @@ export default {
     
     /** 导出EXCEL 开始 */
     handleDownload() {
-			if(!this.listQuery.frName){
-      	this.listQuery.frName = undefined
+    	if(!this.listQuery.callTimeStart){
+      	this.listQuery.callTimeStart = undefined
+      }else{
+      	this.listQuery.callTimeStart = this.dateFormatYMD(this.listQuery.callTimeStart)+" 00:00:00";
       }
-      if(!this.listQuery.frNo){
-      	this.listQuery.frNo = undefined
+      if(!this.listQuery.callTimeEnd){
+      	this.listQuery.callTimeEnd = undefined
+      }else{
+      	this.listQuery.callTimeEnd = this.dateFormatYMD(this.listQuery.callTimeEnd)+" 23:59:59";
       }
-      if(!this.listQuery.jq){
-      	this.listQuery.jq = undefined
-      }
+//			if(!this.listQuery.frName){
+//    	this.listQuery.frName = undefined
+//    }
+//    if(!this.listQuery.frNo){
+//    	this.listQuery.frNo = undefined
+//    }
+//    if(!this.listQuery.jq){
+//    	this.listQuery.jq = undefined
+//    }
+
+      Message({
+        message: '已准备导出会见记录文件，请稍等几秒。',
+	      type: 'success',
+	      duration: 5 * 1000
+      });
       
 			exportExcel(this.listQuery).then(res => {
 	      var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })

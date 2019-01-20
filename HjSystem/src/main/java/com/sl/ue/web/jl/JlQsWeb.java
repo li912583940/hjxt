@@ -20,7 +20,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlQsVO;
+import com.sl.ue.entity.sys.vo.SysLogVO;
+import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.jl.JlQsService;
+import com.sl.ue.service.sys.SysLogService;
 import com.sl.ue.util.Config;
 import com.sl.ue.util.Constants;
 import com.sl.ue.util.DateUtil;
@@ -28,6 +31,7 @@ import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.WebContextUtil;
 import com.sl.ue.util.http.token.JqRoleManager;
+import com.sl.ue.util.http.token.TokenUser;
 
 @RestController
 @RequestMapping("/jlQs")
@@ -35,7 +39,9 @@ public class JlQsWeb extends Result{
 
     @Autowired
     private JlQsService jlQsSQL;
-
+    @Autowired
+	private SysLogService sysLogSQL;
+    
     @RequestMapping("/findList")
     public String findList(JlQsVO model,Integer pageSize, Integer pageNum){
         List<JlQsVO> list = jlQsSQL.findList(model, pageSize, pageNum);
@@ -80,7 +86,22 @@ public class JlQsWeb extends Result{
 
     @RequestMapping("/add")
     public String add(JlQsVO model){
-    	System.out.println(model.getJzBase64());
+    	if(jlQsSQL.qsExist(model.getFrNo(), model.getQsSfz())){
+			this.error(error_103, "当前亲属证件号码已绑定此罪犯");
+			return this.toResult();
+		}
+    	
+    	SysUserVO user = TokenUser.getUser();
+		SysLogVO sysLog = new SysLogVO();
+		sysLog.setType("正常");
+		sysLog.setOp("添加亲属信息");
+		sysLog.setInfo("为罪犯编号: "+model.getFrNo()+"添加亲属。亲属姓名: "+model.getQsName()+"。");
+		sysLog.setModel("亲属管理");
+		sysLog.setUserNo(user.getUserNo());
+		sysLog.setUserName(user.getUserName());
+		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLogSQL.add(sysLog);
+		
     	if(StringUtils.isNotBlank(model.getJzBase64())){
     		byte[] b = Base64.getDecoder().decode(model.getJzBase64());
     		ByteArrayInputStream bais = new ByteArrayInputStream(b);
@@ -109,12 +130,47 @@ public class JlQsWeb extends Result{
 
     @RequestMapping("/edit")
     public String edit(JlQsVO model){
+    	if(StringUtils.isNotBlank(model.getQsSfz())){
+    		JlQsVO oldJlQs = jlQsSQL.findOne(model.getWebId()); //之前的家属
+    		if(oldJlQs.getFrNo().equals(model.getFrNo()) && oldJlQs.getQsSfz().equals(model.getQsSfz())){
+    			
+    		}else{
+    			if(jlQsSQL.qsExist(model.getFrNo(), model.getQsSfz())){
+    				this.error(error_103, "当前亲属证件号码已绑定此罪犯");
+    				return this.toResult();
+    			}
+    		}
+    	}
+    	
+    	SysUserVO user = TokenUser.getUser();
+		SysLogVO sysLog = new SysLogVO();
+		sysLog.setType("正常");
+		sysLog.setOp("编辑亲属信息");
+		sysLog.setInfo("为罪犯编号: "+model.getFrNo()+"编辑亲属。亲属姓名: "+model.getQsName()+"。");
+		sysLog.setModel("亲属管理");
+		sysLog.setUserNo(user.getUserNo());
+		sysLog.setUserName(user.getUserName());
+		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLogSQL.add(sysLog);
+		
         jlQsSQL.edit(model);
         return this.toResult();
     }
 
     @RequestMapping("/delete")
     public String del(Integer id){
+    	JlQsVO model = jlQsSQL.findOne(id);
+    	SysUserVO user = TokenUser.getUser();
+		SysLogVO sysLog = new SysLogVO();
+		sysLog.setType("严重");
+		sysLog.setOp("删除亲属信息");
+		sysLog.setInfo("为罪犯编号: "+model.getFrNo()+"删除亲属。罪犯姓名: "+model.getQsName()+".");
+		sysLog.setModel("亲属管理");
+		sysLog.setUserNo(user.getUserNo());
+		sysLog.setUserName(user.getUserName());
+		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLogSQL.add(sysLog);
+		
         jlQsSQL.deleteKey(id);
         return this.toResult();
     }

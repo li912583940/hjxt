@@ -243,6 +243,12 @@ export default {
     	if(row.monitorState=='通话'){
     		document.getElementById(row.jy).ListenTele(row.lineNo);
     		this.jtState = 2
+    		
+    		Message({
+		        message: '当前线路不在通话状态',
+			    type: 'error',
+			    duration: 5 * 1000
+		    })
     	}
     },
     /** 监听 结束 */
@@ -251,6 +257,11 @@ export default {
     jiantingStop(row){
     	document.getElementById(row.jy).ListenStop(row.lineNo);
     	this.jtState = 1
+    	Message({
+	        message: '停止监听',
+		    type: 'success',
+		    duration: 5 * 1000
+	    })
     },
     /** 停止监听 结束 */
     
@@ -265,6 +276,18 @@ export default {
 			QieduanHj(param).then(res => {
 				this.jtState = 1
 				this.getList()
+				
+				Message({
+			        message: '已成功切断当前通话',
+				    type: 'success',
+				    duration: 5 * 1000
+			    })
+			}).catch(error =>{
+				Message({
+			        message: '系统原因，切断当前通话失败',
+				    type: 'error',
+				    duration: 5 * 1000
+			    });
 			})
 		})
     },

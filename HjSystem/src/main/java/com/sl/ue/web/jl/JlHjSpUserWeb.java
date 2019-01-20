@@ -64,4 +64,8 @@ public class JlHjSpUserWeb extends Result{
         return this.toResult();
     }
 
+    @RequestMapping("/findSpeedSpUser")
+    public String findSpeedSpUser(String spSetNo, Integer speedProgress){
+    	return jlHjSpUserSQL.findSpeedSpUser(spSetNo, speedProgress);
+    }
 }

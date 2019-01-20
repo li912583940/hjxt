@@ -132,6 +132,9 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		List<Integer> disNo = new ArrayList<Integer>();
 		
 		/** 查看当前罪犯是否符合会见登记条件 开始 */
+		boolean is_sp=false; //是否需要审批
+		JlHjSpSetVO jlHjSpSet = null;
+		String explain = "";
 		if(jlJb.getHjCount() > 0){
 			JlHjRecVO jlHjRecQuery = new JlHjRecVO();
 			jlHjRecQuery.setFrNo(frNo);
@@ -142,15 +145,59 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			jlHjRecQuery.setLeftJoinWhere(" AND a.Call_Time_Start>'"+ymd+"'");
 			int count = jlHjRecSQL.count(jlHjRecQuery); // 犯人当月会见次数
 			if(jlJb.getHjCount()<=count){
-				disNo.add(1); // 罪犯本月会见次数已用完
+				// 查看 《罪犯本月会见次数已用完》是否开始了审批，如果没有开启，直接返回提示信息
+				JlHjSpSetVO jlHjSpSetQuery = new JlHjSpSetVO();
+				jlHjSpSetQuery.setUsable(1);
+				jlHjSpSetQuery.setSpNo("1");
+				List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
+				if(jlHjSpSetList.size()>0){ // 开启了《罪犯本月会见次数已用完》的审批
+					jlHjSpSet=jlHjSpSetList.get(0);
+					explain=jlHjSpSet.getSpName();
+					is_sp=true;
+				}else{
+					result.error(Result.error_103, "罪犯本月会见次数已用完");
+					return result.toResult();
+				}
 			}
 		}else if(jlJb.getHjCount() == 0){
-			disNo.add(2); // 罪犯级别不允许会见
+			// 罪犯级别不允许会见
+			JlHjSpSetVO jlHjSpSetQuery = new JlHjSpSetVO();
+			jlHjSpSetQuery.setUsable(1);
+			jlHjSpSetQuery.setSpNo("2");
+			List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
+			if(jlHjSpSetList.size()>0){ // 开启了《罪犯本月会见次数已用完》的审批
+				jlHjSpSet=jlHjSpSetList.get(0);
+				if(StringUtils.isNotBlank(explain)){
+					explain+=";"+jlHjSpSet.getSpName();
+				}else{
+					explain=jlHjSpSet.getSpName();
+				}
+				is_sp=true;
+			}else{
+				result.error(Result.error_103, "罪犯级别不允许会见");
+				return result.toResult();
+			}
 		}
 		
 		if(jlFr.getHjStopTime()!=null){ // 当前罪犯处于会见禁止日期
 			if(new Date().before(jlFr.getHjStopTime())){  
-				disNo.add(3); // 罪犯当前被禁止会见
+				// 罪犯当前被禁止会见
+				JlHjSpSetVO jlHjSpSetQuery = new JlHjSpSetVO();
+				jlHjSpSetQuery.setUsable(1);
+				jlHjSpSetQuery.setSpNo("3");
+				List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
+				if(jlHjSpSetList.size()>0){ // 开启了《罪犯本月会见次数已用完》的审批
+					jlHjSpSet=jlHjSpSetList.get(0);
+					if(StringUtils.isNotBlank(explain)){
+						explain+=";"+jlHjSpSet.getSpName();
+					}else{
+						explain=jlHjSpSet.getSpName();
+					}
+					is_sp=true;
+				}else{
+					result.error(Result.error_103, "罪犯当前被禁止会见");
+					return result.toResult();
+				}
 			}
 		}
 		
@@ -173,10 +220,24 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			}
 		}
 		if(is_week == false){
-			disNo.add(4); // 服刑人员当前监区不是会见日
+			// 服刑人员当前监区不是会见日
+			JlHjSpSetVO jlHjSpSetQuery = new JlHjSpSetVO();
+			jlHjSpSetQuery.setUsable(1);
+			jlHjSpSetQuery.setSpNo("4");
+			List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
+			if(jlHjSpSetList.size()>0){ // 开启了《罪犯本月会见次数已用完》的审批
+				jlHjSpSet=jlHjSpSetList.get(0);
+				if(StringUtils.isNotBlank(explain)){
+					explain+=";"+jlHjSpSet.getSpName();
+				}else{
+					explain=jlHjSpSet.getSpName();
+				}
+				is_sp=true;
+			}else{
+				result.error(Result.error_103, "服刑人员当前监区不是会见日");
+				return result.toResult();
+			}
 		}
-		
-		
 		/** 查看当前罪犯是否符合会见登记条件 结束 */
 		
 		
@@ -229,81 +290,25 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			}
 		}
 		
-		/** 查看当前罪犯是否需要审批 开始 */
-		boolean is_sp=false; //是否需要审批
-		String explain = ""; // 审批说明
-		JlHjSpSetVO jlHjSpSet = null;
-		JlHjSpSetVO jlHjSpSetQuery = new JlHjSpSetVO();
-		jlHjSpSetQuery.setUsable(1);
-		List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
-		if(jlHjSpSetList.size()>0){
-			for(JlHjSpSetVO t: jlHjSpSetList){
-				if(t.getSpNo().equals("1")){ // 罪犯本月会见次数已用完
-					if(disNo.contains(1)){ //条件满足
-						is_sp = true;
-						jlHjSpSet=t;
-						explain="罪犯本月会见次数已用完";
-					}
-				}else if(t.getSpNo().equals("2")){ // 罪犯级别不允许会见
-					if(disNo.contains(2)){ //条件满足
-						is_sp = true;
-						jlHjSpSet=t;
-						if(StringUtils.isNotBlank(explain)){
-							explain+=";罪犯级别不允许会见";
-						}else{
-							explain+="罪犯级别不允许会见";
-						}
-					}
-				}else if(t.getSpNo().equals("3")){ // 罪犯当前被禁止会见
-					if(disNo.contains(3)){ //条件满足
-						is_sp = true;
-						jlHjSpSet=t;
-						String sm = jlFr.getHjStopSm()!=null?jlFr.getHjStopSm():"";
-						if(StringUtils.isNotBlank(explain)){
-							explain+=";罪犯当前被禁止会见，禁止说明《"+sm+"》";
-						}else{
-							explain+="罪犯当前被禁止会见，禁止说明《"+sm+"》";
-						}
-					}
-				}else if(t.getSpNo().equals("4")){ // 服刑人员当前监区不是会见日
-					if(disNo.contains(3)){ //条件满足
-						is_sp = true;
-						jlHjSpSet=t;
-						if(StringUtils.isNotBlank(explain)){
-							explain+=";服刑人员当前监区不是会见日";
-						}else{
-							explain+="服刑人员当前监区不是会见日";
-						}
-					}
-				}else if(t.getSpNo().equals("5")){ // 亲属关系为“其他”
-					if(is_gx){
-						is_sp = true;
-						jlHjSpSet=t;
-						if(StringUtils.isNotBlank(explain)){
-							explain+=";亲属关系为“其他”";
-						}else{
-							explain="亲属关系为“其他”";
-						}
-					}
+		if(is_gx){
+			//亲属关系为其他
+			JlHjSpSetVO jlHjSpSetQuery = new JlHjSpSetVO();
+			jlHjSpSetQuery.setUsable(1);
+			jlHjSpSetQuery.setSpNo("5");
+			List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
+			if(jlHjSpSetList.size()>0){ // 开启了《罪犯本月会见次数已用完》的审批
+				jlHjSpSet=jlHjSpSetList.get(0);
+				if(StringUtils.isNotBlank(explain)){
+					explain+=";"+jlHjSpSet.getSpName();
+				}else{
+					explain=jlHjSpSet.getSpName();
 				}
+				is_sp=true;
+			}else{
+				result.error(Result.error_103, "亲属关系为“其他”");
+				return result.toResult();
 			}
-			
 		}
-		/** 查看当前罪犯是否需要审批 结束 */
-		
-		if(is_sp==false){
-			if(disNo.contains(1)){
-				result.error(Result.error_103, "罪犯本月会见次数已用完");
-			}else if(disNo.contains(2)){
-				result.error(Result.error_103, "罪犯级别不允许会见");
-			}else if(disNo.contains(3)){
-				result.error(Result.error_103, "罪犯当前被禁止会见");
-			}else if(disNo.contains(4)){
-				result.error(Result.error_103, "服刑人员当前监区不是会见日");
-			}
-			return result.toResult();
-		}
-		
 		
 		addJlHjDj.setJy(jlJq.getJy());
 		addJlHjDj.setJqNo(jlJq.getJqNo());
@@ -1002,7 +1007,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		}
 		if(StringUtils.isNotBlank(model.getFrName())){
 			String str = model.getFrName();
-			where.append(" AND a.FR_Name LIKE '%"+str+"%' ");
+			where.append(" AND (a.FR_Name LIKE '%"+str+"%' OR dbo.f_get_fryp(a.FR_Name,'"+str+"') =1 )");
 			model.setFrName(null);
 		}
 		if(StringUtils.isNotBlank(model.getQsName())){

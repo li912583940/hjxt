@@ -145,6 +145,7 @@ export default {
       tableKey: 0,
       list: null,
       total: null,
+      listLoading: true,
       listQuery: {
         pageNum: 1,
         pageSize: 20
@@ -231,10 +232,12 @@ export default {
   },
   methods: {
     getList() {
+    	this.listLoading = true
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count
       })
+      this.listLoading = false
     },
     handleSizeChange(val) {
       this.listQuery.pageSize = val
@@ -282,6 +285,12 @@ export default {
     		
     		document.getElementById(row.jy).ListenTele(row.lineNo);
     		this.jtState = 2
+    	}else{
+    		Message({
+	        message: '当前线路不在通话状态',
+		      type: 'error',
+		      duration: 5 * 1000
+	      });
     	}
     },
     /** 监听 结束 */
@@ -293,26 +302,43 @@ export default {
 			})
     	document.getElementById(row.jy).ListenStop(row.lineNo);
     	this.jtState = 1
+    	Message({
+        message: '停止监听',
+	      type: 'success',
+	      duration: 5 * 1000
+      });
     },
     /** 停止监听 结束 */
     
     /** 切断 开始 */
     qieduan(row){
     	this.$confirm('是否确定切断通话？注意：切断后，需要前往会见登记处重新登记会见！', '提示', {
-			type: 'warning'
-		}).then(() => {
-			let param = {
-				hjid:row.hjid
-			}
-			QieduanHj(param).then(res => {
-				UpdateYJ({webId:row.webId, state:0}).then(res =>{
-    			this.getList()
-    		})
-				
-				this.jtState = 1
-				this.getList()
+				type: 'warning'
+			}).then(() => {
+				let param = {
+					hjid:row.hjid
+				}
+				QieduanHj(param).then(res => {
+					UpdateYJ({webId:row.webId, state:0}).then(res =>{
+	    			this.getList()
+	    		})
+					
+					this.jtState = 1
+					this.getList()
+					
+					Message({
+		        message: '已成功切断当前通话',
+			      type: 'success',
+			      duration: 5 * 1000
+		      });
+				}).catch(error =>{
+					Message({
+		        message: '系统原因，切断当前通话失败',
+			      type: 'error',
+			      duration: 5 * 1000
+		      });
+				})
 			})
-		})
     },
     /** 切断 结束 */
   

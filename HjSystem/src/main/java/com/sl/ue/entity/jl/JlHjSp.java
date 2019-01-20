@@ -1,5 +1,7 @@
 package com.sl.ue.entity.jl;
 
+import java.util.Date;
+
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
 import com.sl.ue.util.anno.Table;
@@ -46,6 +48,10 @@ public class JlHjSp implements java.io.Serializable{
     /** 评论 备注 */
     @DbField("remark")
     private String remark;
+    
+    /** 最后审批时间 */
+    @DbField("last_sp_time")
+    private Date lastSpTime;
     
     public Integer getId() {
         return this.id;
@@ -111,6 +117,14 @@ public class JlHjSp implements java.io.Serializable{
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public Date getLastSpTime() {
+		return lastSpTime;
+	}
+
+	public void setLastSpTime(Date lastSpTime) {
+		this.lastSpTime = lastSpTime;
 	}
     
 }

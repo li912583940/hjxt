@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,10 +24,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
-import com.sl.ue.service.base.BaseLogService;
 import com.sl.ue.service.base.BaseService;
 import com.sl.ue.util.Constants;
-import com.sl.ue.util.HumpCrossUnderline;
 import com.sl.ue.util.StringUtil;
 import com.sl.ue.util.anno.DbField;
 import com.sl.ue.util.anno.Id;
@@ -44,8 +41,6 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 
 	@Autowired
 	protected JdbcTemplate jdbcTemplate;
-	@Autowired
-	private BaseLogService<T> baseLogService;
 	
 	/** 实际操作的实体类对象 */
 	private Class<T> clazz; 
@@ -143,7 +138,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 					field.setAccessible(true);
 					if(field.get(model) != null  && !"".equals(field.get(model))){
 						params.add(field.get(model));
-						where_fields.append(" and "+table_field+"=?");
+						where_fields.append(" and a."+table_field+"=?");
 					}
 					
 					/** 监区权限 开始 */
@@ -411,7 +406,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 					field.setAccessible(true);
 					if(field.get(model) != null){
 						params.add(field.get(model));
-						where_fields.append(" and "+table_field+"=?");
+						where_fields.append(" and a."+table_field+"=?");
 					}
 					
 					/** 监区权限 开始 */
@@ -485,10 +480,6 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 		String tableName;
 		if(table != null){
 			tableName = table.value();
-			
-			/** 日志记录  */
-			baseLogService.execute(tableName, model, "add");
-			
 			StringBuffer sql = new StringBuffer();
 			StringBuffer table_field = new StringBuffer();
 			StringBuffer table_value = new StringBuffer();
@@ -578,10 +569,6 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 		String tableName;
 		if(table != null){
 			tableName = table.value();
-			
-			/** 日志记录  */
-			baseLogService.execute(tableName, model, "edit");
-			
 			StringBuffer sql = new StringBuffer();
 			StringBuffer up_field = new StringBuffer();
 			sql.append("update "+tableName+" set ");
@@ -626,10 +613,6 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 		String tableName;
 		if(table != null){
 			tableName = table.value();
-			
-			/** 日志记录  */
-			baseLogService.executeDel(tableName, key);
-			
 			StringBuffer sql = new StringBuffer();
 			Field[] fields = clazz.getDeclaredFields();
 			String id_filed = null;

@@ -15,8 +15,9 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="frListQuery.qsName" clearable>
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button class="filter-item" type="primary" v-waves  @click="addHjdj">提交登记</el-button>
+      <el-button class="filter-item" type="success" v-waves  @click="addHjdj">提交登记</el-button>
       <el-button class="filter-item" type="primary" v-waves  @click="returnPrevious">返回</el-button>
+      <!--<el-button class="filter-item" type="primary" v-waves  @click="colsePort">删除节点</el-button>-->
     </div>
     
     <div class="filter-container">
@@ -29,7 +30,8 @@
         </el-option>
       </el-select>
       <el-input style="width: 200px;"  placeholder="输入会见说明" v-model="formdata.hjInfo" clearable>
-      </el-input> {{this.refreshZ}}
+      </el-input>
+      <button hidden="hidden" id="shibie1" @click="shibie()"></button>
     </div>
     
 		<!-- 服刑人员开始 -->
@@ -349,15 +351,16 @@ export default {
       this.noFrSearch()
       
       this.getJqList()
-      //this.openPort()
+      
+      this.openPort()
   },
 
   destroyed(){
-  	//this.colsePort()
+  	this.colsePort()
   },
   methods: {
   	noFrSearch() {
-  		console.log(this.frNoQuery)
+  		this.total=0
   		if(this.frNoQuery!= undefined){
   			this.getFrList()
   		}
