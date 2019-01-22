@@ -3,6 +3,12 @@
 		<!-- 亲属新增或编辑 -->
 		<el-card shadow="always" style="width: 50%; margin-left: 25%;">
 			<el-form :rules="rulesQs" :model="dataQsForm" ref="dataQsForm" label-position="right" label-width="120px" style='width: 440px; margin-left:12%;' >
+		        <el-form-item label="罪犯姓名" prop="frName">
+		          <el-input v-model="dataQsForm.frName" :disabled="true"></el-input>
+		        </el-form-item>
+		        <el-form-item label="亲属姓名" prop="qsName">
+		          <el-input v-model="dataQsForm.qsName"></el-input>
+		        </el-form-item>
 		        <el-form-item label="证件类别" prop="qsZjlb">
 		          <el-select class="filter-item" v-model="dataQsForm.qsZjlb" placeholder="请选择">
 		            <el-option v-for="item in qsZjlbs" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -25,12 +31,6 @@
 		        <el-form-item label="证件号码" prop="qsSfz">
 		          <el-input v-model="dataQsForm.qsSfz"></el-input>
 		        </el-form-item>
-		        <el-form-item label="罪犯编号" prop="frNo">
-		          <el-input v-model="dataQsForm.frNo" :disabled="true"></el-input>
-		        </el-form-item>
-		        <el-form-item label="亲属姓名" prop="qsName">
-		          <el-input v-model="dataQsForm.qsName"></el-input>
-		        </el-form-item>
 		        <el-form-item label="关系" prop="gx">
 		          <el-select class="filter-item" v-model="dataQsForm.gx" placeholder="请选择">
 		            <el-option v-for="item in gxs" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -51,9 +51,9 @@
 		        <el-form-item label="电话号码" prop="tele">
 		          <el-input v-model="dataQsForm.tele"></el-input>
 		        </el-form-item>
-		        <el-form-item label="审批状态">
+		        <!--<el-form-item label="审批状态">
 		          <el-input v-model="dataQsForm.spState" :disabled="true"></el-input>
-		        </el-form-item>
+		        </el-form-item>-->
 		        <el-form-item label="备注" prop="bz">
 		          <el-input v-model="dataQsForm.bz"></el-input>
 		        </el-form-item>
@@ -65,8 +65,6 @@
 	        
         </el-card>
         <button hidden="hidden" id="shibie1" @click="shibie()"></button>
-        <object width="0px" height="0px" id="IDCard2" name="IDCard2"  codebase="../../ocx/SynCardOcx.CAB#version=1,0,0,1" classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039">
-					</object>
     </div>
 </template>
 
@@ -80,8 +78,9 @@ export default {
       sfzImg: '/static/image/zpbj.jpg',
       // 新增或编辑弹窗
       dataQsForm: { 
-        webId: undefined,
+        webId: this.$route.query.qsWebId,
         frNo: this.$route.query.frNo,
+        frName: this.$route.query.frName,
         qsZjlb: 1,
         qsSfz: undefined,
         qsName: undefined,
@@ -127,13 +126,19 @@ export default {
     }
   },
   filters: {
-    
+    dateFormat(row, column) {
+		//时间格式化  
+    let date = row[column.property];  
+    if (date == undefined) {  
+      return "";  
+    }  
+    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+	}
   },
   created() {
-  	
+  	this.qsWebIdSearch()
   },
   mounted() {
-  	this.swit()
   	this.getGxList()
     this.openPort()
     //this.openVideo()
@@ -142,14 +147,25 @@ export default {
   	this.colsePort()
   },
   methods: {
-  	swit() {
-  		let i=0
-  		while(true){
-  			i++
-  			console.log(i)
-  			if(i>100){
-  				break;
+  	qsWebIdSearch(){ // 如果亲属webId不是undefined此页面就是修改亲属
+  		if(this.dataQsForm.webId != undefined){
+  			let param ={
+  				id:this.dataQsForm.webId
   			}
+  			findQsOne(param).then(res =>{
+  				let x = res.data
+  				this.dataQsForm.qsZjlb = x.qsZjlb
+  				this.dataQsForm.qsSfz = x.qsSfz
+  				this.dataQsForm.qsName = x.qsName
+  				this.dataQsForm.gx = x.gx
+  				this.dataQsForm.qsCard = x.qsCard
+  				this.dataQsForm.dz = x.dz
+  				this.dataQsForm.xb = x.xb
+  				this.dataQsForm.tele = x.tele
+  				this.dataQsForm.spState = x.spState
+  				this.dataQsForm.bz = x.bz
+  				this.dataQsForm.jzUrl = x.jzUrl
+  			})
   		}
   	},
 	getGxList() { // 获取关系
@@ -198,11 +214,11 @@ export default {
         this.dataQsForm.bz = res.data.bz
         this.dataQsForm.jzUrl=res.data.jzUrl
     	})
-      this.dialogStatus = 'update'
-      this.dialogQsFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataQsForm'].clearValidate()
-      })
+        this.dialogStatus = 'update'
+        this.dialogQsFormVisible = true
+        this.$nextTick(() => {
+          this.$refs['dataQsForm'].clearValidate()
+        })
     },
     updateQsData() {
       this.$refs['dataQsForm'].validate((valid) => {
@@ -327,7 +343,6 @@ export default {
 	//	document.getElementById("WM1711").FunCloseCard();
 	},
   	cardEvent() {// 设置读卡器监听事件  并根据亲属身份证信息查询犯人
-		
 		console.log('cardEvent start')
 		let handler =	document.createElement("script")
 		handler.setAttribute("for", "IDCard2");
@@ -338,9 +353,7 @@ export default {
 		handler.appendChild(document.createTextNode("}"))
 		handler.appendChild(document.createTextNode("}"))
 		document.body.appendChild(handler)
-			
-		console.log(document.getElementById("IDCard2"))
-		console.log(handler)
+		
 		this.scriptAddHjDj = handler
   	},
   	shibie(){ // 识别身份证信息并查询
@@ -355,31 +368,15 @@ export default {
 		this.dataQsForm.dz = IDCard2.Address
 		this.dataQsForm.xb = IDCard2.Sex==2?'女':'男'
 //		document.getElementById("sfzzzz").value=b;
-	  	
+
   	},
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
-    dateFormat(row, column) {
-			//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-		},
-		dateFormats: function (val) {
-			if(!val){
-				return undefined
-			}
-			return moment(val).format("YYYY-MM-DD HH:mm:ss");
-		},
+
+	dateFormats: function (val) {
+		if(!val){
+			return undefined
+		}
+		return moment(val).format("YYYY-MM-DD HH:mm:ss");
+	},
   }
 }
 </script>

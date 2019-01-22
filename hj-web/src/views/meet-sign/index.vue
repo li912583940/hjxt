@@ -11,14 +11,9 @@
         </template>
       </el-table-column>
       
-      <el-table-column width="90" align="center" label="监区">
+      <el-table-column width="100" align="center" label="罪犯编号">
         <template slot-scope="scope">
-          <span>{{scope.row.jqName}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="90" align="center" label="分管等级">
-        <template slot-scope="scope">
-          <span>{{scope.row.jbName}}</span>
+          <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
       <el-table-column width="100" align="center" :label="$t('currency.frName')">
@@ -26,10 +21,21 @@
           <span>{{scope.row.frName}}</span>
         </template>
       </el-table-column>
+      <el-table-column width="90" align="center" label="分管等级">
+        <template slot-scope="scope">
+          <span>{{scope.row.jbName}}</span>
+        </template>
+      </el-table-column>
       <el-table-column width="100" align="center" label="重点犯">
         <template slot-scope="scope">
           <span v-if="scope.row.stateZdzf=='否'">否</span>
           <span v-if="scope.row.stateZdzf!='否'">是</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="90" align="center" label="座位">
+        <template slot-scope="scope">
+          <span v-if="scope.row.fpFlag ==0">未分配</span>
+          <span else>{{scope.row.zw}}</span>
         </template>
       </el-table-column>
       <el-table-column width="110" align="center" label="会见类型">
@@ -52,21 +58,14 @@
           <span v-else-if="scope.row.hjMode==9">其他方式</span>
         </template>
       </el-table-column>
+      <el-table-column width="90" align="center" label="监区">
+        <template slot-scope="scope">
+          <span>{{scope.row.jqName}}</span>
+        </template>
+      </el-table-column>
       <el-table-column width="200" align="center" label="会见说明">
         <template slot-scope="scope">
           <span>{{scope.row.hjInfo}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="90" align="center" label="座位">
-        <template slot-scope="scope">
-          <span v-if="scope.row.fpFlag ==0">未分配</span>
-          <span else>{{scope.row.zw}}</span>
-        </template>
-      </el-table-column>
-      
-      <el-table-column width="100" align="center" label="罪犯编号">
-        <template slot-scope="scope">
-          <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
       <el-table-column width="300" align="center" label="亲属">

@@ -94,6 +94,60 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			) {
 		Result result = new Result();
 		
+		JlHjDjVO addJlHjDj = new JlHjDjVO(); // 创建会见登记
+		String[] qsIdss = qsIds.split(",");
+		boolean is_gx= false; //判断亲属关系是否为其他
+		for(int i=0; i<qsIdss.length;i++){ // 亲属
+			JlQsVO jlQs = jlQsSQL.findOne(qsIdss[i]);
+			if(StringUtils.isBlank(jlQs.getGx()) || StringUtils.isBlank(jlQs.getQsSfz())){ //先判断提交的亲属中是否有身份证号码和亲属关系没有的
+				result.error(Result.error_103, "提交的登记中，有家属没有绑定身份证号码或者亲属关系");
+				return result.toResult();
+			}
+			if(StringUtils.isNotBlank(jlQs.getGx()) && "其他".equals(jlQs.getGx())){
+				is_gx=true;
+			}
+			String gx = "["+jlQs.getGx()+"]";
+			String name = StringUtils.isNotBlank(jlQs.getQsName())?jlQs.getQsName():"";
+			if(i==0){
+				addJlHjDj.setQsInfo1(gx+name);
+				addJlHjDj.setQsZp1(jlQs.getJz());
+				addJlHjDj.setQsCard1(jlQs.getQsCard());
+			}else if(i==1){
+				addJlHjDj.setQsInfo2(gx+name);
+				addJlHjDj.setQsZp2(jlQs.getJz());
+				addJlHjDj.setQsCard2(jlQs.getQsCard());
+			}else if(i==2){
+				addJlHjDj.setQsInfo3(gx+name);
+				addJlHjDj.setQsZp3(jlQs.getJz());
+				addJlHjDj.setQsCard3(jlQs.getQsCard());
+			}else if(i==3){
+				addJlHjDj.setQsInfo4(gx+name);
+				addJlHjDj.setQsZp4(jlQs.getJz());
+				addJlHjDj.setQsCard4(jlQs.getQsCard());
+			}else if(i==4){
+				addJlHjDj.setQsInfo5(gx+name);
+				addJlHjDj.setQsZp5(jlQs.getJz());
+				addJlHjDj.setQsCard5(jlQs.getQsCard());
+			}else if(i==5){
+				addJlHjDj.setQsInfo6(gx+name);
+				addJlHjDj.setQsZp6(jlQs.getJz());
+				addJlHjDj.setQsCard6(jlQs.getQsCard());
+			}else if(i==6){
+				addJlHjDj.setQsInfo7(gx+name);
+				addJlHjDj.setQsZp7(jlQs.getJz());
+				addJlHjDj.setQsCard7(jlQs.getQsCard());
+			}else if(i==7){
+				addJlHjDj.setQsInfo8(gx+name);
+				addJlHjDj.setQsZp8(jlQs.getJz());
+				addJlHjDj.setQsCard8(jlQs.getQsCard());
+			}else if(i==8){
+				addJlHjDj.setQsInfo9(gx+name);
+				addJlHjDj.setQsZp9(jlQs.getJz());
+				addJlHjDj.setQsCard9(jlQs.getQsCard());
+			}
+		}
+		
+		
 		JlHjDjVO jlHjDj1 = new JlHjDjVO();
 		jlHjDj1.setFrNo(frNo);
 		String sqlLeftJoinWhere = " AND (a.state=0 or a.state=3)";
@@ -241,54 +295,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		/** 查看当前罪犯是否符合会见登记条件 结束 */
 		
 		
-		JlHjDjVO addJlHjDj = new JlHjDjVO(); // 创建会见登记
-		String[] qsIdss = qsIds.split(",");
-		boolean is_gx= false; //判断亲属关系是否为其他
-		for(int i=0; i<qsIdss.length;i++){ // 亲属
-			JlQsVO jlQs = jlQsSQL.findOne(qsIdss[i]);
-			if(StringUtils.isNotBlank(jlQs.getGx()) && "其他".equals(jlQs.getGx())){
-				is_gx=true;
-			}
-			String gx = StringUtils.isNotBlank(jlQs.getGx())?"["+jlQs.getGx()+"]":"";
-			String name = StringUtils.isNotBlank(jlQs.getQsName())?jlQs.getQsName():"";
-			if(i==0){
-				addJlHjDj.setQsInfo1(gx+name);
-				addJlHjDj.setQsZp1(jlQs.getJz());
-				addJlHjDj.setQsCard1(jlQs.getQsCard());
-			}else if(i==1){
-				addJlHjDj.setQsInfo2(gx+name);
-				addJlHjDj.setQsZp2(jlQs.getJz());
-				addJlHjDj.setQsCard2(jlQs.getQsCard());
-			}else if(i==2){
-				addJlHjDj.setQsInfo3(gx+name);
-				addJlHjDj.setQsZp3(jlQs.getJz());
-				addJlHjDj.setQsCard3(jlQs.getQsCard());
-			}else if(i==3){
-				addJlHjDj.setQsInfo4(gx+name);
-				addJlHjDj.setQsZp4(jlQs.getJz());
-				addJlHjDj.setQsCard4(jlQs.getQsCard());
-			}else if(i==4){
-				addJlHjDj.setQsInfo5(gx+name);
-				addJlHjDj.setQsZp5(jlQs.getJz());
-				addJlHjDj.setQsCard5(jlQs.getQsCard());
-			}else if(i==5){
-				addJlHjDj.setQsInfo6(gx+name);
-				addJlHjDj.setQsZp6(jlQs.getJz());
-				addJlHjDj.setQsCard6(jlQs.getQsCard());
-			}else if(i==6){
-				addJlHjDj.setQsInfo7(gx+name);
-				addJlHjDj.setQsZp7(jlQs.getJz());
-				addJlHjDj.setQsCard7(jlQs.getQsCard());
-			}else if(i==7){
-				addJlHjDj.setQsInfo8(gx+name);
-				addJlHjDj.setQsZp8(jlQs.getJz());
-				addJlHjDj.setQsCard8(jlQs.getQsCard());
-			}else if(i==8){
-				addJlHjDj.setQsInfo9(gx+name);
-				addJlHjDj.setQsZp9(jlQs.getJz());
-				addJlHjDj.setQsCard9(jlQs.getQsCard());
-			}
-		}
+		
 		
 		if(is_gx){
 			//亲属关系为其他
@@ -1322,6 +1329,10 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 	
 	public String editTz(JlHjDjVO model){
 		Result result = new Result();
+		SysUserVO user = TokenUser.getUser();
+		model.setPageTzUserNo(user.getUserNo());
+		model.setPageTzUserName(user.getUserName());
+		model.setPageTzTime(new Date());
 		this.edit(model);
 		return result.toResult();
 	}

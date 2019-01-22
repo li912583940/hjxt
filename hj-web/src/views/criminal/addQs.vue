@@ -22,13 +22,7 @@
 		        	</span>
 		        	<span v-if="ie==0">
 		        		<!-- IE浏览器 flash控件 调用摄像头 -->
-				        <!--<object id="camera" classid="clsid:792FD9B8-5917-45D2-889D-C49FD174D4E0"
-						  codebase="../../ocx/capProj1.ocx#version=1,0,0,0"
-						  width=160
-						  height=176
-						  hspace=0
-						  vspace=0>
-				        </object>-->
+				        
 				        <!--<object style="z-index: 100" id="My_Cam" align="middle" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
 					                codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"
 					                height="400" viewastext="在线拍照" width="500">
@@ -91,14 +85,12 @@
         </el-card>
         
         
-							
-        <object width="0px" height="0px" id="IDCard2" name="IDCard2"  codebase="../../ocx/SynCardOcx.CAB#version=1,0,0,1" classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039">
-		</object>
+		<button hidden="hidden" id="shibie1" @click="shibie()"></button>
     </div>
 </template>
 
 <script>
-import { findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList  } from '@/api/criminal'
+import { findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList } from '@/api/criminal'
 
 export default {
   name: 'addQs',
@@ -151,10 +143,18 @@ export default {
       
       ie: 0,
       track: undefined,
+      
     }
   },
   filters: {
-    
+    dateFormat(row, column) {
+		//时间格式化  
+	    let date = row[column.property];  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+	}
   },
   created() {
   	this.getGxList()
@@ -167,7 +167,7 @@ export default {
   },
   destroyed(){
   	//this.colsePort()
-  	this.colseVideo()
+  	//this.colseVideo()
   },
   methods: {
 	getGxList() { // 获取关系
@@ -234,7 +234,6 @@ export default {
       })
     },
     isIe() {
-    	console.log(navigator.appVersion )
     	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1)){
     		this.ie=0
     	}else{
@@ -382,9 +381,6 @@ export default {
 		this.scriptAddHjDj = handler
   	},
   	shibie(){ // 识别身份证信息并查询
-  		console.log('shibieQs start')
-  		this.dataQsForm.qsSfz = 'sadadadaff'
-  		console.log(this.dataQsForm.qsSfz)
     	var IDCard2=document.getElementById("IDCard2");
     	
 		IDCard2.SetPhotoName(2);
@@ -397,29 +393,13 @@ export default {
 //		document.getElementById("sfzzzz").value=b;
 	  	
   	},
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
-    dateFormat(row, column) {
-			//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-		},
-		dateFormats: function (val) {
-			if(!val){
-				return undefined
-			}
-			return moment(val).format("YYYY-MM-DD HH:mm:ss");
-		},
+    
+	dateFormats: function (val) {
+		if(!val){
+			return undefined
+		}
+		return moment(val).format("YYYY-MM-DD HH:mm:ss");
+	},
   }
 }
 </script>

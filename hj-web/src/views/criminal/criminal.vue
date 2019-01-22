@@ -327,7 +327,6 @@ import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, exportExcel,
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
 import { getToken } from '@/utils/auth'
 import { Message, MessageBox } from 'element-ui'
 
@@ -956,15 +955,6 @@ export default {
 	      })
 			})
 		},
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
 		dateFormats: function (val) {
 			if(!val){
 				return undefined

@@ -109,13 +109,33 @@
         <el-form-item :label="$t('currency.frName')" prop="frName">
           <el-input v-model="dataForm.frName"></el-input>
         </el-form-item>
-        <video id="video" width="192" height="128" controls>
-			  </video>
-			  <canvas id="canvas" width="192" height="128"></canvas>
-			  <div>
-			    <button id="capture" @click="paizhao">拍照</button>
-			  </div>
-			  
+        <el-form-item label="近照" >
+		      <span v-if="ie==1">
+		        <video id="video" autoplay width="150" height="110" controls>
+						</video>
+						<canvas id="canvas" width="150" height="110"></canvas>
+		      </span>
+		      <span v-if="ie==0">
+	        		<!-- IE浏览器 flash控件 调用摄像头 -->
+			        
+			        <!--<object style="z-index: 100" id="My_Cam" align="middle" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+				                codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"
+				                height="400" viewastext="在线拍照" width="500">
+				                <param name="allowScriptAccess" value="sameDomain" />
+				                <param name="movie" value="../../js/MyCamera.swf" />
+				                <param name="quality" value="high" />
+				                <param name="bgcolor" value="#ffffff" />
+				                <param name="wmode" value="transparent" />
+				                <embed style="z-index: 100" align="middle" allowscriptaccess="sameDomain" bgcolor="#ffffff" height="400"
+				                    name="My_Cam" pluginspage="http://www.macromedia.com/go/getflashplayer" quality="high"  wmode="transparent"
+				                    src="../../js/MyCamera.swf" type="application/x-shockwave-flash" width="500"></embed>
+				   	</object>-->
+	        		<span id="zp" style="width:160,height:176"></span>
+		      </span>
+					<div>
+					  <button id="capture" @click="paizhao">拍照</button>
+					</div>
+		    </el-form-item>
         <el-form-item label="证件类别" prop="qsZjlb">
           <el-select class="filter-item" v-model="dataForm.qsZjlb" placeholder="请选择">
             <el-option v-for="item in qsZjlbs" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -233,7 +253,10 @@ export default {
         tele: undefined,
         spState: undefined,
         bz: undefined,
-        hjStopTime: undefined
+        hjStopTime: undefined,
+        jzBase64: undefined,
+        zpBase64: undefined,
+        jzUrl: undefined,
       },
       gxs: [ // 关系
       	
@@ -268,7 +291,9 @@ export default {
         qsName: [{ required: true, message: '亲属姓名不能为空', trigger: 'blur' }],
         gx: [{ required: true, message: '亲属关系必选', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      
+      ie: 0,
     }
   },
   filters: {
@@ -283,9 +308,12 @@ export default {
   created() {
     //this.getList()
     this.noSearch()
+    this.isIe()
   },
   mounted() {
     this.setButtonRole()
+    
+    this.openVideo()
   },
   methods: {
   	noSearch() {
@@ -369,75 +397,102 @@ export default {
     		}
     	}
     },
+    isIe() {
+    	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1)){
+    		this.ie=0
+    	}else{
+    		this.ie=1
+    	}
+    },
     openVideo(){
-			let video = document.getElementById('video');
-	    if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
-	      if (navigator.mediaDevices.getUserMedia) {
-	        //最新的标准API
-	        //调用用户媒体设备, 访问摄像头
-		      navigator.mediaDevices.getUserMedia({video : {width: 192, height: 128}}).then(function(stream){
-			      //兼容webkit核心浏览器
-			      var URL = window.URL || window.webkitURL;
-			      //将视频流设置为video元素的源
-			      //video.src = URL.createObjectURL(stream);
-			      video.srcObject = stream;
-			      video.play();
-		    	 }).catch(function(error){
-		      	console.log(error);
-		    	 });
-	      } else if (navigator.webkitGetUserMedia) {
-	        //webkit核心浏览器
-	        navigator.webkitGetUserMedia({video : {width: 192, height: 128}}, 
-	        	function(stream){
-	        		//兼容webkit核心浏览器
+		let video = document.getElementById('video');
+		if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1) ){ // IE浏览器
+			document.getElementById("camera").start(160,176); // 打开flash拍照控件
+		}else{ // 非IE浏览器
+			if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
+		      if (navigator.mediaDevices.getUserMedia) {
+		        //最新的标准API
+		        //调用用户媒体设备, 访问摄像头
+			      navigator.mediaDevices.getUserMedia({video : {width: 150, height: 110}}).then(function(stream){
+				      //兼容webkit核心浏览器
 				      var URL = window.URL || window.webkitURL;
 				      //将视频流设置为video元素的源
-				      //video.src = URL.createObjectURL(stream);
-				      video.srcObject = stream;
+				      video.src = URL.createObjectURL(stream);
+				      //video.srcObject = stream;
 				      video.play();
-	          }, 
-	          function(error){
-	          	console.log(error);
-	          })
-	      } else if (navigator.mozGetUserMedia) {
-	        //firfox浏览器
-	        navigator.mozGetUserMedia({video : {width: 192, height: 128}}, 
-	        function(stream){
-	        		//兼容webkit核心浏览器
-				      var URL = window.URL || window.webkitURL;
-				      //将视频流设置为video元素的源
-				      //video.src = URL.createObjectURL(stream);
-				      video.srcObject = stream;
-				      video.play();
-	          }, 
-	          function(error){
-	          	console.log(error);
-	          });
-	      } else if (navigator.getUserMedia) {
-	        //旧版API
-	        navigator.getUserMedia({video : {width: 192, height: 128}}, 
-	        function(stream){
-	        		//兼容webkit核心浏览器
-				      var URL = window.URL || window.webkitURL;
-				      //将视频流设置为video元素的源
-				      //video.src = URL.createObjectURL(stream);
-				      video.srcObject = stream;
-				      video.play();
-	          }, 
-	          function(error){
-	          	console.log(error);
-	          });
-	      }
-	    } else {
-	      alert('不支持访问用户媒体');
-	    }
+			    	 }).catch(function(error){
+			      	console.log(error);
+			    	 });
+		      } else if (navigator.webkitGetUserMedia) {
+		        //webkit核心浏览器
+		        navigator.webkitGetUserMedia({video : {width: 150, height: 110}}, 
+		        	function(stream){
+		        		//兼容webkit核心浏览器
+					      var URL = window.URL || window.webkitURL;
+					      //将视频流设置为video元素的源
+					      //video.src = URL.createObjectURL(stream);
+					      video.srcObject = stream;
+					      video.play();
+		          }, 
+		          function(error){
+		          	console.log(error);
+		          })
+		      } else if (navigator.mozGetUserMedia) {
+		        //firfox浏览器
+		        navigator.mozGetUserMedia({video : {width: 150, height: 110}}, 
+		        function(stream){
+		        		//兼容webkit核心浏览器
+					      var URL = window.URL || window.webkitURL;
+					      //将视频流设置为video元素的源
+					      //video.src = URL.createObjectURL(stream);
+					      video.srcObject = stream;
+					      video.play();
+		          }, 
+		          function(error){
+		          	console.log(error);
+		          });
+		      } else if (navigator.getUserMedia) {
+		        //旧版API
+		        navigator.getUserMedia({video : {width: 150, height: 110}}, 
+		        function(stream){
+		        		//兼容webkit核心浏览器
+					      var URL = window.URL || window.webkitURL;
+					      //将视频流设置为video元素的源
+					      //video.src = URL.createObjectURL(stream);
+					      video.srcObject = stream;
+					      video.play();
+		          }, 
+		          function(error){
+		          	console.log(error);
+		          });
+		      }
+		    } else {
+		      alert('不支持访问用户媒体');
+		    }
+		}
+	    
 
     },
     paizhao(){
-    	let video = document.getElementById('video');
-      let canvas = document.getElementById('canvas');
-      let context = canvas.getContext('2d');
-    	context.drawImage(video, 0, 0, 192, 128); 
+    	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1)){ // IE浏览器
+    		document.getElementById("camera").savefile("D:\\temp.jpg",150,176);
+			this.dataForm.jzBase64=document.getElementById("camera").jpegbase64;
+			//document.getElementById("jz").value = document.getElementById("MyFlexApps").paserbytes();
+			//document.getElementById("zp").innerHTML="<img src=\"D:\\\\temp.jpg\"/>";
+    	}else{
+    		let video = document.getElementById('video');
+		    let canvas = document.getElementById('canvas');
+		    let context = canvas.getContext('2d');
+		    context.drawImage(video, 0, 0, 150, 110); 
+		      
+			//从画布上获取照片数据
+			var imgData = canvas.toDataURL("image/png");
+			  
+			//将图片转换为Base64
+			//var BASE64= imgData.substr(22);
+			this.dataForm.jzBase64= imgData.substr(22);
+    	}
+      
     },
 		dialogClose(){
 		},
@@ -450,12 +505,12 @@ export default {
 			this.dataForm.webId = undefined
 	  },
     handleCreate() {
-//  	this.openVideo()
-//    this.dialogStatus = 'create'
-//    this.resetForm('dataForm')
-//    this.dialogFormVisible = true
+    	//this.openVideo()
+      this.dialogStatus = 'create'
+      this.resetForm('dataForm')
+      this.dialogFormVisible = true
 
-		  this.$router.push({ path: '/addCriQs' })
+		  //this.$router.push({ path: '/addCriQs' })
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {

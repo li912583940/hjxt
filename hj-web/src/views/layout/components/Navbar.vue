@@ -71,6 +71,16 @@
       </div>
     </el-dialog>
     
+    <object width="0px" height="0px" id="IDCard2" name="IDCard2"  codebase="../../../ocx/SynCardOcx1.CAB#version=1,0,0,1" classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039">
+		</object>
+		<!-- 拍照-->
+		<object id="camera" classid="clsid:792FD9B8-5917-45D2-889D-C49FD174D4E0"
+		  codebase="../../../ocx/capProj1.ocx#version=1,0,0,0"
+		  width=160
+		  height=176
+		  hspace=0
+		  vspace=0>
+		</object>
   </div>
 </template>
 

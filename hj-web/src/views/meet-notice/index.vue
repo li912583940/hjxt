@@ -4,10 +4,8 @@
       style="width: 100%">
        <el-table-column  align="center" :label="$t('criminal.actions')" width="160" fixed="left" >
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="sdNotice(scope.row)">
-	          <span v-if="scope.row.pageTzState==0">已通知</span>
-	          <span v-if="scope.row.pageTzState==1">未通知</span>
-          </el-button>
+        	<span v-if="scope.row.pageTzState==0"><el-button type="primary" size="mini" @click="sdNotice(scope.row)">接收</el-button></span>
+	        <span v-if="scope.row.pageTzState==1"><el-button type="danger" size="mini" @click="sdNotice(scope.row)">取消接收</el-button></span>
         </template>
       </el-table-column>
       <el-table-column align="center" :label="$t('currency.jqName')" width="90">

@@ -31,7 +31,7 @@
       </el-select>
       <el-input style="width: 200px;"  placeholder="输入会见说明" v-model="formdata.hjInfo" clearable>
       </el-input>
-      <button hidden="hidden" id="shibie1" @click="shibie()"></button>
+      
     </div>
     
 		<!-- 服刑人员开始 -->
@@ -140,12 +140,17 @@
 		<!-- 亲属开始 -->
 		<el-card class="box-card">
 	    <el-table :key='qsTableKey' ref="qsMultipleTable" :data="qsList" v-loading="qsListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-	      @selection-change="qsAllSelectionChange" @row-click="qsRowClick" style="width: 100%">
+	     @selection-change="qsAllSelectionChange"  @row-click="qsRowClick" @row-dblclick="toEditQs" style="width: 100%">
 	      <el-table-column align="center" type="selection"  width="70" fixed="left">
 	      </el-table-column>
 	      <el-table-column align="center" label="亲属姓名" width="100">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.qsName}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column align="center" label="亲属相片" width="100">
+	        <template slot-scope="scope">
+	          <span><img :src="sfzImg" id="zp" name="zp" width="25px" height="31px" @click="clickImg($event)"/></span>
 	        </template>
 	      </el-table-column>
 	      <el-table-column width="100px" align="center" label="关系">
@@ -218,8 +223,9 @@
 	  </el-card>
     
     <!-- 亲属结束 -->
-    <object width="0px" height="0px" id="IDCard2" name="IDCard2"  codebase="../../ocx/SynCardOcx.CAB#version=1,0,0,1" classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039">
-					</object>
+    <button hidden="hidden" id="shibie1" @click="shibie()"></button>
+    <!-- 放大图片 -->
+    <big-img v-if="showImg" @clickit="viewImg" :imgSrc="imgSrc"></big-img>
   </div>
 </template>
 
@@ -227,6 +233,7 @@
 import { findFrPojo, findQsPojo, findJqList, RequestAddHjdj } from '@/api/meetRegister'
 import waves from '@/directive/waves' // 水波纹指令
 
+import BigImg from './components/BigImg'
 
 export default {
   name: 'addHjDj',
@@ -249,8 +256,11 @@ export default {
         qsName: undefined // 亲属姓名
       },
       
-      qsImageUrl: '',
       
+      sfzImg: '/static/image/zpbj.jpg',
+      showImg: false,
+      imgSrc: '',
+        
       qsTableKey: 1,
       qsList: null,
       qsTotal: null,
@@ -338,6 +348,9 @@ export default {
       frNoQuery: this.$route.query.frNoQuery,
     }
   },
+  components: {
+      'big-img': BigImg
+    },
   filters: {
 
   },
@@ -475,6 +488,7 @@ export default {
 		//	}
 			//reID.ReadCardID(4, "baud=9600 parity=N data=8 stop=1");
 			let str=document.getElementById("IDCard2").FindReader()
+			console.log(str)
 			if(str>1000){
 				document.getElementById("IDCard2").SetloopTime(1000);
 		  		document.getElementById("IDCard2").SetReadType(1);
@@ -490,6 +504,7 @@ export default {
 				document.body.removeChild(this.scriptAddHjDj);
 				console.log('节点删除成功')
 			}
+			console.log(this.scriptAddHjDj)
 			document.getElementById("IDCard2").SetReadType(0);
 		//	document.getElementById("WM1711").FunCloseCard();
 		},
@@ -558,6 +573,17 @@ export default {
   	qsAllSelectionChange(rows){ // 亲属表格 多选框选中触发这个事件
   		this.qsSelections = rows;
   	},
+  	clickImg(e) {
+	    this.showImg = true
+	    // 获取当前图片地址
+	    this.imgSrc = e.currentTarget.src
+    },
+	  viewImg() {
+	    this.showImg = false
+	  },
+  	toEditQs(row){ // 双击亲属行进入编辑亲属的页面
+  		this.$router.push({ path: '/addQs', query: {frNo: row.frNo, frName:row.frName, qsWebId:row.webId} })
+  	},
   	cardEvent() {// 设置读卡器监听事件  并根据亲属身份证信息查询犯人
   		console.log('cardEvent start')
 			let handler =	document.createElement("script")
@@ -571,6 +597,7 @@ export default {
 			document.body.appendChild(handler)
 			
 			this.scriptAddHjDj = handler
+			console.log(this.scriptAddHjDj)
   	},
   	shibie(){ // 识别身份证信息并查询
   		console.log('shibie start')
@@ -590,7 +617,7 @@ export default {
 	  	
   	},
   	handleAddQs(row) { //打开亲属
-    	this.$router.push({ path: '/addQs', query: {frNo: row.frNo} })
+    	this.$router.push({ path: '/addQs', query: {frNo: row.frNo, frName:row.frName} })
 		}
 
     
@@ -650,5 +677,6 @@ if(State == 1)
 <style>
 .box-card {
   margin: 10px;
-  }
+}
+ 
 </style>
