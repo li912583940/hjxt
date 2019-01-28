@@ -116,32 +116,32 @@
           <span>{{scope.row.yjNo}}/{{scope.row.yjName}}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.playAudioVideoPermission==1 || buttonRole.downAudioVideoPermission==1" width="260" align="center" label="音视频操作">
+      <el-table-column v-if="buttonRole.playAudioVideoPermission==1 || buttonRole.downAudioVideoPermission==1" width="260" align="center" label="音视频操作" fixed="right">
         <template slot-scope="scope">
           <el-button v-if="buttonRole.playAudioVideoPermission==1" type="primary" size="mini" @click="playRecor(scope.row)">播放录音录像</el-button>
           <el-button v-if="buttonRole.downAudioVideoPermission==1" type="primary" size="mini" @click="downRecord(scope.row)">下载录音录像</el-button>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.notesPermission==1 || buttonRole.seeNotesPermission==1" width="150" align="center" label="摘要操作">
+      <el-table-column v-if="buttonRole.notesPermission==1 || buttonRole.seeNotesPermission==1" width="150" align="center" label="摘要操作" fixed="right">
         <template slot-scope="scope">
           <el-button v-if="buttonRole.notesPermission==1" type="primary" size="mini" @click="zhushi(scope.row)">注释</el-button>
           <el-button v-if="buttonRole.seeNotesPermission==1" type="primary" size="mini" @click="zhushiAll(scope.row)">查看</el-button>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.playAudioPermission==1 || buttonRole.downAudioPermission==1" width="220" align="center" label="录音操作">
+      <el-table-column v-if="buttonRole.playAudioPermission==1 || buttonRole.downAudioPermission==1" width="220" align="center" label="录音操作" fixed="right">
         <template slot-scope="scope">
           <el-button v-if="buttonRole.playAudioPermission==1" type="primary" size="mini" @click="palyTape(scope.row)">播放录音</el-button>
           <el-button v-if="buttonRole.downAudioPermission==1" type="primary" size="mini" @click="down3(scope.row.callRecfileUrl)">下载录音</el-button>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" label="录音评级">
+      <el-table-column width="100" align="center" label="录音评级" >
         <template slot-scope="scope">
           <span v-if="scope.row.recRatingState==0">未评</span>
           <span v-if="scope.row.recRatingState==1">异常</span>
           <span v-if="scope.row.recRatingState==2">正常</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.ratingPermission==1 || buttonRole.seeRatingPermission==1" width="150" align="center" label="评级操作">
+      <el-table-column v-if="buttonRole.ratingPermission==1 || buttonRole.seeRatingPermission==1" width="150" align="center" label="评级操作" fixed="right">
         <template slot-scope="scope">
           <el-button v-if="buttonRole.ratingPermission==1" type="primary" size="mini" @click="openRatingState(scope.row)">评级</el-button>
           <el-button v-if="buttonRole.seeRatingPermission==1" type="primary" size="mini" @click="openRatingStateAll(scope.row)">查看</el-button>
@@ -153,7 +153,7 @@
           <span v-if="scope.row.recAssessmentState==1">已听</span>
         </template>
       </el-table-column>
-      <el-table-column  v-if="buttonRole.seeAssessmentPermission==1" width="100" align="center" label="复听详情">
+      <el-table-column  v-if="buttonRole.seeAssessmentPermission==1" width="100" align="center" label="复听详情" fixed="right">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="openAllAssessment(scope.row)">查看</el-button>
         </template>
@@ -164,7 +164,7 @@
           <span v-if="scope.row.recordOverTime==1">已超时</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.seeOtherPermission==1" width="140" align="center" label="其它详情">
+      <el-table-column v-if="buttonRole.seeOtherPermission==1" width="140" align="center" label="其它详情" fixed="right">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="openOtherInfo(scope.row)">查看</el-button>
         </template>

@@ -47,6 +47,11 @@
           <span v-else-if="scope.row.hjType==99">其他会见</span>
         </template>
       </el-table-column>
+      <el-table-column width="90" align="center" label="会见时长">
+        <template slot-scope="scope">
+          <span>{{scope.row.hjTime}}分钟</span>
+        </template>
+      </el-table-column>
       <el-table-column width="200" align="center" label="会见说明">
         <template slot-scope="scope">
           <span>{{scope.row.hjInfo}}</span>
@@ -59,7 +64,7 @@
       </el-table-column>
       <el-table-column width="300" align="center" label="亲属信息">
         <template slot-scope="scope">
-          <span>{{scope.row.qsInfo1}}</span>
+          <span>{{scope.row.qsInfo}}</span>
         </template>
       </el-table-column>
       <el-table-column width="100" align="center" label="会见状态">
@@ -81,7 +86,7 @@
       <el-table-column width="100" align="center" label="通知超时">
         <template slot-scope="scope">
           <span v-if="scope.row.isOverTime==0">未超时</span>
-          <span v-if="scope.row.isOverTime==1">已超时</span>
+          <span v-if="scope.row.isOverTime==1" style="color: red;">已超时</span>
         </template>
       </el-table-column>
     </el-table>
@@ -126,6 +131,7 @@ export default {
 	    }  
 	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
 	  }
+	
   },
   created() {
     this.getList()

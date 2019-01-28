@@ -51,6 +51,7 @@ import com.sl.ue.service.jl.JlJqService;
 import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.service.sys.SysHjLineService;
 import com.sl.ue.service.sys.SysParamService;
+import com.sl.ue.util.Config;
 import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.token.TokenUser;
@@ -330,7 +331,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		addJlHjDj.setHjMode(hjMode);
 		addJlHjDj.setDjTime(new Date());
 		if(hjsc == null){
-			addJlHjDj.setHjTime(30*60); // 单位：秒  , 30分钟
+			addJlHjDj.setHjTime(jlJb.getHjTime()*60); // 单位：秒  , 30分钟
 		}else{
 			addJlHjDj.setHjTime(hjsc*60); // 单位：秒
 		}
@@ -1327,13 +1328,67 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		return result.toResult();
 	}
 	
+	@Override
+	public Map<String, Object> findPojoByNotice(JlHjDjVO model, Integer pageSize, Integer pageNum) {
+		StringBuffer leftJoinField = new StringBuffer(); // 字段 
+		leftJoinField.append(",dbo.get_ck(a.FP_Line_No,a.JY) as zw");
+		
+		model.setLeftJoinField(leftJoinField.toString());
+		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
+		List<JlHjDjVO> list = (List<JlHjDjVO>) map.get("list");
+		for(JlHjDjVO t : list){
+			String qsName = "";
+			if(StringUtils.isNotBlank(t.getQsInfo1())){
+				qsName+=t.getQsInfo1();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo2())){
+				qsName+=t.getQsInfo2();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo3())){
+				qsName+=t.getQsInfo3();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo4())){
+				qsName+=t.getQsInfo4();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo5())){
+				qsName+=t.getQsInfo5();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo6())){
+				qsName+=t.getQsInfo6();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo7())){
+				qsName+=t.getQsInfo7();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo8())){
+				qsName+=t.getQsInfo8();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo9())){
+				qsName+=t.getQsInfo9();
+			}
+			t.setQsInfo(qsName);
+			t.setHjTime(t.getHjTime()/60);
+		}
+		return map;
+	}
+	
 	public String editTz(JlHjDjVO model){
+		String overTime = Config.getPropertiesValue("noticeOvertime"); //超时分钟
 		Result result = new Result();
 		SysUserVO user = TokenUser.getUser();
 		model.setPageTzUserNo(user.getUserNo());
 		model.setPageTzUserName(user.getUserName());
 		model.setPageTzTime(new Date());
+		if(StringUtils.isNotBlank(overTime)){
+			Date overDate = DateUtil.addMin(model.getDjTime(), Integer.parseInt(overTime));//超时时间
+			if(new Date().before(overDate)){ //未超时
+				model.setIsOverTime(0);
+			}else{//超时
+				model.setIsOverTime(1);
+			}
+		}
 		this.edit(model);
 		return result.toResult();
 	}
+
+	
 }

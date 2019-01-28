@@ -1,7 +1,7 @@
 <!--
 	作者：912583940@qq.com
 	时间：2018-11-01
-	描述： 服刑人员管理
+	描述： 罪犯级别
 -->
 <template>
   <div class="app-container">
@@ -57,7 +57,8 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="180px" style='width: 400px; margin-left:25%;' >
          <el-form-item label="级别编号" prop="jbNo">
-          <el-input v-model="dataForm.jbNo"></el-input>
+          <el-input v-if="dialogStatus=='update'" v-model="dataForm.jbNo" :disabled="true"></el-input>
+          <el-input v-if="dialogStatus=='create'" v-model="dataForm.jbNo"></el-input>
         </el-form-item>
         <el-form-item label="级别名称" prop="jbName">
           <el-input v-model="dataForm.jbName"></el-input>

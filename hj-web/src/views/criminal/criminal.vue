@@ -423,8 +423,8 @@ export default {
       rules: {
       	frNo: [{ required: true, message: '编号不能为空', trigger: 'blur'}],
         frName: [{ required: true, message: this.$t('criminal.name'), trigger: 'blur' }],
-        jbNo: [{ required: true, message: '级别不能为空', trigger: 'change' }]
-        
+        jbNo: [{ required: true, message: '级别不能为空', trigger: 'change' }],
+        jq: [{ required: true, message: '监区不能为空', trigger: 'change' }]
       },
       downloadLoading: false,
       
@@ -479,7 +479,8 @@ export default {
       ],
       rulesQs:{
         qsName: [{ required: true, message: '亲属姓名不能为空', trigger: 'blur' }],
-        gx: [{ required: true, message: '亲属关系必选', trigger: 'blur' }]
+        gx: [{ required: true, message: '亲属关系必选', trigger: 'blur' }],
+        qsSfz: [{ required: true, message: '亲属身份证不能为空', trigger: 'blur' }]
       },
       
       //按钮权限   1：有权限， 0：无权限

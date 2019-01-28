@@ -25,7 +25,7 @@ public class JlJqWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(JlJqVO model,Integer pageSize, Integer pageNum){
-        List<JlJqVO> list = jlJqSQL.findList(model, pageSize, pageNum);
+        List<JlJqVO> list = jlJqSQL.findList(model, pageSize, pageNum, "ASC");
         this.putData(list);
         return this.toResult();
     }

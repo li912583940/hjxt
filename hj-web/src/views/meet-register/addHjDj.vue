@@ -249,7 +249,7 @@ export default {
       frListQuery: {
         pageNum: 1,
         pageSize: 5,
-        frNo: this.$route.query.frNoQuery,
+        frNo: undefined,
         frName: undefined,
         jq: undefined,
         qsSfz: undefined, // 亲属身份证
@@ -375,7 +375,28 @@ export default {
   	noFrSearch() {
   		this.total=0
   		if(this.frNoQuery!= undefined){
-  			this.getFrList()
+  			let param = {
+  				frNo: this.frNoQuery
+  			}
+  			findFrPojo(param).then((res) => {
+	      	 this.frList = res.pojo.list
+	      	 this.frTotal = res.pojo.count
+	      	 this.frListLoading = false
+
+						let qsparam={
+							 frNo:this.frNoQuery
+						}
+						findQsPojo(qsparam).then((res) => {
+			      	 this.qsList = res.pojo.list
+			      	 this.qsTotal = res.pojo.count
+			      	 this.qsListLoading = false
+			      }).catch(error => {
+			         this.qsListLoading = false
+			      })
+	      }).catch(error => {
+	          this.frListLoading = false
+	      })
+  			this.getQsFrList()
   		}
   		this.frListLoading = false
   	},
@@ -400,13 +421,13 @@ export default {
       	 this.frList = res.pojo.list
       	 this.frTotal = res.pojo.count
       	 this.frListLoading = false
-//    	 if( res.pojo.count > 0){ //默认查询第一个罪犯的亲属信息
-//    	   this.qsListQuery.frNo = res.pojo.list[0].frNo
-//    	   this.getQsFrList()
-//    	 }else{
-//    	 	this.qsList = null
-//    	 	this.qsTotal = null
-//    	 }
+      	 if( res.pojo.count ==1){ //默认查询第一个罪犯的亲属信息
+      	   this.qsListQuery.frNo = res.pojo.list[0].frNo
+      	   this.getQsFrList()
+      	 }else{
+      	 	this.qsList = null
+      	 	this.qsTotal = null
+      	 }
       }).catch(error => {
           this.frListLoading = false
       })
@@ -535,15 +556,32 @@ export default {
 	    })
     	RequestAddHjdj(this.formdata).then((res) => {
     		loading.close();
+    		this.$notify({
+          title: '成功',
+          message: '提交登记成功',
+          type: 'success'
+        });
+        
+      	this.frListQuery.frName = undefined
+      	this.frListQuery.frNo = undefined
+      	this.frListQuery.jq = undefined
+      	this.frListQuery.qsSfz = undefined
+      	this.frListQuery.qsName = undefined
     		//history.go(-1) 
-    		let timestamp=new Date().getTime()
-    		this.$router.push({ path: '/meetRegister/index', query: {refreshZ:timestamp} })
+    		//let timestamp=new Date().getTime()
+    		//this.$router.push({ path: '/meetRegister/index', query: {refreshZ:timestamp} })
     	}).catch(error =>{
     		loading.close();
+//  		this.$notify.error({
+//        title: '错误',
+//        message: '系统错误，提交登记失败'
+//      })
     	})
     },
     returnPrevious(){ // 返回上一页
-    	history.go(-1)
+    	let timestamp=new Date().getTime()
+    	this.$router.push({ path: '/meetRegister/index', query: {refreshZ:timestamp} })
+    	//history.go(-1)
     },
     handleSearchQs(row) { //双击罪犯表格查询家属
     	this.qsListQuery.frNo = row.frNo

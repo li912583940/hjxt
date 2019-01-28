@@ -118,7 +118,8 @@ export default {
       ],
       rulesQs:{
         qsName: [{ required: true, message: '亲属姓名不能为空', trigger: 'blur' }],
-        gx: [{ required: true, message: '亲属关系必选', trigger: 'blur' }]
+        gx: [{ required: true, message: '亲属关系必选', trigger: 'blur' }],
+        qsSfz: [{ required: true, message: '亲属身份证不能为空', trigger: 'blur' }]
       },
       scriptAddHjDj : undefined, //身份证读卡器时间节点
       

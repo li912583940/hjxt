@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
   	<div class="filter-container">
-    	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="警察编号" v-model="listQuery.yjNum" clearable>
+    	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="警察编号" v-model="listQuery.yjNo" clearable>
       </el-input>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="警察姓名" v-model="listQuery.yjName" clearable>
       </el-input>
@@ -17,7 +17,7 @@
       style="width: 1001px">
       <el-table-column width="200" align="center" label="警察编号" >
         <template slot-scope="scope">
-          <span>{{scope.row.yjNum}}</span>
+          <span>{{scope.row.yjNo}}</span>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="警察姓名">
@@ -52,8 +52,9 @@
 	<!-- 新增或编辑 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
-        <el-form-item label="警察编号" prop="yjNum">
-          <el-input v-model="dataForm.yjNum"></el-input>
+        <el-form-item label="警察编号" prop="yjNo">
+        	<el-input v-if="dialogStatus=='update'" v-model="dataForm.yjNo" :disabled="true"></el-input>
+          <el-input v-if="dialogStatus=='create'" v-model="dataForm.yjNo"></el-input>
         </el-form-item>
         <el-form-item label="警察姓名" prop="yjName">
           <el-input v-model="dataForm.yjName"></el-input>
@@ -96,7 +97,7 @@ export default {
       list: null,
       total: null,
       listQuery: {
-      	yjNum: undefined,
+      	yjNo: undefined,
       	yjName: undefined,
       	deptName: undefined,
         pageNum: 1,
@@ -105,7 +106,7 @@ export default {
       // 新增或编辑弹窗
       dataForm: { 
         webId: undefined,
-        yjNum: undefined,
+        yjNo: undefined,
         yjName: undefined,
         yjCard: undefined,
         deptName: undefined
@@ -120,6 +121,7 @@ export default {
         create: '新 增'
       },
        rules: {
+        yjNo: [{ required: true, message: '警察编号不能为空', trigger: 'blur' }],
         yjName: [{ required: true, message: '警察姓名不能为空', trigger: 'blur' }]
       },
       
@@ -134,7 +136,14 @@ export default {
     }
   },
   filters: {
-    
+    dateFormat(row, column) {
+			//时间格式化  
+	    let date = row[column.property];  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+		}
   },
   created() {
     this.getList()
@@ -145,15 +154,15 @@ export default {
   },
   methods: {
     getList() {
-    	if(!this.listQuery.yjNum){
-      	this.listQuery.yjNum = undefined
-      }
-      if(!this.listQuery.yjName){
-      	this.listQuery.yjName = undefined
-      }
-      if(!this.listQuery.deptName){
-      	this.listQuery.deptName = undefined
-      }
+//  	if(!this.listQuery.yjNo){
+//    	this.listQuery.yjNo = undefined
+//    }
+//    if(!this.listQuery.yjName){
+//    	this.listQuery.yjName = undefined
+//    }
+//    if(!this.listQuery.deptName){
+//    	this.listQuery.deptName = undefined
+//    }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count
@@ -231,7 +240,7 @@ export default {
             this.dialogFormVisible = false
             this.getList()
           }).catch(error => {
-		        this.dialogFormVisible = false
+		        //this.dialogFormVisible = false
 		      })
         }
       })
@@ -242,7 +251,7 @@ export default {
     	}
     	findOne(param).then((res) =>{
     		this.dataForm.webId = res.data.webId,
-        this.dataForm.yjNum =  res.data.yjNum,
+        this.dataForm.yjNo =  res.data.yjNo,
         this.dataForm.yjName = res.data.yjName,
         this.dataForm.yjCard = res.data.yjCard,
         this.dataForm.deptName = res.data.deptName
@@ -290,14 +299,7 @@ export default {
         }
       }))
     },
-    dateFormat(row, column) {
-			//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-		},
+    
 		dateFormats: function (val) {
 			if(!val){
 				return undefined

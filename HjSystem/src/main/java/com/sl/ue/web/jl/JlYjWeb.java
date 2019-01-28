@@ -60,6 +60,13 @@ public class JlYjWeb extends Result{
 
     @RequestMapping("/add")
     public String add(JlYjVO model){
+    	JlYjVO jlYjQuery = new JlYjVO();
+    	jlYjQuery.setYjNo(model.getYjNo());
+    	int count = jlYjSQL.count(jlYjQuery);
+    	if(count>0){
+    		this.error(error_103, "狱警编号已存在");
+    		return this.toResult();
+    	}
     	model.setJy("");
     	model.setJq("");
         jlYjSQL.add(model);

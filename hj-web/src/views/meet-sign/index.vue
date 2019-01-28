@@ -75,7 +75,7 @@
       </el-table-column>
       <el-table-column width="90" align="center" label="会见时长">
         <template slot-scope="scope">
-          <span>{{scope.row.hjTime| hjTimeFilter}}分钟</span>
+          <span>{{scope.row.hjTime}}分钟</span>
         </template>
       </el-table-column>
       <el-table-column width="160" align="center" label="登记时间">
@@ -183,7 +183,7 @@ export default {
 	  	if(d == undefined){
 	  		return "";
 	  	}
-	  	return d/60
+	  	return d
 	  }
   },
   created() {

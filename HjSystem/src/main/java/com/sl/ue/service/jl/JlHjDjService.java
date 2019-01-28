@@ -123,6 +123,13 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 	public void exportExcelByLog(JlHjDjVO model, 
 			HttpServletRequest request, HttpServletResponse response);
 	
+
+	/**
+	 * 说明 [会见通知 查询会见登记信息]
+	 * L_晓天  @2018年11月8日
+	 */
+	public Map<String, Object> findPojoByNotice(JlHjDjVO model, Integer pageSize, Integer pageNum);
+	
 	/**
 	 * 说明 [会见通知修改通知状态]
 	 * @param model

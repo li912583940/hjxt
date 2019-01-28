@@ -167,12 +167,14 @@ public class JlHjDj implements java.io.Serializable {
 	private Integer qzSp;
 	@DbField("FR_DAH")
 	private String frDah;
-	@DbField("page_tz_UserNo")
+	@DbField("page_tz_User_no")
 	private String pageTzUserNo;
-	@DbField("page_tz_UserName")
+	@DbField("page_tz_User_name")
 	private String pageTzUserName;
 	@DbField("page_tz_Time")
 	private Date pageTzTime;
+	@DbField("is_over_time")
+	private Integer isOverTime; //是否超时，1：已超时，0：未超时
 	@DbField("FP_Time_FR")
 	private Date fpTimeFr;
 	@DbField("FP_Time_QS")
@@ -791,6 +793,14 @@ public class JlHjDj implements java.io.Serializable {
 
 	public void setPageTzTime(Date pageTzTime) {
 		this.pageTzTime = pageTzTime;
+	}
+
+	public Integer getIsOverTime() {
+		return isOverTime;
+	}
+
+	public void setIsOverTime(Integer isOverTime) {
+		this.isOverTime = isOverTime;
 	}
 
 	public Date getFpTimeFr() {

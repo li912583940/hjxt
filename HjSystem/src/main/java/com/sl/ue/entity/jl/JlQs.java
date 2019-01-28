@@ -70,7 +70,7 @@ public class JlQs implements java.io.Serializable {
 	private Date hjStopTime;
 	@DbField("ZP_URL")
 	private String zpUrl;
-	@DbField("jzUrl")
+	@DbField("jz_url")
 	private String jzUrl;
 
 	public Integer getWebId() {

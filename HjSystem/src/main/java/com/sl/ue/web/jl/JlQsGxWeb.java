@@ -20,7 +20,7 @@ public class JlQsGxWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(JlQsGxVO model,Integer pageSize, Integer pageNum){
-        List<JlQsGxVO> list = jlQsGxSQL.findList(model, pageSize, pageNum);
+        List<JlQsGxVO> list = jlQsGxSQL.findList(model, pageSize, pageNum, "ASC");
         this.putData(list);
         return this.toResult();
     }

@@ -26,7 +26,7 @@ public class HjNoticeWeb extends Result{
     public String findPojo(Integer pageSize, Integer pageNum){
 		JlHjDjVO jlHjDj = new JlHjDjVO();
 		jlHjDj.setState(0);
-        Map<String, Object> map = jlHjDjSQL.findPojo(jlHjDj, pageSize, pageNum);
+        Map<String, Object> map = jlHjDjSQL.findPojoByNotice(jlHjDj, pageSize, pageNum);
         this.putPojo(map);
         return this.toResult();
     }
@@ -43,8 +43,7 @@ public class HjNoticeWeb extends Result{
 	
 	@RequestMapping("/editTz")
 	public String editTz(Long hjid, Integer pageTzState){
-		JlHjDjVO jlHjDj = new JlHjDjVO();
-		jlHjDj.setHjid(hjid);
+		JlHjDjVO jlHjDj = jlHjDjSQL.findOne(hjid);
 		jlHjDj.setPageTzState(pageTzState);
 		return jlHjDjSQL.editTz(jlHjDj);
 	}

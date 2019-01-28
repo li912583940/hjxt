@@ -22,7 +22,7 @@ public class JlJbWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(JlJbVO model,Integer pageSize, Integer pageNum){
-        List<JlJbVO> list = jlJbSQL.findList(model, pageSize, pageNum);
+        List<JlJbVO> list = jlJbSQL.findList(model, pageSize, pageNum, "ASC");
         this.putData(list);
         return this.toResult();
     }

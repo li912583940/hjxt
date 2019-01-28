@@ -57,7 +57,8 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="180px" style='width: 400px; margin-left:25%;' >
         <el-form-item label="监区编号" prop="jqNo">
-          <el-input v-model="dataForm.jqNo"></el-input>
+          <el-input v-if="dialogStatus=='update'" v-model="dataForm.jqNo" :disabled="true"></el-input>
+          <el-input v-if="dialogStatus=='create'" v-model="dataForm.jqNo"></el-input>
         </el-form-item>
         <el-form-item label="监区名称" prop="jqName">
           <el-input v-model="dataForm.jqName"></el-input>

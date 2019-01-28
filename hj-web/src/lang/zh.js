@@ -89,7 +89,7 @@ export default {
     frNo: '罪犯编号',
     frName: '罪犯姓名',
     jqNo: '监区编号',
-    jqName: '监区'
+    jqName: '监区名称'
   },
   /* 服刑 */
   criminal: {
