@@ -9,3 +9,5 @@ export const FindDetails = params => { return request.get('/jlHjSpDetails/findLi
 export const FindSpeedSpUser = params => { return request.get('/jlHjSpUser/findSpeedSpUser', { params: params } ).then(res => res) }
 
 export const RequestSpData = params => { return request.post('/jlHjSp/saveSpResult', params).then(res => res) }
+
+export const findSpNotice = params => { return request.get('/jlHjSp/findSpNotice', { params: params } ).then(res => res) }

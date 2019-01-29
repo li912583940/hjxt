@@ -236,4 +236,17 @@ public class JlHjSpServiceImpl extends BaseSqlImpl<JlHjSpVO> implements JlHjSpSe
 		return result.toResult();
 	}
 
+	@Override
+	public String findSpNotice() {
+		Result result = new Result();
+		// 查询当前用户可查看的审批记录
+		SysUserVO sysUser = TokenUser.getUser();
+		String sql = "SELECT ISNULL(count(*),0) AS count from jl_hj_sp AS a LEFT JOIN jl_hj_sp_user AS b ON a.set_no=b.sp_set_no"
+				+ " WHERE a.state=0 AND a.speed_progress=b.sp_level"
+				+ " AND (b.sp_user_no='"+sysUser.getUserNo()+"' OR b.sp_dept_id="+sysUser.getDeptId()+")";
+		Integer count = this.jdbcTemplate.queryForObject(sql, Integer.class);
+		result.putJson(count);
+		return result.toResult();
+	}
+
 }

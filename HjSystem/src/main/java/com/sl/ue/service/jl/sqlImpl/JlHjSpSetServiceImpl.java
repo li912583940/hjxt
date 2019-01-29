@@ -1,6 +1,7 @@
 package com.sl.ue.service.jl.sqlImpl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +37,11 @@ public class JlHjSpSetServiceImpl extends BaseSqlImpl<JlHjSpSetVO> implements Jl
 			return result.toResult();
 		}
 		JlHjSpSetVO jlHjSpSet = this.findOne(id);
+		String gxValue = jlHjSpSet.getSpValue();
+		if(StringUtils.isNotBlank(gxValue)){
+			List<String> gxList = Arrays.asList(gxValue.split(","));
+			result.putData("gxList", gxList);
+		}
 		result.putJson("jlHjSpSet", jlHjSpSet);
 		
 		List<Integer> deptList1 = new ArrayList<Integer>();
@@ -71,19 +77,20 @@ public class JlHjSpSetServiceImpl extends BaseSqlImpl<JlHjSpSetVO> implements Jl
 				}
 			}
 		}
-		result.putJson("deptList1", deptList1);
-		result.putJson("userList1", userList1);
+		result.putData("deptList1", deptList1);
+		result.putData("userList1", userList1);
 		
-		result.putJson("deptList2", deptList2);
-		result.putJson("userList2", userList2);
+		result.putData("deptList2", deptList2);
+		result.putData("userList2", userList2);
 		
-		result.putJson("deptList3", deptList3);
-		result.putJson("userList3", userList3);
+		result.putData("deptList3", deptList3);
+		result.putData("userList3", userList3);
 		return result.toResult();
 	}
 
 	@Override
 	public String spConf(Integer id, String spExplain, Integer usable,
+			String gxValue,
 			String deptValue1, String userValue1, 
 			String deptValue2, String userValue2,
 			String deptValue3, String userValue3) {
@@ -194,6 +201,7 @@ public class JlHjSpSetServiceImpl extends BaseSqlImpl<JlHjSpSetVO> implements Jl
 		jlHjSpSet.setSpExplain(spExplain);
 		jlHjSpSet.setUsable(usable);
 		jlHjSpSet.setMaxNum(maxNum);
+		jlHjSpSet.setSpValue(gxValue);
 		this.edit(jlHjSpSet);
 		return result.toResult();
 	}

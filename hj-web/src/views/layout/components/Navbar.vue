@@ -97,6 +97,8 @@ import ThemePicker from '@/components/ThemePicker'
 import { findNotTzList } from '@/api/meetNotice'
 import { EditPassword, ResetUserPassword } from '@/api/login'
 import { Message, MessageBox } from 'element-ui'
+import { findSpNotice } from '@/api/meetSp'
+
 
 export default {
   components: {
@@ -128,6 +130,9 @@ export default {
         userPwdNew: undefined,
       },
       
+      isHjNotice:0,
+      isSpNotice:0,
+      
     	rules: {
         password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
       },
@@ -139,11 +144,16 @@ export default {
 	  		this.clearInterval(this.timer)
 	  	}else{
 	  		this.timer = setInterval(() =>{
-	  			this.getNoticeList()
-	  		}, 300000)
+	  			if(this.isHjNotice==1){
+	  				this.getHjNotice()
+	  			}
+	  			if(this.isSpNotice==1){
+	  				this.getSpNotice()
+	  			}
+	  		}, 60000) //60秒一次
 	  	}
   	}
-  	
+
   },
   destroyed() {
   	if(this.timer){
@@ -159,35 +169,55 @@ export default {
         location.reload()// In order to re-instantiate the vue-router object to avoid bugs
       })
     },
-    getNoticeList(){
+    getHjNotice(){//--会见通知
     	findNotTzList({}).then(res => {
     		let list = res.list
     		if(list.length>0){
     			let obj = list[0]
     			this.$notify({
-          title: '会见通知',
-          message: obj.jqName+' '+obj.frName+" 有亲属登记会见，请在《会见通知》菜单查看",
-          position: 'bottom-right',
-          type: 'warning'
-        });
+	          title: '会见通知',
+	          message: obj.jqName+' '+obj.frName+" 有亲属登记会见，请在《会见通知》菜单查看",
+	          position: 'bottom-right',
+	          type: 'warning'
+	        });
     		}
     		
     	})
     },
-    setButtonRole() { //设置按钮的权限
+    setButtonRole() { //右下角弹窗提示 --会见通知 --会见审批
     	let bool = 0
     	let roles = sessionStorage.getItem("roles")
     	if(roles.includes('admin')){
     		bool=1
+    		this.isHjNotice=1
+    		this.isSpNotice=1
     	}else{
     		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
     		if(buttonRoles.meetNotice){
+    			this.isHjNotice=1
+    			bool=1
+    		}
+    		if(buttonRoles.meetSp){
+    			this.isSpNotice=1
     			bool=1
     		}
     	}
     	return bool
     },
     
+    getSpNotice() {// --会见审批
+    	findSpNotice({}).then(res => {
+				let count = res.data
+				if(count>0){
+					this.$notify({
+	          title: '审批通知',
+	          message: "您有新的审批需要处理，请前往《会见审批》菜单查看",
+	          position: 'bottom-right',
+	          type: 'warning'
+	        });
+				}
+			})
+    },
     //重置表单
 		resetForm() {
 			this.dataForm.webId= undefined

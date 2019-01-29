@@ -82,6 +82,23 @@
 				    <el-radio :label="1">开启</el-radio>
 				  </el-radio-group>
         </el-form-item>
+        <el-form-item v-if="dataForm.spNo==5" label="亲属关系">
+        	<el-popover
+					  placement="bottom"
+					  width="261"
+					  trigger="click">
+					  <el-transfer
+					  	filterable
+					    :filter-method="transferFilter"
+					    filter-placeholder="请输入关键字搜索"
+					    v-model="gxValue"
+					    :data="gxData"
+					    :titles="['未拥有', '已拥有']">
+					  </el-transfer>
+					  <el-button slot="reference">添加关系</el-button>
+					</el-popover>
+        </el-form-item>
+        
         <el-form-item label="一级审批人">
         	<el-popover
 					  placement="bottom"
@@ -186,7 +203,7 @@
 </template>
 
 <script>
-import { findPojo, findDetails, RequestSpConf, GetDeptList, GetUserList} from '@/api/spSet'
+import { findPojo, findDetails, RequestSpConf, GetDeptList, GetUserList, GetGxList} from '@/api/spSet'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -217,11 +234,15 @@ export default {
       // 新增或编辑弹窗
       dataForm: { 
         id: undefined,
+        spNo: undefined,
         spName: undefined,
         spExplain: undefined,
-        usable: 1
+        usable: 0
       },
       dialogFormVisible: false,
+      gxData: [], //审批家属配置
+      gxValue: [], //审批家属配置
+      
     	deptData: [],
     	userData: [],
     	
@@ -273,6 +294,19 @@ export default {
       this.getList()
     },
     
+    getGxList() {
+    	if(this.gxData.length === 0) {
+    		GetGxList({}).then((res) => {
+	    		let list = res.list
+	    		for(let x of list){
+					  let value = {}
+					  value.id = x.qsGx
+					  value.name = x.qsGx
+					  this.gxData.push(value)
+					}
+	    	})
+    	}
+    },
     getDeptList() {
     	if(this.deptData.length ==0){ // 只查询一次
     		GetDeptList({}).then(res =>{
@@ -308,10 +342,6 @@ export default {
 	    	})
     	}
     },
-    
-    next() {
-	    if (this.searchActive++ >= 2) this.searchActive = 0;
-	  },
     search() { //查看流程
     	this.dialogSearchVisible = true
     	
@@ -321,7 +351,7 @@ export default {
 			this.dataForm.id = undefined
 			this.dataForm.spName = undefined
 			this.dataForm.spExplain = undefined
-			this.dataForm.usable = 1
+			this.dataForm.usable = 0
 			
 			this.deptValue1= []
 	    this.userValue1= []
@@ -339,9 +369,16 @@ export default {
     	findDetails(param).then((res) =>{
     		let jlHjSpSet = res.jlHjSpSet
     		this.dataForm.id = jlHjSpSet.id
+    		this.dataForm.spNo = jlHjSpSet.spNo
         this.dataForm.spName =  jlHjSpSet.spName
         this.dataForm.spExplain =  jlHjSpSet.spExplain
         this.dataForm.usable =  jlHjSpSet.usable
+        
+        if(jlHjSpSet.spNo==5){
+        	this.gxValue=res.gxList!=undefined?res.gxList:[]
+        }else{
+        	this.gxValue=[]
+        }
         
         this.deptValue1 = res.deptList1
         this.userValue1 = res.userList1
@@ -356,6 +393,24 @@ export default {
 	    
     },
     updateData() { // 配置
+    	if(this.dataForm.usable==1){
+    		if(this.dataForm.spNo==5 && this.gxValue.length==0){ //亲属关系
+    			Message({
+		        message: '启用审批设置时，必须为当前配置添加需要审批的亲属关系',
+			      type: 'error',
+			      duration: 5 * 1000
+		      });
+		      return false;
+    		}
+    		if(this.deptValue1.length==0 && this.userValue1.length==0){
+    			Message({
+		        message: '启用审批设置时，必须设置审批人',
+			      type: 'error',
+			      duration: 5 * 1000
+		      });
+		      return false;
+    		}
+    	}
     	if(this.deptValue2.length>0 || this.userValue2.length>0){
     		if(this.deptValue1.length==0 && this.userValue1.length==0){
     			Message({
@@ -382,6 +437,7 @@ export default {
         spName: this.dataForm.spName,
         spExplain: this.dataForm.spExplain,
         usable: this.dataForm.usable,
+        gxValue : this.gxValue!=undefined?this.gxValue.join():"",
     		deptValue1 : this.deptValue1!=undefined?this.deptValue1.join():"",
         userValue1 : this.userValue1!=undefined?this.userValue1.join():"",
         deptValue2 : this.deptValue2!=undefined?this.deptValue2.join():"",

@@ -11,3 +11,6 @@ export const GetDeptList = params => { return request.get('/dept/findList', { pa
 
 export const GetUserList = params => { return request.get('/sysUser/findList', { params: params } ).then(res => res) }
 
+//获取亲属关系集合
+export const GetGxList = params => { return request.get('/jlQsGx/findList', { params: params } ).then(res => res) }
+

@@ -84,10 +84,12 @@ public class JlHjSpSetWeb extends Result{
      */
     @RequestMapping("/spConf")
     public String spConf(Integer id, String spExplain, Integer usable,
+    		String gxValue,
     		String deptValue1, String userValue1,
     		String deptValue2, String userValue2,
     		String deptValue3, String userValue3){
         jlHjSpSetSQL.spConf(id, spExplain, usable, 
+        		gxValue,
         		deptValue1, userValue1,
         		deptValue2, userValue2,
         		deptValue3, userValue3);

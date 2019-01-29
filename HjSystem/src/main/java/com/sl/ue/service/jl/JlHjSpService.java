@@ -20,4 +20,6 @@ public interface JlHjSpService extends BaseService<JlHjSpVO>{
 	 * L_晓天  @2019年1月16日
 	 */
 	public String saveSpResult(Integer spId, Integer speedProgress, String explain, Integer state);
+	
+	public String findSpNotice();
 }

@@ -74,4 +74,14 @@ public class JlHjSpWeb extends Result{
     public String saveSpResult(Integer spId, Integer speedProgress, String explain, Integer state){
     	return jlHjSpSQL.saveSpResult(spId, speedProgress, explain, state);
     }
+    
+    /**
+     * 说明 [会见审批，右下角通知]
+     * @return
+     * L_晓天  @2019年1月29日
+     */
+    @RequestMapping("/findSpNotice")
+    public String findSpNotice(){
+    	return jlHjSpSQL.findSpNotice();
+    }
 }

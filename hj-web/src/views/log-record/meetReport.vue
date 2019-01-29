@@ -3,6 +3,7 @@
 <div class="app-container">
 	<div class="filter-container">
 	  <el-cascader
+	  	class="filter-item"
 		:options="yearList"
 		v-model="fromYears"
 		@change="handleChange"
@@ -75,76 +76,6 @@ export default {
       jqs: [ // 监区下拉选框
       
       ],
-      years: [ //年份查询条件
-      ],
-      months: [ //月份查询条件
-        {
-      		id: 1,
-      		name: '1月'
-      	},
-      	{
-      		id: 2,
-      		name: '2月'
-      	},
-      	{
-      		id: 3,
-      		name: '3月'
-      	},
-      	{
-      		id: 4,
-      		name: '4月'
-      	},
-      	{
-      		id: 5,
-      		name: '5月'
-      	},
-      	{
-      		id: 6,
-      		name: '6月'
-      	},
-      	{
-      		id: 7,
-      		name: '7月'
-      	},
-      	{
-      		id: 8,
-      		name: '8月'
-      	},
-      	{
-      		id: 9,
-      		name: '9月'
-      	},
-      	{
-      		id: 10,
-      		name: '10月'
-      	},
-      	{
-      		id: 11,
-      		name: '11月'
-      	},
-      	{
-      		id: 12,
-      		name: '12月'
-      	}
-      ],
-      weeks: [
-        {
-      		id: 1,
-      		name: '第1周'
-      	},
-      	{
-      		id: 2,
-      		name: '第2周'
-      	},
-      	{
-      		id: 3,
-      		name: '第3周'
-      	},
-      	{
-      		id: 4,
-      		name: '第4周'
-      	}
-      ],
       hjTypes:[
         {
       		id: 1,
@@ -205,7 +136,7 @@ export default {
   	
   },
   mounted() {
-  	
+  	this.initChart()
   },
   methods: {
   	getList() {
@@ -228,7 +159,7 @@ export default {
   		}else{
   			this.listQuery.years=undefined
   		}
-  		console.log(this.listQuery.years)
+  		
   		RequestReport(this.listQuery).then((res) => {
   			let hjRecList = res.hjRecList
   			for(let x of hjRecList){

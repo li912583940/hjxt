@@ -106,7 +106,7 @@
           <span>{{scope.row.qsIndex}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300" align="center" label="亲属信息">
+      <el-table-column width="200" align="center" label="亲属信息">
         <template slot-scope="scope">
           <span>{{scope.row.qsInfo}}</span>
         </template>
@@ -116,57 +116,73 @@
           <span>{{scope.row.yjNo}}/{{scope.row.yjName}}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.playAudioVideoPermission==1 || buttonRole.downAudioVideoPermission==1" width="260" align="center" label="音视频操作" fixed="right">
+      <el-table-column v-if="buttonRole.playAudioVideoPermission==1 || buttonRole.downAudioVideoPermission==1" width="130" align="center" label="音视频操作" fixed="right">
         <template slot-scope="scope">
-          <el-button v-if="buttonRole.playAudioVideoPermission==1" type="primary" size="mini" @click="playRecor(scope.row)">播放录音录像</el-button>
-          <el-button v-if="buttonRole.downAudioVideoPermission==1" type="primary" size="mini" @click="downRecord(scope.row)">下载录音录像</el-button>
+        	<div>
+            <el-button v-if="buttonRole.playAudioVideoPermission==1" type="primary" size="mini" @click="playRecor(scope.row)">播放录音录像</el-button>
+          </div>
+          <div style="margin-top: 2px;">
+            <el-button v-if="buttonRole.downAudioVideoPermission==1" type="primary" size="mini" @click="downRecord(scope.row)">下载录音录像</el-button>
+       		</div>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.notesPermission==1 || buttonRole.seeNotesPermission==1" width="150" align="center" label="摘要操作" fixed="right">
+      <el-table-column v-if="buttonRole.playAudioPermission==1 || buttonRole.downAudioPermission==1" width="100" align="center" label="录音操作" fixed="right">
         <template slot-scope="scope">
-          <el-button v-if="buttonRole.notesPermission==1" type="primary" size="mini" @click="zhushi(scope.row)">注释</el-button>
-          <el-button v-if="buttonRole.seeNotesPermission==1" type="primary" size="mini" @click="zhushiAll(scope.row)">查看</el-button>
+        	<div>
+            <el-button v-if="buttonRole.playAudioPermission==1" type="primary" size="mini" @click="palyTape(scope.row)">播放录音</el-button>
+          </div>
+          <div style="margin-top: 2px;">
+            <el-button v-if="buttonRole.downAudioPermission==1" type="primary" size="mini" @click="down3(scope.row.callRecfileUrl)">下载录音</el-button>
+          </div>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.playAudioPermission==1 || buttonRole.downAudioPermission==1" width="220" align="center" label="录音操作" fixed="right">
+      <el-table-column v-if="buttonRole.notesPermission==1 || buttonRole.seeNotesPermission==1" width="80" align="center" label="摘要操作" fixed="right">
         <template slot-scope="scope">
-          <el-button v-if="buttonRole.playAudioPermission==1" type="primary" size="mini" @click="palyTape(scope.row)">播放录音</el-button>
-          <el-button v-if="buttonRole.downAudioPermission==1" type="primary" size="mini" @click="down3(scope.row.callRecfileUrl)">下载录音</el-button>
+          <div>
+            <el-button v-if="buttonRole.notesPermission==1" type="primary" size="mini" @click="zhushi(scope.row)">注释</el-button>
+          </div>
+          <div style="margin-top: 2px;">
+            <el-button v-if="buttonRole.seeNotesPermission==1" type="primary" size="mini" @click="zhushiAll(scope.row)">查看</el-button>
+          </div>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" label="录音评级" >
+      <el-table-column width="80" align="center" label="录音评级" >
         <template slot-scope="scope">
           <span v-if="scope.row.recRatingState==0">未评</span>
           <span v-if="scope.row.recRatingState==1">异常</span>
           <span v-if="scope.row.recRatingState==2">正常</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.ratingPermission==1 || buttonRole.seeRatingPermission==1" width="150" align="center" label="评级操作" fixed="right">
+      <el-table-column v-if="buttonRole.ratingPermission==1 || buttonRole.seeRatingPermission==1" width="80" align="center" label="评级操作" fixed="right">
         <template slot-scope="scope">
-          <el-button v-if="buttonRole.ratingPermission==1" type="primary" size="mini" @click="openRatingState(scope.row)">评级</el-button>
-          <el-button v-if="buttonRole.seeRatingPermission==1" type="primary" size="mini" @click="openRatingStateAll(scope.row)">查看</el-button>
+        	<div>
+            <el-button v-if="buttonRole.ratingPermission==1" type="primary" size="mini" @click="openRatingState(scope.row)">评级</el-button>
+          </div>
+          <div style="margin-top: 2px;">
+            <el-button v-if="buttonRole.seeRatingPermission==1" type="primary" size="mini" @click="openRatingStateAll(scope.row)">查看</el-button>
+          </div>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" label="复听状态">
+      <el-table-column width="80" align="center" label="复听状态">
         <template slot-scope="scope">
           <span v-if="scope.row.recAssessmentState==0">未听</span>
           <span v-if="scope.row.recAssessmentState==1">已听</span>
         </template>
       </el-table-column>
-      <el-table-column  v-if="buttonRole.seeAssessmentPermission==1" width="100" align="center" label="复听详情" fixed="right">
+      <el-table-column  v-if="buttonRole.seeAssessmentPermission==1" width="100" align="center" label="详情信息" fixed="right">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="openAllAssessment(scope.row)">查看</el-button>
+        	<div>
+            <el-button type="primary" size="mini" @click="openAllAssessment(scope.row)">查看复听</el-button>
+          </div>
+          <div style="margin-top: 2px;">
+            <el-button type="primary" size="mini" @click="openOtherInfo(scope.row)">查看其他</el-button>
+          </div>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" label="复听超时">
+      <el-table-column width="80" align="center" label="复听超时">
         <template slot-scope="scope">
           <span v-if="scope.row.recordOverTime==0">未超时</span>
           <span v-if="scope.row.recordOverTime==1">已超时</span>
-        </template>
-      </el-table-column>
-      <el-table-column v-if="buttonRole.seeOtherPermission==1" width="140" align="center" label="其它详情" fixed="right">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" @click="openOtherInfo(scope.row)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -839,8 +855,17 @@ export default {
     },
     /** 播放录音录像 开始 */
     playRecor(row){ //播放录音录像
-    	this.dialogPlayVisible =true
-    	this.callRecfileUrl = row.callRecfileUrl
+    	if(!row.callRecfileUrl){
+    		Message({
+	        message: '录像文件已被删除，无法播放。',
+		      type: 'error',
+		      duration: 5 * 1000
+	      });
+    	}else{
+    		this.dialogPlayVisible =true
+    	  this.callRecfileUrl = row.callRecfileUrl
+    	}
+    	
     },
     downRecord(row){ //下载录音录像
     	var userAgent = navigator.userAgent.toLowerCase();
@@ -869,9 +894,10 @@ export default {
 		      });
     		}else{
     			// 1 录像
+    			let fileName = pathUrl.substring(pathUrl.lastIndexOf("/")+1)
 		    	const downloadElement = document.createElement('a')
 		    	downloadElement.href = pathUrl
-		    	downloadElement.download=""
+		    	downloadElement.download=fileName
 		    	document.body.appendChild(downloadElement)
 		    	downloadElement.click()
 		    	document.body.removeChild(downloadElement)
@@ -892,9 +918,10 @@ export default {
 		      });
     		}else{
     			// 2 录像
+    			let fileName = pathUrl.substring(pathUrl.lastIndexOf("/")+1)
 		    	const downloadElement = document.createElement('a')
 		    	downloadElement.href = pathUrl
-		    	downloadElement.download=""
+		    	downloadElement.download=fileName
 		    	document.body.appendChild(downloadElement)
 		    	downloadElement.click()
 		    	document.body.removeChild(downloadElement)
@@ -916,9 +943,10 @@ export default {
 		      });
     		}else{
     			// 3 录音
+    			let fileName = pathUrl.substring(pathUrl.lastIndexOf("/")+1)
 		    	const downloadElement = document.createElement('a')
 		    	downloadElement.href = pathUrl
-		    	downloadElement.download=""
+		    	downloadElement.download=fileName
 		    	document.body.appendChild(downloadElement)
 		    	downloadElement.click()
 		    	document.body.removeChild(downloadElement)

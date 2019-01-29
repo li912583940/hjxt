@@ -34,6 +34,10 @@ public class JlHjSpSet implements java.io.Serializable{
     @DbField("max_num")
     private Integer maxNum;
 
+    /** 审批内容，暂时只有亲属关系使用该字段，表示那些关系需要审批。多个关系用“,”分隔 */
+    @DbField("sp_value")
+    private String spValue;
+    
     public Integer getId() {
         return this.id;
     }
@@ -78,4 +82,13 @@ public class JlHjSpSet implements java.io.Serializable{
     public void setMaxNum(Integer maxNum) {
         this.maxNum = maxNum;
     }
+
+	public String getSpValue() {
+		return spValue;
+	}
+
+	public void setSpValue(String spValue) {
+		this.spValue = spValue;
+	}
+    
 }
