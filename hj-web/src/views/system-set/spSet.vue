@@ -39,7 +39,7 @@
     </div>-->
 
   <!--描述：查看流程 -->
-  <el-dialog title="查看流程" :visible.sync="dialogSearchVisible">
+  <!--<el-dialog title="查看流程" :visible.sync="dialogSearchVisible">
   	<el-tabs type="border-card" style="margin-left: 14px;">
 			  <el-tab-pane label="审批部门" v-if="is_seeDept==1">
 			    <el-table :key='tableKey' :data="seeDeptlist"   border fit highlight-current-row style="width: 281px">
@@ -65,7 +65,7 @@
 			    </el-table>
 			  </el-tab-pane>
 			</el-tabs>
-  </el-dialog>
+  </el-dialog>-->
   
 	<!-- 新增或编辑 -->
     <el-dialog title="配 置" :visible.sync="dialogFormVisible">
@@ -82,10 +82,10 @@
 				    <el-radio :label="1">开启</el-radio>
 				  </el-radio-group>
         </el-form-item>
-        <el-form-item v-if="dataForm.spNo==5" label="亲属关系">
+        <el-form-item v-if="dataForm.spNo==5" label="审批亲属关系">
         	<el-popover
 					  placement="bottom"
-					  width="261"
+					  width="522"
 					  trigger="click">
 					  <el-transfer
 					  	filterable
@@ -273,6 +273,7 @@ export default {
   mounted() {
     this.getDeptList()
     this.getUserList()
+    this.getGxList()
   },
   methods: {
     getList() {
@@ -298,12 +299,16 @@ export default {
     	if(this.gxData.length === 0) {
     		GetGxList({}).then((res) => {
 	    		let list = res.list
-	    		for(let x of list){
-					  let value = {}
-					  value.id = x.qsGx
-					  value.name = x.qsGx
-					  this.gxData.push(value)
-					}
+	    		if(list == undefined){
+			 			return false;
+			 		}
+	    		list.forEach((item, index) => {
+				 			this.gxData.push({
+				 				label: item.qsGx,
+				 				key: item.qsGx
+				 			})
+				 	})
+	    		
 	    	})
     	}
     },
@@ -352,6 +357,8 @@ export default {
 			this.dataForm.spName = undefined
 			this.dataForm.spExplain = undefined
 			this.dataForm.usable = 0
+			
+			this.gxValue=[]
 			
 			this.deptValue1= []
 	    this.userValue1= []

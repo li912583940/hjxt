@@ -95,17 +95,17 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			) {
 		Result result = new Result();
 		
+		List<String> qsGxList = new ArrayList(); // 将登记的亲属关系存储起来， 最后判断其中是否有家属关系需要审批
 		JlHjDjVO addJlHjDj = new JlHjDjVO(); // 创建会见登记
 		String[] qsIdss = qsIds.split(",");
-		boolean is_gx= false; //判断亲属关系是否为其他
 		for(int i=0; i<qsIdss.length;i++){ // 亲属
 			JlQsVO jlQs = jlQsSQL.findOne(qsIdss[i]);
 			if(StringUtils.isBlank(jlQs.getGx()) || StringUtils.isBlank(jlQs.getQsSfz())){ //先判断提交的亲属中是否有身份证号码和亲属关系没有的
 				result.error(Result.error_103, "提交的登记中，有家属没有绑定身份证号码或者亲属关系");
 				return result.toResult();
 			}
-			if(StringUtils.isNotBlank(jlQs.getGx()) && "其他".equals(jlQs.getGx())){
-				is_gx=true;
+			if(StringUtils.isNotBlank(jlQs.getGx())){
+				qsGxList.add(jlQs.getGx());
 			}
 			String gx = "["+jlQs.getGx()+"]";
 			String name = StringUtils.isNotBlank(jlQs.getQsName())?jlQs.getQsName():"";
@@ -183,8 +183,6 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			jlJb = jlJbList.get(0);
 		}
 		
-		// 将所有罪犯不满足的登记的条件存储起来
-		List<Integer> disNo = new ArrayList<Integer>();
 		
 		/** 查看当前罪犯是否符合会见登记条件 开始 */
 		boolean is_sp=false; //是否需要审批
@@ -298,25 +296,27 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		
 		
 		
-		if(is_gx){
-			//亲属关系为其他
-			JlHjSpSetVO jlHjSpSetQuery = new JlHjSpSetVO();
-			jlHjSpSetQuery.setUsable(1);
-			jlHjSpSetQuery.setSpNo("5");
-			List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
-			if(jlHjSpSetList.size()>0){ // 开启了《罪犯本月会见次数已用完》的审批
-				jlHjSpSet=jlHjSpSetList.get(0);
-				if(StringUtils.isNotBlank(explain)){
-					explain+=";"+jlHjSpSet.getSpName();
-				}else{
-					explain=jlHjSpSet.getSpName();
+		
+		//亲属关系为其他
+		JlHjSpSetVO jlHjSpSetQuery = new JlHjSpSetVO();
+		jlHjSpSetQuery.setUsable(1);
+		jlHjSpSetQuery.setSpNo("5");
+		List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
+		if(jlHjSpSetList.size()>0){ // 开启了《罪犯本月会见次数已用完》的审批
+			jlHjSpSet=jlHjSpSetList.get(0);
+			for(String gx :qsGxList){
+				if(jlHjSpSet.getSpValue().indexOf(gx)!=-1){ //有亲属关系需要审批
+					if(StringUtils.isNotBlank(explain)){
+						explain+=";"+jlHjSpSet.getSpName();
+					}else{
+						explain=jlHjSpSet.getSpName();
+					}
+					is_sp=true;
+					break;
 				}
-				is_sp=true;
-			}else{
-				result.error(Result.error_103, "亲属关系为“其他”");
-				return result.toResult();
 			}
 		}
+		
 		
 		addJlHjDj.setJy(jlJq.getJy());
 		addJlHjDj.setJqNo(jlJq.getJqNo());
@@ -411,12 +411,15 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 				jlHjSp.setSpeedProgress(1);
 				jlHjSp.setState(0);
 				jlHjSpSQL.add(jlHjSp);
+				result.msg("提交登记成功，但此次会见需要审批，审批通过后才能参与会见");
+			}else{
+				result.msg("提交登记成功");
 			}
 		} catch (Exception e) {
 			result.error(Result.error_103, "添加会见登记失败");
 			return result.toResult();
 		}
-		result.msg("提交登记成功");
+		
 		return result.toResult();
 	}
 
