@@ -23,10 +23,11 @@ public class Entity {
 		//enMap.put("sys_role_jq", "SysRoleJq");
 		//enMap.put("JL_HJ_SP_FR", "JlHjSpFr");
 		//enMap.put("SYS_SERVER", "SysServer");
-		enMap.put("jl_hj_sp", "JlHjSp");
-		enMap.put("jl_hj_sp_details", "JlHjSpDetails");
-		enMap.put("jl_hj_sp_set", "JlHjSpSet");
-		enMap.put("jl_hj_sp_user", "JlHjSpUser");
+//		enMap.put("jl_hj_sp", "JlHjSp");
+//		enMap.put("jl_hj_sp_details", "JlHjSpDetails");
+//		enMap.put("jl_hj_sp_set", "JlHjSpSet");
+//		enMap.put("jl_hj_sp_user", "JlHjSpUser");
+		enMap.put("jl_qs_sp", "JlQsSp");
 	}
 	
 	

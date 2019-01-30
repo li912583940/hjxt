@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +20,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.sl.ue.entity.jl.vo.JlFrVO;
+import com.sl.ue.entity.jl.vo.JlHjSpSetVO;
+import com.sl.ue.entity.jl.vo.JlHjSpVO;
 import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.entity.sys.vo.SysLogVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
+import com.sl.ue.service.jl.JlHjSpService;
+import com.sl.ue.service.jl.JlHjSpSetService;
 import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.service.sys.SysLogService;
 import com.sl.ue.util.Config;
@@ -41,6 +46,12 @@ public class JlQsWeb extends Result{
     private JlQsService jlQsSQL;
     @Autowired
 	private SysLogService sysLogSQL;
+    @Autowired
+    private JlHjSpSetService jlHjSpSetSQL;
+    @Autowired
+    private JlHjSpService jlHjSpSQL;
+    
+
     
     @RequestMapping("/findList")
     public String findList(JlQsVO model,Integer pageSize, Integer pageNum){
@@ -90,7 +101,32 @@ public class JlQsWeb extends Result{
 			this.error(error_103, "当前亲属证件号码已绑定此罪犯");
 			return this.toResult();
 		}
-    	
+    	// 查看审批亲属关系是否开启
+    	if(StringUtils.isNotBlank(model.getGx())){
+    		JlHjSpSetVO jlHjSpSet = new JlHjSpSetVO();
+    		jlHjSpSet.setUsable(1);
+    		jlHjSpSet.setSpNo("6");
+    		List<JlHjSpSetVO> list = jlHjSpSetSQL.findList(jlHjSpSet);
+    		if(list.size()>0){
+    			jlHjSpSet = list.get(0);
+    			if(StringUtils.isNotBlank(jlHjSpSet.getSpValue())){
+    				List<String> spGx = Arrays.asList(jlHjSpSet.getSpValue().split(","));
+    				if(spGx.contains(model.getGx())){
+    					
+    					JlHjSpVO jlHjSp = new JlHjSpVO();
+    					jlHjSp.setQsId(qsId);
+    					jlHjSp.setSetNo(jlHjSpSet.getSpNo());
+    					jlHjSp.setSetName(jlHjSpSet.getSpName());
+    					jlHjSp.setExplain(explain);
+    					jlHjSp.setMaxNum(jlHjSpSet.getMaxNum());
+    					jlHjSp.setSpeedProgress(1);
+    					jlHjSp.setState(0);
+    					jlHjSpSQL.add(jlHjSp);
+    					this.msg("提交登记成功，但此次会见需要审批，审批通过后才能参与会见");
+    				}
+    			}
+    		}
+    	}
     	SysUserVO user = TokenUser.getUser();
 		SysLogVO sysLog = new SysLogVO();
 		sysLog.setType("正常");

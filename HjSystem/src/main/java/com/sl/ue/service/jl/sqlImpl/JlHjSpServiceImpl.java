@@ -28,6 +28,7 @@ public class JlHjSpServiceImpl extends BaseSqlImpl<JlHjSpVO> implements JlHjSpSe
 	@Autowired
 	private JlHjSpDetailsService jlHjSpDetailsSQL;
 	
+	
 	@Override
 	public Map<String, Object> findPojoLeft(JlHjSpVO model, Integer pageSize, Integer pageNum) {
 		model.setState(0); // 查询进行中审批
@@ -44,43 +45,48 @@ public class JlHjSpServiceImpl extends BaseSqlImpl<JlHjSpVO> implements JlHjSpSe
 		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
 		List<JlHjSpVO> list = (List<JlHjSpVO>) map.get("list");
 		for(JlHjSpVO t : list){
-			JlHjDjVO jlHjDj = jlHjDjSQL.findOne(t.getHjid());
-			if(jlHjDj==null){
-				continue;
+			if(t.getType()==1){
+				JlHjDjVO jlHjDj = jlHjDjSQL.findOne(t.getHjid());
+				if(jlHjDj==null){
+					continue;
+				}
+				t.setFrNo(jlHjDj.getFrNo());
+				t.setFrName(jlHjDj.getFrName());
+				t.setJqName(jlHjDj.getJqName());
+				t.setDjTime(jlHjDj.getDjTime());
+				String qsInfo = "";
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo1())){
+					qsInfo=jlHjDj.getQsInfo1();
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo2())){
+					qsInfo+=";"+jlHjDj.getQsInfo2();
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo3())){
+					qsInfo+=";"+jlHjDj.getQsInfo3();
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo4())){
+					qsInfo+=";"+jlHjDj.getQsInfo4();
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo5())){
+					qsInfo+=";"+jlHjDj.getQsInfo5();
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo6())){
+					qsInfo+=";"+jlHjDj.getQsInfo6();
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo7())){
+					qsInfo+=";"+jlHjDj.getQsInfo7();
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo8())){
+					qsInfo+=";"+jlHjDj.getQsInfo8();
+				}
+				if(StringUtils.isNotBlank(jlHjDj.getQsInfo9())){
+					qsInfo+=";"+jlHjDj.getQsInfo9();
+				}
+				t.setQsInfo(qsInfo);
+			}else if(t.getType()==2){
+				
 			}
-			t.setFrNo(jlHjDj.getFrNo());
-			t.setFrName(jlHjDj.getFrName());
-			t.setJqName(jlHjDj.getJqName());
-			t.setDjTime(jlHjDj.getDjTime());
-			String qsInfo = "";
-			if(StringUtils.isNotBlank(jlHjDj.getQsInfo1())){
-				qsInfo=jlHjDj.getQsInfo1();
-			}
-			if(StringUtils.isNotBlank(jlHjDj.getQsInfo2())){
-				qsInfo+=";"+jlHjDj.getQsInfo2();
-			}
-			if(StringUtils.isNotBlank(jlHjDj.getQsInfo3())){
-				qsInfo+=";"+jlHjDj.getQsInfo3();
-			}
-			if(StringUtils.isNotBlank(jlHjDj.getQsInfo4())){
-				qsInfo+=";"+jlHjDj.getQsInfo4();
-			}
-			if(StringUtils.isNotBlank(jlHjDj.getQsInfo5())){
-				qsInfo+=";"+jlHjDj.getQsInfo5();
-			}
-			if(StringUtils.isNotBlank(jlHjDj.getQsInfo6())){
-				qsInfo+=";"+jlHjDj.getQsInfo6();
-			}
-			if(StringUtils.isNotBlank(jlHjDj.getQsInfo7())){
-				qsInfo+=";"+jlHjDj.getQsInfo7();
-			}
-			if(StringUtils.isNotBlank(jlHjDj.getQsInfo8())){
-				qsInfo+=";"+jlHjDj.getQsInfo8();
-			}
-			if(StringUtils.isNotBlank(jlHjDj.getQsInfo9())){
-				qsInfo+=";"+jlHjDj.getQsInfo9();
-			}
-			t.setQsInfo(qsInfo);
+			
 			if(sId.contains(t.getId())){ //有审批权限
 				t.setSpPermission(1);
 			}else{

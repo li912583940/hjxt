@@ -32,7 +32,15 @@ public class JlHjSp implements java.io.Serializable{
     /** 会见id */
     @DbField("hjid")
     private Long hjid;
-
+    
+    /** 亲属身份证 */
+    @DbField("qs_id")
+    private Integer qsId;
+    
+    /** 审批类型，1：会见；2：亲属 */
+    @DbField("type")
+    private Integer type;
+    
     /** 审批进行状态。0：进行中，1：审批通过，2：审批失败， 3：取消审批；  默认 0 */
     @DbField("state")
     private Integer state;
@@ -88,7 +96,24 @@ public class JlHjSp implements java.io.Serializable{
     public void setHjid(Long hjid) {
         this.hjid = hjid;
     }
-    public Integer getState() {
+    
+    public Integer getQsId() {
+		return qsId;
+	}
+
+	public void setQsId(Integer qsId) {
+		this.qsId = qsId;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public Integer getState() {
         return this.state;
     }
 

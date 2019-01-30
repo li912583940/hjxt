@@ -70,6 +70,7 @@
 
 <script>
 import { findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList  } from '@/api/criminal'
+import { Message, MessageBox } from 'element-ui'
 
 export default {
   name: 'addQs',
@@ -185,7 +186,12 @@ export default {
     createQsData() {
       this.$refs['dataQsForm'].validate((valid) => {
         if (valid) {
-          RequestQsAdd(this.dataQsForm).then(() => {
+          RequestQsAdd(this.dataQsForm).then(res => {
+          	Message({
+		        message: res.errMsg,
+			    type: 'success',
+			    duration: 5 * 1000
+		    });
             this.returnPrevious()
           }).catch(error => {
 	      })
@@ -224,7 +230,12 @@ export default {
     updateQsData() {
       this.$refs['dataQsForm'].validate((valid) => {
         if (valid) {
-          RequestQsEdit(this.dataQsForm).then(() => {
+          RequestQsEdit(this.dataQsForm).then(res => {
+          	Message({
+		        message: res.errMsg,
+			    type: 'success',
+			    duration: 5 * 1000
+		    });
             this.dialogQsFormVisible = false
             this.getQsList()
           }).catch(error => {

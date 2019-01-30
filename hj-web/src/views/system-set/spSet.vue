@@ -69,7 +69,7 @@
   
 	<!-- 新增或编辑 -->
     <el-dialog title="配 置" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="180px" style='width: 400px; margin-left:16%;' >
+      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="180px" style='width: 420px; margin-left:16%;' >
         <el-form-item label="审批流程名称" prop="spName">
           <el-input v-model="dataForm.spName" :disabled="true"></el-input>
         </el-form-item>
@@ -82,7 +82,7 @@
 				    <el-radio :label="1">开启</el-radio>
 				  </el-radio-group>
         </el-form-item>
-        <el-form-item v-if="dataForm.spNo==5" label="审批亲属关系">
+        <el-form-item v-if="dataForm.spNo==5 || dataForm.spNo==6" label="审批亲属关系">
         	<el-popover
 					  placement="bottom"
 					  width="522"
@@ -368,7 +368,7 @@ export default {
 	    this.userValue3= []
     },
     handleConf(row) { // 打开配置面板
-    	this.resetForm()
+    	//this.resetForm()
     	
     	let param = {
     		id: row.id
@@ -381,12 +381,8 @@ export default {
         this.dataForm.spExplain =  jlHjSpSet.spExplain
         this.dataForm.usable =  jlHjSpSet.usable
         
-        if(jlHjSpSet.spNo==5){
-        	this.gxValue=res.gxList!=undefined?res.gxList:[]
-        }else{
-        	this.gxValue=[]
-        }
-        
+        this.gxValue=res.gxList!=undefined?res.gxList:[]
+      
         this.deptValue1 = res.deptList1
         this.userValue1 = res.userList1
         this.deptValue2 = res.deptList2
@@ -401,7 +397,7 @@ export default {
     },
     updateData() { // 配置
     	if(this.dataForm.usable==1){
-    		if(this.dataForm.spNo==5 && this.gxValue.length==0){ //亲属关系
+    		if((this.dataForm.spNo==5 || this.dataForm.spNo==6) && this.gxValue.length==0){ //亲属关系
     			Message({
 		        message: '启用审批设置时，必须为当前配置添加需要审批的亲属关系',
 			      type: 'error',

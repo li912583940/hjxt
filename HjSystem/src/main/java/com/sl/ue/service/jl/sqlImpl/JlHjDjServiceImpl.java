@@ -7,6 +7,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -304,8 +305,9 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
 		if(jlHjSpSetList.size()>0){ // 开启了《罪犯本月会见次数已用完》的审批
 			jlHjSpSet=jlHjSpSetList.get(0);
+			List<String> spGx = Arrays.asList(jlHjSpSet.getSpValue().split(","));
 			for(String gx :qsGxList){
-				if(jlHjSpSet.getSpValue().indexOf(gx)!=-1){ //有亲属关系需要审批
+				if(spGx.contains(gx)){ //有亲属关系需要审批
 					if(StringUtils.isNotBlank(explain)){
 						explain+=";"+jlHjSpSet.getSpName();
 					}else{
@@ -404,6 +406,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			if(is_sp){
 				JlHjSpVO jlHjSp = new JlHjSpVO();
 				jlHjSp.setHjid(addJlHjDj.getHjid());
+				jlHjSp.setType(1);
 				jlHjSp.setSetNo(jlHjSpSet.getSpNo());
 				jlHjSp.setSetName(jlHjSpSet.getSpName());
 				jlHjSp.setExplain(explain);

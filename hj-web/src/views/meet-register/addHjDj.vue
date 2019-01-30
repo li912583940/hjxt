@@ -232,7 +232,7 @@
 <script>
 import { findFrPojo, findQsPojo, findJqList, RequestAddHjdj } from '@/api/meetRegister'
 import waves from '@/directive/waves' // 水波纹指令
-
+import { Message, MessageBox } from 'element-ui'
 import BigImg from './components/BigImg'
 
 export default {
@@ -532,16 +532,20 @@ export default {
 		
     addHjdj() { //提交会见登记
     	if(!this.formdata.frNo) {
-    		this.$notify.error({
-          title: '错误',
-          message: '提交登记时，必须选择一位服刑人员'
-        })
+    		Message({
+	        message: '提交登记时，必须选择一位服刑人员',
+		      type: 'error',
+		      duration: 5 * 1000
+	      });
+	      return false;
     	}
     	if(this.qsSelections.length == 0) {
-    		this.$notify.error({
-          title: '错误',
-          message: '提交登记时，至少选择一位家属'
-        })
+    		Message({
+	        message: '提交登记时，至少选择一位家属',
+		      type: 'error',
+		      duration: 5 * 1000
+	      });
+	      return false;
     	}
     	let qsid = ''
     	for(let x of this.qsSelections) {
@@ -556,12 +560,11 @@ export default {
 	    })
     	RequestAddHjdj(this.formdata).then((res) => {
     		loading.close();
-    		this.$notify({
-          title: '成功',
-          message: '提交登记成功',
-          type: 'success'
-        });
-        
+        Message({
+	        message: res.errMsg,
+		      type: 'success',
+		      duration: 5 * 1000
+	      });
       	this.frListQuery.frName = undefined
       	this.frListQuery.frNo = undefined
       	this.frListQuery.jq = undefined
@@ -572,10 +575,6 @@ export default {
     		//this.$router.push({ path: '/meetRegister/index', query: {refreshZ:timestamp} })
     	}).catch(error =>{
     		loading.close();
-//  		this.$notify.error({
-//        title: '错误',
-//        message: '系统错误，提交登记失败'
-//      })
     	})
     },
     returnPrevious(){ // 返回上一页
