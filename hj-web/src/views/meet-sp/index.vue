@@ -7,6 +7,12 @@
           <span>{{scope.row.setName}}</span>
         </template>
       </el-table-column>
+      <el-table-column width="100" align="center" label="审批类型">
+        <template slot-scope="scope">
+          <span v-if="scope.row.type==1">会见登记</span>
+          <span v-if="scope.row.type==2">添加亲属</span>
+        </template>
+      </el-table-column>
       <el-table-column width="100" align="center" label="监区名称">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
@@ -24,7 +30,7 @@
       </el-table-column>
       <el-table-column width="160px" align="center" label="申请时间">
         <template slot-scope="scope">
-          <span>{{scope.row.djTime | dateFormat }}</span>
+          <span>{{scope.row.tjTime | dateFormat }}</span>
         </template>
       </el-table-column>
       <el-table-column width="100" align="center" label="审批总阶段">

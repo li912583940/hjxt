@@ -707,6 +707,11 @@ export default {
         		this.dataForm.hjStopTime = this.dateFormats(this.dataForm.hjStopTime);
         	}
           RequestAdd(this.dataForm).then((res) => {
+          	Message({
+				      message: res.errMsg,
+					    type: 'success',
+					    duration: 5 * 1000
+				    });
             this.dialogFormVisible = false
             this.getList()
           }).catch(error => {
@@ -761,6 +766,11 @@ export default {
         		this.dataForm.hjStopTime = this.dateFormats(this.dataForm.hjStopTime);
         	}
           RequestEdit(this.dataForm).then(() => {
+          	Message({
+				      message: res.errMsg,
+					    type: 'success',
+					    duration: 5 * 1000
+				    });
             this.dialogFormVisible = false
             this.getList()
           }).catch(error => {

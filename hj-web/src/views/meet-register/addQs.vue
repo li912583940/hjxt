@@ -239,8 +239,8 @@ export default {
             this.dialogQsFormVisible = false
             this.getQsList()
           }).catch(error => {
-		        this.dialogQsFormVisible = false
-		      })
+	        this.dialogQsFormVisible = false
+	      })
         }
       })
     },

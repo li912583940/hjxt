@@ -32,10 +32,10 @@ public class SqlTypeTo {
 		typeMap.put("uniqueidentifier", "String");
 		typeMap.put("smalldatetime", "Date");
 		typeMap.put("datetime", "Date");
-		typeMap.put("timestamp", "byte[]");
-		typeMap.put("binary", "byte[]");
-		typeMap.put("varbinary", "byte[]");
-		typeMap.put("image", "byte[]");
+		typeMap.put("timestamp", "Byte[]");
+		typeMap.put("binary", "Byte[]");
+		typeMap.put("varbinary", "Byte[]");
+		typeMap.put("image", "Byte[]");
 		typeMap.put("sql_variant", "String");
 	}
 	
@@ -45,7 +45,7 @@ public class SqlTypeTo {
 		//基本类型无须导入
 		importMap.put("Integer", ""); 
 		importMap.put("String", "");
-		importMap.put("byte[]", "");
+		importMap.put("Byte[]", "");
 		importMap.put("Long", "");
 		
 		importMap.put("BigDecimal", "java.math.BigDecimal");

@@ -9,14 +9,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
 import com.sl.ue.entity.jl.vo.JlHjSpDetailsVO;
 import com.sl.ue.entity.jl.vo.JlHjSpVO;
+import com.sl.ue.entity.jl.vo.JlQsSpVO;
+import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlHjDjService;
 import com.sl.ue.service.jl.JlHjSpDetailsService;
 import com.sl.ue.service.jl.JlHjSpService;
+import com.sl.ue.service.jl.JlQsService;
+import com.sl.ue.service.jl.JlQsSpService;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.token.TokenUser;
 
@@ -27,7 +32,10 @@ public class JlHjSpServiceImpl extends BaseSqlImpl<JlHjSpVO> implements JlHjSpSe
 	private JlHjDjService jlHjDjSQL;
 	@Autowired
 	private JlHjSpDetailsService jlHjSpDetailsSQL;
-	
+	@Autowired
+	private JlQsSpService jlQsSpSQL;
+	@Autowired
+	private JlQsService jlQsSQL;
 	
 	@Override
 	public Map<String, Object> findPojoLeft(JlHjSpVO model, Integer pageSize, Integer pageNum) {
@@ -45,48 +53,6 @@ public class JlHjSpServiceImpl extends BaseSqlImpl<JlHjSpVO> implements JlHjSpSe
 		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
 		List<JlHjSpVO> list = (List<JlHjSpVO>) map.get("list");
 		for(JlHjSpVO t : list){
-			if(t.getType()==1){
-				JlHjDjVO jlHjDj = jlHjDjSQL.findOne(t.getHjid());
-				if(jlHjDj==null){
-					continue;
-				}
-				t.setFrNo(jlHjDj.getFrNo());
-				t.setFrName(jlHjDj.getFrName());
-				t.setJqName(jlHjDj.getJqName());
-				t.setDjTime(jlHjDj.getDjTime());
-				String qsInfo = "";
-				if(StringUtils.isNotBlank(jlHjDj.getQsInfo1())){
-					qsInfo=jlHjDj.getQsInfo1();
-				}
-				if(StringUtils.isNotBlank(jlHjDj.getQsInfo2())){
-					qsInfo+=";"+jlHjDj.getQsInfo2();
-				}
-				if(StringUtils.isNotBlank(jlHjDj.getQsInfo3())){
-					qsInfo+=";"+jlHjDj.getQsInfo3();
-				}
-				if(StringUtils.isNotBlank(jlHjDj.getQsInfo4())){
-					qsInfo+=";"+jlHjDj.getQsInfo4();
-				}
-				if(StringUtils.isNotBlank(jlHjDj.getQsInfo5())){
-					qsInfo+=";"+jlHjDj.getQsInfo5();
-				}
-				if(StringUtils.isNotBlank(jlHjDj.getQsInfo6())){
-					qsInfo+=";"+jlHjDj.getQsInfo6();
-				}
-				if(StringUtils.isNotBlank(jlHjDj.getQsInfo7())){
-					qsInfo+=";"+jlHjDj.getQsInfo7();
-				}
-				if(StringUtils.isNotBlank(jlHjDj.getQsInfo8())){
-					qsInfo+=";"+jlHjDj.getQsInfo8();
-				}
-				if(StringUtils.isNotBlank(jlHjDj.getQsInfo9())){
-					qsInfo+=";"+jlHjDj.getQsInfo9();
-				}
-				t.setQsInfo(qsInfo);
-			}else if(t.getType()==2){
-				
-			}
-			
 			if(sId.contains(t.getId())){ //有审批权限
 				t.setSpPermission(1);
 			}else{
@@ -107,72 +73,32 @@ public class JlHjSpServiceImpl extends BaseSqlImpl<JlHjSpVO> implements JlHjSpSe
 //		for(Map<String, Object> m : spIdList){
 //			sId.add((int)m.get("id"));
 //		}
-		StringBuffer leftJoinField = new StringBuffer();
-		leftJoinField.append(",b.JQ_Name,b.FR_No,b.FR_Name,b.DJ_Time");
-		leftJoinField.append(",b.QS_Info1,b.QS_Info2,b.QS_Info3,b.QS_Info4,b.QS_Info5");
-		leftJoinField.append(",b.QS_Info6,b.QS_Info7,b.QS_Info8,b.QS_Info9");
-		model.setLeftJoinField(leftJoinField.toString());
 		
-		StringBuffer leftJoinTable = new StringBuffer();
-		leftJoinTable.append(" LEFT JOIN JL_HJ_DJ AS b ON a.hjid=b.hjid");
-		model.setLeftJoinTable(leftJoinTable.toString());
+//		StringBuffer leftJoinField = new StringBuffer();
+//		leftJoinField.append(",b.QS_Info1,b.QS_Info2,b.QS_Info3,b.QS_Info4,b.QS_Info5");
+//		leftJoinField.append(",b.QS_Info6,b.QS_Info7,b.QS_Info8,b.QS_Info9");
+//		model.setLeftJoinField(leftJoinField.toString());
+//		
+//		StringBuffer leftJoinTable = new StringBuffer();
+//		leftJoinTable.append(" LEFT JOIN JL_HJ_DJ AS b ON a.hjid=b.hjid");
+//		model.setLeftJoinTable(leftJoinTable.toString());
 		
 		StringBuffer leftJoinWhere = new StringBuffer();
 		if(StringUtils.isNotBlank(model.getFrNo())){
 			String str = model.getFrNo();
-			leftJoinWhere.append(" AND b.FR_No LIKE '%"+str+"%' ");
+			leftJoinWhere.append(" AND a.fr_no LIKE '%"+str+"%' ");
 			model.setFrNo(null);
 		}
 		if(StringUtils.isNotBlank(model.getFrName())){
 			String str = model.getFrName();
-			leftJoinWhere.append(" AND (b.FR_Name LIKE '%"+str+"%' OR dbo.f_get_fryp(b.FR_Name,'"+str+"') =1 )");
+			leftJoinWhere.append(" AND (a.fr_name LIKE '%"+str+"%' OR dbo.f_get_fryp(a.fr_name,'"+str+"') =1 )");
 			model.setFrName(null);
 		}
-		if(StringUtils.isNotBlank(model.getJqNo())){
-			String str = model.getJqNo();
-			leftJoinWhere.append(" AND b.JQ_No='"+str+"'");
-			model.setFrName(null);
-		}
+
 		leftJoinWhere.append(" AND a.state<>0");
 		model.setLeftJoinWhere(leftJoinWhere.toString()); // 查询审批结束的记录
 		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
 		List<JlHjSpVO> list = (List<JlHjSpVO>) map.get("list");
-		for(JlHjSpVO t : list){
-			String qsInfo = "";
-			if(StringUtils.isNotBlank(t.getQsInfo1())){
-				qsInfo=t.getQsInfo1();
-			}
-			if(StringUtils.isNotBlank(t.getQsInfo2())){
-				qsInfo+=";"+t.getQsInfo2();
-			}
-			if(StringUtils.isNotBlank(t.getQsInfo3())){
-				qsInfo+=";"+t.getQsInfo3();
-			}
-			if(StringUtils.isNotBlank(t.getQsInfo4())){
-				qsInfo+=";"+t.getQsInfo4();
-			}
-			if(StringUtils.isNotBlank(t.getQsInfo5())){
-				qsInfo+=";"+t.getQsInfo5();
-			}
-			if(StringUtils.isNotBlank(t.getQsInfo6())){
-				qsInfo+=";"+t.getQsInfo6();
-			}
-			if(StringUtils.isNotBlank(t.getQsInfo7())){
-				qsInfo+=";"+t.getQsInfo7();
-			}
-			if(StringUtils.isNotBlank(t.getQsInfo8())){
-				qsInfo+=";"+t.getQsInfo8();
-			}
-			if(StringUtils.isNotBlank(t.getQsInfo9())){
-				qsInfo+=";"+t.getQsInfo9();
-			}
-			t.setQsInfo(qsInfo);
-//			if(sId.contains(t.getId())){ //有审批权限
-//				t.setSpPermission(1);
-//			}else{
-//				t.setSpPermission(0);
-//			}
-		}
 		return map;
 	}
 	
@@ -192,15 +118,25 @@ public class JlHjSpServiceImpl extends BaseSqlImpl<JlHjSpVO> implements JlHjSpSe
 		//对当前不同的审批结果进行判断
 		if(state == 1){ //审批通过
 			//查看当前审批共有几级
-			if(jlHjSp.getMaxNum()==speedProgress){ //当最后一级时，修改会见登记状态state=0
-				JlHjDjVO jlHjDj = jlHjDjSQL.findOne(jlHjSp.getHjid());
-				jlHjDj.setState(0);
-				jlHjDjSQL.edit(jlHjDj);
+			if(jlHjSp.getMaxNum()==speedProgress){ //当最后一级时
+				if(jlHjSp.getType()==1){ // 修改会见登记状态state=0
+					JlHjDjVO jlHjDj = jlHjDjSQL.findOne(jlHjSp.getHjid());
+					jlHjDj.setState(0);
+					jlHjDjSQL.edit(jlHjDj);
+					result.msg("审批通过，请通知罪犯及亲属参加会见");
+				}else if(jlHjSp.getType()==2){ // 将亲属信息入库到正式表
+					JlQsSpVO jlQsSp = jlQsSpSQL.findOne(jlHjSp.getQsId());
+					jlQsSp.setState(1);
+					jlQsSpSQL.edit(jlQsSp);
+					JlQsVO jlQs = JSONObject.parseObject(JSONObject.toJSONString(jlQsSp), JlQsVO.class);
+					jlQsSQL.add(jlQs);
+					result.msg("审批通过，当前亲属已入库");
+				}
 				
 				jlHjSp.setState(1); //修改状态为完成
 				jlHjSp.setLastSpTime(new Date());
 				this.edit(jlHjSp);
-				result.msg("审批通过，请通知罪犯及亲属参加会见");
+				
 			}else if(jlHjSp.getMaxNum()>speedProgress){ //进入下一级
 				jlHjSp.setSpeedProgress(speedProgress+1);
 				this.edit(jlHjSp);
@@ -211,12 +147,18 @@ public class JlHjSpServiceImpl extends BaseSqlImpl<JlHjSpVO> implements JlHjSpSe
 			}
 		}else{ // 审批不通过
 			if(jlHjSp.getMaxNum()>=speedProgress){ 
-				JlHjDjVO jlHjDj = jlHjDjSQL.findOne(jlHjSp.getHjid());
-				jlHjDj.setState(2);
-				jlHjDj.setCancelInfo("当前罪犯会见登记，审批不通过");
-				jlHjDjSQL.edit(jlHjDj);
+				if(jlHjSp.getType()==1){
+					JlHjDjVO jlHjDj = jlHjDjSQL.findOne(jlHjSp.getHjid());
+					jlHjDj.setState(2);
+					jlHjDj.setCancelInfo("当前罪犯会见登记，审批不通过");
+					jlHjDjSQL.edit(jlHjDj);
+				}else if(jlHjSp.getType()==2){
+					JlQsSpVO jlQsSp = jlQsSpSQL.findOne(jlHjSp.getQsId());
+					jlQsSp.setState(2);
+					jlQsSpSQL.edit(jlQsSp);
+				}
 				
-				jlHjSp.setState(2); //修改状态为审批失败
+				jlHjSp.setState(2); //修改状态为审批不通过
 				jlHjSp.setLastSpTime(new Date());
 				this.edit(jlHjSp);
 				result.msg("审批不通过");

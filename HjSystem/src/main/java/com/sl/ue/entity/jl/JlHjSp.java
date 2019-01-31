@@ -33,7 +33,7 @@ public class JlHjSp implements java.io.Serializable{
     @DbField("hjid")
     private Long hjid;
     
-    /** 亲属身份证 */
+    /** JL_QS_SP表 亲属id */
     @DbField("qs_id")
     private Integer qsId;
     
@@ -60,6 +60,30 @@ public class JlHjSp implements java.io.Serializable{
     /** 最后审批时间 */
     @DbField("last_sp_time")
     private Date lastSpTime;
+    
+    /** 犯人编号 */
+    @DbField("fr_no")
+    private String frNo;
+    
+    /** 犯人姓名 */
+    @DbField("fr_name")
+    private String frName;
+    
+    /** 监区编号 */
+    @DbField("jq_no")
+    private String jqNo;
+    
+    /** 监区名称 */
+    @DbField("jq_name")
+    private String jqName;
+    
+    /** 亲属信息 */
+    @DbField("qs_info")
+    private String qsInfo;
+    
+    /** 提交时间 */
+    @DbField("tj_time")
+    private Date tjTime;
     
     public Integer getId() {
         return this.id;
@@ -150,6 +174,54 @@ public class JlHjSp implements java.io.Serializable{
 
 	public void setLastSpTime(Date lastSpTime) {
 		this.lastSpTime = lastSpTime;
+	}
+
+	public String getFrNo() {
+		return frNo;
+	}
+
+	public void setFrNo(String frNo) {
+		this.frNo = frNo;
+	}
+
+	public String getFrName() {
+		return frName;
+	}
+
+	public void setFrName(String frName) {
+		this.frName = frName;
+	}
+
+	public String getJqNo() {
+		return jqNo;
+	}
+
+	public void setJqNo(String jqNo) {
+		this.jqNo = jqNo;
+	}
+
+	public String getJqName() {
+		return jqName;
+	}
+
+	public void setJqName(String jqName) {
+		this.jqName = jqName;
+	}
+
+	public String getQsInfo() {
+		return qsInfo;
+	}
+
+	public void setQsInfo(String qsInfo) {
+		this.qsInfo = qsInfo;
+	}
+
+	public Date getTjTime() {
+		return tjTime;
+	}
+
+	public void setTjTime(Date tjTime) {
+		this.tjTime = tjTime;
 	}
     
 }

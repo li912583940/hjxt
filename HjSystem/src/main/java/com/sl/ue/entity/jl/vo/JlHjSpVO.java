@@ -10,12 +10,6 @@ public class JlHjSpVO extends JlHjSp{
     /** 序列化 */
     private static final long serialVersionUID = 1L;
     
-    private String frNo;
-    private String frName;
-    private String jqNo;
-    private String jqName;
-    private String qsInfo;
-    private Date djTime;
     private String qsInfo1;
 	private String qsInfo2;
 	private String qsInfo3;
@@ -29,52 +23,6 @@ public class JlHjSpVO extends JlHjSp{
     private Integer spPermission; // 1:有审批权限。0：没有审批权限
     
     
-    public String getFrNo() {
-		return frNo;
-	}
-
-	public void setFrNo(String frNo) {
-		this.frNo = frNo;
-	}
-
-	public String getFrName() {
-		return frName;
-	}
-
-	public void setFrName(String frName) {
-		this.frName = frName;
-	}
-	
-	public String getJqNo() {
-		return jqNo;
-	}
-
-	public void setJqNo(String jqNo) {
-		this.jqNo = jqNo;
-	}
-	public String getJqName() {
-		return jqName;
-	}
-
-	public void setJqName(String jqName) {
-		this.jqName = jqName;
-	}
-
-	public String getQsInfo() {
-		return qsInfo;
-	}
-
-	public void setQsInfo(String qsInfo) {
-		this.qsInfo = qsInfo;
-	}
-
-	public Date getDjTime() {
-		return djTime;
-	}
-
-	public void setDjTime(Date djTime) {
-		this.djTime = djTime;
-	}
 	public String getQsInfo1() {
 		return qsInfo1;
 	}

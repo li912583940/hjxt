@@ -187,6 +187,11 @@ export default {
       this.$refs['dataQsForm'].validate((valid) => {
         if (valid) {
           RequestQsAdd(this.dataQsForm).then(() => {
+          	Message({
+		        message: res.errMsg,
+			    type: 'success',
+			    duration: 5 * 1000
+		    });
             this.returnPrevious()
           }).catch(error => {
 	      })
@@ -225,6 +230,11 @@ export default {
       this.$refs['dataQsForm'].validate((valid) => {
         if (valid) {
           RequestQsEdit(this.dataQsForm).then(() => {
+          	Message({
+		        message: res.errMsg,
+			    type: 'success',
+			    duration: 5 * 1000
+		    });
             this.dialogQsFormVisible = false
             this.getQsList()
           }).catch(error => {

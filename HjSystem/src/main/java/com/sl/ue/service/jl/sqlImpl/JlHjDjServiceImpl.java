@@ -99,6 +99,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		List<String> qsGxList = new ArrayList(); // 将登记的亲属关系存储起来， 最后判断其中是否有家属关系需要审批
 		JlHjDjVO addJlHjDj = new JlHjDjVO(); // 创建会见登记
 		String[] qsIdss = qsIds.split(",");
+		String qsInfo="";
 		for(int i=0; i<qsIdss.length;i++){ // 亲属
 			JlQsVO jlQs = jlQsSQL.findOne(qsIdss[i]);
 			if(StringUtils.isBlank(jlQs.getGx()) || StringUtils.isBlank(jlQs.getQsSfz())){ //先判断提交的亲属中是否有身份证号码和亲属关系没有的
@@ -114,38 +115,47 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 				addJlHjDj.setQsInfo1(gx+name);
 				addJlHjDj.setQsZp1(jlQs.getJz());
 				addJlHjDj.setQsCard1(jlQs.getQsCard());
+				qsInfo=addJlHjDj.getQsInfo1();
 			}else if(i==1){
 				addJlHjDj.setQsInfo2(gx+name);
 				addJlHjDj.setQsZp2(jlQs.getJz());
 				addJlHjDj.setQsCard2(jlQs.getQsCard());
+				qsInfo+=addJlHjDj.getQsInfo2();
 			}else if(i==2){
 				addJlHjDj.setQsInfo3(gx+name);
 				addJlHjDj.setQsZp3(jlQs.getJz());
 				addJlHjDj.setQsCard3(jlQs.getQsCard());
+				qsInfo+=addJlHjDj.getQsInfo3();
 			}else if(i==3){
 				addJlHjDj.setQsInfo4(gx+name);
 				addJlHjDj.setQsZp4(jlQs.getJz());
 				addJlHjDj.setQsCard4(jlQs.getQsCard());
+				qsInfo+=addJlHjDj.getQsInfo4();
 			}else if(i==4){
 				addJlHjDj.setQsInfo5(gx+name);
 				addJlHjDj.setQsZp5(jlQs.getJz());
 				addJlHjDj.setQsCard5(jlQs.getQsCard());
+				qsInfo+=addJlHjDj.getQsInfo5();
 			}else if(i==5){
 				addJlHjDj.setQsInfo6(gx+name);
 				addJlHjDj.setQsZp6(jlQs.getJz());
 				addJlHjDj.setQsCard6(jlQs.getQsCard());
+				qsInfo+=addJlHjDj.getQsInfo6();
 			}else if(i==6){
 				addJlHjDj.setQsInfo7(gx+name);
 				addJlHjDj.setQsZp7(jlQs.getJz());
 				addJlHjDj.setQsCard7(jlQs.getQsCard());
+				qsInfo+=addJlHjDj.getQsInfo7();
 			}else if(i==7){
 				addJlHjDj.setQsInfo8(gx+name);
 				addJlHjDj.setQsZp8(jlQs.getJz());
 				addJlHjDj.setQsCard8(jlQs.getQsCard());
+				qsInfo+=addJlHjDj.getQsInfo8();
 			}else if(i==8){
 				addJlHjDj.setQsInfo9(gx+name);
 				addJlHjDj.setQsZp9(jlQs.getJz());
 				addJlHjDj.setQsCard9(jlQs.getQsCard());
+				qsInfo+=addJlHjDj.getQsInfo9();
 			}
 		}
 		
@@ -345,17 +355,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		addJlHjDj.setHjOrder(callNo);
 		addJlHjDj.setMonitorFlag("");
 		addJlHjDj.setPageTzState(0);
-		
-		SysParamVO sysParam = new SysParamVO();
-		sysParam.setParamName("HJ_Client1");
-		List<SysParamVO> sysParamList =  sysParamSQL.findList(sysParam);
 		addJlHjDj.setDjType(0); // 会见登记是否需要审批 0 否 1是
-		if(sysParamList.size()>0){
-			sysParam = sysParamList.get(0);
-			if(StringUtils.isNotBlank(sysParam.getParamData4()) && "1".equals(sysParam.getParamData4())){
-				addJlHjDj.setDjType(1);
-			}
-		}
 		if(is_sp){ // 需要审批
 			addJlHjDj.setState(3);
 		}else{
@@ -413,6 +413,12 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 				jlHjSp.setMaxNum(jlHjSpSet.getMaxNum());
 				jlHjSp.setSpeedProgress(1);
 				jlHjSp.setState(0);
+				jlHjSp.setFrNo(addJlHjDj.getFrNo());
+				jlHjSp.setFrName(addJlHjDj.getFrName());
+				jlHjSp.setJqNo(addJlHjDj.getJqNo());
+				jlHjSp.setJqName(addJlHjDj.getJqName());
+				jlHjSp.setQsInfo(qsInfo);
+				jlHjSp.setTjTime(new Date());
 				jlHjSpSQL.add(jlHjSp);
 				result.msg("提交登记成功，但此次会见需要审批，审批通过后才能参与会见");
 			}else{
