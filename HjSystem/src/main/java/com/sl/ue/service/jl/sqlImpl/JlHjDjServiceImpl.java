@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -621,7 +622,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 					}
 				}
 			}else{
-				frNos = "-1";
+				return new HashMap();
 			}
 			
 		}

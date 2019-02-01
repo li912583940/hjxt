@@ -380,7 +380,20 @@ export default {
 		this.dataQsForm.dz = IDCard2.Address
 		this.dataQsForm.xb = IDCard2.Sex==2?'女':'男'
 //		document.getElementById("sfzzzz").value=b;
-
+		var zpAddress=IDCard2.PhotoName
+		
+		var image = new Image();
+		image.src = zpAddress;
+		//var canvas = document.createElement("canvas");
+		var canvas = document.getElementById('canvas');
+	    canvas.width = 100;
+	    canvas.height = 126;
+	    var ctx = canvas.getContext("2d");
+	    ctx.drawImage(image, 0, 0, 100, 126);
+	    var imgData = canvas.toDataURL("image/jpg");
+		this.dataQsForm.zpBase64=imgData.substr(22);
+		document.getElementById("zp").src='data:image/png;base64,'+imgData.substr(22);
+		console.log('data:image/png;base64,'+imgData.substr(22))
   	},
 
 	dateFormats: function (val) {

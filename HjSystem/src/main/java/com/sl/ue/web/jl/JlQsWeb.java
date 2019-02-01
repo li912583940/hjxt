@@ -173,7 +173,7 @@ public class JlQsWeb extends Result{
     					jlQsSp.setFrNo(model.getFrNo());
     					jlQsSp.setQsZjlb(model.getQsZjlb());
     					jlQsSp.setQsSfz(model.getQsSfz());
-    					jlQsSp.setQsName(model.getQsName());
+    					jlQsSp.setQsName("["+model.getGx()+"]"+model.getQsName());
     					jlQsSp.setQsCard(model.getQsCard());
     					jlQsSp.setGx(model.getGx());
     					jlQsSp.setXb(model.getXb());
