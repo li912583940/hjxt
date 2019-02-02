@@ -269,8 +269,8 @@ export default {
             this.dialogFormVisible = false
             this.getList()
           }).catch(error => {
-	        this.dialogFormVisible = false
-	      })
+	          //this.dialogFormVisible = false
+	      	})
         }
       })
     },

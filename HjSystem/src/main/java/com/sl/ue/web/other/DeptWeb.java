@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.sl.ue.entity.jl.vo.JlQsGxVO;
 import com.sl.ue.entity.other.vo.DeptVO;
 import com.sl.ue.service.other.DeptService;
 import com.sl.ue.util.http.Result;
@@ -20,7 +21,7 @@ public class DeptWeb extends Result{
 
     @RequestMapping("/findList")
     public String findList(DeptVO model,Integer pageSize, Integer pageNum){
-        List<DeptVO> list = deptSQL.findList(model, pageSize, pageNum);
+        List<DeptVO> list = deptSQL.findList(model, pageSize, pageNum, "ASC");
         this.putData(list);
         return this.toResult();
     }
@@ -48,12 +49,29 @@ public class DeptWeb extends Result{
 
     @RequestMapping("/add")
     public String add(DeptVO model){
+    	DeptVO deptQuery = new DeptVO();
+    	deptQuery.setDeptName(model.getDeptName());
+    	Integer count = deptSQL.count(deptQuery);
+    	if(count > 0){
+    		this.error(error_103, "当前部门名称<"+model.getDeptName()+">已存在");
+    		return this.toResult();
+    	}
         deptSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(DeptVO model){
+    	DeptVO oldDept = deptSQL.findOne(model.getId());
+    	if(!oldDept.getDeptName().equals(model.getDeptName())){
+    		DeptVO deptQuery = new DeptVO();
+        	deptQuery.setDeptName(model.getDeptName());
+        	Integer count = deptSQL.count(deptQuery);
+        	if(count > 0){
+        		this.error(error_103, "当前部门名称<"+model.getDeptName()+">已存在");
+        		return this.toResult();
+        	}
+    	}
         deptSQL.edit(model);
         return this.toResult();
     }

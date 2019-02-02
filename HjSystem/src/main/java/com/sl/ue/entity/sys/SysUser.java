@@ -26,7 +26,7 @@ public class SysUser  implements Serializable{
 	@DbField("User_Pwd")
 	private String userPwd;
 	@DbField("dept_id")
-	private String deptId;
+	private Integer deptId;
 	@DbField("dept_name")
 	private String deptName;
 	@DbField("User_Name")
@@ -68,11 +68,11 @@ public class SysUser  implements Serializable{
 		this.userPwd = userPwd;
 	}
 
-	public String getDeptId() {
+	public Integer getDeptId() {
 		return deptId;
 	}
 
-	public void setDeptId(String deptId) {
+	public void setDeptId(Integer deptId) {
 		this.deptId = deptId;
 	}
 

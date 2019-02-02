@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, FindUserDepartList, FindRoleList, GetCheckedRole, AddUserRole } from '@/api/sysUser'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, FindUserDepartList, FindRoleList, GetCheckedRole, AddUserRole, GetDeptList } from '@/api/sysUser'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令

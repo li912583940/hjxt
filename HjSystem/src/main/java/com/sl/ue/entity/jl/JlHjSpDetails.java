@@ -30,7 +30,7 @@ public class JlHjSpDetails implements java.io.Serializable{
 
     /** 审批人所在部门编号 */
     @DbField("dept_id")
-    private String deptId;
+    private Integer deptId;
 
     /** 审批人所在部门名称 */
     @DbField("dept_name")
@@ -81,11 +81,11 @@ public class JlHjSpDetails implements java.io.Serializable{
         this.userName = userName;
     }
 
-    public String getDeptId() {
+    public Integer getDeptId() {
 		return deptId;
 	}
 
-	public void setDeptId(String deptId) {
+	public void setDeptId(Integer deptId) {
 		this.deptId = deptId;
 	}
 

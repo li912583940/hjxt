@@ -392,8 +392,9 @@ export default {
 	    ctx.drawImage(image, 0, 0, 100, 126);
 	    var imgData = canvas.toDataURL("image/jpg");
 		this.dataQsForm.zpBase64=imgData.substr(22);
-		document.getElementById("zp").src='data:image/png;base64,'+imgData.substr(22);
-		console.log('data:image/png;base64,'+imgData.substr(22))
+		//document.getElementById("zp").src=zpAddress;
+		this.sfzImg=zpAddress
+		console.log(zpAddress)
   	},
 
 	dateFormats: function (val) {

@@ -1,42 +1,17 @@
 <!--
-	作者：912583940@qq.com
-	时间：2018-11-01
-	描述： 罪犯级别
+	描述： 亲属关系管理
 -->
 <template>
   <div class="app-container">
   	<div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="级别名称" v-model="listQuery.jbName" clearable>
-      </el-input>
-      <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
     </div>
     
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
-      style="width: 1201px">
-      <el-table-column width="200" align="center" label="级别编号" >
+      style="width: 401px">
+      <el-table-column width="200" align="center" label="亲属关系" >
         <template slot-scope="scope">
-          <span>{{scope.row.jbNo}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="200" align="center" label="级别名称" >
-        <template slot-scope="scope">
-          <span>{{scope.row.jbName}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="200" align="center" label="每月会见次数">
-        <template slot-scope="scope">
-          <span>{{scope.row.hjCount}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="200" align="center" label="每次会见时长（分钟）">
-        <template slot-scope="scope">
-          <span>{{scope.row.hjTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="200" align="center" label="复听录音超时时间（天）">
-        <template slot-scope="scope">
-          <span>{{scope.row.recordOverTime}}</span>
+          <span>{{scope.row.qsGx}}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" :label="$t('criminal.actions')" width="200">
@@ -55,22 +30,9 @@
 
 	<!-- 新增或编辑 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="180px" style='width: 400px; margin-left:25%;' >
-         <el-form-item label="级别编号" prop="jbNo">
-          <el-input v-if="dialogStatus=='update'" v-model="dataForm.jbNo" :disabled="true"></el-input>
-          <el-input v-if="dialogStatus=='create'" v-model="dataForm.jbNo"></el-input>
-        </el-form-item>
-        <el-form-item label="级别名称" prop="jbName">
-          <el-input v-model="dataForm.jbName"></el-input>
-        </el-form-item>
-        <el-form-item label="每月会见次数" prop="hjCount">
-          <el-input v-model="dataForm.hjCount"></el-input>
-        </el-form-item>
-        <el-form-item label="每次会见时长（分钟）" prop="hjTime">
-          <el-input v-model="dataForm.hjTime"></el-input>
-        </el-form-item>
-        <el-form-item label="复听录音超时时间（天）" prop="recordOverTime">
-          <el-input v-model="dataForm.recordOverTime"></el-input>
+      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="180px" style='width: 400px; margin-left:17%;' >
+        <el-form-item label="亲属关系" prop="qsGx">
+          <el-input v-model="dataForm.qsGx"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -84,11 +46,11 @@
 </template>
 
 <script>
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete} from '@/api/criminalLevel'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete} from '@/api/gxManage'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
-
+import { Message, MessageBox } from 'element-ui'
 
 export default {
   name: 'criminal',
@@ -101,18 +63,13 @@ export default {
       list: null,
       total: null,
       listQuery: {
-      	jbName: undefined,
         pageNum: 1,
-        pageSize: 20
+        pageSize: 10
       },
       // 新增或编辑弹窗
       dataForm: { 
-        webId: undefined,
-        jbNo: undefined,
-        jbName: undefined,
-        hjCount: undefined,
-        hjTime: undefined,
-        recordOverTime: undefined
+        id: undefined,
+        qsGx: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -121,8 +78,7 @@ export default {
         create: '新 增'
       },
        rules: {
-       	jbNo: [{ required: true, message: '级别编号不能为空', trigger: 'blur' }],
-        jbName: [{ required: true, message: '级别名称不能为空', trigger: 'blur' }]
+        qsGx: [{ required: true, message: '亲属关系不能为空', trigger: 'blur' }]
       }
     }
   },
@@ -134,9 +90,6 @@ export default {
   },
   methods: {
     getList() {
-    	if(!this.listQuery.jbName){
-      	this.listQuery.jbName = undefined
-      }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count
@@ -159,7 +112,7 @@ export default {
 		if(this.$refs[formName] !== undefined){
 			this.$refs[formName].resetFields();
 		}
-		this.dataForm.webId = undefined
+		this.dataForm.id = undefined
     },
     handleCreate() {
       this.dialogStatus = 'create'
@@ -172,26 +125,22 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          RequestAdd(this.dataForm).then(() => {
+          RequestAdd(this.dataForm).then(res => {
             this.dialogFormVisible = false
             this.getList()
           }).catch(error => {
-		        this.dialogFormVisible = false
-		      })
+	        //this.dialogFormVisible = false
+	      })
         }
       })
     },
     handleUpdate(row) {
     	let param = {
-    		id: row.webId
+    		id: row.id
     	}
     	findOne(param).then((res) =>{
-    		this.dataForm.webId = res.data.webId,
-    		this.dataForm.jbNo = res.data.jbNo,
-	        this.dataForm.jbName =  res.data.jbName,
-	        this.dataForm.hjCount = res.data.hjCount,
-	        this.dataForm.hjTime = res.data.hjTime,
-	        this.dataForm.recordOverTime = res.data.recordOverTime
+    		this.dataForm.id = res.data.id,
+    		this.dataForm.qsGx = res.data.qsGx
     	})
 	    this.dialogStatus = 'update'
 	    this.dialogFormVisible = true
@@ -202,11 +151,11 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          RequestEdit(this.dataForm).then(() => {
-            this.dialogFormVisible = false
+          RequestEdit(this.dataForm).then(res => {
+      		this.dialogFormVisible = false
             this.getList()
           }).catch(error => {
-	        this.dialogFormVisible = false
+	        //this.dialogFormVisible = false
 	      })
         }
       })
@@ -218,7 +167,7 @@ export default {
 		}).then(() => {
 			this.listLoading = true;
 			let param = {
-    			id: row.webId
+    			id: row.id
     		}
 			RequestDelete(param).then(() => {
     		this.getList()

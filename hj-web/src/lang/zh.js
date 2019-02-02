@@ -30,6 +30,8 @@ export default {
     jqSet: '监区设置',
     spSet: '审批设置',
     lineSet: '线路设置',
+    gxManage: '亲属关系',
+    deptManage: '部门管理',
     sysParam: '系统参数',
     permission: '权限测试页',
     pagePermission: '页面权限',

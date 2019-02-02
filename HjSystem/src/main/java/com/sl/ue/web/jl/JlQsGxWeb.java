@@ -48,12 +48,29 @@ public class JlQsGxWeb extends Result{
 
     @RequestMapping("/add")
     public String add(JlQsGxVO model){
+    	JlQsGxVO jlQsGxQuery = new JlQsGxVO();
+    	jlQsGxQuery.setQsGx(model.getQsGx());
+    	Integer count = jlQsGxSQL.count(jlQsGxQuery);
+    	if(count > 0){
+    		this.error(error_103, "当前亲属关系<"+model.getQsGx()+">已存在");
+    		return this.toResult();
+    	}
         jlQsGxSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlQsGxVO model){
+    	JlQsGxVO oldJlQsGx = jlQsGxSQL.findOne(model.getId());
+    	if(!oldJlQsGx.getQsGx().equals(model.getQsGx())){
+    		JlQsGxVO jlQsGxQuery = new JlQsGxVO();
+        	jlQsGxQuery.setQsGx(model.getQsGx());
+        	Integer count = jlQsGxSQL.count(jlQsGxQuery);
+        	if(count > 0){
+        		this.error(error_103, "当前亲属关系<"+model.getQsGx()+">已存在");
+        		return this.toResult();
+        	}
+    	}
         jlQsGxSQL.edit(model);
         return this.toResult();
     }

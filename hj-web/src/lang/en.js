@@ -30,6 +30,8 @@ export default {
     jqSet: 'Jq Set', // 监区设置
     spSet: 'Sp Set', //审批设置
     lineSet: 'Line Set', // 线路设置
+    gxManage: 'Gx Manage', // 亲属关系
+    deptManage: 'Dept Manage', // 部门管理
     sysParam: 'sys Param', // 系统参数
     permission: 'Permission',
     pagePermission: 'Page Permission',
