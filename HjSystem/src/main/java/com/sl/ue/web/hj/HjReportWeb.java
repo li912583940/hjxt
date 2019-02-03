@@ -6,8 +6,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,8 +76,8 @@ public class HjReportWeb extends Result{
         	if(year.length==1){ // 按某年的每月统计
         		dateStart = year[0] + "-01-01 00:00:00";
         		dateEnd = year[0] + "-12-31 23:59:59";
-        		recTimedate = " (SELECT  CONVERT(VARCHAR(7),Call_Time_Start,111) as timedate";
-        		djTimedate = " (SELECT  CONVERT(VARCHAR(7),DJ_Time,111) as timedate";
+        		recTimedate = " (SELECT  CONVERT(VARCHAR(7),Call_Time_Start,120) as timedate";
+        		djTimedate = " (SELECT  CONVERT(VARCHAR(7),DJ_Time,120) as timedate";
         	}else if(year.length==2){ // 按某月的每天统计
         		Calendar c= Calendar.getInstance();
         		c.set(Calendar.YEAR, Integer.parseInt(year[0]));
@@ -82,8 +86,8 @@ public class HjReportWeb extends Result{
         		
         		dateStart = year[0] + "-" + (year[1].length()==1?"0"+year[1]:year[1]) + "-01 00:00:00";
         		dateEnd = year[0] + "-" + (year[1].length()==1?"0"+year[1]:year[1]) + "-"+lastDay+" 23:59:59";
-        		recTimedate = " (SELECT  CONVERT(VARCHAR(10),Call_Time_Start,111) as timedate";
-        		djTimedate = " (SELECT  CONVERT(VARCHAR(10),DJ_Time,111) as timedate";
+        		recTimedate = " (SELECT  CONVERT(VARCHAR(10),Call_Time_Start,120) as timedate";
+        		djTimedate = " (SELECT  CONVERT(VARCHAR(10),DJ_Time,120) as timedate";
         	}
         	recWhere= where + " AND Call_Time_Start>='"+dateStart+"'";
         	recWhere+= " AND Call_Time_Start<='"+dateEnd+"'";
@@ -92,8 +96,8 @@ public class HjReportWeb extends Result{
         	djWhere+= " AND DJ_Time<='"+dateEnd+"'";
         	
         }else{// 没选年份的查询条件  直接每年的总数
-        	recTimedate = " (SELECT  CONVERT(VARCHAR(4),Call_Time_Start,111) as timedate";
-        	djTimedate = " (SELECT  CONVERT(VARCHAR(4),DJ_Time,111) as timedate";
+        	recTimedate = " (SELECT  CONVERT(VARCHAR(4),Call_Time_Start,120) as timedate";
+        	djTimedate = " (SELECT  CONVERT(VARCHAR(4),DJ_Time,120) as timedate";
         	recWhere= where;
         	djWhere= where;
         }
@@ -105,7 +109,7 @@ public class HjReportWeb extends Result{
     			+ 	" ) as aa"
     			+ " group by aa.timedate";
     	List<Map<String, Object>> hjRecList = jdbcTemplate.queryForList(sql);
-    	this.putData("hjRecList", hjRecList);
+    	
     	
     	
     	//查询登记记录
@@ -117,7 +121,39 @@ public class HjReportWeb extends Result{
     			+ 	" ) as aa"
     			+ " group by aa.timedate";
     	List<Map<String, Object>> hjdjList = jdbcTemplate.queryForList(djSql);
-    	this.putData("hjdjList", hjdjList);
+    	
+    	Set<String> dateList = new TreeSet<>(); //X轴坐标 日期
+    	for(Map<String, Object> map : hjRecList){
+    		dateList.add(map.get("timedate")+"");
+    	}
+    	for(Map<String, Object> map : hjdjList){
+    		dateList.add(map.get("timedate")+"");
+    	}
+    	this.putData("dateList", dateList);
+    	
+    	Map<String, Integer> hjRecM = new LinkedHashMap<>();
+    	Map<String, Integer> hjdjM = new LinkedHashMap<>();
+    	for(String s : dateList){
+    		hjRecM.put(s, 0);
+    		hjdjM.put(s, 0);
+    	}
+    	for(Map<String, Object> map : hjRecList){
+    		hjRecM.put(map.get("timedate")+"", (int)map.get("count"));
+    	}
+    	for(Map<String, Object> map : hjdjList){
+    		hjdjM.put(map.get("timedate")+"", (int)map.get("count"));
+    	} 
+    	List<Integer> hjRecL = new ArrayList<>();  // Y轴坐标 会见记录
+    	for(Integer i : hjRecM.values()){
+    		hjRecL.add(i);
+    	}
+    	this.putData("hjRecList", hjRecL);
+    	
+    	List<Integer> hjdjL = new ArrayList<>(); // Y轴坐标 会见登记
+    	for(Integer i : hjdjM.values()){
+    		hjdjL.add(i);
+    	}
+    	this.putData("hjdjList", hjdjL);
 		return this.toResult();
     }
 	

@@ -161,16 +161,9 @@ export default {
   		}
   		
   		RequestReport(this.listQuery).then((res) => {
-  			let hjRecList = res.hjRecList
-  			for(let x of hjRecList){
-  				this.hjCount.push(x.count)
-  			}
-  			
-  			let hjdjList = res.hjdjList
-  			for(let x of hjdjList){
-  				this.titleDate.push(x.timedate)
-  				this.djCount.push(x.count)
-  			}
+  			this.hjCount = res.hjRecList
+  			this.titleDate = res.dateList
+  			this.djCount = res.hjdjList
       	  this.initChart()
         }).catch(error => {
         

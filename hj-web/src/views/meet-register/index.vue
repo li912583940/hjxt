@@ -56,11 +56,10 @@
           <span>{{scope.row.zw}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="90" align="center" label="会见状态">
+      <el-table-column width="90" align="center" label="审批状态">
         <template slot-scope="scope">
-          <span v-if="scope.row.state==0">未完成</span>
-          <span v-else-if="scope.row.state==1">已完成</span>
-          <span v-else-if="scope.row.state==2">已取消</span>
+          <span v-if="scope.row.state==3" style="color: red;">待审批</span>
+          <span v-else>审批通过</span>
         </template>
       </el-table-column>
       <el-table-column width="110" align="center" label="会见类型">
