@@ -815,10 +815,10 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		SysHjLineVO sysHjLine = new SysHjLineVO();
 		sysHjLine.setState(1);
 		sysHjLine.setHjstate(0);
-		if(jlHjDj.getHjType()==2){
-			sysHjLine.setLineType(1);
-		}else{
+		if(jlHjDj.getHjMode()==1){
 			sysHjLine.setLineType(0);
+		}else{
+			sysHjLine.setLineType(1);
 		}
 		sysHjLine.setLeftJoinWhere(" AND hjid is null");
 		List<SysHjLineVO> sysHjLineList = sysHjLineSQL.findList(sysHjLine);

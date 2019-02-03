@@ -73,6 +73,7 @@
     
     <object width="0px" height="0px" id="IDCard2" name="IDCard2"  codebase="../../../ocx/SynCardOcx1.CAB#version=1,0,0,1" classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039">
 		</object>
+		<audio id="audio1" :src="wavUrl"></audio>
 		<!-- 拍照-->
 		<!--<object id="camera" classid="clsid:792FD9B8-5917-45D2-889D-C49FD174D4E0"
 		  codebase="../../../ocx/capProj1.ocx#version=1,0,0,0"
@@ -121,6 +122,7 @@ export default {
   data() {
     return {
       imagephoto: '/static/image/user.jpg',
+    	wavUrl: '/static/video/hjnotice.wav',
     	
     	dialogFormVisible: false,
     	dataForm: { 
@@ -173,6 +175,9 @@ export default {
     	findNotTzList({}).then(res => {
     		let list = res.list
     		if(list.length>0){
+    			// 语音提示
+          this.audioPaly()
+    	
     			let obj = list[0]
     			this.$notify({
 	          title: '会见通知',
@@ -209,6 +214,9 @@ export default {
     	findSpNotice({}).then(res => {
 				let count = res.data
 				if(count>0){
+					// 语音提示
+          this.audioPaly()
+          
 					this.$notify({
 	          title: '审批通知',
 	          message: "您有新的审批需要处理，请前往《会见审批》菜单查看",
@@ -217,6 +225,12 @@ export default {
 	        });
 				}
 			})
+    },
+    
+    audioPaly() {
+    	var audio1 = document.getElementById("audio1")
+			audio1.currentTime = 0;
+			audio1.play()
     },
     //重置表单
 		resetForm() {
