@@ -16,7 +16,7 @@ export default {
     meetMonitor: '会见监控',
     meetMonitorGraph: '会见监控-图形化',
     meetSp: '会见审批',
-    yjMessage: '警察信息',
+    yjMessage: '干警信息',
     logRecord: '日志记录',
     meetRecord: '会见记录',
     meetReport: '会见报表',

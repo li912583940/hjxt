@@ -230,7 +230,7 @@ export default {
     audioPaly() {
     	var audio1 = document.getElementById("audio1")
 			audio1.currentTime = 0;
-			audio1.play()
+			//audio1.play()
     },
     //重置表单
 		resetForm() {

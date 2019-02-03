@@ -59,7 +59,7 @@ public class WebBean {
 			sb.append("\r\n");
 			sb.append("    @RequestMapping(\"/findList\")").append("\r\n");
 			sb.append("    public String findList("+fileName+"VO model,Integer pageSize, Integer pageNum){").append("\r\n");
-			sb.append("        List<"+fileName+"VO> list = "+StringUtil.toLower(fileName)+"SQL.findList(model, pageSize, pageNum);").append("\r\n");
+			sb.append("        List<"+fileName+"VO> list = "+StringUtil.toLower(fileName)+"SQL.findList(model, pageSize, pageNum, \"ASC\");").append("\r\n");
 			sb.append("        this.putData(list);").append("\r\n");
 			sb.append("        return this.toResult();").append("\r\n");
 			sb.append("    }").append("\r\n");

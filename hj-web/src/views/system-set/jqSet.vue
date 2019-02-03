@@ -11,7 +11,7 @@
     </div>
     
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
-      style="width: 1061px">
+      style="width: 1141px">
       <el-table-column width="100" align="center" :label="$t('currency.jqNo')">
         <template slot-scope="scope">
           <span>{{scope.row.jqNo}}</span>
@@ -38,11 +38,12 @@
           <span v-if="scope.row.isTs==1" style="color: red;">是</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="360" fixed="right">
+      <el-table-column align="center" :label="$t('criminal.actions')" width="440" fixed="right">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
           <el-button size="mini" type="info" icon="el-icon-setting" @click="openWeek(scope.row)">设置会见星期</el-button>
+          <el-button size="mini" type="info" icon="el-icon-setting" @click="openHoliday(scope.row)">节假会见日</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -81,25 +82,57 @@
     </el-dialog>
     
     <!-- 设置会见星期 -->
-	<el-dialog title="设置会见星期" :visible.sync="dialogWeekVisible">
-		<el-card style="width: 540px; margin-left: 19%;">
-			<el-transfer
-		    v-model="weekValue"
-		    :data="weekData"
-		    :titles="['未拥有', '已拥有']">
-		  </el-transfer>
-	  </el-card>
-	  <div slot="footer" class="dialog-footer">
-	    <el-button @click="dialogWeekVisible = false">取 消</el-button>
-	    <el-button type="primary" @click="updateWeekData">确 定</el-button>
-	  </div>
-	</el-dialog>
+		<el-dialog title="设置会见星期" :visible.sync="dialogWeekVisible">
+			<el-card style="width: 540px; margin-left: 19%;">
+				<el-transfer
+			    v-model="weekValue"
+			    :data="weekData"
+			    :titles="['未拥有', '已拥有']">
+			  </el-transfer>
+		  </el-card>
+		  <div slot="footer" class="dialog-footer">
+		    <el-button @click="dialogWeekVisible = false">取 消</el-button>
+		    <el-button type="primary" @click="updateWeekData">确 定</el-button>
+		  </div>
+		</el-dialog>
 	
+	  <!-- 节假会见日 -->
+		<el-dialog title="节假会见日" :visible.sync="dialogHolidayVisible">
+			<el-card style="width: 385px; margin-left: 19%;">
+				<el-date-picker
+					width="560px"
+		      type="dates"
+		      v-model="holidayValue"
+		      placeholder="选择一个或多个日期"
+		      value-format="yyyy-MM-dd">
+		    </el-date-picker>
+		  </el-card>
+		  
+      <el-card style="width: 385px; margin-left: 19%;">
+		    <el-table :data="holidayList"   border fit highlight-current-row
+		      style="width: 341px" size="mini">
+		      <el-table-column width="160" align="center" label="日期">
+		        <template slot-scope="scope">
+		          <span>{{scope.row.jqHoliday}}</span>
+		        </template>
+		      </el-table-column>
+		      <el-table-column align="center" :label="$t('criminal.actions')" width="180" fixed="right">
+		        <template slot-scope="scope">
+		          <el-button size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+		        </template>
+		      </el-table-column>
+		    </el-table>
+		  </el-card>
+		  <div slot="footer" class="dialog-footer">
+		    <el-button @click="dialogHolidayVisible = false">取 消</el-button>
+		    <el-button type="primary" @click="updateHolidayData">确 定</el-button>
+		  </div>
+		</el-dialog>
   </div>
 </template>
 
 <script>
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, GetCheckedWeek, AddJqWeek} from '@/api/jqSet'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, GetCheckedWeek, AddJqWeek, GetCheckedHoliday, AddJqHoliday} from '@/api/jqSet'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -138,7 +171,7 @@ export default {
        	jqNo: [{ required: true, message: '监区编号不能为空', trigger: 'blur' }],
         jqName: [{ required: true, message: '监区名称不能为空', trigger: 'blur' }]
       },
-      /**---------------------设置会见星期日--------------------------*/
+      /**--------------------设置会见星期日   开始--------------------------*/
       jqNo: undefined,
       dialogWeekVisible: false,
       weekValue: [],
@@ -150,7 +183,14 @@ export default {
       	{label: '星期五',key:5},
       	{label: '星期六',key:6},
       	{label: '星期日',key:7}
-      ]
+      ],
+      /**---------------------设置会见星期日   结束--------------------------*/
+      
+      /**---------------------节假会见日   开始--------------------------*/
+      dialogHolidayVisible: false,
+      holidayValue:[],
+      holidayList: null,
+      /**---------------------节假会见日   结束--------------------------*/
     }
   },
   filters: {
@@ -291,6 +331,35 @@ export default {
 		})
 	},
 	/**------------------ 设置会见星期日结束 ----------------------*/
+	
+	/**------------------ 节假日会见  开始 ----------------------*/
+	GetCheckedHoliday(){
+		let param ={
+			jqNo:this.jqNo
+		}
+		GetCheckedHoliday(param).then(res =>{
+			this.holidayList = res.list
+		}).catch(error =>{
+			
+		})
+	},
+	openHoliday(row){  //打开节假日会见
+		this.dialogHolidayVisible = true
+		this.jqNo = row.jqNo
+		
+	},
+	updateHolidayData(){
+		console.log(this.holidayValue)
+		let holidays = this.holidayValue.join()
+		let param ={
+			jqNo: this.jqNo,
+			holidays: holidays
+		}
+		AddJqHoliday(param).then(res =>{
+			this.GetCheckedHoliday()
+		})
+	},
+	/**------------------ 节假日会见   结束 ----------------------*/
 	dateFormats: function (val) {
 		if(!val){
 			return undefined

@@ -115,4 +115,14 @@ public class JlJqWeb extends Result{
     public String addJqWeek(String jqNo, String weeks){
     	return jlJqSQL.addJqWeek(jqNo, weeks);
     }
+    
+    @RequestMapping("/getCheckedHoliday")
+    public String getCheckedHoliday(String jqNo){
+    	return jlJqSQL.getCheckedHoliday(jqNo);
+    }
+    
+    @RequestMapping("/addJqHoliday")
+    public String addJqHoliday(String jqNo, String holidays){
+    	return jlJqSQL.addJqHoliday(jqNo, holidays);
+    }
 }
