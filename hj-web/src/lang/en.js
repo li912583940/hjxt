@@ -28,6 +28,7 @@ export default {
     sysUser: 'Sys User', // 系统用户
     sysRoles: 'Sys Roles', // 系统权限配置
     jqSet: 'Jq Set', // 监区设置
+    holidaySet: 'Holiday Set', // 特殊会见日
     spSet: 'Sp Set', //审批设置
     lineSet: 'Line Set', // 线路设置
     gxManage: 'Gx Manage', // 亲属关系
@@ -91,7 +92,9 @@ export default {
     fullName: 'Full Name',
     frName: 'Criminal Name',
     jqNo: 'Prison No',
-    jqName: 'Prison Name'
+    jqName: 'Prison Name',
+    add: 'Add',
+    confJq: 'Conf Jq',
   },
   /* 服刑 */
   criminal: {

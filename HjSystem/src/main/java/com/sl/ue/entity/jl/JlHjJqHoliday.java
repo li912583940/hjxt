@@ -18,10 +18,6 @@ public class JlHjJqHoliday implements java.io.Serializable{
     @DbField("jq_no")
     private String jqNo;
 
-    /** 监区特殊会见日。如：2018-02-05 */
-    @DbField("jq_holiday")
-    private String jqHoliday;
-
     /**  */
     @Id
     @DbField("id")
@@ -34,13 +30,7 @@ public class JlHjJqHoliday implements java.io.Serializable{
     public void setJqNo(String jqNo) {
         this.jqNo = jqNo;
     }
-    public String getJqHoliday() {
-        return this.jqHoliday;
-    }
 
-    public void setJqHoliday(String jqHoliday) {
-        this.jqHoliday = jqHoliday;
-    }
     public Integer getId() {
         return this.id;
     }

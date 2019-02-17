@@ -8,12 +8,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sl.ue.entity.jl.vo.JlHjJqHolidayVO;
 import com.sl.ue.entity.jl.vo.JlHjJqWeekVO;
 import com.sl.ue.entity.jl.vo.JlJqVO;
 import com.sl.ue.entity.sys.vo.SysHjServerVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
-import com.sl.ue.service.jl.JlHjJqHolidayService;
 import com.sl.ue.service.jl.JlHjJqWeekService;
 import com.sl.ue.service.jl.JlJqService;
 import com.sl.ue.service.sys.SysHjServerService;
@@ -27,8 +25,6 @@ public class JlJqServiceImpl extends BaseSqlImpl<JlJqVO> implements JlJqService{
 	private JlHjJqWeekService jlHjJqWeekSQL;
 	@Autowired
     private SysHjServerService sysHjServerSQL;
-	@Autowired
-	private JlHjJqHolidayService jlHjJqHolidaySQL;
 	
 	public Map<String, Object> findPojoJoin(JlJqVO model, Integer pageSize, Integer pageNum){
 		if(StringUtils.isNotBlank(model.getJqName())){
@@ -110,40 +106,5 @@ public class JlJqServiceImpl extends BaseSqlImpl<JlJqVO> implements JlJqService{
 		return result.toResult();
 	}
 
-	@Override
-	public String getCheckedHoliday(String jqNo) {
-		Result result = new Result();
-		if(jqNo == null){
-			result.error(Result.error_102);
-    		return result.toResult();
-    	}
-		JlHjJqHolidayVO jlHjJqHoliday = new JlHjJqHolidayVO();
-		jlHjJqHoliday.setJqNo(jqNo);
-		List<JlHjJqHolidayVO> list = jlHjJqHolidaySQL.findList(jlHjJqHoliday);
-		result.putData(list);
-		return result.toResult();
-	}
-
-	@Override
-	public String addJqHoliday(String jqNo, String holidays) {
-		Result result = new Result();
-		if(jqNo == null){
-			result.error(Result.error_102);
-    		return result.toResult();
-    	}
-		if(StringUtils.isNotBlank(holidays)){
-			for(String s : holidays.split(",")){
-				JlHjJqHolidayVO jlHjJqHoliday = new JlHjJqHolidayVO();
-				jlHjJqHoliday.setJqNo(jqNo);
-				jlHjJqHoliday.setJqHoliday(s);
-				int count = jlHjJqHolidaySQL.count(jlHjJqHoliday);
-				if(count >0){
-				}else{
-					jlHjJqHolidaySQL.add(jlHjJqHoliday);
-				}
-			}
-		}
-		return result.toResult();
-	}
 
 }

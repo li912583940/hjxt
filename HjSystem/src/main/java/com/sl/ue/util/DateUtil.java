@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * 说明 [日期工具类]
  * @作者 LXT @2018年9月4日
@@ -19,6 +21,20 @@ public class DateUtil {
 	public static String getDefaultNow(){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return sdf.format(new Date());
+	}
+	/**
+	 * 说明 [返回当前日期的字符串类型:格式  yyyy-MM-dd HH:mm:ss]
+	 * @return
+	 * L_晓天  @2018年12月19日
+	 */
+	public static String getDefaultNow(String format){
+		if(StringUtils.isBlank(format)){
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			return sdf.format(new Date());
+		}else{
+			SimpleDateFormat sdf = new SimpleDateFormat(format);
+			return sdf.format(new Date());
+		}
 	}
 	
 	/**

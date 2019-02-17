@@ -31,6 +31,8 @@ import org.springframework.stereotype.Service;
 
 import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
+import com.sl.ue.entity.jl.vo.JlHjHolidayVO;
+import com.sl.ue.entity.jl.vo.JlHjJqHolidayVO;
 import com.sl.ue.entity.jl.vo.JlHjJqWeekVO;
 import com.sl.ue.entity.jl.vo.JlHjRecVO;
 import com.sl.ue.entity.jl.vo.JlHjSpSetVO;
@@ -44,6 +46,8 @@ import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlFrService;
 import com.sl.ue.service.jl.JlHjDjService;
+import com.sl.ue.service.jl.JlHjHolidayService;
+import com.sl.ue.service.jl.JlHjJqHolidayService;
 import com.sl.ue.service.jl.JlHjJqWeekService;
 import com.sl.ue.service.jl.JlHjRecService;
 import com.sl.ue.service.jl.JlHjSpService;
@@ -82,6 +86,10 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 	private JlJbService jlJbSQL;
 	@Autowired
 	private JlHjRecService jlHjRecSQL;
+	@Autowired
+    private JlHjJqHolidayService jlHjJqHolidaySQL;
+	@Autowired
+    private JlHjHolidayService jlHjHolidaySQL;
 	
 	@Override
 	public String addHjdj(
@@ -285,23 +293,36 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			}
 		}
 		if(is_week == false){
-			// 服刑人员当前监区不是会见日
-			JlHjSpSetVO jlHjSpSetQuery = new JlHjSpSetVO();
-			jlHjSpSetQuery.setUsable(1);
-			jlHjSpSetQuery.setSpNo("4");
-			List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
-			if(jlHjSpSetList.size()>0){ // 开启了《罪犯本月会见次数已用完》的审批
-				jlHjSpSet=jlHjSpSetList.get(0);
-				if(StringUtils.isNotBlank(explain)){
-					explain+=";"+jlHjSpSet.getSpName();
-				}else{
-					explain=jlHjSpSet.getSpName();
-				}
-				is_sp=true;
+			// 判断当天是不是节假会见日
+			JlHjJqHolidayVO jlHjJqHolidayQuery = new JlHjJqHolidayVO();
+			jlHjJqHolidayQuery.setJqNo(jlJq.getJqNo());
+			int jqCount = jlHjJqHolidaySQL.count(jlHjJqHolidayQuery);
+			
+			String dateFormat = DateUtil.getDefaultNow("yyyy-MM-dd");
+			JlHjHolidayVO jlHjHolidayQuery = new JlHjHolidayVO();
+			jlHjHolidayQuery.setHoliday(dateFormat);
+			int hoCount = jlHjHolidaySQL.count(jlHjHolidayQuery);
+			if(jqCount>0 && hoCount>0){ //大于0 当天是此监区的节假日会见，无需审批
 			}else{
-				result.error(Result.error_103, "服刑人员当前监区不是会见日");
-				return result.toResult();
+				// 服刑人员当前监区不是会见日
+				JlHjSpSetVO jlHjSpSetQuery = new JlHjSpSetVO();
+				jlHjSpSetQuery.setUsable(1);
+				jlHjSpSetQuery.setSpNo("4");
+				List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
+				if(jlHjSpSetList.size()>0){ // 开启了《罪犯本月会见次数已用完》的审批
+					jlHjSpSet=jlHjSpSetList.get(0);
+					if(StringUtils.isNotBlank(explain)){
+						explain+=";"+jlHjSpSet.getSpName();
+					}else{
+						explain=jlHjSpSet.getSpName();
+					}
+					is_sp=true;
+				}else{
+					result.error(Result.error_103, "服刑人员当前监区不是会见日");
+					return result.toResult();
+				}
 			}
+			
 		}
 		/** 查看当前罪犯是否符合会见登记条件 结束 */
 		

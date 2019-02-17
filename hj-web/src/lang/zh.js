@@ -28,6 +28,7 @@ export default {
     sysUser: '系统用户',
     sysRoles: '系统权限配置',
     jqSet: '监区设置',
+    holidaySet: '特殊会见日',
     spSet: '审批设置',
     lineSet: '线路设置',
     gxManage: '亲属关系',
@@ -91,7 +92,9 @@ export default {
     frNo: '罪犯编号',
     frName: '罪犯姓名',
     jqNo: '监区编号',
-    jqName: '监区名称'
+    jqName: '监区名称',
+    add: '添加',
+    confJq: '配置监区'
   },
   /* 服刑 */
   criminal: {
