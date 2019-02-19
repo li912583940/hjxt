@@ -9,7 +9,7 @@
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
       <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('criminal.add')}}</el-button>
-      <el-button v-if="buttonRole.exportPermission==1" class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload" >{{$t('criminal.export')}}</el-button>
+      <el-button v-if="buttonRole.exportPermission==1" class="filter-item" type="primary" v-waves icon="el-icon-download" @click="handleDownload" >{{$t('criminal.export')}}</el-button>
     	<el-upload
     		v-if="buttonRole.importPermission==1"
     		ref="upload"
@@ -291,7 +291,6 @@ export default {
         qsName: [{ required: true, message: '亲属姓名不能为空', trigger: 'blur' }],
         gx: [{ required: true, message: '亲属关系必选', trigger: 'blur' }]
       },
-      downloadLoading: false,
       
       ie: 0,
     }

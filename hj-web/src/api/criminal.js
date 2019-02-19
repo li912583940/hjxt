@@ -37,6 +37,17 @@ export const RequestQsEdit = params => { return request.post('/jlQs/edit', param
 
 export const RequestQsDelete = params => { return request.post('/jlQs/delete', params ).then(res => res) }
 
+// 导出EXCEL
+export function WordDownload(param) {
+  return request({
+    url: '/jlQs/wordDownload',
+    method: 'post',
+    data: param,
+    timeout: 600000,
+    responseType:'blob'
+  }).then(res => res)
+}
+
 //获取亲属关系集合
 export const findGxList = params => { return request.get('/jlQsGx/findList', { params: params } ).then(res => res) }
 

@@ -647,13 +647,13 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				try {
 					if(field.get(model) != null){
 						params.add(field.get(model));
-						where_field.append(table_filed+"=?,");
+						where_field.append(" AND "+table_filed+"=?,");
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				} 
 			}
-			sql.append("delete from "+tableName+" where "+StringUtil.lastComma(where_field.toString()));
+			sql.append("delete from "+tableName+" where 1=1 "+StringUtil.lastComma(where_field.toString()));
 			System.out.println("执行删除语句：[ "+ sql+" ]");
 			System.out.println("参数："+params);
 			jdbcTemplate.update(sql.toString(), params.toArray());

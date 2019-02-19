@@ -8,7 +8,7 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 1671px">
+      style="width: 1371px">
       <el-table-column width="100" align="center"  :label="$t('criminal.id')">
         <template slot-scope="scope">
           <span>{{scope.row.id}}</span>
@@ -34,18 +34,18 @@
           <span>{{scope.row.createUserName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="150" align="center" label="菜单权限">
+      <!--<el-table-column width="150" align="center" label="菜单权限">
         <template slot-scope="scope">
           <span v-if="scope.row.authorityResource==1">已设置</span>
           <span v-if="scope.row.authorityResource==0">未设置</span>
         </template>
-      </el-table-column>
-      <el-table-column width="150" align="center" label="监区权限">
+      </el-table-column>-->
+      <!--<el-table-column width="150" align="center" label="监区权限">
         <template slot-scope="scope">
           <span v-if="scope.row.authorityJq==1">已设置</span>
           <span v-if="scope.row.authorityJq==0">未设置</span>
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column align="center" :label="$t('criminal.actions')" width="200" >
         <template slot-scope="scope">
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>

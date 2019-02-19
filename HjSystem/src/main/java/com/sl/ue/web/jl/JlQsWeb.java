@@ -242,6 +242,16 @@ public class JlQsWeb extends Result{
     	JlQsVO oldJlQs = new JlQsVO();
     	if(StringUtils.isNotBlank(model.getQsSfz())){
     		oldJlQs = jlQsSQL.findOne(model.getWebId()); //之前的家属
+    		if(StringUtils.isNotBlank(model.getEnclosureUrl())){
+    			if(StringUtils.isNotBlank(oldJlQs.getEnclosureUrl())){
+        			String startPath = Config.getPropertiesValue("file.path");
+        			File file =new File(startPath+oldJlQs.getEnclosureUrl());
+        			if(file.exists() && file.isFile()){
+        				file.delete();
+        			}
+        		}
+    		}
+    		
     		if(oldJlQs.getFrNo().equals(model.getFrNo()) && oldJlQs.getQsSfz().equals(model.getQsSfz())){
     			
     		}else{
@@ -412,4 +422,17 @@ public class JlQsWeb extends Result{
     public String importExcel(HttpServletRequest request, HttpServletResponse response){
     	return jlQsSQL.importExcel(request, response);
     }
+    
+    @RequestMapping(value="/uploadWord",method={RequestMethod.GET,RequestMethod.POST})
+    @IgnoreSecurity
+    public String uploadWord(HttpServletRequest request, HttpServletResponse response){
+    	return jlQsSQL.uploadWord(request, response);
+    }
+    
+    @RequestMapping("/wordDownload")
+    public void wordDownload(JlQsVO model,
+    		HttpServletRequest request, HttpServletResponse response) {
+    	jlQsSQL.wordDownload(model, request, response);
+    }
+    
 }

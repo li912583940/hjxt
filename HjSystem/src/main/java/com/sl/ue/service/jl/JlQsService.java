@@ -28,4 +28,19 @@ public interface JlQsService extends BaseService<JlQsVO>{
 	public String importExcel(HttpServletRequest request, HttpServletResponse response);
 	
 	public boolean qsExist(String frNo, String qsSfz);
+	
+	/**
+	 * 说明 [上传亲属附件]
+	 * @param request
+	 * @param response
+	 * @return
+	 * L_晓天  @2019年2月19日
+	 */
+	public String uploadWord(HttpServletRequest request, HttpServletResponse response);
+	
+	/**
+	 * 说明 [导出excel]
+	 * @作者 LXT @2018年9月30日
+	 */
+	public void wordDownload(JlQsVO model, HttpServletRequest request, HttpServletResponse response);
 }

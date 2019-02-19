@@ -3,12 +3,15 @@ package com.sl.ue.service.jl.sqlImpl;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +38,7 @@ import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.business.FrThreadXLS;
 import com.sl.ue.util.business.QsThreadXLS;
 import com.sl.ue.util.business.QsThreadXLSX;
+import com.sl.ue.util.http.Result;
 
 @Service("jlQsSQL")
 public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
@@ -299,5 +303,145 @@ public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
 			return false;
 		}
 		
+	}
+	@Override
+	public String uploadWord(HttpServletRequest request, HttpServletResponse response) {
+		Result result = new Result();
+		Map<String, String> map = new HashMap<>();
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+		MultipartFile mFile = null;
+		for (Iterator<?> i = fileMap.keySet().iterator(); i.hasNext();) {
+			Object obj = i.next();
+			mFile = (MultipartFile) fileMap.get(obj);
+		}
+		String startPath = Config.getPropertiesValue("file.path");
+		String qswordfile = "/qswordfile";
+	    String nowStr = DateUtil.getFormat(new Date(), "yyyyMMddHHmmss");
+		BufferedInputStream in =null;
+		BufferedOutputStream out = null;
+		String absolutelyFilePath = null;
+		String fileExt = null;
+		try {
+			// 得到上传的文件的文件名
+			String filename = mFile.getOriginalFilename();
+			// 获取文件后缀名
+			if (filename == null || ("").equals(filename)) {
+				result.error(Result.error_102, "上传文件不存在");
+				return result.toResult();
+			}
+			File file = new File(startPath+qswordfile);
+			if(!file.exists()){
+				file.mkdirs();
+			}
+			//boolean isPattern = false;
+			fileExt = filename.substring(filename.lastIndexOf(".")+1);
+//			if("xls".equals(fileExt) || "xlsx".equals(fileExt)){
+//				isPattern = true;
+//			}
+//			if(isPattern == false){
+//				return "不支持此格式";
+//			}
+			absolutelyFilePath = startPath+qswordfile+"/"+nowStr+"."+fileExt;//excel文件临时存储路径
+			map.put("absolutelyFilePath", absolutelyFilePath); //绝对路径
+			map.put("relativeFilePath", qswordfile+"/"+nowStr+"."+fileExt); //相对路径
+			File saveFile = new File(absolutelyFilePath);
+			int l = 10*1024*1024;//1M 默认，可在配置文件中设置此值大小
+			String typeBufferSize = Config.getPropertiesValue("file.buffer.size");
+			if(!"".equals(typeBufferSize)){
+				int tfz =Integer.parseInt(typeBufferSize.trim());
+				l = tfz*1024;
+			}
+			in = new BufferedInputStream(mFile.getInputStream());
+			out = new BufferedOutputStream(new FileOutputStream(saveFile));
+			//int byteCount = 0;
+			byte[] buffer = new byte[l];
+			int bytesRead = -1;//文件大小
+			while ((bytesRead = in.read(buffer)) != -1) {
+				out.write(buffer, 0, bytesRead);
+				//byteCount += bytesRead;
+			}
+			out.flush();
+		} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		}finally {
+			try {
+				if(in!=null){
+					in.close();
+				}
+			}
+			catch (IOException ex) {
+			}
+			try {
+				if(out!=null){
+					out.close();
+				}
+			}
+			catch (IOException ex) {
+			}
+		}
+		result.putJson(map);
+		return result.toResult();
+	
+	}
+	@Override
+	public void wordDownload(JlQsVO model, HttpServletRequest request, HttpServletResponse response) {
+		if(StringUtils.isBlank(model.getEnclosureUrl())){
+			return;
+		}
+		String startPath = Config.getPropertiesValue("file.path");
+		String filePath = startPath + model.getEnclosureUrl();
+		File file = new File(filePath);
+		if(!file.exists()){
+			return;
+		}
+		OutputStream out = null;
+		BufferedInputStream in =null;
+		try {
+			String fileName = model.getEnclosureUrl().substring(model.getEnclosureUrl().lastIndexOf("/")+1);;
+			// 处理不同浏览器中文名称编码
+			String userAgent=request.getHeader("USER-AGENT");
+			if(userAgent.indexOf("Chrome")!=-1 || userAgent.indexOf("Safari")!=-1 || userAgent.indexOf("Firefox")!=-1){
+				fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+			}else{
+				fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+				//fileName = URLEncoder.encode(fileName,"UTF8");
+			}
+			response.setHeader("Content-Disposition", "attachment;filename="+fileName);
+			response.setHeader("Cache-Control","no-cache");//设置头
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("application/octet-stream");
+			out = response.getOutputStream();
+			in = new BufferedInputStream(new FileInputStream(file));
+			int l = 1*1024*1024;//1M 默认，可在配置文件中设置此值大小
+			//int byteCount = 0;
+			byte[] buffer = new byte[l];
+			int bytesRead = -1;//文件大小
+			while ((bytesRead = in.read(buffer)) != -1) {
+				out.write(buffer, 0, bytesRead);
+				//byteCount += bytesRead;
+			}
+			out.flush();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {
+				if(in!=null){
+					in.close();
+				}
+			}
+			catch (IOException ex) {
+			}
+			try {
+				if(out!=null){
+					out.close();
+				}
+			}
+			catch (IOException ex) {
+			}
+		}
 	}
 }

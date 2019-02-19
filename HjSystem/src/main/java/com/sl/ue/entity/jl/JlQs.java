@@ -72,7 +72,10 @@ public class JlQs implements java.io.Serializable {
 	private String zpUrl;
 	@DbField("jz_url")
 	private String jzUrl;
-
+	/* 亲属附件url */
+	@DbField("enclosure_url")
+	private String enclosureUrl;
+	
 	public Integer getWebId() {
 		return this.webId;
 	}
@@ -287,6 +290,14 @@ public class JlQs implements java.io.Serializable {
 
 	public void setJzUrl(String jzUrl) {
 		this.jzUrl = jzUrl;
+	}
+
+	public String getEnclosureUrl() {
+		return enclosureUrl;
+	}
+
+	public void setEnclosureUrl(String enclosureUrl) {
+		this.enclosureUrl = enclosureUrl;
 	}
 
 }

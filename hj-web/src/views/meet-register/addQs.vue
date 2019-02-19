@@ -51,6 +51,20 @@
 		        <el-form-item label="电话号码" prop="tele">
 		          <el-input v-model="dataQsForm.tele"></el-input>
 		        </el-form-item>
+		        <el-form-item label="附件">
+			        <el-upload
+			    		ref="upload"
+						  :action="wordPath"
+						  :on-success="wordSuccess"
+						  :on-error="wordError"
+						  multiple>
+						 <el-button icon="el-icon-upload2"  type="primary">上传附件</el-button>
+					</el-upload>
+					
+				</el-form-item>
+				<el-form-item label="附件下载">
+		          <el-button v-if="uploadBoolean==1"  type="primary" v-waves icon="el-icon-download" @click="wordDownload" >下载附件</el-button>
+		        </el-form-item>
 		        <!--<el-form-item label="审批状态">
 		          <el-input v-model="dataQsForm.spState" :disabled="true"></el-input>
 		        </el-form-item>-->
@@ -69,7 +83,7 @@
 </template>
 
 <script>
-import { findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList  } from '@/api/criminal'
+import { findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList, WordDownload  } from '@/api/criminal'
 import { Message, MessageBox } from 'element-ui'
 
 export default {
@@ -77,6 +91,7 @@ export default {
   data() {
     return {
       sfzImg: '/static/image/zpbj.jpg',
+      wordPath: process.env.BASE_API+"/jlQs/uploadWord", //上传亲属附件
       // 新增或编辑弹窗
       dataQsForm: { 
         webId: this.$route.query.qsWebId,
@@ -95,7 +110,9 @@ export default {
         jzBase64: undefined,
         zpBase64: undefined,
         jzUrl: undefined,
+        enclosureUrl: undefined,
       },
+      uploadBoolean: 0,
       gxs: [ // 关系
       	
       ],
@@ -167,6 +184,10 @@ export default {
   				this.dataQsForm.spState = x.spState
   				this.dataQsForm.bz = x.bz
   				this.dataQsForm.jzUrl = x.jzUrl
+  				this.dataQsForm.enclosureUrl = x.enclosureUrl
+  				if(x.enclosureUrl){
+  					this.uploadBoolean=1
+  				}
   			})
   		}
   	},
@@ -186,63 +207,34 @@ export default {
     createQsData() {
       this.$refs['dataQsForm'].validate((valid) => {
         if (valid) {
-          RequestQsAdd(this.dataQsForm).then(res => {
-          	Message({
-		        message: res.errMsg,
-			    type: 'success',
-			    duration: 5 * 1000
-		    });
-            this.returnPrevious()
-          }).catch(error => {
-	      })
+        	if(this.dataQsForm.webId != undefined){
+        		RequestQsEdit(this.dataQsForm).then(res => {
+		          	Message({
+				        message: res.errMsg,
+					    type: 'success',
+					    duration: 5 * 1000
+				    });
+		            this.returnPrevious()
+		        }).catch(error => {
+			    })
+        	}else{
+        		RequestQsAdd(this.dataQsForm).then(res => {
+		          	Message({
+				        message: res.errMsg,
+					    type: 'success',
+					    duration: 5 * 1000
+				    });
+		            this.returnPrevious()
+		        }).catch(error => {
+			    })
+        	}
+          
         }
       })
     },
     returnPrevious(){ // 返回上一页
     	let frNo = this.dataQsForm.frNo
     	this.$router.push({ path: '/addHjDj', query: {frNoQuery:frNo} })
-    },
-    handleQsUpdate(row) {
-    	let param = {
-    		id: row.webId
-    	}
-    	findQsOne(param).then((res) =>{
-    	this.dataQsForm.webId = res.data.webId
-        this.dataQsForm.frNo = this.$route.params.frNo
-        this.dataQsForm.qsZjlb = res.data.qsZjlb
-        this.dataQsForm.qsSfz = res.data.qsSfz
-        this.dataQsForm.qsName = res.data.qsName
-        this.dataQsForm.gx = res.data.gx
-        this.dataQsForm.qsCard = res.data.qsCard
-        this.dataQsForm.dz = res.data.dz
-        this.dataQsForm.xb = res.data.xb
-        this.dataQsForm.tele = res.data.tele
-        this.dataQsForm.spState = res.data.spState
-        this.dataQsForm.bz = res.data.bz
-        this.dataQsForm.jzUrl=res.data.jzUrl
-    	})
-        this.dialogStatus = 'update'
-        this.dialogQsFormVisible = true
-        this.$nextTick(() => {
-          this.$refs['dataQsForm'].clearValidate()
-        })
-    },
-    updateQsData() {
-      this.$refs['dataQsForm'].validate((valid) => {
-        if (valid) {
-          RequestQsEdit(this.dataQsForm).then(res => {
-          	Message({
-		        message: res.errMsg,
-			    type: 'success',
-			    duration: 5 * 1000
-		    });
-            this.dialogQsFormVisible = false
-            this.getQsList()
-          }).catch(error => {
-	        this.dialogQsFormVisible = false
-	      })
-        }
-      })
     },
     
      openVideo(){
@@ -397,6 +389,48 @@ export default {
 		console.log(zpAddress)
   	},
 
+    wordSuccess(res) {
+    	if(res.errCode===0){
+    		this.dataQsForm.enclosureUrl = res.data.relativeFilePath
+    	}
+    	this.$refs.upload.clearFiles()
+    	Message({
+        message: '附件已上传至服务器',
+	      type: 'success',
+	      duration: 5 * 1000
+      });
+      
+    },
+    wordError() {
+    	this.$refs.upload.clearFiles()
+    	Message({
+        message: '附件上传失败，请检查文件是否为word文档！',
+	      type: 'error',
+	      duration: 5 * 1000
+      });
+    },
+    wordDownload(){
+    	let param ={
+    		enclosureUrl: this.dataQsForm.enclosureUrl
+    	}
+    	WordDownload(param).then(res => {
+	      var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
+	     	if (window.navigator && window.navigator.msSaveOrOpenBlob) { // IE浏览器
+        	window.navigator.msSaveOrOpenBlob(blob, '亲属附件.docx');
+    		}else{ //非IE浏览器
+	     		var downloadElement = document.createElement('a')
+		     	var href = window.URL.createObjectURL(blob)
+		     	downloadElement.href = href
+		     	downloadElement.download = '亲属附件.docx'
+		     	document.body.appendChild(downloadElement)
+		     	downloadElement.click()
+	     		document.body.removeChild(downloadElement) // 下载完成移除元素
+		     	window.URL.revokeObjectURL(href) // 释放掉blob对象
+	     	}
+	    }).catch(error => {
+	        console.log(error)
+	    })
+    },
 	dateFormats: function (val) {
 		if(!val){
 			return undefined
