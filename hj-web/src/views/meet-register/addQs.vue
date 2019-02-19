@@ -51,7 +51,7 @@
 		        <el-form-item label="电话号码" prop="tele">
 		          <el-input v-model="dataQsForm.tele"></el-input>
 		        </el-form-item>
-		        <el-form-item label="附件">
+		        <el-form-item label="附件上传">
 			        <el-upload
 			    		ref="upload"
 						  :action="wordPath"
@@ -173,6 +173,7 @@ export default {
   			}
   			findQsOne(param).then(res =>{
   				let x = res.data
+  				this.dataQsForm.frName= x.frName
   				this.dataQsForm.qsZjlb = x.qsZjlb
   				this.dataQsForm.qsSfz = x.qsSfz
   				this.dataQsForm.qsName = x.qsName
@@ -413,15 +414,18 @@ export default {
     	let param ={
     		enclosureUrl: this.dataQsForm.enclosureUrl
     	}
+    	let filename= this.dataQsForm.enclosureUrl
+    	filename="亲属附件"+ filename.substring(filename.lastIndexOf("."))
     	WordDownload(param).then(res => {
 	      var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
 	     	if (window.navigator && window.navigator.msSaveOrOpenBlob) { // IE浏览器
-        	window.navigator.msSaveOrOpenBlob(blob, '亲属附件.docx');
+        	window.navigator.msSaveOrOpenBlob(blob, filename);
     		}else{ //非IE浏览器
 	     		var downloadElement = document.createElement('a')
 		     	var href = window.URL.createObjectURL(blob)
 		     	downloadElement.href = href
-		     	downloadElement.download = '亲属附件.docx'
+		     	//downloadElement.download = '亲属附件.docx'
+		     	downloadElement.download = filename
 		     	document.body.appendChild(downloadElement)
 		     	downloadElement.click()
 	     		document.body.removeChild(downloadElement) // 下载完成移除元素

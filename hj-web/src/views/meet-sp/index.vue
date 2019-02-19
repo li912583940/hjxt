@@ -28,6 +28,14 @@
           <span>{{scope.row.qsInfo}}</span>
         </template>
       </el-table-column>
+      <el-table-column width="120" align="center" label="亲属附件">
+        <template slot-scope="scope">
+           <span v-if="scope.row.enclosureUrl != undefined">
+		       	  <el-button type="primary"  size="mini" v-waves icon="el-icon-download" @click="wordDownload(scope.row)" >下载附件</el-button>
+		       </span>
+		       <span else></span>
+        </template>
+      </el-table-column>
       <el-table-column width="160px" align="center" label="申请时间">
         <template slot-scope="scope">
           <span>{{scope.row.tjTime | dateFormat }}</span>
@@ -195,7 +203,7 @@
 </template>
 
 <script>
-import { findPojo, FindDetails, FindSpeedSpUser, RequestSpData } from '@/api/meetSp'
+import { findPojo, FindDetails, FindSpeedSpUser, RequestSpData, WordDownload  } from '@/api/meetSp'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -338,6 +346,32 @@ export default {
     },
     /** 审批 结束*/
 
+    wordDownload(row){
+    	let param ={
+    		enclosureUrl: row.enclosureUrl
+    	}
+    	let filename= row.enclosureUrl
+    	filename="亲属附件"+ filename.substring(filename.lastIndexOf("."))
+    	WordDownload(param).then(res => {
+	      var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
+	     	if (window.navigator && window.navigator.msSaveOrOpenBlob) { // IE浏览器
+        	window.navigator.msSaveOrOpenBlob(blob, filename);
+    		}else{ //非IE浏览器
+	     		var downloadElement = document.createElement('a')
+		     	var href = window.URL.createObjectURL(blob)
+		     	downloadElement.href = href
+		     	//downloadElement.download = '亲属附件.docx'
+		     	downloadElement.download = filename
+		     	document.body.appendChild(downloadElement)
+		     	downloadElement.click()
+	     		document.body.removeChild(downloadElement) // 下载完成移除元素
+		     	window.URL.revokeObjectURL(href) // 释放掉blob对象
+	     	}
+	    }).catch(error => {
+	        console.log(error)
+	    })
+    },
+    
 		dateFormats: function (val) {
 			if(!val){
 				return undefined

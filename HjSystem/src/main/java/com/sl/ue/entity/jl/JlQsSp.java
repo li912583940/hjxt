@@ -80,6 +80,10 @@ public class JlQsSp implements java.io.Serializable{
     @DbField("TELE")
     private String tele;
     
+    /* 亲属附件url */
+	@DbField("enclosure_url")
+	private String enclosureUrl;
+	
     /** 审批状态 0：进行中；1：审批通过；2：审批不通过；3：审批失败；默认0 */
     @DbField("state")
     private Integer state;
@@ -203,6 +207,14 @@ public class JlQsSp implements java.io.Serializable{
     public void setTele(String tele) {
         this.tele = tele;
     }
+
+	public String getEnclosureUrl() {
+		return enclosureUrl;
+	}
+
+	public void setEnclosureUrl(String enclosureUrl) {
+		this.enclosureUrl = enclosureUrl;
+	}
 
 	public Integer getState() {
 		return state;

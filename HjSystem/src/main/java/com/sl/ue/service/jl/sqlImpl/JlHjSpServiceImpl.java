@@ -53,6 +53,10 @@ public class JlHjSpServiceImpl extends BaseSqlImpl<JlHjSpVO> implements JlHjSpSe
 		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
 		List<JlHjSpVO> list = (List<JlHjSpVO>) map.get("list");
 		for(JlHjSpVO t : list){
+			if(t.getType()==2){
+				JlQsSpVO jlQsSp = jlQsSpSQL.findOne(t.getQsId());
+				t.setEnclosureUrl(jlQsSp.getEnclosureUrl());
+			}
 			if(sId.contains(t.getId())){ //有审批权限
 				t.setSpPermission(1);
 			}else{

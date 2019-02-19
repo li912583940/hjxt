@@ -37,7 +37,7 @@ export const RequestQsEdit = params => { return request.post('/jlQs/edit', param
 
 export const RequestQsDelete = params => { return request.post('/jlQs/delete', params ).then(res => res) }
 
-// 导出EXCEL
+// 下载亲属附件
 export function WordDownload(param) {
   return request({
     url: '/jlQs/wordDownload',

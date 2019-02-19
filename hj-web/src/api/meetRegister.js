@@ -27,3 +27,14 @@ export const RequestCancelDj = params => { return request.post('/jlHjDj/cancelDj
 
 // 获取当前会见登记的亲属集合
 export const GetQsIdsByHjid = params => { return request.get('/jlHjDj/getQsIdsByHjid', { params: params } ).then(res => res) }
+
+// 下载亲属附件
+export function WordDownload(param) {
+  return request({
+    url: '/jlQs/wordDownload',
+    method: 'post',
+    data: param,
+    timeout: 600000,
+    responseType:'blob'
+  }).then(res => res)
+}

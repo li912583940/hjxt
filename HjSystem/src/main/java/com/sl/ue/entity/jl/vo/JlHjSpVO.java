@@ -10,6 +10,8 @@ public class JlHjSpVO extends JlHjSp{
     /** 序列化 */
     private static final long serialVersionUID = 1L;
     
+    private String enclosureUrl; // 亲属审批时的亲属附件url
+    
     private String qsInfo1;
 	private String qsInfo2;
 	private String qsInfo3;
@@ -23,6 +25,14 @@ public class JlHjSpVO extends JlHjSp{
     private Integer spPermission; // 1:有审批权限。0：没有审批权限
     
     
+	public String getEnclosureUrl() {
+		return enclosureUrl;
+	}
+
+	public void setEnclosureUrl(String enclosureUrl) {
+		this.enclosureUrl = enclosureUrl;
+	}
+
 	public String getQsInfo1() {
 		return qsInfo1;
 	}

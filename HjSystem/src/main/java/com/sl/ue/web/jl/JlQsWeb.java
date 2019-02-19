@@ -103,6 +103,11 @@ public class JlQsWeb extends Result{
     @RequestMapping("/findOne")
     public String findOne(Integer id){
         JlQsVO model = jlQsSQL.findOne(id);
+        JlFrVO jlFr = new JlFrVO();
+        jlFr.setFrNo(model.getFrNo());
+        List<JlFrVO> jrFrList = jlFrSQL.findList(jlFr);
+        jlFr = jrFrList.get(0);
+        model.setFrName(jlFr.getFrName());
         this.putJson(model);
         return this.toResult();
     }
@@ -169,19 +174,7 @@ public class JlQsWeb extends Result{
     			if(StringUtils.isNotBlank(jlHjSpSet.getSpValue())){
     				List<String> spGx = Arrays.asList(jlHjSpSet.getSpValue().split(","));
     				if(spGx.contains(model.getGx())){
-    					JlQsSpVO jlQsSp = new JlQsSpVO();
-    					jlQsSp.setFrNo(model.getFrNo());
-    					jlQsSp.setQsZjlb(model.getQsZjlb());
-    					jlQsSp.setQsSfz(model.getQsSfz());
-    					jlQsSp.setQsName("["+model.getGx()+"]"+model.getQsName());
-    					jlQsSp.setQsCard(model.getQsCard());
-    					jlQsSp.setGx(model.getGx());
-    					jlQsSp.setXb(model.getXb());
-    					jlQsSp.setDz(model.getDz());
-    					jlQsSp.setZp(model.getZp());
-    					jlQsSp.setJz(model.getJz());
-    					jlQsSp.setZpUrl(model.getZpUrl());
-    					jlQsSp.setJzUrl(model.getJzUrl());
+    					JlQsSpVO jlQsSp  = JSONObject.parseObject(JSONObject.toJSONString(model), JlQsSpVO.class);
     					jlQsSp.setState(0);
     					jlQsSp = jlQsSpSQL.add(jlQsSp);
     					

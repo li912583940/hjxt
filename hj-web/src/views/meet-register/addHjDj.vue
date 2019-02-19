@@ -186,6 +186,14 @@
 	          <span>{{scope.row.xb}}</span>
 	        </template>
 	      </el-table-column>
+	      <el-table-column width="120px" align="center" label="附件">
+	        <template slot-scope="scope">
+	           <span v-if="scope.row.enclosureUrl != undefined">
+	           	  <el-button type="primary"  size="mini" v-waves icon="el-icon-download" @click="wordDownload(scope.row)" >下载附件</el-button>
+	           </span>
+	           <span else></span>
+	        </template>
+	      </el-table-column>
 	      <el-table-column width="320px" align="center" label="地址">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.dz}}</span>
@@ -230,7 +238,7 @@
 </template>
 
 <script>
-import { findFrPojo, findQsPojo, findJqList, RequestAddHjdj } from '@/api/meetRegister'
+import { findFrPojo, findQsPojo, findJqList, RequestAddHjdj, WordDownload } from '@/api/meetRegister'
 import waves from '@/directive/waves' // 水波纹指令
 import { Message, MessageBox } from 'element-ui'
 import BigImg from './components/BigImg'
@@ -655,7 +663,33 @@ export default {
   	},
   	handleAddQs(row) { //打开亲属
     	this.$router.push({ path: '/addQs', query: {frNo: row.frNo, frName:row.frName} })
-		}
+		},
+		
+		wordDownload(row){
+    	let param ={
+    		enclosureUrl: row.enclosureUrl
+    	}
+    	let filename= row.enclosureUrl
+    	filename="亲属附件"+ filename.substring(filename.lastIndexOf("."))
+    	WordDownload(param).then(res => {
+	      var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
+	     	if (window.navigator && window.navigator.msSaveOrOpenBlob) { // IE浏览器
+        	window.navigator.msSaveOrOpenBlob(blob, filename);
+    		}else{ //非IE浏览器
+	     		var downloadElement = document.createElement('a')
+		     	var href = window.URL.createObjectURL(blob)
+		     	downloadElement.href = href
+		     	//downloadElement.download = '亲属附件.docx'
+		     	downloadElement.download = filename
+		     	document.body.appendChild(downloadElement)
+		     	downloadElement.click()
+	     		document.body.removeChild(downloadElement) // 下载完成移除元素
+		     	window.URL.revokeObjectURL(href) // 释放掉blob对象
+	     	}
+	    }).catch(error => {
+	        console.log(error)
+	    })
+    },
 
     
     
