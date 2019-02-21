@@ -41,6 +41,7 @@ import com.sl.ue.entity.jl.vo.JlJbVO;
 import com.sl.ue.entity.jl.vo.JlJqVO;
 import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.entity.sys.vo.SysHjLineVO;
+import com.sl.ue.entity.sys.vo.SysNoticeConfVO;
 import com.sl.ue.entity.sys.vo.SysParamVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
@@ -56,6 +57,7 @@ import com.sl.ue.service.jl.JlJbService;
 import com.sl.ue.service.jl.JlJqService;
 import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.service.sys.SysHjLineService;
+import com.sl.ue.service.sys.SysNoticeConfService;
 import com.sl.ue.service.sys.SysParamService;
 import com.sl.ue.util.Config;
 import com.sl.ue.util.DateUtil;
@@ -90,6 +92,8 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
     private JlHjJqHolidayService jlHjJqHolidaySQL;
 	@Autowired
     private JlHjHolidayService jlHjHolidaySQL;
+	@Autowired
+	private SysNoticeConfService sysNoticeConfSQL;
 	
 	@Override
 	public String addHjdj(
@@ -105,8 +109,21 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			) {
 		Result result = new Result();
 		
+		List<SysNoticeConfVO> sysNoticeConfList = sysNoticeConfSQL.findList(new SysNoticeConfVO());
+		int notice = 0; // 会见通知。 0：登记完自动发起。1：身份验证成功后发起
+		if(sysNoticeConfList.size()>0){
+			SysNoticeConfVO sysNoticeConf = sysNoticeConfList.get(0);
+			notice = sysNoticeConf.getHjNotice();
+		}
 		List<String> qsGxList = new ArrayList(); // 将登记的亲属关系存储起来， 最后判断其中是否有家属关系需要审批
 		JlHjDjVO addJlHjDj = new JlHjDjVO(); // 创建会见登记
+		
+		if(notice==0){
+			addJlHjDj.setPageTzMode(0);
+		}else if(notice==1){
+			addJlHjDj.setPageTzMode(1);
+		}
+		
 		String[] qsIdss = qsIds.split(",");
 		String qsInfo="";
 		for(int i=0; i<qsIdss.length;i++){ // 亲属
@@ -122,47 +139,38 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			String name = StringUtils.isNotBlank(jlQs.getQsName())?jlQs.getQsName():"";
 			if(i==0){
 				addJlHjDj.setQsInfo1(gx+name);
-				addJlHjDj.setQsZp1(jlQs.getJz());
 				addJlHjDj.setQsCard1(jlQs.getQsCard());
 				qsInfo=addJlHjDj.getQsInfo1();
 			}else if(i==1){
 				addJlHjDj.setQsInfo2(gx+name);
-				addJlHjDj.setQsZp2(jlQs.getJz());
 				addJlHjDj.setQsCard2(jlQs.getQsCard());
 				qsInfo+=addJlHjDj.getQsInfo2();
 			}else if(i==2){
 				addJlHjDj.setQsInfo3(gx+name);
-				addJlHjDj.setQsZp3(jlQs.getJz());
 				addJlHjDj.setQsCard3(jlQs.getQsCard());
 				qsInfo+=addJlHjDj.getQsInfo3();
 			}else if(i==3){
 				addJlHjDj.setQsInfo4(gx+name);
-				addJlHjDj.setQsZp4(jlQs.getJz());
 				addJlHjDj.setQsCard4(jlQs.getQsCard());
 				qsInfo+=addJlHjDj.getQsInfo4();
 			}else if(i==4){
 				addJlHjDj.setQsInfo5(gx+name);
-				addJlHjDj.setQsZp5(jlQs.getJz());
 				addJlHjDj.setQsCard5(jlQs.getQsCard());
 				qsInfo+=addJlHjDj.getQsInfo5();
 			}else if(i==5){
 				addJlHjDj.setQsInfo6(gx+name);
-				addJlHjDj.setQsZp6(jlQs.getJz());
 				addJlHjDj.setQsCard6(jlQs.getQsCard());
 				qsInfo+=addJlHjDj.getQsInfo6();
 			}else if(i==6){
 				addJlHjDj.setQsInfo7(gx+name);
-				addJlHjDj.setQsZp7(jlQs.getJz());
 				addJlHjDj.setQsCard7(jlQs.getQsCard());
 				qsInfo+=addJlHjDj.getQsInfo7();
 			}else if(i==7){
 				addJlHjDj.setQsInfo8(gx+name);
-				addJlHjDj.setQsZp8(jlQs.getJz());
 				addJlHjDj.setQsCard8(jlQs.getQsCard());
 				qsInfo+=addJlHjDj.getQsInfo8();
 			}else if(i==8){
 				addJlHjDj.setQsInfo9(gx+name);
-				addJlHjDj.setQsZp9(jlQs.getJz());
 				addJlHjDj.setQsCard9(jlQs.getQsCard());
 				qsInfo+=addJlHjDj.getQsInfo9();
 			}
@@ -1288,31 +1296,22 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		model.setHjInfo(hjInfo);
 		
 		model.setQsInfo1("");
-		model.setQsZp1(null);
 		model.setQsCard1("");
 		model.setQsInfo2("");
-		model.setQsZp2(null);
 		model.setQsCard2("");
 		model.setQsInfo3("");
-		model.setQsZp3(null);
 		model.setQsCard3("");
 		model.setQsInfo4("");
-		model.setQsZp4(null);
 		model.setQsCard4("");
 		model.setQsInfo5("");
-		model.setQsZp5(null);
 		model.setQsCard5("");
 		model.setQsInfo6("");
-		model.setQsZp6(null);
 		model.setQsCard6("");
 		model.setQsInfo7("");
-		model.setQsZp7(null);
 		model.setQsCard7("");
 		model.setQsInfo8("");
-		model.setQsZp8(null);
 		model.setQsCard8("");
 		model.setQsInfo9("");
-		model.setQsZp9(null);
 		model.setQsCard9("");
 		
 		String[] qsIdss = qsIds.split(",");
@@ -1322,39 +1321,30 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			String name = StringUtils.isNotBlank(jlQs.getQsName())?jlQs.getQsName():"";
 			if(i==0){
 				model.setQsInfo1(gx+name);
-				model.setQsZp1(jlQs.getJz());
 				model.setQsCard1(jlQs.getQsCard());
 			}else if(i==1){
 				model.setQsInfo2(gx+name);
-				model.setQsZp2(jlQs.getJz());
 				model.setQsCard2(jlQs.getQsCard());
 			}else if(i==2){
 				model.setQsInfo3(gx+name);
-				model.setQsZp3(jlQs.getJz());
 				model.setQsCard3(jlQs.getQsCard());
 			}else if(i==3){
 				model.setQsInfo4(gx+name);
-				model.setQsZp4(jlQs.getJz());
 				model.setQsCard4(jlQs.getQsCard());
 			}else if(i==4){
 				model.setQsInfo5(gx+name);
-				model.setQsZp5(jlQs.getJz());
 				model.setQsCard5(jlQs.getQsCard());
 			}else if(i==5){
 				model.setQsInfo6(gx+name);
-				model.setQsZp6(jlQs.getJz());
 				model.setQsCard6(jlQs.getQsCard());
 			}else if(i==6){
 				model.setQsInfo7(gx+name);
-				model.setQsZp7(jlQs.getJz());
 				model.setQsCard7(jlQs.getQsCard());
 			}else if(i==7){
 				model.setQsInfo8(gx+name);
-				model.setQsZp8(jlQs.getJz());
 				model.setQsCard8(jlQs.getQsCard());
 			}else if(i==8){
 				model.setQsInfo9(gx+name);
-				model.setQsZp9(jlQs.getJz());
 				model.setQsCard9(jlQs.getQsCard());
 			}
 		}

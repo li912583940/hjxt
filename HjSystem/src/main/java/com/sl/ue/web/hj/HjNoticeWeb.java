@@ -26,6 +26,7 @@ public class HjNoticeWeb extends Result{
     public String findPojo(Integer pageSize, Integer pageNum){
 		JlHjDjVO jlHjDj = new JlHjDjVO();
 		jlHjDj.setState(0);
+		jlHjDj.setPageTzMode(0);
         Map<String, Object> map = jlHjDjSQL.findPojoByNotice(jlHjDj, pageSize, pageNum);
         this.putPojo(map);
         return this.toResult();
@@ -36,6 +37,7 @@ public class HjNoticeWeb extends Result{
 		JlHjDjVO jlHjDj = new JlHjDjVO();
 		jlHjDj.setState(0);
 		jlHjDj.setPageTzState(0);
+		jlHjDj.setPageTzMode(0);
 		List<JlHjDjVO> list = jlHjDjSQL.findList(jlHjDj);
 		this.putData(list);
 		return this.toResult();

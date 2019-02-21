@@ -642,7 +642,6 @@ export default {
 			document.body.appendChild(handler)
 			
 			this.scriptAddHjDj = handler
-			console.log(this.scriptAddHjDj)
   	},
   	shibie(){ // 识别身份证信息并查询
   		console.log('shibie start')

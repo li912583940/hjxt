@@ -11,10 +11,7 @@
 		        <span v-if="qs.state=='验证成功'" style="color: green;">{{qs.state}}</span>
 		      </div>
         </el-card>
-        
-        
-        <object width="0px" height="0px" id="IDCard2" name="IDCard2"  codebase="../../ocx/SynCardOcx.CAB#version=1,0,0,1" classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039">
-		</object>
+        <button hidden="hidden" id="shibie1" @click="shibie()"></button>
     </div>
 </template>
 

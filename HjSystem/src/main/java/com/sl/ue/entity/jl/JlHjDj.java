@@ -129,24 +129,6 @@ public class JlHjDj implements java.io.Serializable {
 	private String qsCard8;
 	@DbField("QS_Card9")
 	private String qsCard9;
-	@DbField("QS_ZP1")
-	private Byte[] qsZp1;
-	@DbField("QS_ZP2")
-	private Byte[] qsZp2;
-	@DbField("QS_ZP3")
-	private Byte[] qsZp3;
-	@DbField("QS_ZP4")
-	private Byte[] qsZp4;
-	@DbField("QS_ZP5")
-	private Byte[] qsZp5;
-	@DbField("QS_ZP6")
-	private Byte[] qsZp6;
-	@DbField("QS_ZP7")
-	private Byte[] qsZp7;
-	@DbField("QS_ZP8")
-	private Byte[] qsZp8;
-	@DbField("QS_ZP9")
-	private Byte[] qsZp9;
 	@DbField("WP_DjTime")
 	private Date wpDjTime;
 	@DbField("WP_DJR")
@@ -157,6 +139,9 @@ public class JlHjDj implements java.io.Serializable {
 	private Integer qsLastCount;
 	@DbField("page_tz_state")
 	private Integer pageTzState;
+	/* 会见通知方式。 0：立即通知，1：延后通知   */
+	@DbField("page_tz_mode")
+	private Integer pageTzMode;
 	@DbField("Fr_Last_Count")
 	private Integer frLastCount;
 	@DbField("Fr_Last_Time")
@@ -258,78 +243,6 @@ public class JlHjDj implements java.io.Serializable {
 
 	public void setQsCard9(String qsCard9) {
 		this.qsCard9 = qsCard9;
-	}
-
-	public Byte[] getQsZp1() {
-		return qsZp1;
-	}
-
-	public void setQsZp1(Byte[] qsZp1) {
-		this.qsZp1 = qsZp1;
-	}
-
-	public Byte[] getQsZp2() {
-		return qsZp2;
-	}
-
-	public void setQsZp2(Byte[] qsZp2) {
-		this.qsZp2 = qsZp2;
-	}
-
-	public Byte[] getQsZp3() {
-		return qsZp3;
-	}
-
-	public void setQsZp3(Byte[] qsZp3) {
-		this.qsZp3 = qsZp3;
-	}
-
-	public Byte[] getQsZp4() {
-		return qsZp4;
-	}
-
-	public void setQsZp4(Byte[] qsZp4) {
-		this.qsZp4 = qsZp4;
-	}
-
-	public Byte[] getQsZp5() {
-		return qsZp5;
-	}
-
-	public void setQsZp5(Byte[] qsZp5) {
-		this.qsZp5 = qsZp5;
-	}
-
-	public Byte[] getQsZp6() {
-		return qsZp6;
-	}
-
-	public void setQsZp6(Byte[] qsZp6) {
-		this.qsZp6 = qsZp6;
-	}
-
-	public Byte[] getQsZp7() {
-		return qsZp7;
-	}
-
-	public void setQsZp7(Byte[] qsZp7) {
-		this.qsZp7 = qsZp7;
-	}
-
-	public Byte[] getQsZp8() {
-		return qsZp8;
-	}
-
-	public void setQsZp8(Byte[] qsZp8) {
-		this.qsZp8 = qsZp8;
-	}
-
-	public Byte[] getQsZp9() {
-		return qsZp9;
-	}
-
-	public void setQsZp9(Byte[] qsZp9) {
-		this.qsZp9 = qsZp9;
 	}
 
 	public Long getHjid() {
@@ -746,6 +659,14 @@ public class JlHjDj implements java.io.Serializable {
 
 	public void setPageTzState(Integer pageTzState) {
 		this.pageTzState = pageTzState;
+	}
+
+	public Integer getPageTzMode() {
+		return pageTzMode;
+	}
+
+	public void setPageTzMode(Integer pageTzMode) {
+		this.pageTzMode = pageTzMode;
 	}
 
 	public Integer getTpQsNum() {
