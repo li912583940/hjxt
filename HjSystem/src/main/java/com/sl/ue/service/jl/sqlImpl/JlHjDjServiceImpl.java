@@ -29,7 +29,10 @@ import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.sl.ue.entity.jl.vo.JlFrVO;
+import com.sl.ue.entity.jl.vo.JlHjDjQsVO;
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
 import com.sl.ue.entity.jl.vo.JlHjHolidayVO;
 import com.sl.ue.entity.jl.vo.JlHjJqHolidayVO;
@@ -46,6 +49,7 @@ import com.sl.ue.entity.sys.vo.SysParamVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlFrService;
+import com.sl.ue.service.jl.JlHjDjQsService;
 import com.sl.ue.service.jl.JlHjDjService;
 import com.sl.ue.service.jl.JlHjHolidayService;
 import com.sl.ue.service.jl.JlHjJqHolidayService;
@@ -94,6 +98,8 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
     private JlHjHolidayService jlHjHolidaySQL;
 	@Autowired
 	private SysNoticeConfService sysNoticeConfSQL;
+	@Autowired
+	private JlHjDjQsService jlHjDjQsSQL;
 	
 	@Override
 	public String addHjdj(
@@ -123,7 +129,8 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		}else if(notice==1){
 			addJlHjDj.setPageTzMode(1);
 		}
-		
+		//会见登记家属表，用来作身份验证
+		List<JlHjDjQsVO> jlHjDjQsList = new ArrayList<>();
 		String[] qsIdss = qsIds.split(",");
 		String qsInfo="";
 		for(int i=0; i<qsIdss.length;i++){ // 亲属
@@ -135,6 +142,10 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			if(StringUtils.isNotBlank(jlQs.getGx())){
 				qsGxList.add(jlQs.getGx());
 			}
+			//添加登记家属，用来作验证
+			JlHjDjQsVO jlHjDjQs =JSON.parseObject(JSONObject.toJSONString(jlQs), JlHjDjQsVO.class);
+			jlHjDjQsList.add(jlHjDjQs);
+			
 			String gx = "["+jlQs.getGx()+"]";
 			String name = StringUtils.isNotBlank(jlQs.getQsName())?jlQs.getQsName():"";
 			if(i==0){
@@ -433,6 +444,10 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		
 		try {
 			addJlHjDj = this.add(addJlHjDj);
+			for(JlHjDjQsVO t : jlHjDjQsList){
+				t.setHjId(addJlHjDj.getHjid());
+				jlHjDjQsSQL.add(t);
+			}
 			if(is_sp){
 				JlHjSpVO jlHjSp = new JlHjSpVO();
 				jlHjSp.setHjid(addJlHjDj.getHjid());

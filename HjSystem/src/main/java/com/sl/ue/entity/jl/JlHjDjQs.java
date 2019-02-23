@@ -42,6 +42,10 @@ public class JlHjDjQs implements java.io.Serializable {
 	private byte[] jz;
 	@DbField("QS_SFZ_WLH")
 	private String qsSfzWlh;
+	@DbField("ZP_URL")
+	private String zpUrl;
+	@DbField("jz_url")
+	private String jzUrl;
 	
 
 	// Constructors
@@ -191,6 +195,22 @@ public class JlHjDjQs implements java.io.Serializable {
 
 	public void setQsSfzWlh(String qsSfzWlh) {
 		this.qsSfzWlh = qsSfzWlh;
+	}
+
+	public String getZpUrl() {
+		return zpUrl;
+	}
+
+	public void setZpUrl(String zpUrl) {
+		this.zpUrl = zpUrl;
+	}
+
+	public String getJzUrl() {
+		return jzUrl;
+	}
+
+	public void setJzUrl(String jzUrl) {
+		this.jzUrl = jzUrl;
 	}
 
 	

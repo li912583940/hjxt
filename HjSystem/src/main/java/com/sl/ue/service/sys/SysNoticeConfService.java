@@ -5,4 +5,5 @@ import com.sl.ue.service.base.BaseService;
 
 public interface SysNoticeConfService extends BaseService<SysNoticeConfVO>{
 
+	public String noticeChange(Integer noticeValue);
 }

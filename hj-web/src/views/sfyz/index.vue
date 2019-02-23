@@ -1,5 +1,10 @@
 <template>
 	<div class="app-container">
+		<div class="filter-container">
+	      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属身份证号" v-model="listQuery.qsSfz" clearable>
+	      </el-input>
+	      <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
+	    </div>
 		<!-- 亲属新增或编辑 -->
         <el-card shadow="always" style="width: 250px; margin-left: 40%;margin-top: 100px;">
 	        <img :src="sfzImg" id="zp" name="zp"  width="200px" height="252px">
@@ -16,13 +21,16 @@
 </template>
 
 <script>
-import { findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList  } from '@/api/sfyz'
+import { RequestSfyz } from '@/api/sfyz'
 
 export default {
   name: 'addQs',
   data() {
     return {
       sfzImg: '/static/image/zpbj.jpg',
+      listQuery: {
+        qsSfz: undefined,
+      },
       qs: {
       	qsName: undefined,
       	xb: undefined,
@@ -45,7 +53,16 @@ export default {
   	this.colsePort()
   },
   methods: {
-
+  	getList() {
+      RequestSfyz(this.listQuery).then((res) => {
+      	 this.list = res.pojo.list
+      	 this.total = res.pojo.count
+      }).catch(error => {
+      })
+    },
+    handleFilter() {
+      this.getList()
+    },
 
     openPort(){ // 打开读卡器驱动
     	console.log('打开port')

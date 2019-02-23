@@ -33,6 +33,7 @@ export default {
     lineSet: 'Line Set', // 线路设置
     gxManage: 'Gx Manage', // 亲属关系
     deptManage: 'Dept Manage', // 部门管理
+    noticeSet: 'Notice Set', //会见通知设置
     sysParam: 'sys Param', // 系统参数
     permission: 'Permission',
     pagePermission: 'Page Permission',
