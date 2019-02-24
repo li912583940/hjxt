@@ -6,15 +6,47 @@
 	      <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
 	    </div>
 		<!-- 亲属新增或编辑 -->
-        <el-card shadow="always" style="width: 250px; margin-left: 40%;margin-top: 100px;">
+        <el-card shadow="always" style="width: 250px; margin-left: 40%;margin-top: 20px;">
 	        <img :src="sfzImg" id="zp" name="zp"  width="200px" height="252px">
-		      <div style="padding: 14px;margin-left: 40px;">
+	        <div style="padding: 14px;margin-left: 40px;">
 		        <span>{{qs.qsName}}</span>
 		        <span>{{qs.xb}}</span>
 		        <span>{{qs.sfz}}</span>
-		        <span v-if="qs.state=='验证失败'" style="color: red;">{{qs.state}}</span>
-		        <span v-if="qs.state=='验证成功'" style="color: green;">{{qs.state}}</span>
-		      </div>
+		        <span v-if="qs.state==1" style="color: red;">身份验证失败</span>
+		        <span v-if="qs.state==0" style="color: green;">身份验证成功</span>
+	        </div>
+	    </el-card>
+	    <el-card shadow="always" style="width: 900px; margin-left: 15%;margin-top: 5px;">    
+	        <div style="padding: 14px;margin-left: 40px;">
+		        <el-table :key='tableKey' :data="list" element-loading-text="给我一点时间" border fit highlight-current-row
+			      style="width: 100%">
+			      <el-table-column width="100" align="center"  :label="$t('currency.frNo')">
+			        <template slot-scope="scope">
+			          <span>{{scope.row.frNo}}</span>
+			        </template>
+			      </el-table-column>
+			      <el-table-column width="160" align="center" :label="$t('currency.frName')">
+			        <template slot-scope="scope">
+			          <span>{{scope.row.frName}}</span>
+			        </template>
+			      </el-table-column>
+			      <el-table-column width="180" align="center" :label="$t('currency.jqName')">
+			        <template slot-scope="scope">
+			          <span>{{scope.row.jqName}}</span>
+			        </template>
+			      </el-table-column>
+			      <el-table-column width="100" align="center" label="分管等级">
+			        <template slot-scope="scope">
+			          <span>{{scope.row.jbName}}</span>
+			        </template>
+			      </el-table-column>
+			      <el-table-column width="200" align="center" label="罪名">
+			        <template slot-scope="scope">
+			          <span>{{scope.row.infoZm}}</span>
+			        </template>
+			      </el-table-column>
+			    </el-table>
+	        </div>
         </el-card>
         <button hidden="hidden" id="shibie1" @click="shibie()"></button>
     </div>
@@ -22,12 +54,18 @@
 
 <script>
 import { RequestSfyz } from '@/api/sfyz'
+import waves from '@/directive/waves' // 水波纹指令
 
 export default {
-  name: 'addQs',
+  name: 'sfyz',
+  directives: {
+    waves
+  },
   data() {
     return {
       sfzImg: '/static/image/zpbj.jpg',
+      tableKey: 0,
+      list: null,
       listQuery: {
         qsSfz: undefined,
       },
@@ -55,8 +93,8 @@ export default {
   methods: {
   	getList() {
       RequestSfyz(this.listQuery).then((res) => {
-      	 this.list = res.pojo.list
-      	 this.total = res.pojo.count
+      	 this.list = res.jlFrList
+      	 this.qs.state = res.state
       }).catch(error => {
       })
     },
@@ -110,17 +148,15 @@ export default {
   	},
   	shibie(){ // 识别身份证信息并查询
   		console.log('shibieQs start')
-  		this.dataQsForm.qsSfz = 'sadadadaff'
-  		console.log(this.dataQsForm.qsSfz)
     	var IDCard2=document.getElementById("IDCard2");
     	
 		IDCard2.SetPhotoName(2);
 		//let a = IDCard2.Base64Photo;
 		//document.getElementById("base64").value=a;
-		this.dataQsForm.qsSfz = IDCard2.CardNo
-		this.dataQsForm.qsName = IDCard2.NameA
-		this.dataQsForm.dz = IDCard2.Address
-		this.dataQsForm.xb = IDCard2.Sex==2?'女':'男'
+		this.qs.qsSfz = IDCard2.CardNo
+		this.qs.qsName = IDCard2.NameA
+		this.qs.dz = IDCard2.Address
+		this.qs.xb = IDCard2.Sex==2?'女':'男'
 //		document.getElementById("sfzzzz").value=b;
 	  	
   	},

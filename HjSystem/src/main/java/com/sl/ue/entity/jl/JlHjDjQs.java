@@ -16,7 +16,7 @@ public class JlHjDjQs implements java.io.Serializable {
 	private Integer webId;
 	@DbField("HJID")
 	private Long hjId;
-	@DbField("QSID")
+	@DbField("qs_id")
 	private Integer qsId;
 	@DbField("FR_No")
 	private String frNo;
