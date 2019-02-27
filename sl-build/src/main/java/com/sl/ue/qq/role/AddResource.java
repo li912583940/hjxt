@@ -1,4 +1,4 @@
-package com.sl.ue.role.main;
+package com.sl.ue.qq.role;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -31,14 +31,8 @@ public class SysUser  implements Serializable{
 	private String deptName;
 	@DbField("User_Name")
 	private String userName;
-	@DbField("Group_No")
-	private String groupNo;
 	@DbField("Is_Super")
 	private Integer isSuper;
-	@DbField("Is_Sp")
-	private Integer isSp;
-	@DbField("Is_Bj")
-	private Integer isBj;
 	@DbField("token")
 	private String token;
 	@DbField("token_time")
@@ -92,36 +86,12 @@ public class SysUser  implements Serializable{
 		this.userName = userName;
 	}
 
-	public String getGroupNo() {
-		return groupNo;
-	}
-
-	public void setGroupNo(String groupNo) {
-		this.groupNo = groupNo;
-	}
-
 	public Integer getIsSuper() {
 		return isSuper;
 	}
 
 	public void setIsSuper(Integer isSuper) {
 		this.isSuper = isSuper;
-	}
-
-	public Integer getIsSp() {
-		return isSp;
-	}
-
-	public void setIsSp(Integer isSp) {
-		this.isSp = isSp;
-	}
-
-	public Integer getIsBj() {
-		return isBj;
-	}
-
-	public void setIsBj(Integer isBj) {
-		this.isBj = isBj;
 	}
 
 	public String getToken() {
