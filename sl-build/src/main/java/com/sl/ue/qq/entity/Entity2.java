@@ -2,7 +2,7 @@ package com.sl.ue.qq.entity;
 
 import java.io.File;
 
-import com.sl.ue.hj.service.ServiceBean;
+
 
 public class Entity2 {
 

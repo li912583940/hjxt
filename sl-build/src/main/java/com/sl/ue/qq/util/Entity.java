@@ -19,17 +19,7 @@ public class Entity {
 //		enMap.put("sys_role_resource", "SysRoleResource");
 		
 		//enMap.put("JL_QS_GX", "JlQsGx");
-		
-		//enMap.put("sys_role_jq", "SysRoleJq");
-		//enMap.put("SYS_SERVER", "SysServer");
-//		enMap.put("jl_hj_sp", "JlHjSp");
-//		enMap.put("jl_hj_sp_details", "JlHjSpDetails");
-//		enMap.put("jl_hj_sp_set", "JlHjSpSet");
-//		enMap.put("jl_hj_sp_user", "JlHjSpUser");
-//		enMap.put("jl_qs_sp", "JlQsSp");
-		//enMap.put("jl_hj_jq_holiday", "JlHjJqHoliday");
-		//enMap.put("jl_hj_holiday", "JlHjHoliday");
-		enMap.put("sys_notice_conf", "SysNoticeConf");
+
 	}
 	
 	

@@ -1,6 +1,6 @@
 package com.sl.ue.qq.service;
 
-import com.sl.ue.hj.service.EntityBean;
+import com.sl.ue.qq.service.EntityBean;
 
 /**
  * 说明 [根据实体类生成service]

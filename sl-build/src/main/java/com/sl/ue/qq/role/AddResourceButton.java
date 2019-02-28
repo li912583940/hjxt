@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.sl.ue.hj.util.Db;
+import com.sl.ue.qq.util.Db;
 
 public class AddResourceButton {
 

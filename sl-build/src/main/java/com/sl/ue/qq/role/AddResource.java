@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sl.ue.hj.util.Db;
+import com.sl.ue.qq.util.Db;
 
 public class AddResource {
 

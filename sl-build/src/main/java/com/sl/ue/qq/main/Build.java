@@ -1,8 +1,8 @@
 package com.sl.ue.qq.main;
 
-import com.sl.ue.hj.entity.Entity1;
-import com.sl.ue.hj.service.BuildBean;
-import com.sl.ue.hj.util.QueryDb;
+import com.sl.ue.qq.entity.Entity1;
+import com.sl.ue.qq.service.BuildBean;
+import com.sl.ue.qq.util.QueryDb;
 
 public class Build {
 

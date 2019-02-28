@@ -2,8 +2,7 @@ package com.sl.ue.qq.service;
 
 import java.io.File;
 
-import com.sl.ue.hj.service.ServiceBean;
-import com.sl.ue.hj.web.WebBean;
+import com.sl.ue.qq.service.ServiceBean;
 
 /**
  * 说明 [读取实体类 并写入service]
