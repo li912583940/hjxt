@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.sys.vo.SysLogVO;
+import com.sl.ue.entity.sys.vo.SysServerVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.jl.JlFrService;
 import com.sl.ue.service.sys.SysLogService;
+import com.sl.ue.service.sys.SysServerService;
 import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
@@ -29,6 +31,8 @@ public class JlFrWeb extends Result{
     private JlFrService jlFrSQL;
     @Autowired
 	private SysLogService sysLogSQL;
+    @Autowired
+    private SysServerService sysServerSQL;
     
     @RequestMapping("/findList")
     public String findList(JlFrVO model,Integer pageSize, Integer pageNum){
@@ -77,6 +81,9 @@ public class JlFrWeb extends Result{
 		sysLog.setLogTime(DateUtil.getDefaultNow());
 		sysLogSQL.add(sysLog);
 		
+		List<SysServerVO> sysServerList = sysServerSQL.findList(new SysServerVO());
+		String jy = sysServerList.size()>0?sysServerList.get(0).getServerName():"Server1";
+		model.setJy(jy);
 		jlFrSQL.add(model);
         return this.toResult();
     }
