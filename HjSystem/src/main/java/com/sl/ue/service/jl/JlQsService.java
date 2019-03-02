@@ -43,4 +43,6 @@ public interface JlQsService extends BaseService<JlQsVO>{
 	 * @作者 LXT @2018年9月30日
 	 */
 	public void wordDownload(JlQsVO model, HttpServletRequest request, HttpServletResponse response);
+	
+	
 }

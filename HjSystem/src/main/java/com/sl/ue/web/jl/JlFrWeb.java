@@ -77,7 +77,7 @@ public class JlFrWeb extends Result{
 		sysLog.setLogTime(DateUtil.getDefaultNow());
 		sysLogSQL.add(sysLog);
 		
-		
+		jlFrSQL.add(model);
         return this.toResult();
     }
 

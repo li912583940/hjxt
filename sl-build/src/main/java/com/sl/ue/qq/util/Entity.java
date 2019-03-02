@@ -18,7 +18,7 @@ public class Entity {
 //		enMap.put("sys_user_role", "SysUserRole");
 //		enMap.put("sys_role_resource", "SysRoleResource");
 		
-		//enMap.put("JL_QS_GX", "JlQsGx");
+		enMap.put("JL_QS_GX", "JlQsGx");
 
 	}
 	
