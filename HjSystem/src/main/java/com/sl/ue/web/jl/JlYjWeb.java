@@ -33,6 +33,11 @@ public class JlYjWeb extends Result{
     @RequestMapping("/findPojo")
     public String findPojo(JlYjVO model, Integer pageSize, Integer pageNum){
     	StringBuffer leftJoinWhere = new StringBuffer();
+    	if(StringUtils.isNotBlank(model.getYjNo())){
+    		String str = model.getYjNo();
+    		leftJoinWhere.append(" AND a.YJ_No LIKE '%"+str+"%' ");
+    		model.setYjNo(null);
+    	}
     	if(StringUtils.isNotBlank(model.getYjName())){
     		String str = model.getYjName();
     		leftJoinWhere.append(" AND a.YJ_Name LIKE '%"+str+"%' ");

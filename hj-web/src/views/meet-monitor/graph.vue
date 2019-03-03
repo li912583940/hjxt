@@ -277,6 +277,8 @@ export default {
 				this.jtState = 1
 				this.getList()
 				
+				document.getElementById(row.jy).StopTele(row.lineNo);
+				
 				Message({
 			        message: '已成功切断当前通话',
 				    type: 'success',
@@ -396,15 +398,6 @@ export default {
 	},
 	/** 注释 结束 */
 	
-	
-    dateFormat(row, column) {
-			//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-	},
 	dateFormats(val) {
 		if(!val){
 			return undefined

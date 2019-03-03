@@ -323,6 +323,8 @@ export default {
 	    			this.getList()
 	    		})
 					
+					document.getElementById(row.jy).StopTele(row.lineNo);
+					
 					this.jtState = 1
 					this.getList()
 					
@@ -445,14 +447,6 @@ export default {
 		},
 		/** 注释 结束 */
 	
-    dateFormat(row, column) {
-			//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-		},
 		dateFormats: function (val) {
 			if(!val){
 				return undefined
