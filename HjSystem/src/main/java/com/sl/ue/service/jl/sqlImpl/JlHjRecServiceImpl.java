@@ -78,7 +78,8 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     		model.setCallTimeEnd(null);
     	}
     	if(StringUtils.isNotBlank(model.getFrName())){
-    		leftJoinWhere.append(" AND a.FR_Name LIKE '%"+model.getFrName()+"%' ");
+    		String str = model.getFrName();
+    		leftJoinWhere.append(" AND (a.FR_Name LIKE '%"+str+"%'  OR dbo.f_get_fryp(a.FR_Name,'"+str+"') =1 )");
     		model.setFrName(null);
     	}
     	if(StringUtils.isNotBlank(model.getQsName())){
@@ -107,7 +108,7 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     						String end =hjRec.getCallRecfile().replace("\\", "/");
             				end = end.substring(end.indexOf("/")+1);
             				end = end.substring(end.indexOf("/"));
-            				String url = hjServer.getRecUrl()+callRecPath+end;
+            				String url = hjServer.getRecurl()+callRecPath+end;
             				hjRec.setCallRecfileUrl(url);
     					}
     				}
@@ -117,7 +118,7 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     						String end = hjRec.getCallVideofile1().replace("\\", "/");
         					end = end.substring(end.indexOf("/")+1);
             				end = end.substring(end.indexOf("/"));
-            				String url = hjServer.getRecUrl()+callVideoPath1+end;
+            				String url = hjServer.getRecurl()+callVideoPath1+end;
             				hjRec.setCallVideofile1Url(url);
     					}
     					
@@ -128,7 +129,7 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     						String end = hjRec.getCallVideofile2().replace("\\", "/");
         					end = end.substring(end.indexOf("/")+1);
             				end = end.substring(end.indexOf("/"));
-            				String url = hjServer.getRecUrl()+callVideoPath2+end;
+            				String url = hjServer.getRecurl()+callVideoPath2+end;
             				hjRec.setCallVideofile2Url(url);
     					}
     					
@@ -311,7 +312,8 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     		model.setCallTimeEnd(null);
     	}
     	if(StringUtils.isNotBlank(model.getFrName())){
-    		leftJoinWhere.append(" AND a.FR_Name LIKE '%"+model.getFrName()+"%' ");
+    		String str = model.getFrName();
+    		leftJoinWhere.append(" AND (a.FR_Name LIKE '%"+str+"%'  OR dbo.f_get_fryp(a.FR_Name,'"+str+"') =1 )");
     		model.setFrName(null);
     	}
 		model.setLeftJoinWhere(leftJoinWhere.toString());

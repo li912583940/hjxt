@@ -362,10 +362,10 @@ export default {
 		updateSJ(){ //修改时间
 			UpdateSJ(this.dataForm).then(res => {
 			    Message({
-		          message: res.errMsg,
-		          type: 'success',
-		          duration: 5 * 1000
-		        });
+	          message: res.errMsg,
+	          type: 'success',
+	          duration: 5 * 1000
+	        });
 			})
 			this.dialogSJVisible =false
 		},
@@ -417,9 +417,9 @@ export default {
 		/** 注释 开始 */
 		//重置表单
 		resetFormZS() {
-			this.dataForm.monitorCallid = undefined
-			this.dataFormCH.frName = undefined
-			this.dataFormCH.writeTxt = undefined
+			this.dataFormZS.monitorCallid = undefined
+			this.dataFormZS.frName = undefined
+			this.dataFormZS.writeTxt = undefined
 	      	
 	    },
 	    getZs(monitorCallid){ //获取注释
@@ -428,6 +428,14 @@ export default {
 	    	})
 	    },
 		zhushi(row){
+			if(!row.monitorCallid){
+				Message({
+	          message: '当前线路未处于通话状态，无法添加注释',
+	          type: 'success',
+	          duration: 5 * 1000
+	        });
+	        return false;
+			}
 			this.resetFormZS()
 			this.dialogZSVisible = true
 			this.dataFormZS.monitorCallid = row.monitorCallid

@@ -60,12 +60,12 @@ public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
 		}
     	if(StringUtils.isNotBlank(model.getFrName())){
     		String str = model.getFrName();
-    		where.append(" AND b.FR_Name LIKE '%"+str+"%' ");
+    		where.append(" AND (b.FR_Name LIKE '%"+str+"%' OR dbo.f_get_fryp(b.FR_Name,'"+str+"') =1 ) ");
     		model.setFrName(null);
     	}
     	if(StringUtils.isNotBlank(model.getQsName())){
     		String str = model.getQsName();
-    		where.append(" AND a.QS_Name LIKE '%"+str+"%' ");
+    		where.append(" AND (a.QS_Name LIKE '%"+str+"%' OR dbo.f_get_fryp(a.QS_Name,'"+str+"') =1 ) ");
     		model.setQsName(null);
     	}
 		model.setLeftJoinField(field.toString());
@@ -91,12 +91,12 @@ public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
 		}
     	if(StringUtils.isNotBlank(model.getFrName())){
     		String str = model.getFrName();
-    		where.append(" AND b.FR_Name LIKE '%"+str+"%' ");
+    		where.append(" AND (b.FR_Name LIKE '%"+str+"%' OR dbo.f_get_fryp(b.FR_Name,'"+str+"') =1 ) ");
     		model.setFrName(null);
     	}
     	if(StringUtils.isNotBlank(model.getQsName())){
     		String str = model.getQsName();
-    		where.append(" AND a.QS_Name LIKE '%"+str+"%' ");
+    		where.append(" AND (a.QS_Name LIKE '%"+str+"%' OR dbo.f_get_fryp(a.QS_Name,'"+str+"') =1 ) ");
     		model.setQsName(null);
     	}
 		model.setLeftJoinField(field.toString());

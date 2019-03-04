@@ -22,7 +22,7 @@ public class SysHjServer implements java.io.Serializable {
 	@DbField("AudioPort")
 	private Integer audioPort;
 	@DbField("RecUrl")
-	private String recUrl;
+	private String recurl;
 	@DbField("HjIndexDate")
 	private Integer hjIndexDate;
 	@DbField("HjIndexCount")
@@ -71,12 +71,12 @@ public class SysHjServer implements java.io.Serializable {
 		this.audioPort = audioPort;
 	}
 
-	public String getRecUrl() {
-		return this.recUrl;
+	public String getRecurl() {
+		return this.recurl;
 	}
 
-	public void setRecUrl(String recUrl) {
-		this.recUrl = recUrl;
+	public void setRecurl(String recurl) {
+		this.recurl = recurl;
 	}
 
 	public Integer getHjIndexDate() {

@@ -87,7 +87,7 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 		StringBuffer Where = new StringBuffer(); // sql条件
     	if(StringUtils.isNotBlank(model.getFrName())){
     		String str = model.getFrName();
-    		Where.append(" AND a.FR_Name LIKE '%"+str+"%' ");
+    		Where.append(" AND (a.FR_Name LIKE '%"+str+"%' OR dbo.f_get_fryp(a.FR_Name,'"+str+"') =1 )");
     		model.setFrName(null);
     	}
     	
