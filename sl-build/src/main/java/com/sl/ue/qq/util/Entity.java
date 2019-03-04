@@ -23,7 +23,9 @@ public class Entity {
 //		enMap.put("SYS_QQ_SERVER", "SysQqServer");
 //		enMap.put("JL_QQ_MON", "JlQqMon");
 //		enMap.put("JL_QQ_REC", "JlQqRec");
-		enMap.put("JL_QQ_INFO", "JlQqInfo");
+//		enMap.put("JL_QQ_INFO", "JlQqInfo");
+		enMap.put("JL_QQ_CZ", "JlQqCz");
+		
 	}
 	
 	
