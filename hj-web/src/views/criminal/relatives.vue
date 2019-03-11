@@ -110,30 +110,16 @@
           <el-input v-model="dataForm.frName"></el-input>
         </el-form-item>
         <el-form-item label="近照" >
-		      <span v-if="ie==1">
+		      <!--<span v-if="ie==1">
 		        <video id="video" autoplay width="150" height="110" controls>
 						</video>
 						<canvas id="canvas" width="150" height="110"></canvas>
 		      </span>
-		      <span v-if="ie==0">
-	        		<!-- IE浏览器 flash控件 调用摄像头 -->
-			        
-			        <!--<object style="z-index: 100" id="My_Cam" align="middle" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
-				                codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"
-				                height="400" viewastext="在线拍照" width="500">
-				                <param name="allowScriptAccess" value="sameDomain" />
-				                <param name="movie" value="../../js/MyCamera.swf" />
-				                <param name="quality" value="high" />
-				                <param name="bgcolor" value="#ffffff" />
-				                <param name="wmode" value="transparent" />
-				                <embed style="z-index: 100" align="middle" allowscriptaccess="sameDomain" bgcolor="#ffffff" height="400"
-				                    name="My_Cam" pluginspage="http://www.macromedia.com/go/getflashplayer" quality="high"  wmode="transparent"
-				                    src="../../js/MyCamera.swf" type="application/x-shockwave-flash" width="500"></embed>
-				   	</object>-->
-	        		<span id="zp" style="width:160,height:176"></span>
-		      </span>
+		      <span v-if="ie==0" id="zp" style="width:160,height:176">
+		      </span>-->
 					<div>
 					  <button id="capture" @click="paizhao">拍照</button>
+					  <button  @click="topaizhao">前往拍照</button>
 					</div>
 		    </el-form-item>
         <el-form-item label="证件类别" prop="qsZjlb">
@@ -195,7 +181,6 @@
         <el-button type="primary" @click="dialogPvVisible = false">{{$t('criminal.confirm')}}</el-button>
       </span>
     </el-dialog>
-
 
   </div>
 </template>
@@ -293,6 +278,7 @@ export default {
       },
       
       ie: 0,
+      
     }
   },
   filters: {
@@ -307,12 +293,14 @@ export default {
   created() {
     //this.getList()
     this.noSearch()
-    this.isIe()
+    
   },
   mounted() {
+  	//this.isIe()
     this.setButtonRole()
+    //this.openVideo()
     
-    this.openVideo()
+    //this.openGaoPaiYi()
   },
   methods: {
   	noSearch() {
@@ -321,15 +309,6 @@ export default {
   	},
     getList() {
       this.listLoading = true
-//    if(!this.listQuery.frName){
-//    	this.listQuery.frName = undefined
-//    }
-//    if(!this.listQuery.frNo){
-//    	this.listQuery.frNo = undefined
-//    }
-//    if(!this.listQuery.qsName){
-//    	this.listQuery.qsName = undefined
-//    }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count
@@ -396,6 +375,52 @@ export default {
     		}
     	}
     },
+    openGaoPaiYi() { // 高拍仪
+    	var EloamGlobal = document.getElementById("EloamGlobal_ID")
+    	if(DeviceAssist)
+			{
+
+				VideoAssist = DeviceAssist.CreateVideo(0, 2);
+				if (VideoAssist)
+				{
+					ViewAssist.SelectVideo(VideoAssist);
+					ViewAssist.SetText("打开视频中，请等待...", 0);							
+				}
+			}
+    	//辅摄像头
+    	var DeviceAssist
+    	var deviceType = EloamGlobal.GetEloamType(1, idx)
+    	if(2 == deviceType || 3 == deviceType){
+    		if(null == DeviceAssist)
+				{
+					DeviceAssist = EloamGlobal.CreateDevice(1, idx);
+					if (DeviceAssist)
+					{
+						var label =  document.getElementById('lab2');
+						label.innerHTML = DeviceAssist.GetFriendlyName();	
+						
+						var mode = document.getElementById('selMode2');
+						var subType = DeviceAssist.GetSubtype();
+		
+						changesubType2();
+						
+						if(0 != hasLoadSuccess)
+						{
+							OpenVideoAssist();
+						}
+					}
+				}
+    	}
+    	VideoAssist = DeviceAssist.CreateVideo(nResolution2, subtype)
+    },
+    //关闭视频
+//  CloseVideoAssist(){ 
+//  	if (VideoAssist)
+//			{
+//				VideoAssist.Destroy();		
+//				ViewAssist.SetText("", 0);				
+//			}
+//  },
     isIe() {
     	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1)){
     		this.ie=0
@@ -404,78 +429,84 @@ export default {
     	}
     },
     openVideo(){
-		let video = document.getElementById('video');
-		if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1) ){ // IE浏览器
-			document.getElementById("camera").start(160,176); // 打开flash拍照控件
-		}else{ // 非IE浏览器
-			if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
-		      if (navigator.mediaDevices.getUserMedia) {
-		        //最新的标准API
-		        //调用用户媒体设备, 访问摄像头
-			      navigator.mediaDevices.getUserMedia({video : {width: 150, height: 110}}).then(function(stream){
-				      //兼容webkit核心浏览器
-				      var URL = window.URL || window.webkitURL;
-				      //将视频流设置为video元素的源
-				      video.src = URL.createObjectURL(stream);
-				      //video.srcObject = stream;
-				      video.play();
-			    	 }).catch(function(error){
-			      	console.log(error);
-			    	 });
-		      } else if (navigator.webkitGetUserMedia) {
-		        //webkit核心浏览器
-		        navigator.webkitGetUserMedia({video : {width: 150, height: 110}}, 
-		        	function(stream){
-		        		//兼容webkit核心浏览器
+			if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1) ){ // IE浏览器
+			  console.log(11111)
+			  console.log(document.getElementById('zp'))
+			  document.getElementById('zp').innerHTML='<object id=\"camera\" classid=\"clsid:792FD9B8-5917-45D2-889D-C49FD174D4E0\" codebase=\"../../ocx/capProj1.ocx#version=1,0,0,0\" width=160 height=176 hspace=0 vspace=0></object>';
+	      document.getElementById("camera").start(160,176); // 打开flash拍照控件
+			}else{ // 非IE浏览器
+				let video = document.getElementById('video');
+				if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
+			      if (navigator.mediaDevices.getUserMedia) {
+			        //最新的标准API
+			        //调用用户媒体设备, 访问摄像头
+				      navigator.mediaDevices.getUserMedia({video : {width: 150, height: 110}}).then(function(stream){
+					      //兼容webkit核心浏览器
 					      var URL = window.URL || window.webkitURL;
 					      //将视频流设置为video元素的源
-					      //video.src = URL.createObjectURL(stream);
-					      video.srcObject = stream;
+					      video.src = URL.createObjectURL(stream);
+					      //video.srcObject = stream;
 					      video.play();
-		          }, 
-		          function(error){
-		          	console.log(error);
-		          })
-		      } else if (navigator.mozGetUserMedia) {
-		        //firfox浏览器
-		        navigator.mozGetUserMedia({video : {width: 150, height: 110}}, 
-		        function(stream){
-		        		//兼容webkit核心浏览器
-					      var URL = window.URL || window.webkitURL;
-					      //将视频流设置为video元素的源
-					      //video.src = URL.createObjectURL(stream);
-					      video.srcObject = stream;
-					      video.play();
-		          }, 
-		          function(error){
-		          	console.log(error);
-		          });
-		      } else if (navigator.getUserMedia) {
-		        //旧版API
-		        navigator.getUserMedia({video : {width: 150, height: 110}}, 
-		        function(stream){
-		        		//兼容webkit核心浏览器
-					      var URL = window.URL || window.webkitURL;
-					      //将视频流设置为video元素的源
-					      //video.src = URL.createObjectURL(stream);
-					      video.srcObject = stream;
-					      video.play();
-		          }, 
-		          function(error){
-		          	console.log(error);
-		          });
-		      }
-		    } else {
-		      alert('不支持访问用户媒体');
-		    }
-		}
+				    	 }).catch(function(error){
+				      	console.log(error);
+				    	 });
+			      } else if (navigator.webkitGetUserMedia) {
+			        //webkit核心浏览器
+			        navigator.webkitGetUserMedia({video : {width: 150, height: 110}}, 
+			        	function(stream){
+			        		//兼容webkit核心浏览器
+						      var URL = window.URL || window.webkitURL;
+						      //将视频流设置为video元素的源
+						      //video.src = URL.createObjectURL(stream);
+						      video.srcObject = stream;
+						      video.play();
+			          }, 
+			          function(error){
+			          	console.log(error);
+			          })
+			      } else if (navigator.mozGetUserMedia) {
+			        //firfox浏览器
+			        navigator.mozGetUserMedia({video : {width: 150, height: 110}}, 
+			        function(stream){
+			        		//兼容webkit核心浏览器
+						      var URL = window.URL || window.webkitURL;
+						      //将视频流设置为video元素的源
+						      //video.src = URL.createObjectURL(stream);
+						      video.srcObject = stream;
+						      video.play();
+			          }, 
+			          function(error){
+			          	console.log(error);
+			          });
+			      } else if (navigator.getUserMedia) {
+			        //旧版API
+			        navigator.getUserMedia({video : {width: 150, height: 110}}, 
+			        function(stream){
+			        		//兼容webkit核心浏览器
+						      var URL = window.URL || window.webkitURL;
+						      //将视频流设置为video元素的源
+						      //video.src = URL.createObjectURL(stream);
+						      video.srcObject = stream;
+						      video.play();
+			          }, 
+			          function(error){
+			          	console.log(error);
+			          });
+			      }
+			    } else {
+			      alert('不支持访问用户媒体');
+			    }
+			}
 	    
 
+    },
+    topaizhao(){
+    	this.$router.push({ path: '/addPaiZhao' })
     },
     paizhao(){
     	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1)){ // IE浏览器
     		document.getElementById("camera").savefile("D:\\temp.jpg",150,176);
-			this.dataForm.jzBase64=document.getElementById("camera").jpegbase64;
+			  this.dataForm.jzBase64=document.getElementById("camera").jpegbase64;
 			//document.getElementById("jz").value = document.getElementById("MyFlexApps").paserbytes();
 			//document.getElementById("zp").innerHTML="<img src=\"D:\\\\temp.jpg\"/>";
     	}else{
@@ -484,16 +515,17 @@ export default {
 		    let context = canvas.getContext('2d');
 		    context.drawImage(video, 0, 0, 150, 110); 
 		      
-			//从画布上获取照片数据
-			var imgData = canvas.toDataURL("image/png");
-			  
-			//将图片转换为Base64
-			//var BASE64= imgData.substr(22);
-			this.dataForm.jzBase64= imgData.substr(22);
+				//从画布上获取照片数据
+				var imgData = canvas.toDataURL("image/png");
+				  
+				//将图片转换为Base64
+				//var BASE64= imgData.substr(22);
+				this.dataForm.jzBase64= imgData.substr(22);
     	}
       
     },
 		dialogClose(){
+			document.getElementById('zp').innerHTML=''
 		},
     
     //重置表单
@@ -504,12 +536,12 @@ export default {
 			this.dataForm.webId = undefined
 	  },
     handleCreate() {
-    	//this.openVideo()
+    	
       this.dialogStatus = 'create'
       this.resetForm('dataForm')
       this.dialogFormVisible = true
-
-		  //this.$router.push({ path: '/addCriQs' })
+//			this.openVideo()
+//		  this.$router.push({ path: '/addCriQs' })
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
@@ -584,16 +616,6 @@ export default {
 			})
 		},
     handleDownload() {
-//			if(this.listQuery.frName==undefined || this.listQuery.frName==''){
-//    	this.listQuery.frName = undefined
-//    }
-//    if(this.listQuery.frNo==undefined || this.listQuery.frNo==''){
-//    	this.listQuery.frNo = undefined
-//    }
-//    if(this.listQuery.qsName==undefined || this.listQuery.qsName==''){
-//    	this.listQuery.qsName = undefined
-//    }
-
 			exportExcel(this.listQuery).then(res => {
 	      var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
 	     	if (window.navigator && window.navigator.msSaveOrOpenBlob) { // IE浏览器
@@ -614,23 +636,6 @@ export default {
 
 
     },
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        if (j === 'timestamp') {
-          return parseTime(v[j])
-        } else {
-          return v[j]
-        }
-      }))
-    },
-    dateFormat(row, column) {
-			//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-		},
 		dateFormats: function (val) {
 			if(!val){
 				return undefined

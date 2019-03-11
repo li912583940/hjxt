@@ -8,37 +8,25 @@
 		            <el-option v-for="item in qsZjlbs" :key="item.id" :label="item.name" :value="item.id"></el-option>
 		          </el-select>
 		        </el-form-item>
-		        <el-form-item label="证件图像" prop="zp">
-		          <img :src="sfzImg" id="zp" name="zp" width="100px" height="126px" />
+		        <el-form-item label="证件图像" prop="zp1">
+		          <img :src="sfzImg" id="zp1" name="zp1" width="100px" height="126px" />
 		          <span v-if="dataQsForm.jzUrl!=null || dataQsForm.jzUrl!=undefined">
 		          	<img src="dataQsForm.jzUrl"  width="100px" height="126px" />
 		          </span>
 		        </el-form-item>
 		        <el-form-item label="近照" >
-		        	<span v-if="ie==1">
+		        	<!--<span v-if="ie==1">
 		        		<video id="video" autoplay width="150" height="110" controls>
 						</video>
 						<canvas id="canvas" width="150" height="110"></canvas>
 		        	</span>
-		        	<span v-if="ie==0">
-		        		<!-- IE浏览器 flash控件 调用摄像头 -->
-				        
-				        <!--<object style="z-index: 100" id="My_Cam" align="middle" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
-					                codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"
-					                height="400" viewastext="在线拍照" width="500">
-					                <param name="allowScriptAccess" value="sameDomain" />
-					                <param name="movie" value="../../js/MyCamera.swf" />
-					                <param name="quality" value="high" />
-					                <param name="bgcolor" value="#ffffff" />
-					                <param name="wmode" value="transparent" />
-					                <embed style="z-index: 100" align="middle" allowscriptaccess="sameDomain" bgcolor="#ffffff" height="400"
-					                    name="My_Cam" pluginspage="http://www.macromedia.com/go/getflashplayer" quality="high"  wmode="transparent"
-					                    src="../../js/MyCamera.swf" type="application/x-shockwave-flash" width="500"></embed>
-					   	</object>-->
-		        		<span id="zp" style="width:160,height:176"></span>
-		        	</span>
+		        	<!-- IE浏览器 flash控件 调用摄像头 -->
+		        	<!-- <span v-if="ie==0">
+		        		<span  id="zp" style="width:160,height:176"></span>
+		        	</span>-->
 					<div>
 					  <button id="capture" @click="paizhao">拍照</button>
+					  <button  @click="topaizhao">前往拍照</button>
 					</div>
 		        </el-form-item>
 		        <el-form-item label="证件号码" prop="qsSfz">
@@ -158,11 +146,13 @@ export default {
   },
   created() {
   	this.getGxList()
-  	this.isIe()
+  	//this.isIe()
   },
   mounted() {
     //this.openPort()
-    this.openVideo()
+    //this.openVideo()
+    
+    //this.openGaoPaiYi()
 
   },
   destroyed(){
@@ -243,6 +233,41 @@ export default {
         }
       })
     },
+    openGaoPaiYi() { // 高拍仪
+    	var EloamGlobal = document.getElementById("EloamGlobal_ID")
+    	//辅摄像头
+    	var DeviceAssist
+    	var deviceType = EloamGlobal.GetEloamType(1, idx)
+    	if(2 == deviceType || 3 == deviceType){
+    		if(null == DeviceAssist)
+				{
+					DeviceAssist = EloamGlobal.CreateDevice(1, idx);
+					if (DeviceAssist)
+					{
+						var label =  document.getElementById('lab2');
+						label.innerHTML = DeviceAssist.GetFriendlyName();	
+					}
+				}
+    	}
+    	if(DeviceAssist)
+			{
+				VideoAssist = DeviceAssist.CreateVideo(0, 2);
+				if (VideoAssist)
+				{
+					ViewAssist.SelectVideo(VideoAssist);
+					ViewAssist.SetText("打开视频中，请等待...", 0);							
+				}
+			}
+    	
+    },
+    //关闭视频
+//  CloseVideoAssist(){ 
+//  	if (VideoAssist)
+//			{
+//				VideoAssist.Destroy();		
+//				ViewAssist.SetText("", 0);				
+//			}
+//  },
     isIe() {
     	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1)){
     		this.ie=0
@@ -252,10 +277,11 @@ export default {
     },
     
     openVideo(){
-		let video = document.getElementById('video');
 		if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1) ){ // IE浏览器
-			document.getElementById("camera").start(160,176); // 打开flash拍照控件
+			document.getElementById('zp').innerHTML='<object id=\"camera\" classid=\"clsid:792FD9B8-5917-45D2-889D-C49FD174D4E0\" codebase=\"../../ocx/capProj1.ocx#version=1,0,0,0\" width=160 height=176 hspace=0 vspace=0></object>';
+            document.getElementById("camera").start(160,176); // 打开flash拍照控件
 		}else{ // 非IE浏览器
+			let video = document.getElementById('video');
 			if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
 		      if (navigator.mediaDevices.getUserMedia) {
 		        //最新的标准API
@@ -320,12 +346,29 @@ export default {
 	    
 
     },
+    topaizhao(){
+    	this.$router.push({ path: '/paizhao' })
+    },
     paizhao(){
     	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1)){ // IE浏览器
     		document.getElementById("camera").savefile("D:\\temp.jpg",150,176);
-			this.dataQsForm.jzBase64=document.getElementById("camera").jpegbase64;
+    		console.log(12133)
+    		this.dataQsForm.jzBase64=document.getElementById("camera").jpegbase64;
+    		alert(this.dataQsForm.jzBase64)
+			//this.dataQsForm.jzBase64=document.getElementById("camera").jpegbase64;
 			//document.getElementById("jz").value = document.getElementById("MyFlexApps").paserbytes();
 			//document.getElementById("zp").innerHTML="<img src=\"D:\\\\temp.jpg\"/>";
+//			window.onbeforeunload = function (e) {
+//			  e = e || window.event;
+//			
+//			  // 兼容IE8和Firefox 4之前的版本
+//			  if (e) {
+//			    e.returnValue = '关闭提示';
+//			  }
+//			
+//			  // Chrome, Safari, Firefox 4+, Opera 12+ , IE 9+
+//			  return '关闭提示';
+//			};
     	}else{
     		let video = document.getElementById('video');
 		    let canvas = document.getElementById('canvas');
@@ -343,7 +386,9 @@ export default {
     },
     colseVideo() {
     	console.log("colse video")
-    	document.getElementById("camera").stop()
+    	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1)){ // IE浏览器
+    		document.getElementById("zp").innerHTML='';
+    	}
     	
     },
     openPort(){ // 打开读卡器驱动

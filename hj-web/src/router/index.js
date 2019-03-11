@@ -134,6 +134,17 @@ export const constantRouterMap = [
     ],
     hidden: true
   },
+  { // 罪犯管理-添加家属
+    path: '/addPaiZhao',
+    component: Layout,
+    children: [
+      {
+        path: '/addPaiZhao',
+        component: () => import('@/views/criminal/paizhao'),
+      }
+    ],
+    hidden: true
+  },
 ]
 
 export default new Router({
