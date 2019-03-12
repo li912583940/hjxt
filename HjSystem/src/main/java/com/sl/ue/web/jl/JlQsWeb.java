@@ -245,7 +245,7 @@ public class JlQsWeb extends Result{
         		}
     		}
     		
-    		if(oldJlQs.getFrNo().equals(model.getFrNo()) && oldJlQs.getQsSfz().equals(model.getQsSfz())){
+    		if(oldJlQs.getQsSfz() == null || (oldJlQs.getFrNo().equals(model.getFrNo()) && oldJlQs.getQsSfz().equals(model.getQsSfz()))){
     			
     		}else{
     			if(jlQsSQL.qsExist(model.getFrNo(), model.getQsSfz())){

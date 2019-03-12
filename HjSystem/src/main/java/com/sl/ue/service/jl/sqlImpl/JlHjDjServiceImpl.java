@@ -206,7 +206,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		if(jlFrList.size()>0){
 			jlFr = jlFrList.get(0);
 		}else{
-			result.error(Result.error_103, "当前服刑人员不存在");
+			result.error(Result.error_103, "当前罪犯不存在");
 			return result.toResult();
 		}
 		
@@ -215,6 +215,9 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		List<JlJqVO> jlJqList = jlJqSQL.findList(jlJq);
 		if(jlJqList.size()>0){
 			jlJq = jlJqList.get(0);
+		}else{
+			result.error(Result.error_103, "当前罪犯监区编号不存在");
+			return result.toResult();
 		}
 		
 		JlJbVO jlJb = new JlJbVO();
@@ -222,6 +225,9 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		List<JlJbVO> jlJbList = jlJbSQL.findList(jlJb);
 		if(jlJbList.size()>0){
 			jlJb = jlJbList.get(0);
+		}else{
+			result.error(Result.error_103, "当前罪犯级别编号不存在");
+			return result.toResult();
 		}
 		
 		

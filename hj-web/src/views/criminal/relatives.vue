@@ -119,7 +119,6 @@
 		      </span>-->
 					<div>
 					  <button id="capture" @click="paizhao">拍照</button>
-					  <button  @click="topaizhao">前往拍照</button>
 					</div>
 		    </el-form-item>
         <el-form-item label="证件类别" prop="qsZjlb">
@@ -500,9 +499,6 @@ export default {
 	    
 
     },
-    topaizhao(){
-    	this.$router.push({ path: '/addPaiZhao' })
-    },
     paizhao(){
     	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1)){ // IE浏览器
     		document.getElementById("camera").savefile("D:\\temp.jpg",150,176);
@@ -537,11 +533,11 @@ export default {
 	  },
     handleCreate() {
     	
-      this.dialogStatus = 'create'
-      this.resetForm('dataForm')
-      this.dialogFormVisible = true
+//    this.dialogStatus = 'create'
+//    this.resetForm('dataForm')
+//    this.dialogFormVisible = true
 //			this.openVideo()
-//		  this.$router.push({ path: '/addCriQs' })
+		  this.$router.push({ path: '/addCriQs' })
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {

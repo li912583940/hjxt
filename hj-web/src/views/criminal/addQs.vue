@@ -15,18 +15,17 @@
 		          </span>
 		        </el-form-item>
 		        <el-form-item label="近照" >
-		        	<!--<span v-if="ie==1">
+		        	<span v-if="ie==1">
 		        		<video id="video" autoplay width="150" height="110" controls>
 						</video>
 						<canvas id="canvas" width="150" height="110"></canvas>
 		        	</span>
 		        	<!-- IE浏览器 flash控件 调用摄像头 -->
-		        	<!-- <span v-if="ie==0">
+		        	<span v-if="ie==0">
 		        		<span  id="zp" style="width:160,height:176"></span>
-		        	</span>-->
+		        	</span>
 					<div>
 					  <button id="capture" @click="paizhao">拍照</button>
-					  <button  @click="topaizhao">前往拍照</button>
 					</div>
 		        </el-form-item>
 		        <el-form-item label="证件号码" prop="qsSfz">
@@ -146,18 +145,18 @@ export default {
   },
   created() {
   	this.getGxList()
-  	//this.isIe()
+  	this.isIe()
   },
   mounted() {
     //this.openPort()
-    //this.openVideo()
+    this.openVideo()
     
     //this.openGaoPaiYi()
 
   },
   destroyed(){
   	//this.colsePort()
-  	//this.colseVideo()
+  	this.colseVideo()
   },
   methods: {
 	getGxList() { // 获取关系
@@ -346,15 +345,11 @@ export default {
 	    
 
     },
-    topaizhao(){
-    	this.$router.push({ path: '/paizhao' })
-    },
     paizhao(){
     	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1)){ // IE浏览器
+    		debugger
     		document.getElementById("camera").savefile("D:\\temp.jpg",150,176);
-    		console.log(12133)
     		this.dataQsForm.jzBase64=document.getElementById("camera").jpegbase64;
-    		alert(this.dataQsForm.jzBase64)
 			//this.dataQsForm.jzBase64=document.getElementById("camera").jpegbase64;
 			//document.getElementById("jz").value = document.getElementById("MyFlexApps").paserbytes();
 			//document.getElementById("zp").innerHTML="<img src=\"D:\\\\temp.jpg\"/>";
