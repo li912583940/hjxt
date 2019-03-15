@@ -279,6 +279,8 @@ export default {
 		if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1) ){ // IE浏览器
 			document.getElementById('zp').innerHTML='<object id=\"camera\" classid=\"clsid:792FD9B8-5917-45D2-889D-C49FD174D4E0\" codebase=\"../../ocx/capProj1.ocx#version=1,0,0,0\" width=160 height=176 hspace=0 vspace=0></object>';
             document.getElementById("camera").start(160,176); // 打开flash拍照控件
+            
+            //document.getElementById('zp').innerHTML=''
 		}else{ // 非IE浏览器
 			let video = document.getElementById('video');
 			if (navigator.mediaDevices.getUserMedia || navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia) {
@@ -347,9 +349,9 @@ export default {
     },
     paizhao(){
     	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1)){ // IE浏览器
-    		debugger
     		document.getElementById("camera").savefile("D:\\temp.jpg",150,176);
     		this.dataQsForm.jzBase64=document.getElementById("camera").jpegbase64;
+    		
 			//this.dataQsForm.jzBase64=document.getElementById("camera").jpegbase64;
 			//document.getElementById("jz").value = document.getElementById("MyFlexApps").paserbytes();
 			//document.getElementById("zp").innerHTML="<img src=\"D:\\\\temp.jpg\"/>";
@@ -382,7 +384,7 @@ export default {
     colseVideo() {
     	console.log("colse video")
     	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1)){ // IE浏览器
-    		document.getElementById("zp").innerHTML='';
+    		//document.getElementById("zp").innerHTML='';
     	}
     	
     },
