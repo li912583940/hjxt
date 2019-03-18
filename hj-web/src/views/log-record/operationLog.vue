@@ -28,15 +28,15 @@
         </el-input>
 	    <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="用户姓名" v-model="listQuery.userName" clearable>
 	    </el-input>
-	    <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="来源IP" v-model="listQuery.userIp" clearable>
-	    </el-input>
+	    <!--<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="来源IP" v-model="listQuery.userIp" clearable>
+	    </el-input>-->
 	    <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
 	    <!--<el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>-->
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 100%">
-      <el-table-column width="180" align="center"  label="时间">
+      style="width: 1281px">
+      <el-table-column width="160" align="center"  label="时间">
         <template slot-scope="scope">
           <span>{{scope.row.logTime}}</span>
         </template>
@@ -71,11 +71,11 @@
           <span>{{scope.row.userName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="来源IP">
+      <!--<el-table-column width="140" align="center" label="来源IP">
         <template slot-scope="scope">
           <span>{{scope.row.userIp}}</span>
         </template>
-      </el-table-column>
+      </el-table-column>-->
     </el-table>
 
 		<!-- 分页 -->
@@ -97,7 +97,7 @@ import { parseTime } from '@/utils'
 
 
 export default {
-  name: 'relatives',
+  name: 'operationLog',
   directives: {
     waves
   },
