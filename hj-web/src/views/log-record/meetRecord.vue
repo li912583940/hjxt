@@ -4,7 +4,7 @@
     	<el-date-picker
     		style="width: 200px"
     		class="filter-item"
-	      v-model="listQuery.callTimeStart"
+	      v-model="callTimeStart"
 	      align="right"
 	      type="date"
 	      placeholder="选择开始日期"
@@ -13,12 +13,12 @@
 	    <el-date-picker
 	    	style="width: 200px"
 	    	class="filter-item"
-	      v-model="listQuery.callTimeEnd"
+	      v-model="callTimeEnd"
 	      align="right"
 	      type="date"
 	      placeholder="选择结束日期">
 	    </el-date-picker>
-	    <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.jq" placeholder="选择监区">
+	    <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.jqNo" placeholder="选择监区">
         <el-option v-for="item in jqs" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -505,6 +505,8 @@ export default {
       list: null,
       total: null,
       listLoading: true,
+      callTimeStart: undefined,
+      callTimeEnd: undefined,
       listQuery: {
         pageNum: 1,
         pageSize: 10,
@@ -759,7 +761,7 @@ export default {
   },
   filters: {
     dateFormat(date) {
-		//时间格式化  
+		  //时间格式化  
 	    if (date == undefined) {  
 	      return "";  
 	    }  
@@ -783,30 +785,18 @@ export default {
   	},
     getList() {
       this.listLoading = true
-      if(!this.listQuery.callTimeStart){
+      if(!this.callTimeStart){
       	this.listQuery.callTimeStart = undefined
       }else{
-      	this.listQuery.callTimeStart = this.dateFormatYMD(this.listQuery.callTimeStart)+" 00:00:00";
+      	let startTime = this.dateFormatYMD(this.callTimeStart)
+      	this.listQuery.callTimeStart = startTime+" 00:00:00"
       }
-      if(!this.listQuery.callTimeEnd){
+      if(!this.callTimeEnd){
       	this.listQuery.callTimeEnd = undefined
       }else{
-      	this.listQuery.callTimeEnd = this.dateFormatYMD(this.listQuery.callTimeEnd)+" 23:59:59";
+      	let endTime = this.dateFormatYMD(this.callTimeEnd)
+      	this.listQuery.callTimeEnd = endTime+" 23:59:59"
       }
-//    if(!this.listQuery.jq){
-//    	this.listQuery.jq = undefined
-//    }else{
-//    	this.listQuery.jqNo = this.listQuery.jq
-//    }
-//    if(!this.listQuery.frName){
-//    	this.listQuery.frName = undefined
-//    }
-//    if(!this.listQuery.frNo){
-//    	this.listQuery.frNo = undefined
-//    }
-//    if(!this.listQuery.qsName){
-//    	this.listQuery.qsName = undefined
-//    }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count
@@ -1146,15 +1136,15 @@ export default {
     
     /** 导出EXCEL 开始 */
     handleDownload() {
-    	if(!this.listQuery.callTimeStart){
+    	if(!this.callTimeStart){
       	this.listQuery.callTimeStart = undefined
       }else{
-      	this.listQuery.callTimeStart = this.dateFormatYMD(this.listQuery.callTimeStart)+" 00:00:00";
+      	this.listQuery.callTimeStart = this.dateFormatYMD(this.callTimeStart)+" 00:00:00";
       }
-      if(!this.listQuery.callTimeEnd){
+      if(!this.callTimeEnd){
       	this.listQuery.callTimeEnd = undefined
       }else{
-      	this.listQuery.callTimeEnd = this.dateFormatYMD(this.listQuery.callTimeEnd)+" 23:59:59";
+      	this.listQuery.callTimeEnd = this.dateFormatYMD(this.callTimeEnd)+" 23:59:59";
       }
 //			if(!this.listQuery.frName){
 //    	this.listQuery.frName = undefined
@@ -1244,14 +1234,6 @@ export default {
     },
     /** 设置权限 结束 */
    
-    dateFormat(row, column) {
-			//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-		},
 		dateFormats: function (val) {
 			if(!val){
 				return undefined
