@@ -13,7 +13,7 @@ public class Build {
 		e1.main(null);
 		BuildBean service = new BuildBean();
 		service.main(null);
-		com.sl.ue.hj.web.BuildBean web = new com.sl.ue.hj.web.BuildBean();
+		com.sl.ue.qq.web.BuildBean web = new com.sl.ue.qq.web.BuildBean();
 		web.main(null);
 	}
 }

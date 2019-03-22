@@ -165,6 +165,9 @@ public class QueryDb {
 				if(map.get("pkid").equals("yes")){
 					sb.append("    @Id").append("\r\n");
 				}
+				if(map.get("field").equals("Date")){
+					sb.append("   @DateTimeFormat(pattern = \"yyyy-MM-dd HH:mm:ss\")").append("\r\n");
+				}
 				sb.append("    @DbField(\""+map.get("field")+"\")").append("\r\n");
 				String field_type = SqlTypeTo.typeMap.get(map.get("field_type")); // 类型
 				String field = StringUtil.toFieldName(map.get("field")); // 属性名

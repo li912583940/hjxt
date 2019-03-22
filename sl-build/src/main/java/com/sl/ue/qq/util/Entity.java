@@ -24,7 +24,11 @@ public class Entity {
 //		enMap.put("JL_QQ_MON", "JlQqMon");
 //		enMap.put("JL_QQ_REC", "JlQqRec");
 //		enMap.put("JL_QQ_INFO", "JlQqInfo");
-		enMap.put("JL_QQ_CZ", "JlQqCz");
+//		enMap.put("JL_QQ_CZ", "JlQqCz");
+//		enMap.put("JL_FR", "JlFr");
+//		enMap.put("JL_QS", "JlQs");
+//		enMap.put("JL_JQ_WEEK_TIME", "JlJqWeekTime");
+		enMap.put("SYS_HOLIDAY", "SysHoliday");
 		
 	}
 	

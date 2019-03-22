@@ -11,7 +11,7 @@
     </div>
     
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
-      style="width: 1141px">
+      style="width: 1021px">
       <el-table-column width="100" align="center" :label="$t('currency.jqNo')">
         <template slot-scope="scope">
           <span>{{scope.row.jqNo}}</span>
@@ -38,7 +38,7 @@
           <span v-if="scope.row.isTs==1" style="color: red;">是</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="440" fixed="right">
+      <el-table-column align="center" :label="$t('criminal.actions')" width="320" fixed="right">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>

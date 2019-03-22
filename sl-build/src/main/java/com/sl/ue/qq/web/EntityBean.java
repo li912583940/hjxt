@@ -9,35 +9,17 @@ import java.io.File;
 public class EntityBean {
 
 	private String path ="G:\\声联项目\\qqxt\\QqSystem\\src\\main\\java\\com\\sl\\ue\\entity";
-	private String hj = "\\hj";
 	private String jl = "\\jl";
 	private String sys = "\\sys";
 	private String other = "\\other";
 	private String sp = "\\sp";
 	public void execute(){
-		hj();
 		jl();
 		sys();
 		other();
 		sp();
 	}
 	
-	private void hj(){
-		//System.out.println("读取文件夹： "+path+hj);
-		File file = new File(path+hj);
-		if(file.exists()){
-			File[] files = file.listFiles();
-			for(File f : files){
-				if(f.isFile()){
-					String filename = f.getName();
-					//System.out.println(filename);
-					WebBean webBean = new WebBean();
-					String[] s = filename.split("\\.");
-					webBean.execute(s[0], "hj");
-				}
-			}
-		}
-	}
 	
 	private void jl(){
 		//System.out.println("读取文件夹： "+path+jl);

@@ -5,7 +5,7 @@ import java.sql.*;
 public class Db {
 
 	//这里可以设置数据库名称
-    private final static String URL = "jdbc:sqlserver://localhost:1433;DatabaseName=TeleJY";
+    private final static String URL = "jdbc:sqlserver://localhost:1433;DatabaseName=TeleJY_HJ";
     private static final String USER="sa";
     private static final String PASSWORD="123456";
     private static final String DRIVER="com.microsoft.sqlserver.jdbc.SQLServerDriver";

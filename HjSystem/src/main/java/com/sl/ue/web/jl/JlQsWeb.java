@@ -234,7 +234,7 @@ public class JlQsWeb extends Result{
     public String edit(JlQsVO model){
     	JlQsVO oldJlQs = new JlQsVO();
     	if(StringUtils.isNotBlank(model.getQsSfz())){
-    		oldJlQs = jlQsSQL.findOne(model.getWebId()); //之前的家属
+    		oldJlQs = jlQsSQL.findOne(model.getWebid()); //之前的家属
     		if(StringUtils.isNotBlank(model.getEnclosureUrl())){
     			if(StringUtils.isNotBlank(oldJlQs.getEnclosureUrl())){
         			String startPath = Config.getPropertiesValue("file.path");
@@ -305,7 +305,7 @@ public class JlQsWeb extends Result{
     		if(oldJlQs.getGx().equals(model.getGx())){
     			
     		}else{
-    			jlQsSQL.deleteKey(model.getWebId());
+    			jlQsSQL.deleteKey(model.getWebid());
     			
     			JlHjSpSetVO jlHjSpSet = new JlHjSpSetVO();
         		jlHjSpSet.setUsable(1);

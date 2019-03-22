@@ -29,7 +29,8 @@ public class Entity {
 //		enMap.put("jl_qs_sp", "JlQsSp");
 		//enMap.put("jl_hj_jq_holiday", "JlHjJqHoliday");
 		//enMap.put("jl_hj_holiday", "JlHjHoliday");
-		enMap.put("sys_notice_conf", "SysNoticeConf");
+//		enMap.put("sys_notice_conf", "SysNoticeConf");
+		enMap.put("JL_QS", "JlQs");
 	}
 	
 	

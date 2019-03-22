@@ -17,6 +17,7 @@ import java.util.Set;
 
 
 
+
 /**
  * 说明 [查询数据库,得到所有的表,以及字段]
  * @注意 这个类不用动
@@ -164,6 +165,9 @@ public class QueryDb {
 				sb.append("    /** "+map.get("field_explain")+" */").append("\r\n");
 				if(map.get("pkid").equals("yes")){
 					sb.append("    @Id").append("\r\n");
+				}
+				if(map.get("field").equals("Date")){
+					sb.append("   @DateTimeFormat(pattern = \"yyyy-MM-dd HH:mm:ss\")").append("\r\n");
 				}
 				sb.append("    @DbField(\""+map.get("field")+"\")").append("\r\n");
 				String field_type = SqlTypeTo.typeMap.get(map.get("field_type")); // 类型

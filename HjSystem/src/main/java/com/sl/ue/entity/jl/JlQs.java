@@ -1,303 +1,351 @@
 package com.sl.ue.entity.jl;
 
+import com.sl.ue.util.anno.DbField;
+import com.sl.ue.util.anno.Id;
+import com.sl.ue.util.anno.Table;
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.sl.ue.util.anno.DbField;
-import com.sl.ue.util.anno.Id;
-import com.sl.ue.util.anno.Table;
-
 @Table("JL_QS")
-public class JlQs implements java.io.Serializable {
+public class JlQs implements java.io.Serializable{
 
+    /** 序列化 */
+    private static final long serialVersionUID = 1L;
 
-	/** */
-	private static final long serialVersionUID = 2069344982939357038L;
-	@Id
-	@DbField("WebID")
-	private Integer webId;
-	@DbField("FR_No")
-	private String frNo;
-	@DbField("QS_ZJLB")
-	private Integer qsZjlb;
-	@DbField("QS_SFZ")
-	private String qsSfz;
-	@DbField("QS_Name")
-	private String qsName;
-	@DbField("QS_Card")
-	private String qsCard;
-	@DbField("GX")
-	private String gx;
-	@DbField("XB")
-	private String xb;
-	@DbField("DZ")
-	private String dz;
-	@DbField("TELE")
-	private String tele;
-	@DbField("SW")
-	private Integer sw;
-	@DbField("ZP")
-	private Byte[] zp;
-	@DbField("JZ")
-	private Byte[] jz;
-	@DbField("SP_State")
-	private Integer spState;
-	@DbField("SP_UserNo")
-	private String spUserNo;
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@DbField("SP_Time")
-	private Date spTime;
-	@DbField("SP_Info")
-	private String spInfo;
-	@DbField("SP_Mon")
-	private String spMon;
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@DbField("CreateTime")
-	private Date createTime;
-	@DbField("Face_ZP")
-	private Byte[] faceZp;
-	@DbField("Face_State")
-	private Integer faceState;
-	@DbField("Face_ID")
-	private Long faceId;
-	@DbField("QS_SFZ_WLH")
-	private String qsSfzWlh;
-	@DbField("BZ")
-	private String bz;
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@DbField("HJ_STOP_TIME")
-	private Date hjStopTime;
-	@DbField("ZP_URL")
-	private String zpUrl;
-	@DbField("jz_url")
-	private String jzUrl;
-	/* 亲属附件url */
-	@DbField("enclosure_url")
-	private String enclosureUrl;
-	
-	public Integer getWebId() {
-		return this.webId;
-	}
+    /**  */
+    @DbField("FR_No")
+    private String frNo;
 
-	public void setWebId(Integer webId) {
-		this.webId = webId;
-	}
+    /**  */
+    @DbField("QS_ZJLB")
+    private Integer qsZjlb;
 
-	public String getFrNo() {
-		return this.frNo;
-	}
+    /**  */
+    @DbField("QS_SFZ")
+    private String qsSfz;
 
-	public void setFrNo(String frNo) {
-		this.frNo = frNo;
-	}
+    /**  */
+    @DbField("QS_SFZ_WLH")
+    private String qsSfzWlh;
 
-	public String getQsSfz() {
-		return this.qsSfz;
-	}
+    /**  */
+    @DbField("QS_Name")
+    private String qsName;
 
-	public void setQsSfz(String qsSfz) {
-		this.qsSfz = qsSfz;
-	}
+    /**  */
+    @DbField("QS_Card")
+    private String qsCard;
 
-	public String getQsName() {
-		return this.qsName;
-	}
+    /**  */
+    @DbField("GX")
+    private String gx;
 
-	public void setQsName(String qsName) {
-		this.qsName = qsName;
-	}
+    /**  */
+    @DbField("XB")
+    private String xb;
 
-	public String getQsCard() {
-		return this.qsCard;
-	}
+    /**  */
+    @DbField("DZ")
+    private String dz;
 
-	public void setQsCard(String qsCard) {
-		this.qsCard = qsCard;
-	}
+    /**  */
+    @DbField("TELE")
+    private String tele;
 
-	public String getGx() {
-		return this.gx;
-	}
+    /**  */
+    @DbField("SW")
+    private Integer sw;
 
-	public void setGx(String gx) {
-		this.gx = gx;
-	}
+    /**  */
+    @DbField("ZP")
+    private Byte[] zp;
 
-	public String getXb() {
-		return this.xb;
-	}
+    /**  */
+    @DbField("JZ")
+    private Byte[] jz;
 
-	public void setXb(String xb) {
-		this.xb = xb;
-	}
+    /**  */
+    @DbField("SP_State")
+    private Integer spState;
 
-	public String getDz() {
-		return this.dz;
-	}
+    /**  */
+    @DbField("SP_UserNo")
+    private String spUserno;
 
-	public void setDz(String dz) {
-		this.dz = dz;
-	}
+    /**  */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DbField("SP_Time")
+    private Date spTime;
 
-	public String getTele() {
-		return this.tele;
-	}
+    /**  */
+    @DbField("SP_Info")
+    private String spInfo;
 
-	public void setTele(String tele) {
-		this.tele = tele;
-	}
+    /**  */
+    @DbField("SP_Mon")
+    private String spMon;
 
-	public Integer getSw() {
-		return this.sw;
-	}
+    /**  */
+    @Id
+    @DbField("WebID")
+    private Integer webid;
 
-	public void setSw(Integer sw) {
-		this.sw = sw;
-	}
+    /**  */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DbField("CreateTime")
+    private Date createtime;
 
-	public Byte[] getZp() {
-		return this.zp;
-	}
+    /**  */
+    @DbField("Talk_TimeLen")
+    private Integer talkTimelen;
 
-	public void setZp(Byte[] zp) {
-		this.zp = zp;
-	}
+    /**  */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DbField("Talk_TimeOver")
+    private Date talkTimeover;
 
-	public Byte[] getJz() {
-		return this.jz;
-	}
+    /**  */
+    @DbField("Face_ZP")
+    private Byte[] faceZp;
 
-	public void setJz(Byte[] jz) {
-		this.jz = jz;
-	}
+    /**  */
+    @DbField("Face_State")
+    private Integer faceState;
 
-	public Integer getSpState() {
-		return this.spState;
-	}
+    /**  */
+    @DbField("Face_ID")
+    private Integer faceId;
 
-	public void setSpState(Integer spState) {
-		this.spState = spState;
-	}
+    /**  */
+    @DbField("BZ")
+    private String bz;
 
-	public String getSpUserNo() {
-		return this.spUserNo;
-	}
+    /**  */
+    @DbField("ZP_URL")
+    private String zpUrl;
 
-	public void setSpUserNo(String spUserNo) {
-		this.spUserNo = spUserNo;
-	}
+    /**  */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DbField("HJ_STOP_TIME")
+    private Date hjStopTime;
 
-	public Date getSpTime() {
-		return this.spTime;
-	}
+    /**  */
+    @DbField("jz_url")
+    private String jzUrl;
 
-	public void setSpTime(Date spTime) {
-		this.spTime = spTime;
-	}
+    /** 亲属附件url */
+    @DbField("enclosure_url")
+    private String enclosureUrl;
 
-	public String getSpInfo() {
-		return this.spInfo;
-	}
+    public String getFrNo() {
+        return this.frNo;
+    }
 
-	public void setSpInfo(String spInfo) {
-		this.spInfo = spInfo;
-	}
+    public void setFrNo(String frNo) {
+        this.frNo = frNo;
+    }
+    public Integer getQsZjlb() {
+        return this.qsZjlb;
+    }
 
-	public String getSpMon() {
-		return this.spMon;
-	}
+    public void setQsZjlb(Integer qsZjlb) {
+        this.qsZjlb = qsZjlb;
+    }
+    public String getQsSfz() {
+        return this.qsSfz;
+    }
 
-	public void setSpMon(String spMon) {
-		this.spMon = spMon;
-	}
+    public void setQsSfz(String qsSfz) {
+        this.qsSfz = qsSfz;
+    }
+    public String getQsSfzWlh() {
+        return this.qsSfzWlh;
+    }
 
-	public Date getCreateTime() {
-		return this.createTime;
-	}
+    public void setQsSfzWlh(String qsSfzWlh) {
+        this.qsSfzWlh = qsSfzWlh;
+    }
+    public String getQsName() {
+        return this.qsName;
+    }
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
+    public void setQsName(String qsName) {
+        this.qsName = qsName;
+    }
+    public String getQsCard() {
+        return this.qsCard;
+    }
 
-	public Byte[] getFaceZp() {
-		return faceZp;
-	}
+    public void setQsCard(String qsCard) {
+        this.qsCard = qsCard;
+    }
+    public String getGx() {
+        return this.gx;
+    }
 
-	public void setFaceZp(Byte[] faceZp) {
-		this.faceZp = faceZp;
-	}
+    public void setGx(String gx) {
+        this.gx = gx;
+    }
+    public String getXb() {
+        return this.xb;
+    }
 
-	public Integer getFaceState() {
-		return faceState;
-	}
+    public void setXb(String xb) {
+        this.xb = xb;
+    }
+    public String getDz() {
+        return this.dz;
+    }
 
-	public void setFaceState(Integer faceState) {
-		this.faceState = faceState;
-	}
+    public void setDz(String dz) {
+        this.dz = dz;
+    }
+    public String getTele() {
+        return this.tele;
+    }
 
-	public Long getFaceId() {
-		return faceId;
-	}
+    public void setTele(String tele) {
+        this.tele = tele;
+    }
+    public Integer getSw() {
+        return this.sw;
+    }
 
-	public void setFaceId(Long faceId) {
-		this.faceId = faceId;
-	}
+    public void setSw(Integer sw) {
+        this.sw = sw;
+    }
+    public Byte[] getZp() {
+        return this.zp;
+    }
 
-	public Integer getQsZjlb() {
-		return qsZjlb;
-	}
+    public void setZp(Byte[] zp) {
+        this.zp = zp;
+    }
+    public Byte[] getJz() {
+        return this.jz;
+    }
 
-	public void setQsZjlb(Integer qsZjlb) {
-		this.qsZjlb = qsZjlb;
-	}
+    public void setJz(Byte[] jz) {
+        this.jz = jz;
+    }
+    public Integer getSpState() {
+        return this.spState;
+    }
 
-	public String getQsSfzWlh() {
-		return qsSfzWlh;
-	}
+    public void setSpState(Integer spState) {
+        this.spState = spState;
+    }
+    public String getSpUserno() {
+        return this.spUserno;
+    }
 
-	public void setQsSfzWlh(String qsSfzWlh) {
-		this.qsSfzWlh = qsSfzWlh;
-	}
+    public void setSpUserno(String spUserno) {
+        this.spUserno = spUserno;
+    }
+    public Date getSpTime() {
+        return this.spTime;
+    }
 
-	public String getBz() {
-		return bz;
-	}
+    public void setSpTime(Date spTime) {
+        this.spTime = spTime;
+    }
+    public String getSpInfo() {
+        return this.spInfo;
+    }
 
-	public void setBz(String bz) {
-		this.bz = bz;
-	}
+    public void setSpInfo(String spInfo) {
+        this.spInfo = spInfo;
+    }
+    public String getSpMon() {
+        return this.spMon;
+    }
 
-	public Date getHjStopTime() {
-		return hjStopTime;
-	}
+    public void setSpMon(String spMon) {
+        this.spMon = spMon;
+    }
+    public Integer getWebid() {
+        return this.webid;
+    }
 
-	public void setHjStopTime(Date hjStopTime) {
-		this.hjStopTime = hjStopTime;
-	}
+    public void setWebid(Integer webid) {
+        this.webid = webid;
+    }
+    public Date getCreatetime() {
+        return this.createtime;
+    }
 
-	public String getZpUrl() {
-		return zpUrl;
-	}
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
+    public Integer getTalkTimelen() {
+        return this.talkTimelen;
+    }
 
-	public void setZpUrl(String zpUrl) {
-		this.zpUrl = zpUrl;
-	}
+    public void setTalkTimelen(Integer talkTimelen) {
+        this.talkTimelen = talkTimelen;
+    }
+    public Date getTalkTimeover() {
+        return this.talkTimeover;
+    }
 
-	public String getJzUrl() {
-		return jzUrl;
-	}
+    public void setTalkTimeover(Date talkTimeover) {
+        this.talkTimeover = talkTimeover;
+    }
+    public Byte[] getFaceZp() {
+        return this.faceZp;
+    }
 
-	public void setJzUrl(String jzUrl) {
-		this.jzUrl = jzUrl;
-	}
+    public void setFaceZp(Byte[] faceZp) {
+        this.faceZp = faceZp;
+    }
+    public Integer getFaceState() {
+        return this.faceState;
+    }
 
-	public String getEnclosureUrl() {
-		return enclosureUrl;
-	}
+    public void setFaceState(Integer faceState) {
+        this.faceState = faceState;
+    }
+    public Integer getFaceId() {
+        return this.faceId;
+    }
 
-	public void setEnclosureUrl(String enclosureUrl) {
-		this.enclosureUrl = enclosureUrl;
-	}
+    public void setFaceId(Integer faceId) {
+        this.faceId = faceId;
+    }
+    public String getBz() {
+        return this.bz;
+    }
 
+    public void setBz(String bz) {
+        this.bz = bz;
+    }
+    public String getZpUrl() {
+        return this.zpUrl;
+    }
+
+    public void setZpUrl(String zpUrl) {
+        this.zpUrl = zpUrl;
+    }
+    public Date getHjStopTime() {
+        return this.hjStopTime;
+    }
+
+    public void setHjStopTime(Date hjStopTime) {
+        this.hjStopTime = hjStopTime;
+    }
+    public String getJzUrl() {
+        return this.jzUrl;
+    }
+
+    public void setJzUrl(String jzUrl) {
+        this.jzUrl = jzUrl;
+    }
+    public String getEnclosureUrl() {
+        return this.enclosureUrl;
+    }
+
+    public void setEnclosureUrl(String enclosureUrl) {
+        this.enclosureUrl = enclosureUrl;
+    }
 }
