@@ -15,7 +15,7 @@ public class JlBakFr implements java.io.Serializable {
 	private static final long serialVersionUID = -5093655933444086146L;
 	@Id
 	@DbField("WebID")
-	private Integer webId;
+	private Integer webid;
 	@DbField("FR_No")
 	private String frNo;
 	@DbField("FR_Name")
@@ -86,11 +86,12 @@ public class JlBakFr implements java.io.Serializable {
 	private Byte[] zp;
 	
 	
-	public Integer getWebId() {
-		return webId;
+
+	public Integer getWebid() {
+		return webid;
 	}
-	public void setWebId(Integer webId) {
-		this.webId = webId;
+	public void setWebid(Integer webid) {
+		this.webid = webid;
 	}
 	public String getFrNo() {
 		return frNo;

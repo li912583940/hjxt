@@ -92,15 +92,15 @@ public class Login extends Result{
 	}
 	
 	@RequestMapping("/editPassword")
-	public String editPassword(Integer webId, String userPwdOld, String userPwdNew){
-		if(webId == null || StringUtils.isBlank(userPwdOld) || StringUtils.isBlank(userPwdNew)){
+	public String editPassword(Integer webid, String userPwdOld, String userPwdNew){
+		if(webid == null || StringUtils.isBlank(userPwdOld) || StringUtils.isBlank(userPwdNew)){
 			this.error(error_102);
 			return this.toResult();
 		}
-		SysUserVO userOld =  sysUserSQL.findOne(webId);
+		SysUserVO userOld =  sysUserSQL.findOne(webid);
 		if(userPwdOld.equals(userOld.getUserPwd())){
 			SysUserVO userNew = new SysUserVO();
-			userNew.setWebId(webId);
+			userNew.setWebid(webid);
 			userNew.setUserPwd(userPwdNew);
 			sysUserSQL.edit(userNew);
 		}else{
@@ -111,12 +111,12 @@ public class Login extends Result{
 	}
 	
 	@RequestMapping("/resetUserPassword")
-	public String resetUserPassword(Integer webId){
-		if(webId == null){
+	public String resetUserPassword(Integer webid){
+		if(webid == null){
 			this.error(error_102);
 			return this.toResult();
 		}
-		SysUserVO user =  sysUserSQL.findOne(webId);
+		SysUserVO user =  sysUserSQL.findOne(webid);
 		if(user != null){
 			user.setUserPwd("123456");
 			sysUserSQL.edit(user);

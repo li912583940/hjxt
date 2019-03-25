@@ -144,7 +144,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			}
 			//添加登记家属，用来作验证
 			JlHjDjQsVO jlHjDjQs =JSON.parseObject(JSONObject.toJSONString(jlQs), JlHjDjQsVO.class);
-			jlHjDjQs.setWebId(null);
+			jlHjDjQs.setWebid(null);
 			jlHjDjQs.setQsId(jlQs.getWebid());
 			jlHjDjQsList.add(jlHjDjQs);
 			

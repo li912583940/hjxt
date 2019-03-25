@@ -13,15 +13,15 @@ public interface SysHjLineService extends BaseService<SysHjLineVO>{
 	 * 说明 [修改时间]
 	 * L_晓天  @2018年11月21日
 	 */
-	public String updateSJ(Integer webId, Integer timeUp);
+	public String updateSJ(Integer webid, Integer timeUp);
 	
 	/**
 	 * 说明 [更新监听警察信息]
-	 * @param webId
+	 * @param webid
 	 * @return
 	 * L_晓天  @2018年12月28日
 	 */
-	public String updateYJ(Integer webId, Integer state);
+	public String updateYJ(Integer webid, Integer state);
 	
 	/**
 	 * 说明 [获取当前用户在此次通话的注释]

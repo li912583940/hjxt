@@ -15,7 +15,7 @@ public class JlTradeCardInfo implements java.io.Serializable {
 	private static final long serialVersionUID = -8286389908494362535L;
 	@Id
 	@DbField("WebID")
-	private Integer webId;
+	private Integer webid;
 	@DbField("SJ")
 	private Date sj;
 	@DbField("CardNum")
@@ -34,12 +34,14 @@ public class JlTradeCardInfo implements java.io.Serializable {
 	private Integer qsId;
 
 
-	public Integer getWebId() {
-		return this.webId;
+
+
+	public Integer getWebid() {
+		return webid;
 	}
 
-	public void setWebId(Integer webId) {
-		this.webId = webId;
+	public void setWebid(Integer webid) {
+		this.webid = webid;
 	}
 
 	public Date getSj() {

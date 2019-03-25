@@ -13,7 +13,7 @@ public class JlHjDjQs implements java.io.Serializable {
 	// Fields
 	@Id
 	@DbField("WebID")
-	private Integer webId;
+	private Integer webid;
 	@DbField("HJID")
 	private Long hjId;
 	@DbField("qs_id")
@@ -48,41 +48,12 @@ public class JlHjDjQs implements java.io.Serializable {
 	private String jzUrl;
 	
 
-	// Constructors
-
-	/** default constructor */
-	public JlHjDjQs() {
+	public Integer getWebid() {
+		return webid;
 	}
 
-	/** minimal constructor */
-	public JlHjDjQs(Long hjId, Integer qsId) {
-		this.hjId = hjId;
-		this.qsId = qsId;
-	}
-	
-	/** full constructor */
-	public JlHjDjQs(String frNo, String qsSfz, String qsName, String qsCard,
-			String gx, String xb, String dz, String tele,
-			byte[] zp, byte[] jz,Integer qsZjlb,String qsSfzWlh) {
-		this.frNo = frNo;
-		this.qsSfz = qsSfz;
-		this.qsName = qsName;
-		this.qsCard = qsCard;
-		this.gx = gx;
-		this.xb = xb;
-		this.dz = dz;
-		this.tele = tele;
-		this.zp = zp;
-		this.jz = jz;
-		this.qsZjlb = qsZjlb;
-		this.qsSfzWlh = qsSfzWlh;
-	}
-	public Integer getWebId() {
-		return webId;
-	}
-
-	public void setWebId(Integer webId) {
-		this.webId = webId;
+	public void setWebid(Integer webid) {
+		this.webid = webid;
 	}
 
 	public Long getHjId() {

@@ -11,7 +11,7 @@ public class JlYj implements java.io.Serializable {
 	private static final long serialVersionUID = 4868236344859903034L;
 	@Id
 	@DbField("WebID")
-	private Integer webId;
+	private Integer webid;
 	@DbField("YJ_No")
 	private String yjNo;
 	@DbField("YJ_Name")
@@ -32,13 +32,12 @@ public class JlYj implements java.io.Serializable {
 	private String deptName;
 
 	
-
-	public Integer getWebId() {
-		return this.webId;
+	public Integer getWebid() {
+		return webid;
 	}
 
-	public void setWebId(Integer webId) {
-		this.webId = webId;
+	public void setWebid(Integer webid) {
+		this.webid = webid;
 	}
 
 	public String getYjNo() {

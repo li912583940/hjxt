@@ -73,7 +73,7 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 		}
 		// 查询当前用户是否为管理员权限
 		SysUserRoleVO userRole = new SysUserRoleVO();
-		userRole.setUserId(sysUser.getWebId());
+		userRole.setUserId(sysUser.getWebid());
 		List<SysUserRoleVO> userRoleList = sysUserRoleSQL.findList(userRole);
 		if(userRoleList.size() == 0){
 			result.error(Result.error_103, "当前账号无权限");
@@ -166,7 +166,7 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 			return "admin";
 		}
 		SysUserRoleVO sysUserRole = new SysUserRoleVO();
-		sysUserRole.setUserId(loginUser.getWebId());
+		sysUserRole.setUserId(loginUser.getWebid());
 		List<SysUserRoleVO> roleList = sysUserRoleSQL.findList(sysUserRole);
 		String roles = "";
 		for(SysUserRoleVO t : roleList){

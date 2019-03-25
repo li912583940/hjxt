@@ -81,7 +81,7 @@ public class JlJqWeb extends Result{
     @RequestMapping("/edit")
     public String edit(JlJqVO model){
     	JlJqVO jlJqQuery = new JlJqVO();
-    	jlJqQuery.setLeftJoinWhere(" AND a.WebID<>"+model.getWebId()+" AND (a.JQ_No='"+model.getJqNo()+"'"
+    	jlJqQuery.setLeftJoinWhere(" AND a.WebID<>"+model.getWebid()+" AND (a.JQ_No='"+model.getJqNo()+"'"
     			+" OR a.JQ_Name='"+model.getJqName()+"')");
     	List<JlJqVO> list = jlJqSQL.findList(jlJqQuery);
     	if(list.size()>0){

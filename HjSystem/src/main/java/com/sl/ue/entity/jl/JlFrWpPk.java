@@ -12,7 +12,7 @@ public class JlFrWpPk implements java.io.Serializable {
 	// Fields
 	@Id
 	@DbField("WebID")
-	private Long webId;
+	private Long webid;
 	@DbField("hjid")
 	private Long hjid;
 	@DbField("wpNo")
@@ -21,12 +21,14 @@ public class JlFrWpPk implements java.io.Serializable {
 	private Integer wpCount;
 
 
-	public Long getWebId() {
-		return this.webId;
+
+
+	public Long getWebid() {
+		return webid;
 	}
 
-	public void setWebId(Long webId) {
-		this.webId = webId;
+	public void setWebid(Long webid) {
+		this.webid = webid;
 	}
 
 	public Long getHjid() {

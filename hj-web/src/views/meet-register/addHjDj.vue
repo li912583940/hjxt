@@ -557,7 +557,7 @@ export default {
     	}
     	let qsid = ''
     	for(let x of this.qsSelections) {
-    		qsid = qsid==''?x.webId:qsid+','+x.webId
+    		qsid = qsid==''?x.webid:qsid+','+x.webid
     	}
     	this.formdata.qsIds = qsid
     	const loading = this.$loading({
@@ -627,7 +627,7 @@ export default {
 	    this.showImg = false
 	  },
   	toEditQs(row){ // 双击亲属行进入编辑亲属的页面
-  		this.$router.push({ path: '/addQs', query: {frNo: row.frNo, frName:row.frName, qsWebId:row.webId} })
+  		this.$router.push({ path: '/addQs', query: {frNo: row.frNo, frName:row.frName, qswebid:row.webid} })
   	},
   	cardEvent() {// 设置读卡器监听事件  并根据亲属身份证信息查询犯人
   		console.log('cardEvent start')

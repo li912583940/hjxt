@@ -15,7 +15,7 @@
       style="width: 100%">
       <el-table-column width="80" align="center"  :label="$t('criminal.id')">
         <template slot-scope="scope">
-          <span>{{scope.row.webId}}</span>
+          <span>{{scope.row.webid}}</span>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="登陆账号">
@@ -121,7 +121,7 @@ export default {
       
       // 新增或编辑弹窗
       dataForm: { 
-        webId: undefined,
+        webid: undefined,
         userNo: undefined,
         userName: undefined,
         deptId: undefined
@@ -143,7 +143,7 @@ export default {
      
       
       /**------------添加角色开始-2-----------*/
-      userId: undefined, //用户的webId
+      userId: undefined, //用户的webid
 		  dialogRoleVisible: false, // 添加用户弹框
 		  roleData: [],
 		  roleValue: [],
@@ -206,7 +206,7 @@ export default {
 			if(this.$refs[formName] !== undefined){
 				this.$refs[formName].resetFields();
 			}
-			this.dataForm.webId = undefined
+			this.dataForm.webid = undefined
 	  },
     handleCreate() {
       this.dialogStatus = 'create'
@@ -230,10 +230,10 @@ export default {
     },
     handleUpdate(row) {
     	let param = {
-    		id: row.webId
+    		id: row.webid
     	}
     	findOne(param).then((res) =>{
-    		this.dataForm.webId = res.data.webId,
+    		this.dataForm.webid = res.data.webid,
         this.dataForm.userNo =  res.data.userNo,
         this.dataForm.userName = res.data.userName,
         this.dataForm.deptId = res.data.deptId
@@ -264,7 +264,7 @@ export default {
 			}).then(() => {
 				this.listLoading = true;
 				let param = {
-	    		id: row.webId
+	    		id: row.webid
 	    	}
 				RequestDelete(param).then(() => {
 	    		this.getList()
@@ -305,7 +305,7 @@ export default {
 			 	})
 		 	}
 		 	
-		 	this.userId = row.webId
+		 	this.userId = row.webid
 		 	
 		 	// 获取当前角色的用户信息
 		 	let param ={

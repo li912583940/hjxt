@@ -12,7 +12,7 @@ public class SysHjLine implements java.io.Serializable {
 	private static final long serialVersionUID = 8687800148612877092L;
 	@Id
 	@DbField("WebID")
-	private Integer webId;
+	private Integer webid;
 	@DbField("Line_No")
 	private Integer lineNo;
 	@DbField("JY")
@@ -72,12 +72,14 @@ public class SysHjLine implements java.io.Serializable {
 	@DbField("model")
 	private Integer model; //特殊线路 0：正常，1：特殊，默认0
 	
-	public Integer getWebId() {
-		return this.webId;
+
+
+	public Integer getWebid() {
+		return webid;
 	}
 
-	public void setWebId(Integer webId) {
-		this.webId = webId;
+	public void setWebid(Integer webid) {
+		this.webid = webid;
 	}
 
 	public Integer getLineNo() {

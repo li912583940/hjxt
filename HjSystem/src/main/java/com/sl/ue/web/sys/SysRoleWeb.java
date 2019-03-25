@@ -51,7 +51,7 @@ public class SysRoleWeb extends Result{
     @RequestMapping("/add")
     public String add(SysRoleVO model){
     	model.setCreateTime(new Date());
-    	model.setCreateUserId(TokenUser.getUser().getWebId());
+    	model.setCreateUserId(TokenUser.getUser().getWebid());
         sysRoleSQL.add(model);
         return this.toResult();
     }
@@ -59,7 +59,7 @@ public class SysRoleWeb extends Result{
     @RequestMapping("/edit")
     public String edit(SysRoleVO model){
     	model.setCreateTime(new Date());
-    	model.setCreateUserId(TokenUser.getUser().getWebId());
+    	model.setCreateUserId(TokenUser.getUser().getWebid());
         sysRoleSQL.edit(model);
         return this.toResult();
     }

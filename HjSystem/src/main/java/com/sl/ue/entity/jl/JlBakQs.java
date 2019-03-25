@@ -17,7 +17,7 @@ public class JlBakQs implements java.io.Serializable {
 	private static final long serialVersionUID = 2207041619579163538L;
 	@Id
 	@DbField("WebID")
-	private Integer webId;
+	private Integer webid;
 	@DbField("FR_No")
 	private String frNo;
 	@DbField("QS_SFZ")
@@ -53,11 +53,12 @@ public class JlBakQs implements java.io.Serializable {
 	@DbField("CreateTime")
 	private Date createTime;
 	
-	public Integer getWebId() {
-		return webId;
+	
+	public Integer getWebid() {
+		return webid;
 	}
-	public void setWebId(Integer webId) {
-		this.webId = webId;
+	public void setWebid(Integer webid) {
+		this.webid = webid;
 	}
 	public String getFrNo() {
 		return frNo;

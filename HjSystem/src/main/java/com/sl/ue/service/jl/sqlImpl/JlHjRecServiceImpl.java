@@ -245,13 +245,13 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 		return result.toResult();
 	}
 	
-	public String updateRatingState(Long webId, Integer recRatingState, String writeTxt){
+	public String updateRatingState(Long webid, Integer recRatingState, String writeTxt){
 		Result result = new Result();
-		if(webId == null){
+		if(webid == null){
 			result.error(Result.error_102);
 			return result.toResult();
 		}
-		JlHjRecVO jlHjRec = this.findOne(webId);
+		JlHjRecVO jlHjRec = this.findOne(webid);
 		if(jlHjRec == null){
 			result.error(Result.error_103, "查询不到当前记录");
 			return result.toResult();
@@ -279,13 +279,13 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 		return result.toResult();
 	}
 	
-    public String getOtherInfo(Long webId){
+    public String getOtherInfo(Long webid){
     	Result result = new Result();
-		if(webId == null){
+		if(webid == null){
 			result.error(Result.error_102);
 			return result.toResult();
 		}
-		JlHjRecVO jlHjRec = this.findOne(webId);
+		JlHjRecVO jlHjRec = this.findOne(webid);
 		
 		if(jlHjRec.getHjid() != null){
 			JlHjDjVO jlHjDj = new JlHjDjVO();

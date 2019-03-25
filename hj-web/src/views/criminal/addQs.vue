@@ -86,7 +86,7 @@ export default {
       sfzImg: '/static/image/zpbj.jpg',
       // 新增或编辑弹窗
       dataQsForm: { 
-        webId: undefined,
+        webid: undefined,
         frNo: this.$route.query.frNo,
         qsZjlb: 1,
         qsSfz: undefined,
@@ -192,10 +192,10 @@ export default {
     },
     handleQsUpdate(row) {
     	let param = {
-    		id: row.webId
+    		id: row.webid
     	}
     	findQsOne(param).then((res) =>{
-    	this.dataQsForm.webId = res.data.webId
+    	this.dataQsForm.webid = res.data.webid
         this.dataQsForm.frNo = this.$route.params.frNo
         this.dataQsForm.qsZjlb = res.data.qsZjlb
         this.dataQsForm.qsSfz = res.data.qsSfz

@@ -13,7 +13,7 @@ public class JlHjInfo implements java.io.Serializable {
 	private static final long serialVersionUID = 4995860796334374987L;
 	@Id
 	@DbField("WebID")
-	private Long webId;
+	private Long webid;
 	@DbField("Call_ID")
 	private String callId;
 	@DbField("User_No")
@@ -44,14 +44,14 @@ public class JlHjInfo implements java.io.Serializable {
 		this.userName = userName;
 	}
 
-	// Property accessors
+	
 
-	public Long getWebId() {
-		return this.webId;
+	public Long getWebid() {
+		return webid;
 	}
 
-	public void setWebId(Long webId) {
-		this.webId = webId;
+	public void setWebid(Long webid) {
+		this.webid = webid;
 	}
 
 	public String getCallId() {

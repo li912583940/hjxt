@@ -121,7 +121,7 @@ export default {
       dialogSJVisible: false,
       
       dataForm: {
-      	webId: undefined,
+      	webid: undefined,
       	frName: undefined,
       	timeUp: undefined
       },
@@ -299,7 +299,7 @@ export default {
     /** 修改时间 开始 */
     
 	resetForm() {//重置表单
-		this.dataForm.webId = undefined
+		this.dataForm.webid = undefined
 		this.dataForm.frName = undefined
 		this.dataForm.timeUp = undefined
     },
@@ -307,7 +307,7 @@ export default {
 		
 		this.resetForm()
 		this.dialogSJVisible =true
-		this.dataForm.webId = row.webId
+		this.dataForm.webid = row.webid
 		this.dataForm.frName = row.monitorFr
 	},
 	updateSJ(){ //修改时间

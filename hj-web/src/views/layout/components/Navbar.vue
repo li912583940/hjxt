@@ -127,7 +127,7 @@ export default {
     	
     	dialogFormVisible: false,
     	dataForm: { 
-        webId: undefined,
+        webid: undefined,
         userName: undefined,
         userPwdOld: undefined,
         userPwdNew: undefined,
@@ -235,7 +235,7 @@ export default {
     },
     //重置表单
 		resetForm() {
-			this.dataForm.webId= undefined
+			this.dataForm.webid= undefined
 	    this.dataForm.userName= undefined
 	 		this.dataForm.userPwdOld= undefined
 	 		this.dataForm.userPwdNew= undefined
@@ -246,7 +246,7 @@ export default {
     	this.dialogFormVisible = true
     	let user = JSON.parse(sessionStorage.getItem("user"))
     	if(user){
-    		this.dataForm.webId=user.webId
+    		this.dataForm.webid=user.webid
     		this.dataForm.userName=user.userName
     	}
     },
@@ -270,7 +270,7 @@ export default {
 				let user = JSON.parse(sessionStorage.getItem("user"))
 	    	if(user){
 	    		let param = {
-	    		webId: user.webId
+	    		webid: user.webid
 	    	}
 				ResetUserPassword(param).then((res) => {
 					Message({

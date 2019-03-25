@@ -14,7 +14,7 @@ public class JlHjRec implements java.io.Serializable {
 	private static final long serialVersionUID = -5508517096804292358L;
 	@Id
 	@DbField("WebID")
-	private Long webId;
+	private Long webid;
 	@DbField("Call_ID")
 	private String callId;
 	@DbField("Line_No")
@@ -123,8 +123,13 @@ public class JlHjRec implements java.io.Serializable {
 	private Integer recAssessmentState;
 	
 	
-	public Long getWebId() {
-		return this.webId;
+
+	public Long getWebid() {
+		return webid;
+	}
+
+	public void setWebid(Long webid) {
+		this.webid = webid;
 	}
 
 	public Integer getImportFlag() {
@@ -133,10 +138,6 @@ public class JlHjRec implements java.io.Serializable {
 
 	public void setImportFlag(Integer importFlag) {
 		this.importFlag = importFlag;
-	}
-
-	public void setWebId(Long webId) {
-		this.webId = webId;
 	}
 
 	public String getCallId() {

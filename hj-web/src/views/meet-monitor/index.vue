@@ -157,7 +157,7 @@ export default {
       dialogSJVisible: false,
       
       dataForm: {
-      	webId: undefined,
+      	webid: undefined,
       	frName: undefined,
       	timeUp: undefined
       },
@@ -279,7 +279,7 @@ export default {
     /** 监听 开始 */
     jianting(row){
     	if(row.monitorState=='通话'){
-    		UpdateYJ({webId:row.webId, state:1}).then(res =>{
+    		UpdateYJ({webid:row.webid, state:1}).then(res =>{
     			this.getList()
     		})
     		
@@ -297,7 +297,7 @@ export default {
    
     /** 停止监听 开始 */
     jiantingStop(row){
-    	UpdateYJ({webId:row.webId, state:0}).then(res =>{
+    	UpdateYJ({webid:row.webid, state:0}).then(res =>{
 				this.getList()
 			})
     	document.getElementById(row.jy).ListenStop(row.lineNo);
@@ -319,7 +319,7 @@ export default {
 					hjid:row.hjid
 				}
 				QieduanHj(param).then(res => {
-					UpdateYJ({webId:row.webId, state:0}).then(res =>{
+					UpdateYJ({webid:row.webid, state:0}).then(res =>{
 	    			this.getList()
 	    		})
 					
@@ -348,7 +348,7 @@ export default {
     /** 修改时间 开始 */
     
 		resetForm() {//重置表单
-			this.dataForm.webId = undefined
+			this.dataForm.webid = undefined
 			this.dataForm.frName = undefined
 			this.dataForm.timeUp = undefined
 	    },
@@ -356,7 +356,7 @@ export default {
 			
 			this.resetForm()
 			this.dialogSJVisible =true
-			this.dataForm.webId = row.webId
+			this.dataForm.webid = row.webid
 			this.dataForm.frName = row.monitorFr
 		},
 		updateSJ(){ //修改时间

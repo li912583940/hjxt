@@ -14,7 +14,7 @@ public class JlHjRecRatingInfo implements java.io.Serializable {
 	private static final long serialVersionUID = 6886781203715886997L;
 	@Id
 	@DbField("WebID")
-	private Long webId;
+	private Long webid;
 	@DbField("Call_ID")
 	private String callId;
 	@DbField("User_No")
@@ -27,12 +27,14 @@ public class JlHjRecRatingInfo implements java.io.Serializable {
 	private Date createTime;
 
 
-	public Long getWebId() {
-		return this.webId;
+
+
+	public Long getWebid() {
+		return webid;
 	}
 
-	public void setWebId(Long webId) {
-		this.webId = webId;
+	public void setWebid(Long webid) {
+		this.webid = webid;
 	}
 
 	public String getCallId() {

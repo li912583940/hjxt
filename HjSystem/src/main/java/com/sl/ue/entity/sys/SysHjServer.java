@@ -12,7 +12,7 @@ public class SysHjServer implements java.io.Serializable {
 	private static final long serialVersionUID = 295095947898628049L;
 	@Id
 	@DbField("WebID")
-	private Integer webId;
+	private Integer webid;
 	@DbField("Server_Name")
 	private String serverName;
 	@DbField("IP")
@@ -31,12 +31,14 @@ public class SysHjServer implements java.io.Serializable {
 	private Integer zwIndex;
 
 
-	public Integer getWebId() {
-		return this.webId;
+
+
+	public Integer getWebid() {
+		return webid;
 	}
 
-	public void setWebId(Integer webId) {
-		this.webId = webId;
+	public void setWebid(Integer webid) {
+		this.webid = webid;
 	}
 
 	public String getServerName() {

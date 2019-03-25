@@ -73,13 +73,13 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 	}
 
 	
-	public String updateSJ(Integer webId, Integer timeUp){
+	public String updateSJ(Integer webid, Integer timeUp){
 		Result result = new Result();
-		if(webId == null){
-			result.error(Result.error_102, "webId为NULL");
+		if(webid == null){
+			result.error(Result.error_102, "webid为NULL");
 			return result.toResult();
 		}
-		SysHjLineVO sysHjLine = this.findOne(webId);
+		SysHjLineVO sysHjLine = this.findOne(webid);
 		
 		if(sysHjLine == null){
 			result.error(Result.error_103, "查询不到此记录");
@@ -99,7 +99,7 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 //		Long begining=begin;
 //		while(flag==false && begining<=end){
 //			if(begin+1000==begining){
-//				JlHjMonitorTimeAddVO jlHjMonitorTime = jlHjMonitorTimeAddSQL.findOne(jlHjMonitorTimeAdd.getWebId());
+//				JlHjMonitorTimeAddVO jlHjMonitorTime = jlHjMonitorTimeAddSQL.findOne(jlHjMonitorTimeAdd.getWebid());
 //				if(jlHjMonitorTime.getState()==1){
 //					flag=true;
 //				}
@@ -115,13 +115,13 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 		return result.toResult();
 	}
 	
-	public String updateYJ(Integer webId, Integer state){
+	public String updateYJ(Integer webid, Integer state){
 		Result result = new Result();
-		if(webId == null){
-			result.error(Result.error_102, "webId为NULL");
+		if(webid == null){
+			result.error(Result.error_102, "webid为NULL");
 			return result.toResult();
 		}
-		SysHjLineVO sysHjLine = this.findOne(webId);
+		SysHjLineVO sysHjLine = this.findOne(webid);
 		
 		if(sysHjLine == null){
 			result.error(Result.error_103, "查询不到此记录");

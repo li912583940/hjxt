@@ -475,7 +475,7 @@ export default {
     	}
     	let qsid = ''
     	for(let x of this.qsSelections) {
-    		qsid = qsid=='' || qsid==undefined?x.webId:qsid+','+x.webId
+    		qsid = qsid=='' || qsid==undefined?x.webid:qsid+','+x.webid
     	}
     	this.dataForm.qsIds = qsid
     	const loading = this.$loading({

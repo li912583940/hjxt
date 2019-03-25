@@ -123,7 +123,7 @@ export default {
       },
       // 新增或编辑弹窗
       dataForm: { 
-        webId: undefined,
+        webid: undefined,
         dkq: undefined,
         state: 1,
         model: 0
@@ -170,7 +170,7 @@ export default {
 		if(this.$refs[formName] !== undefined){
 			this.$refs[formName].resetFields();
 		}
-		this.dataForm.webId = undefined
+		this.dataForm.webid = undefined
     },
     handleCreate() {
       this.dialogStatus = 'create'
@@ -194,10 +194,10 @@ export default {
     },
     handleUpdate(row) {
     	let param = {
-    		id: row.webId
+    		id: row.webid
     	}
     	findOne(param).then((res) =>{
-    		this.dataForm.webId = res.data.webId
+    		this.dataForm.webid = res.data.webid
 	        this.dataForm.lineNo =  res.data.lineNo
 	        this.dataForm.line = res.data.line
 	        this.dataForm.jy = res.data.jy
@@ -231,7 +231,7 @@ export default {
 		}).then(() => {
 			this.listLoading = true;
 			let param = {
-    			id: row.webId
+    			id: row.webid
     		}
 			RequestDelete(param).then(() => {
     		this.getList()

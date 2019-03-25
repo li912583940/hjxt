@@ -103,8 +103,8 @@ public class JlHjRecWeb extends Result{
 	 * L_晓天  @2018年11月26日
 	 */
 	@RequestMapping("/updateRatingState")
-	public String updateRatingState(Long webId, Integer recRatingState, String writeTxt){
-		return jlHjRecSQL.updateRatingState(webId, recRatingState, writeTxt);
+	public String updateRatingState(Long webid, Integer recRatingState, String writeTxt){
+		return jlHjRecSQL.updateRatingState(webid, recRatingState, writeTxt);
 	}
 	
 	/**
@@ -112,8 +112,8 @@ public class JlHjRecWeb extends Result{
 	 * L_晓天  @2018年11月30日
 	 */
 	@RequestMapping("/getOtherInfo")
-	public String getOtherInfo(Long webId){
-		return jlHjRecSQL.getOtherInfo(webId);
+	public String getOtherInfo(Long webid){
+		return jlHjRecSQL.getOtherInfo(webid);
 	}
 	
 	/**

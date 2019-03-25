@@ -12,7 +12,7 @@ public class SysParam implements java.io.Serializable{
 
 	@Id
 	@DbField("WebID")
-	private Integer webId;
+	private Integer webid;
 	@DbField("Param_Name")
 	private String paramName;
 	@DbField("Param_Data1")
@@ -29,11 +29,12 @@ public class SysParam implements java.io.Serializable{
 	
 	
 	
-	public Integer getWebId() {
-		return webId;
+	
+	public Integer getWebid() {
+		return webid;
 	}
-	public void setWebId(Integer webId) {
-		this.webId = webId;
+	public void setWebid(Integer webid) {
+		this.webid = webid;
 	}
 	public String getParamName() {
 		return paramName;

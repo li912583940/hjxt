@@ -94,7 +94,7 @@ export default {
       wordPath: process.env.BASE_API+"/jlQs/uploadWord", //上传亲属附件
       // 新增或编辑弹窗
       dataQsForm: { 
-        webId: this.$route.query.qsWebId,
+        webid: this.$route.query.qswebid,
         frNo: this.$route.query.frNo,
         frName: this.$route.query.frName,
         qsZjlb: 1,
@@ -155,7 +155,7 @@ export default {
 	}
   },
   created() {
-  	this.qsWebIdSearch()
+  	this.qswebidSearch()
   },
   mounted() {
   	this.getGxList()
@@ -166,10 +166,10 @@ export default {
   	this.colsePort()
   },
   methods: {
-  	qsWebIdSearch(){ // 如果亲属webId不是undefined此页面就是修改亲属
-  		if(this.dataQsForm.webId != undefined){
+  	qswebidSearch(){ // 如果亲属webid不是undefined此页面就是修改亲属
+  		if(this.dataQsForm.webid != undefined){
   			let param ={
-  				id:this.dataQsForm.webId
+  				id:this.dataQsForm.webid
   			}
   			findQsOne(param).then(res =>{
   				let x = res.data
@@ -208,7 +208,7 @@ export default {
     createQsData() {
       this.$refs['dataQsForm'].validate((valid) => {
         if (valid) {
-        	if(this.dataQsForm.webId != undefined){
+        	if(this.dataQsForm.webid != undefined){
         		RequestQsEdit(this.dataQsForm).then(res => {
 		          	Message({
 				        message: res.errMsg,

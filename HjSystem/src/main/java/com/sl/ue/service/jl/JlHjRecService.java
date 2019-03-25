@@ -34,13 +34,13 @@ public interface JlHjRecService extends BaseService<JlHjRecVO>{
 	 * 说明 [修改录音评级]
 	 * L_晓天  @2018年11月26日
 	 */
-	public String updateRatingState(Long webId, Integer recRatingState, String writeTxt);
+	public String updateRatingState(Long webid, Integer recRatingState, String writeTxt);
 	
 	/**
 	 * 说明 [获取当前会见记录的其它详情]
 	 * L_晓天  @2018年11月30日
 	 */
-	public String getOtherInfo(Long webId);
+	public String getOtherInfo(Long webid);
 	
 	/**
 	 * 说明 [导出excel]

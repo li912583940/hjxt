@@ -8,7 +8,7 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="listQuery.qsName" clearable>
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('criminal.add')}}</el-button>
+      <!--<el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('criminal.add')}}</el-button>-->
       <el-button v-if="buttonRole.exportPermission==1" class="filter-item" type="primary" v-waves icon="el-icon-download" @click="handleDownload" >{{$t('criminal.export')}}</el-button>
     	<el-upload
     		v-if="buttonRole.importPermission==1"
@@ -105,9 +105,8 @@
     <!-- 新增或编辑 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="dialogClose">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
-      	<el-input v-if="false" v-model="dataForm.frNo" ></el-input>
         <el-form-item :label="$t('currency.frName')" prop="frName">
-          <el-input v-model="dataForm.frName"></el-input>
+          <el-input v-model="dataForm.frName" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="近照" >
 		      <!--<span v-if="ie==1">
@@ -224,7 +223,7 @@ export default {
       
       // 新增或编辑弹窗
       dataForm: { 
-        webId: undefined,
+        webid: undefined,
         frNo: '',
         frName: undefined,
         qsZjlb: 1,
@@ -529,7 +528,7 @@ export default {
 			if(this.$refs[formName] !== undefined){
 				this.$refs[formName].resetFields();
 			}
-			this.dataForm.webId = undefined
+			this.dataForm.webid = undefined
 	  },
     handleCreate() {
     	
@@ -560,10 +559,10 @@ export default {
     handleUpdate(row) {
     	this.openVideo()
     	let param = {
-    		id: row.webId
+    		id: row.webid
     	}
     	findOne(param).then((res) =>{
-    		this.dataForm.webId = res.data.webId,
+    		this.dataForm.webid = res.data.webid,
         this.dataForm.frName =  res.data.frName,
         this.dataForm.frNo = res.data.frNo,
         this.dataForm.qsZjlb = res.data.qsZjlb,
@@ -602,7 +601,7 @@ export default {
 			}).then(() => {
 				this.listLoading = true;
 				let param = {
-	    		id: row.webId
+	    		id: row.webid
 	    	}
 				RequestDelete(param).then(() => {
 	    		this.getList()

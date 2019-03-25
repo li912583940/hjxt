@@ -18,7 +18,7 @@ public class ErrorInfoWebService implements java.io.Serializable {
 	
 	@Id
 	@DbField("WebID")
-	private Integer webId;
+	private Integer webid;
 	@DbField("Action_Name")
 	private String actionName;
 	@DbField("Error_Info")
@@ -28,12 +28,14 @@ public class ErrorInfoWebService implements java.io.Serializable {
 
 	
 
-	public Integer getWebId() {
-		return this.webId;
+
+
+	public Integer getWebid() {
+		return webid;
 	}
 
-	public void setWebId(Integer webId) {
-		this.webId = webId;
+	public void setWebid(Integer webid) {
+		this.webid = webid;
 	}
 
 	public String getActionName() {

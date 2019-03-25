@@ -70,7 +70,7 @@ public class JlJbWeb extends Result{
     @RequestMapping("/edit")
     public String edit(JlJbVO model){
     	JlJbVO jlJbQuery = new JlJbVO();
-    	jlJbQuery.setLeftJoinWhere(" AND a.WebID<>"+model.getWebId()+" AND (a.JB_No='"+model.getJbNo()+"'"
+    	jlJbQuery.setLeftJoinWhere(" AND a.WebID<>"+model.getWebid()+" AND (a.JB_No='"+model.getJbNo()+"'"
     			+" OR a.JB_Name='"+model.getJbName()+"')");
     	List<JlJbVO> list = jlJbSQL.findList(jlJbQuery);
     	if(list.size()>0){

@@ -20,7 +20,7 @@ public class SysUser  implements Serializable{
 	
 	@Id
 	@DbField("WebID")
-	private Integer webId;
+	private Integer webid;
 	@DbField("User_No")
 	private String userNo;
 	@DbField("User_Pwd")
@@ -38,12 +38,14 @@ public class SysUser  implements Serializable{
 	@DbField("token_time")
 	private Date tokenTime;
 
-	public Integer getWebId() {
-		return webId;
+
+
+	public Integer getWebid() {
+		return webid;
 	}
 
-	public void setWebId(Integer webId) {
-		this.webId = webId;
+	public void setWebid(Integer webid) {
+		this.webid = webid;
 	}
 
 	public String getUserNo() {

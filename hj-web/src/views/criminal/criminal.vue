@@ -357,7 +357,7 @@ export default {
       
       // 新增或编辑弹窗
       dataForm: { 
-        webId: undefined,
+        webid: undefined,
         frName: undefined,
         frNo: undefined,
         frCard: undefined,
@@ -443,7 +443,7 @@ export default {
       },
       // 新增或编辑弹窗
       dataQsForm: { 
-        webId: undefined,
+        webid: undefined,
         frNo: undefined,
         qsZjlb: 1,
         qsSfz: undefined,
@@ -658,7 +658,7 @@ export default {
 //			if(this.$refs[formName] !== undefined){
 //				this.$refs[formName].resetFields();
 //			}
-			this.dataForm.webId= undefined
+			this.dataForm.webid= undefined
 	    this.dataForm.frName= undefined
 	    this.dataForm.frNo= ''
 	    this.dataForm.frCard= undefined
@@ -717,10 +717,10 @@ export default {
     },
     handleUpdate(row) {
     	let param = {
-    		id: row.webId
+    		id: row.webid
     	}
     	findOne(param).then((res) =>{
-    		this.dataForm.webId = res.data.webId
+    		this.dataForm.webid = res.data.webid
         this.dataForm.frName =  res.data.frName
         this.dataForm.frNo = res.data.frNo
         this.dataForm.frCard = res.data.frCard
@@ -776,7 +776,7 @@ export default {
 			}).then(() => {
 				this.listLoading = true;
 				let param = {
-	    		id: row.webId
+	    		id: row.webid
 	    	}
 				RequestDelete(param).then(() => {
 	    		this.getList()
@@ -883,8 +883,8 @@ export default {
 			if(this.$refs[formName] !== undefined){
 				this.$refs[formName].resetFields();
 			}
-			this.dataForm.webId= undefined
-			this.dataQsForm.webId= undefined
+			this.dataForm.webid= undefined
+			this.dataQsForm.webid= undefined
 	  },
     handleQsCreate() {
       this.dialogStatus = 'create'
@@ -906,10 +906,10 @@ export default {
     },
     handleQsUpdate(row) {
     	let param = {
-    		id: row.webId
+    		id: row.webid
     	}
     	findQsOne(param).then((res) =>{
-    		this.dataQsForm.webId = res.data.webId
+    		this.dataQsForm.webid = res.data.webid
         this.dataQsForm.frNo = this.qsListQuery.frNo
         this.dataQsForm.qsZjlb = res.data.qsZjlb
         this.dataQsForm.qsSfz = res.data.qsSfz
@@ -947,7 +947,7 @@ export default {
 			}).then(() => {
 				this.qsListLoading = true;
 				let param = {
-	    		id: row.webId
+	    		id: row.webid
 	    	}
 				RequestQsDelete(param).then(() => {
 	    		this.getQsList()

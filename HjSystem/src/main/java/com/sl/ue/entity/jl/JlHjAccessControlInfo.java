@@ -31,7 +31,7 @@ public class JlHjAccessControlInfo implements java.io.Serializable {
 	private Integer state;
 	@Id
 	@DbField("WebID")
-	private Integer webId;
+	private Integer webid;
 
 	
 
@@ -107,15 +107,15 @@ public class JlHjAccessControlInfo implements java.io.Serializable {
 		this.state = state;
 	}
 
-	public Integer getWebId() {
-		return webId;
+	public Integer getWebid() {
+		return webid;
 	}
 
-	public void setWebId(Integer webId) {
-		this.webId = webId;
+	public void setWebid(Integer webid) {
+		this.webid = webid;
 	}
 
-	// Property accessors
+	
 
 	
 

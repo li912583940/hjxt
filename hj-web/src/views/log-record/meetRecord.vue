@@ -681,7 +681,7 @@ export default {
 		  /** 录音评级 开始 */
 		  dialogRatingStateVisible: false,
 		  dataFormRatingState: {
-		  	webId: undefined,
+		  	webid: undefined,
 		  	callId: undefined,
 		  	userNo: undefined,
 		  	userName: undefined,
@@ -1038,7 +1038,7 @@ export default {
 			if(this.$refs['dataFormRatingState'] !== undefined){
 				this.$refs['dataFormRatingState'].resetFields();
 			}
-			this.dataFormRatingState.webId = undefined
+			this.dataFormRatingState.webid = undefined
 	  },
 	  openRatingState(row){
 	  	this.resetFormRatingState()
@@ -1049,7 +1049,7 @@ export default {
 	   	GetRatingState(param).then(res => {
 	   		let jlHjRecRatingInfo = res.jlHjRecRatingInfo
 	   		
-	   		this.dataFormRatingState.webId=row.webId
+	   		this.dataFormRatingState.webid=row.webid
 		  	this.dataFormRatingState.callId= row.callId
 		  	this.dataFormRatingState.userNo= user.userNo
 		  	this.dataFormRatingState.userName= user.userName
@@ -1122,7 +1122,7 @@ export default {
     openOtherInfo(row) {
     	this.dialogOtherInfoVisible = true
     	let param ={
-    		webId: row.webId
+    		webid: row.webid
     	}
     	GetOtherInfo(param).then(res => {
     		this.otherInfoList = res.jlHjDjList

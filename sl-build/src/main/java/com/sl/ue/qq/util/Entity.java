@@ -28,8 +28,8 @@ public class Entity {
 //		enMap.put("JL_FR", "JlFr");
 //		enMap.put("JL_QS", "JlQs");
 //		enMap.put("JL_JQ_WEEK_TIME", "JlJqWeekTime");
-		enMap.put("SYS_HOLIDAY", "SysHoliday");
-		
+//		enMap.put("SYS_HOLIDAY", "SysHoliday");
+		enMap.put("SYS_QQ_FL", "SysQqFl");
 	}
 	
 	
