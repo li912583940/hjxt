@@ -37,7 +37,7 @@
 		<!-- 服刑人员开始 -->
 		<el-card class="box-card">
 	    <el-table :key='frTableKey' ref="frMultipleTable" :data="frList" v-loading="frListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-	       @row-click="frRowClick" @row-dblclick="handleSearchQs" @select="frSelectionChang" @select-all="frAllSelectionChang" style="width: 100%">
+	       @row-click="frRowClick" @row-dblclick="handleSearchQs" @select="frSelectionChang" @select-all="frAllSelectionChang" style="width: 2381px">
 	      <el-table-column align="center" type="selection" width="70" fixed="left">
 	      </el-table-column>
 	      <el-table-column align="center" label="监区" width="70">
@@ -140,7 +140,7 @@
 		<!-- 亲属开始 -->
 		<el-card class="box-card">
 	    <el-table :key='qsTableKey' ref="qsMultipleTable" :data="qsList" v-loading="qsListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-	     @selection-change="qsAllSelectionChange"  @row-click="qsRowClick" @row-dblclick="toEditQs" style="width: 100%">
+	     @selection-change="qsAllSelectionChange"  @row-click="qsRowClick" @row-dblclick="toEditQs" style="width: 1888px">
 	      <el-table-column align="center" type="selection"  width="70" fixed="left">
 	      </el-table-column>
 	      <el-table-column align="center" label="亲属姓名" width="100">
@@ -188,7 +188,7 @@
 	      </el-table-column>
 	      <el-table-column width="120px" align="center" label="附件">
 	        <template slot-scope="scope">
-	           <span v-if="scope.row.enclosureUrl != undefined">
+	           <span v-if="scope.row.enclosureUrl != undefined && scope.row.enclosureUrl !=''">
 	           	  <el-button type="primary"  size="mini" v-waves icon="el-icon-download" @click="wordDownload(scope.row)" >下载附件</el-button>
 	           </span>
 	           <span else></span>

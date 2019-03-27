@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
-      style="width: 100%">
+      style="width: 1771px">
       <el-table-column width="280" align="center" label="审批名称">
         <template slot-scope="scope">
           <span>{{scope.row.setName}}</span>
@@ -36,7 +36,7 @@
 		       <span else></span>
         </template>
       </el-table-column>
-      <el-table-column width="160px" align="center" label="申请时间">
+      <el-table-column width="160" align="center" label="申请时间">
         <template slot-scope="scope">
           <span>{{scope.row.tjTime | dateFormat }}</span>
         </template>
@@ -51,12 +51,12 @@
           <span>{{scope.row.speedProgress}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160px" align="center" label="当前阶段能审批者">
+      <el-table-column width="160" align="center" label="当前阶段能审批者">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="seeSpUser(scope.row)">查看</el-button>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="操作">
+      <el-table-column width="200" align="center" label="操作">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="seeDetails(scope.row)">查看详情</el-button>
           <el-button v-if="scope.row.spPermission==1" type="primary" size="mini" @click="toSp(scope.row)">我要审批</el-button>

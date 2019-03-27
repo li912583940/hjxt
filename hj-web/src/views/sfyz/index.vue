@@ -5,8 +5,9 @@
 	      </el-input>
 	      <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
 	    </div>
+	    <div style="width: 900px; margin-left: 10%;">
 		<!-- 亲属新增或编辑 -->
-        <el-card shadow="always" style="width: 250px; margin-left: 40%;margin-top: 20px;">
+        <el-card shadow="always" style="width: 250px; margin-left: 50%;margin-top: 20px;">
 	        <img :src="sfzImg" id="zp" name="zp"  width="200px" height="252px">
 	        <div style="padding: 14px;margin-left: 40px;">
 		        <span>{{qs.qsName}}</span>
@@ -19,7 +20,7 @@
 	    <el-card shadow="always" style="width: 900px; margin-left: 15%;margin-top: 5px;">    
 	        <div style="padding: 14px;margin-left: 40px;">
 		        <el-table :key='tableKey' :data="list" element-loading-text="给我一点时间" border fit highlight-current-row
-			      style="width: 100%">
+			      style="width: 741px">
 			      <el-table-column width="100" align="center"  :label="$t('currency.frNo')">
 			        <template slot-scope="scope">
 			          <span>{{scope.row.frNo}}</span>
@@ -48,6 +49,7 @@
 			    </el-table>
 	        </div>
         </el-card>
+        </div>
         <button hidden="hidden" id="shibie1" @click="shibie()"></button>
     </div>
 </template>
