@@ -21,7 +21,7 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 100%">
+      style="width: 1791px">
       <el-table-column width="280" align="center" label="审批名称">
         <template slot-scope="scope">
           <span>{{scope.row.setName}}</span>
@@ -53,12 +53,12 @@
           <span>{{scope.row.qsInfo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160px" align="center" label="申请时间">
+      <el-table-column width="160" align="center" label="申请时间">
         <template slot-scope="scope">
           <span>{{scope.row.tjTime | dateFormat }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="160px" align="center" label="最后审批时间">
+      <el-table-column width="160" align="center" label="最后审批时间">
         <template slot-scope="scope">
           <span>{{scope.row.lastSpTime | dateFormat }}</span>
         </template>
@@ -80,7 +80,7 @@
           <span>{{scope.row.speedProgress}}</span>
         </template>
       </el-table-column>
-	  <el-table-column width="150px" align="center" label="操作" fixed="right">
+	  <el-table-column width="150" align="center" label="操作" fixed="right">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="seeDetails(scope.row)">查看详情</el-button>
         </template>
@@ -97,38 +97,38 @@
     <el-dialog title="详情" :visible.sync="dialogSpDetailsVisible"  width="1000px">
 		<el-table :key='tableKey' :data="spDetailsList"   border fit highlight-current-row
 		    style="941px">
-		      <el-table-column width="110px" align="center" label="审批人编号">
+		      <el-table-column width="110" align="center" label="审批人编号">
 		        <template slot-scope="scope">
 		          <span>{{scope.row.userNo}}</span>
 		        </template>
 		      </el-table-column>
-		      <el-table-column width="129px" align="center" label="审批人姓名">
+		      <el-table-column width="129" align="center" label="审批人姓名">
 		        <template slot-scope="scope">
 		          <span>{{scope.row.userName}}</span>
 		        </template>
 		      </el-table-column>
-		      <el-table-column width="160px" align="center" label="审批人部门">
+		      <el-table-column width="160" align="center" label="审批人部门">
 		        <template slot-scope="scope">
 		          <span>{{scope.row.deptName}}</span>
 		        </template>
 		      </el-table-column>
-		      <el-table-column width="100px" align="center" label="审批状态">
+		      <el-table-column width="100" align="center" label="审批状态">
 		        <template slot-scope="scope">
 		          <span v-if="scope.row.state==1">通过</span>
 		          <span v-if="scope.row.state==0" style="color: red;">不通过</span>
 		        </template>
 		      </el-table-column>
-		      <el-table-column width="200px" align="center" label="审批说明">
+		      <el-table-column width="200" align="center" label="审批说明">
 		        <template slot-scope="scope">
 		          <span>{{scope.row.explain}}</span>
 		        </template>
 		      </el-table-column>
-		      <el-table-column width="160px" align="center" label="审批时间 ">
+		      <el-table-column width="160" align="center" label="审批时间 ">
 		        <template slot-scope="scope">
 		          <span>{{scope.row.spTime | dateFormat }}</span>
 		        </template>
 		      </el-table-column>
-		      <el-table-column width="100px" align="center" label="审批阶段">
+		      <el-table-column width="100" align="center" label="审批阶段">
 		        <template slot-scope="scope">
 		          <span>{{scope.row.speedProgress}}</span>
 		        </template>

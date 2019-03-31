@@ -73,6 +73,11 @@
     
     <object width="0px" height="0px" id="IDCard2" name="IDCard2"  codebase="../../../ocx/SynCardOcx1.CAB#version=1,0,0,1" classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039">
 		</object>
+		<div v-for="(item, index) in sysHjServerList">
+			<object :id="item.serverName" :name="item.serverName" codebase="../../ocx/TeleQqOcx.ocx#version=1,0,0,1" classid="clsid:561E476B-6C4F-4FCC-A8CE-A85C7F781620" 
+		 		width="0" height="0">
+			</object>
+		</div>
 		<audio id="audio1" :src="wavUrl"></audio>
 		
 		<!-- 拍照-->
@@ -139,7 +144,12 @@ export default {
     	rules: {
         password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
       },
+      // 注册控件
+      sysHjServerList: null,
     }
+  },
+  created() {
+  	this.getHjServerList()
   },
   mounted() {
   	if(this.setButtonRole()==1){
@@ -284,7 +294,13 @@ export default {
 	    	}
 				
 			})
-    }
+    },
+   
+    getHjServerList() { // 获取服务器用于注册控件
+			GetHjServerList({}).then(res => {
+				this.sysHjServerList = res.list
+			})
+		},
   }
 }
 </script>

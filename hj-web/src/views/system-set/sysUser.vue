@@ -12,7 +12,7 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 100%">
+      style="width: 981px">
       <el-table-column width="80" align="center"  :label="$t('criminal.id')">
         <template slot-scope="scope">
           <span>{{scope.row.webid}}</span>
@@ -50,8 +50,8 @@
     </div>
 
     <!-- 新增或编辑 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="600px">
+      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:10%;' >
         <el-form-item label="登陆账号" prop="userNo">
           <el-input v-model="dataForm.userNo"></el-input>
         </el-form-item>
@@ -72,8 +72,8 @@
     </el-dialog>
 
 		 <!-- 添加角色 -->
-		<el-dialog title="添加角色" :visible.sync="dialogRoleVisible">
-			<el-card style="width: 540px; margin-left: 19%;">
+		<el-dialog title="添加角色" :visible.sync="dialogRoleVisible" width="740px">
+			<el-card style="width: 540px; margin-left: 10%;">
 				<el-transfer
 			    filterable
 			    :filter-method="roleFilter"

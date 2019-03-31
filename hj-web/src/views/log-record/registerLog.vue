@@ -1,3 +1,4 @@
+<!-- 登记记录 -->
 <template>
   <div class="app-container">
     <div class="filter-container">
@@ -28,7 +29,7 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 100%">
+      style="width: 1601px">
       <el-table-column width="100" align="center"  :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
@@ -91,14 +92,14 @@
       </el-table-column>
       <el-table-column width="140" align="center" label="会见时长(分钟)">
         <template slot-scope="scope">
-          <span>{{scope.row.hjTime}}</span>
+          <span>{{scope.row.hjTime | timeFormat}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="140" align="center" label="来源IP">
+      <!--<el-table-column width="140" align="center" label="来源IP">
         <template slot-scope="scope">
           <span>{{scope.row.userIp}}</span>
         </template>
-      </el-table-column>
+      </el-table-column>-->
     </el-table>
 
 		<!-- 分页 -->
@@ -221,7 +222,13 @@ export default {
 	      return "";  
 	    }  
 	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-	  }
+	  },
+  	timeFormat(val) {
+  		if(val == undefined){
+  			return ""; 
+  		}
+  		return val/60
+  	}
   },
   created() {
     this.getList()

@@ -86,11 +86,6 @@
 	      </div>
 	    </el-dialog>
 	    
-    	<div v-for="(item, index) in sysHjServerList">
-    		<object :id="item.serverName" :name="item.serverName" codebase="../../ocx/TeleQqOcx.ocx#version=1,0,0,1" classid="clsid:561E476B-6C4F-4FCC-A8CE-A85C7F781620" 
- 		 		width="0" height="0">
-			</object>
-    	</div>
 	</div>
 </template>
 
@@ -131,8 +126,6 @@ export default {
       /** 修改时间 结束 */ 
       
       /** 插话 开始 */
-      // 注册控件
-      sysHjServerList: null,
       
       // 插话
       monitorVocList: [],
@@ -180,7 +173,6 @@ export default {
   mounted() {
   	this.setButtonRole()
   	
-  	this.getHjServerList()
   	this.getMonitorVocList()
   	
   	if(this.timer){
@@ -324,11 +316,6 @@ export default {
 	
 	
 	/** 用于插话  开始 */
-	getHjServerList() { // 获取服务器用于注册控件
-		GetHjServerList({}).then(res => {
-			this.sysHjServerList = res.list
-		})
-	},
 	getMonitorVocList(){ // 获取插话内容
 		GetMonitorVocList({}).then(res => {
 			this.monitorVocList = res.list

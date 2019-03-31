@@ -1,3 +1,4 @@
+<!-- 会见记录  -->
 <template>
   <div class="app-container">
     <div class="filter-container">
@@ -53,7 +54,7 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 100%">
+      style="width: 2121px">
       <el-table-column width="160" align="center" label="通话开始时间">
         <template slot-scope="scope">
           <span>{{scope.row.callTimeStart}}</span>
@@ -245,8 +246,8 @@
     <!-- 下载录音录像 结束 下载 IE浏览器 -->
     
     <!-- 注释 开始 -->
-    <el-dialog title="注释" :visible.sync="dialogZSVisible"  width="50%">
-	      <el-form  :model="dataFormZS" ref="dataFormZS" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+    <el-dialog title="注释" :visible.sync="dialogZSVisible"  width="600px">
+	      <el-form  :model="dataFormZS" ref="dataFormZS" label-position="right" label-width="120px" style='width: 400px; margin-left:10%;' >
 	        <el-form-item label="呼叫ID" >
 	          <el-input v-model="dataFormZS.callId" :disabled="true"></el-input>
 	        </el-form-item>
@@ -265,7 +266,7 @@
 	  <!-- 注释 结束 -->
 	  
 	  <!-- 查看所有注释  开始  -->
-    <el-dialog title="查看所有注释" :visible.sync="dialogZsAllVisible" width="50%">
+    <el-dialog title="查看所有注释" :visible.sync="dialogZsAllVisible" width="900px">
       <el-table :key='zsAllTableKey' :data="zsAllList" v-loading="zsAllListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
 	      style="width: 100%">
 	      <el-table-column width="160" align="center" label="用户编号">
@@ -313,8 +314,8 @@
     <!-- 播放录音 结束 -->
     
     <!-- 录音评级 开始 -->
-    <el-dialog title="录音评级" :visible.sync="dialogRatingStateVisible" >
-    	 <el-form :model="dataFormRatingState" ref="dataFormRatingState" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+    <el-dialog title="录音评级" :visible.sync="dialogRatingStateVisible" width="600px">
+    	 <el-form :model="dataFormRatingState" ref="dataFormRatingState" label-position="right" label-width="120px" style='width: 400px; margin-left:10%;' >
         <el-form-item label="呼叫ID" prop="callId">
           <el-input v-model="dataFormRatingState.callId" :disabled="true"></el-input>
         </el-form-item>
@@ -341,7 +342,7 @@
     <!-- 录音评级 开始 -->
     
     <!-- 查看所有录音评级  开始  -->
-    <el-dialog title="查看所有录音评级" :visible.sync="dialogRatingStateAllVisible" width="50%">
+    <el-dialog title="查看所有录音评级" :visible.sync="dialogRatingStateAllVisible" width="900px">
       <el-table :key='ratingStateAllTableKey' :data="ratingStateAllList" v-loading="ratingStateAllListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
 	      style="width: 100%">
 	      <el-table-column width="160" align="center" label="用户编号">
@@ -378,7 +379,7 @@
     
     
     <!-- 复听详情  开始  -->
-    <el-dialog title="复听详情" :visible.sync="dialogAllAssessmentVisible" width="50%">
+    <el-dialog title="复听详情" :visible.sync="dialogAllAssessmentVisible" width="900px">
       <el-table :key='allAssessmentTableKey' :data="allAssessmentList" v-loading="allAssessmentListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
 	      style="width: 100%">
 	      <el-table-column width="160" align="center" label="用户编号">
@@ -414,7 +415,7 @@
     <!-- 复听详情  结束  -->
     
     <!-- 其他详情  开始  -->
-    <el-dialog title="其他详情" :visible.sync="dialogOtherInfoVisible" width="50%">
+    <el-dialog title="其他详情" :visible.sync="dialogOtherInfoVisible" width="900px">
       <el-card class="box-card">
 	      <el-table :key='otherInfoTableKey' :data="otherInfoList" v-loading="otherInfoListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
 		      style="width: 100%">

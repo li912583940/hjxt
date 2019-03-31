@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
-      style="width: 100%">
+      style="width: 1971px">
        <el-table-column  align="center" :label="$t('criminal.actions')" width="160" fixed="left" >
         <template slot-scope="scope">
         	<span v-if="scope.row.pageTzState==0"><el-button type="primary" size="mini" @click="sdNotice(scope.row)">接收</el-button></span>
@@ -29,13 +29,13 @@
           <span else>{{scope.row.zw}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100px" align="center" label="会见通知">
+      <el-table-column width="100" align="center" label="会见通知">
         <template slot-scope="scope">
           <span v-if="scope.row.pageTzState==0" style="color: red;">未接收</span>
           <span v-if="scope.row.pageTzState==1">已接收</span>
         </template>
       </el-table-column>
-      <el-table-column width="110px" align="center" label="会见类型">
+      <el-table-column width="110" align="center" label="会见类型">
         <template slot-scope="scope">
           <span v-if="scope.row.hjType==1">亲属会见</span>
           <span v-else-if="scope.row.hjType==2">监护人会见</span>
@@ -175,14 +175,6 @@ export default {
 			RequestEditTz(param).then((res) =>{
 				this.getList()
 			})
-		},
-    dateFormat(row, column) {
-			//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
 		},
 		dateFormats: function (val) {
 			if(!val){

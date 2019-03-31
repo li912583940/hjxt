@@ -50,8 +50,8 @@
     </div>
 
 	<!-- 新增或编辑 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="600px">
+      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px;margin-left: 10%;' >
         <el-form-item label="警察编号" prop="yjNo">
         	<el-input v-if="dialogStatus=='update'" v-model="dataForm.yjNo" :disabled="true"></el-input>
           <el-input v-if="dialogStatus=='create'" v-model="dataForm.yjNo"></el-input>

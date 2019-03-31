@@ -68,8 +68,8 @@
   </el-dialog>-->
   
 	<!-- 新增或编辑 -->
-    <el-dialog title="配 置" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="180px" style='width: 420px; margin-left:16%;' >
+    <el-dialog title="配 置" :visible.sync="dialogFormVisible" width="700px">
+      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 420px; margin-left:15%;' >
         <el-form-item label="审批流程名称" prop="spName">
           <el-input v-model="dataForm.spName" :disabled="true"></el-input>
         </el-form-item>

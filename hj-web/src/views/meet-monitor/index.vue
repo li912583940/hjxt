@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间"  border fit highlight-current-row
-      style="width: 100%">
+      style="width: 1641px">
       <el-table-column width="100" align="center" label="服务器名称">
         <template slot-scope="scope">
           <span>{{scope.row.jy}}</span>
@@ -12,7 +12,7 @@
           <span>{{scope.row.lineNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100px" align="center" label="座位号">
+      <el-table-column width="100" align="center" label="座位号">
         <template slot-scope="scope">
           <span>{{scope.row.zw}}</span>
         </template>
@@ -71,8 +71,8 @@
       </el-pagination>
     </div>
 
-		<el-dialog title="修改时间" :visible.sync="dialogSJVisible">
-      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+		<el-dialog title="修改时间" :visible.sync="dialogSJVisible" width="500px">
+      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px;' >
         <el-form-item label="姓名" >
           <el-input v-model="dataForm.frName" :disabled="true"></el-input>
         </el-form-item>
@@ -86,8 +86,8 @@
       </div>
     </el-dialog>
 	
-	  <el-dialog title="插话" :visible.sync="dialogCHVisible">
-      <el-form :rules="rulesCH" :model="dataFormCH" ref="dataFormCH" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+	  <el-dialog title="插话" :visible.sync="dialogCHVisible" width="500px">
+      <el-form :rules="rulesCH" :model="dataFormCH" ref="dataFormCH" label-position="right" label-width="120px" style='width: 400px;' >
         <el-form-item label="姓名" >
           <el-input v-model="dataFormCH.frName" :disabled="true"></el-input>
         </el-form-item>
@@ -103,8 +103,8 @@
       </div>
     </el-dialog>
 	
-	  <el-dialog title="注释" :visible.sync="dialogZSVisible">
-      <el-form :model="dataFormZS" ref="dataFormZS" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+	  <el-dialog title="注释" :visible.sync="dialogZSVisible" width="500px">
+      <el-form :model="dataFormZS" ref="dataFormZS" label-position="right" label-width="120px" style='width: 400px;' >
         <el-form-item label="姓名" >
           <el-input v-model="dataFormZS.frName" :disabled="true"></el-input>
         </el-form-item>
@@ -118,11 +118,6 @@
       </div>
     </el-dialog>
     
-	  <div v-for="(item, index) in sysHjServerList">
-			<object :id="item.serverName" :name="item.serverName" codebase="../../ocx/TeleQqOcx.ocx#version=1,0,0,1" classid="clsid:561E476B-6C4F-4FCC-A8CE-A85C7F781620" 
-		 		width="0" height="0">
-			</object>
-	  </div>
   </div>
 </template>
 
@@ -167,8 +162,6 @@ export default {
       /** 修改时间 结束 */ 
       
       /** 插话 开始 */
-      // 注册控件
-      sysHjServerList: null,
       
       // 插话
       monitorVocList: [],
@@ -216,7 +209,6 @@ export default {
   mounted() {
   	this.setButtonRole()
   	
-  	this.getHjServerList()
   	this.getMonitorVocList()
   	
   	if(this.timer){
@@ -373,11 +365,6 @@ export default {
 		
 		
 		/** 用于插话  开始 */
-		getHjServerList() { // 获取服务器用于注册控件
-			GetHjServerList({}).then(res => {
-				this.sysHjServerList = res.list
-			})
-		},
 		getMonitorVocList(){ // 获取插话内容
 			GetMonitorVocList({}).then(res => {
 				this.monitorVocList = res.list
