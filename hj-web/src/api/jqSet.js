@@ -1,6 +1,9 @@
 // 监区设置
 import request from '@/utils/request'
 
+// 获得监区集合
+export const findList = params => { return request.get('/jlJq/findList', { params: params } ).then(res => res) }
+
 export const findPojo = params => { return request.get('/jlJq/findPojo', { params: params } ).then(res => res) }
 
 export const findOne = params => { return request.get('/jlJq/findOne', { params: params } ).then(res => res) }

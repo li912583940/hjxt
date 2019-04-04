@@ -15,10 +15,10 @@
 					</div>
                     <div style="padding: 6px;height: 310px;">
                     	<div v-if="item.monitorState=='通话' ">
-                    		<div v-if="buttonRole.chahuaPermission==1 || buttonRole.zhushiPermission==1 || buttonRole.updateTimePermission==1"  style=" background:rgba(0,0,0,.5); position:relative; top:0px; color:#FFF; font-size:12px; padding:6px 0;">
+                    		<div v-if="buttonRole.chahuaPermission==1 || buttonRole.zhushiPermission==1"  style=" background:rgba(0,0,0,.5); position:relative; top:0px; color:#FFF; font-size:12px; padding:6px 0;">
 						    	<span v-if="buttonRole.chahuaPermission==1" style="margin-left: 50px;"><a @click="chahua(item)">插话</a></span>
 						    	<span v-if="buttonRole.zhushiPermission==1" style="margin-left: 20px;"><a @click="zhushi(item)">注释</a></span>
-						    	<span v-if="buttonRole.updateTimePermission==1" style="margin-left: 20px;"><a @click="xiugaiTime(item)">修改时间</a></span>
+						    	<!--<span v-if="buttonRole.updateTimePermission==1" style="margin-left: 20px;"><a @click="xiugaiTime(item)">修改时间</a></span>-->
 						    </div>
 						    
 	                        <div class="text item" style="margin-top: 10px;">监区 ： {{item.monitorJq}}</div>
@@ -39,8 +39,8 @@
 	      </el-pagination>
 	    </div>
     
-    	<el-dialog title="修改时间" :visible.sync="dialogSJVisible">
-	      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+    	<el-dialog title="修改时间" :visible.sync="dialogSJVisible" width="600px" :modal-append-to-body="false">
+	      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:10%;' >
 	        <el-form-item label="姓名" >
 	          <el-input v-model="dataForm.frName" :disabled="true"></el-input>
 	        </el-form-item>
@@ -54,8 +54,8 @@
 	      </div>
 	    </el-dialog>
     	
-    	<el-dialog title="插话" :visible.sync="dialogCHVisible">
-	      <el-form :rules="rulesCH" :model="dataFormCH" ref="dataFormCH" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+    	<el-dialog title="插话" :visible.sync="dialogCHVisible" width="600px" :modal-append-to-body="false">
+	      <el-form :rules="rulesCH" :model="dataFormCH" ref="dataFormCH" label-position="right" label-width="120px" style='width: 400px; margin-left:10%;' >
 	        <el-form-item label="姓名" >
 	          <el-input v-model="dataFormCH.frName" :disabled="true"></el-input>
 	        </el-form-item>
@@ -71,8 +71,8 @@
 	      </div>
 	    </el-dialog>
     	
-    	<el-dialog title="注释" :visible.sync="dialogZSVisible">
-	      <el-form  :model="dataFormZS" ref="dataFormZS" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+    	<el-dialog title="注释" :visible.sync="dialogZSVisible" width="600px" :modal-append-to-body="false">
+	      <el-form  :model="dataFormZS" ref="dataFormZS" label-position="right" label-width="120px" style='width: 400px; margin-left:10%;' >
 	        <el-form-item label="姓名" >
 	          <el-input v-model="dataFormZS.frName" :disabled="true"></el-input>
 	        </el-form-item>
@@ -158,7 +158,7 @@ export default {
       	jiantingPermission: 0,   //监听
       	qieduanPermission: 0,    //切断
       	chahuaPermission: 0,     //插话
-      	updateTimePermission: 0, //修改时间
+      	//updateTimePermission: 0, //修改时间
       	zhushiPermission: 0      //注释
       },
       
@@ -208,7 +208,7 @@ export default {
     		this.buttonRole.jiantingPermission= 1
     		this.buttonRole.qieduanPermission= 1
     		this.buttonRole.chahuaPermission= 1
-    		this.buttonRole.updateTimePermission= 1
+    		//this.buttonRole.updateTimePermission= 1
     		this.buttonRole.zhushiPermission= 1
     	}else{
     		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
@@ -221,9 +221,11 @@ export default {
     					this.buttonRole.qieduanPermission= 1
     				}else if(value=='chahuaPermission'){
     					this.buttonRole.chahuaPermission= 1
-    				}else if(value=='updateTimePermission'){
-    					this.buttonRole.updateTimePermission= 1
-    				}else if(value=='zhushiPermission'){
+    				}
+//  				else if(value=='updateTimePermission'){
+//  					this.buttonRole.updateTimePermission= 1
+//  				}
+    				else if(value=='zhushiPermission'){
     					this.buttonRole.zhushiPermission= 1
     				}
     			}
@@ -330,6 +332,14 @@ export default {
       	this.dataFormCH.lineNo = undefined
     },
 	chahua(row){
+		if(!row.monitorCallid){
+			Message({
+	          message: '当前线路未处于通话状态，无法插话',
+	          type: 'error',
+	          duration: 5 * 1000
+	        });
+	        return false;
+		}
 		this.resetFormCH()
 		this.dialogCHVisible = true
 		this.dataFormCH.frName = row.monitorFr
@@ -366,14 +376,6 @@ export default {
     	})
     },
 	zhushi(row){
-		if(!row.monitorCallid){
-			Message({
-	          message: '当前线路未处于通话状态，无法添加注释',
-	          type: 'success',
-	          duration: 5 * 1000
-	        });
-	        return false;
-		}
 		this.resetFormZS()
 		this.dialogZSVisible = true
 		this.dataFormZS.monitorCallid = row.monitorCallid

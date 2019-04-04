@@ -54,7 +54,7 @@
     </div>
 
 	<!-- 新增或编辑 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="650px">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="650px" :modal-append-to-body="false">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="180px" style='width: 400px; margin-left:10%;' >
          <el-form-item label="级别编号" prop="jbNo">
           <el-input v-if="dialogStatus=='update'" v-model="dataForm.jbNo" :disabled="true"></el-input>

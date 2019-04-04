@@ -1,24 +1,30 @@
 <template>
 	<div class="app-container">
-		<div class="filter-container">
-	      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属身份证号" v-model="listQuery.qsSfz" clearable>
+        <div class="filter-container">
+	      <el-input @keyup.enter.native="handleFilter" style="width: 200px; margin-left: 10%;" class="filter-item" placeholder="输入亲属身份证号" v-model="listQuery.qsSfz" clearable>
 	      </el-input>
 	      <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
 	    </div>
-	    <div style="width: 900px; margin-left: 10%;">
-		<!-- 亲属新增或编辑 -->
-        <el-card shadow="always" style="width: 250px; margin-left: 50%;margin-top: 20px;">
-	        <img :src="sfzImg" id="zp" name="zp"  width="200px" height="252px">
-	        <div style="padding: 14px;margin-left: 40px;">
-		        <span>{{qs.qsName}}</span>
-		        <span>{{qs.xb}}</span>
-		        <span>{{qs.sfz}}</span>
-		        <span v-if="qs.state==1" style="color: red;">身份验证失败</span>
-		        <span v-if="qs.state==0" style="color: green;">身份验证成功</span>
-	        </div>
-	    </el-card>
-	    <el-card shadow="always" style="width: 900px; margin-left: 15%;margin-top: 5px;">    
-	        <div style="padding: 14px;margin-left: 40px;">
+	    
+	    <div style="width: 800px; margin-left: 10%;">
+	    	<table class="gridtable" >
+	      	 	<tr>
+	      	 		<td width="30%" colspan="2">亲属姓名&nbsp;&nbsp;&nbsp;：<el-input style="width: 200px;" size="mini" v-model="qs.qsName" :disabled="true"></el-input></td>
+	      	 		<td width="20%" colspan="3" rowspan="4">
+						<img :src="sfzImg" id="zp" name="zp"  width="150px" height="176px">
+	      	 		</td>
+	      	 	</tr>
+	      	 	<tr>
+	      	 		<td width="30%" colspan="2">亲属身份证：<el-input style="width: 200px;" size="mini" v-model="qs.sfz" :disabled="true"></el-input></td>
+	      	 	</tr>
+	      	 	<tr>
+	      	 		<td width="30%" colspan="2">亲属性别&nbsp;&nbsp;&nbsp;：<el-input style="width: 200px;" size="mini" v-model="qs.xb" :disabled="true"></el-input></td>
+	      	 	</tr>
+	      	 	<tr>
+	      	 		<td width="30%" colspan="2">亲属地址&nbsp;&nbsp;&nbsp;：<el-input style="width: 200px;" size="mini" v-model="qs.dz" :disabled="true"></el-input></td>
+	      	 	</tr>
+	      	</table>
+	      	<div style="padding: 14px;">
 		        <el-table :key='tableKey' :data="list" element-loading-text="给我一点时间" border fit highlight-current-row
 			      style="width: 741px">
 			      <el-table-column width="100" align="center"  :label="$t('currency.frNo')">
@@ -48,7 +54,6 @@
 			      </el-table-column>
 			    </el-table>
 	        </div>
-        </el-card>
         </div>
         <button hidden="hidden" id="shibie1" @click="shibie()"></button>
     </div>
@@ -57,6 +62,7 @@
 <script>
 import { RequestSfyz } from '@/api/sfyz'
 import waves from '@/directive/waves' // 水波纹指令
+import { Message, MessageBox } from 'element-ui'
 
 export default {
   name: 'sfyz',
@@ -75,7 +81,7 @@ export default {
       	qsName: undefined,
       	xb: undefined,
       	sfz: undefined,
-      	state: '验证失败'
+      	dz: undefined
       },
       scriptAddHjDj : undefined, //身份证读卡器时间节点
     }
@@ -96,7 +102,30 @@ export default {
   	getList() {
       RequestSfyz(this.listQuery).then((res) => {
       	 this.list = res.jlFrList
-      	 this.qs.state = res.state
+      	 if(res.jlQs){
+      	 	this.qs.qsName=res.jlQs.qsName
+      	 	this.qs.xb=res.jlQs.xb
+      	 	this.qs.sfz=res.jlQs.qsSfz
+      	 	this.qs.dz=res.jlQs.dz
+      	 }else{
+      	 	this.qs.qsName=undefined
+      	 	this.qs.xb=undefined
+      	 	this.qs.sfz=undefined
+      	 	this.qs.dz=undefined
+      	 }
+      	 if(res.state==0){
+      	 	Message({
+		        message: '身份验证成功',
+			    type: 'success',
+			    duration: 5 * 1000
+		    });
+      	 }else if(res.state==1){
+      	 	Message({
+		        message: '身份验证失败',
+			    type: 'error',
+			    duration: 5 * 1000
+		    });
+      	 }
       }).catch(error => {
       })
     },
@@ -106,33 +135,24 @@ export default {
 
     openPort(){ // 打开读卡器驱动
     	console.log('打开port')
-		//document.all.qsCard.focus();
-	//	var isSuc=false;
-	//	for(var i=1;i<10;i++){
-	//		 isSuc=document.getElementById("WM1711").OpenPort1(i,"115200");
-	//		 if(isSuc==true){
-	//		 	break;
-	//		 }
-	//	}
-		//reID.ReadCardID(4, "baud=9600 parity=N data=8 stop=1");
-		let str=document.getElementById("IDCard2").FindReader()
-		if(str>1000){
-			document.getElementById("IDCard2").SetloopTime(1000);
-	  		document.getElementById("IDCard2").SetReadType(1);
-	  		document.getElementById("IDCard2").SetPhotoType(1);
-		}
-		
-		this.cardEvent()
+    	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1) ){ // IE浏览器
+			let str=document.getElementById("IDCard2").FindReader()
+			if(str>1000){
+				document.getElementById("IDCard2").SetloopTime(1000);
+		  		document.getElementById("IDCard2").SetReadType(1);
+		  		document.getElementById("IDCard2").SetPhotoType(1);
+			}
+			this.cardEvent()
+    	}
 	},
 	
 	colsePort(){ // 关闭读卡器驱动
-		console.log('关闭port')
-		if(this.scriptAddHjDj){ // 删除节点
-			document.body.removeChild(this.scriptAddHjDj);
-			console.log('节点删除成功')
-		}
-		document.getElementById("IDCard2").SetReadType(0);
-	//	document.getElementById("WM1711").FunCloseCard();
+		if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1)){ // IE浏览器
+			if(this.scriptAddHjDj){ // 删除节点
+				document.body.removeChild(this.scriptAddHjDj);
+			}
+			document.getElementById("IDCard2").SetReadType(0);
+    	}
 	},
   	cardEvent() {// 设置读卡器监听事件  并根据亲属身份证信息查询犯人
   		console.log('cardEvent start')
@@ -160,7 +180,9 @@ export default {
 		this.qs.dz = IDCard2.Address
 		this.qs.xb = IDCard2.Sex==2?'女':'男'
 //		document.getElementById("sfzzzz").value=b;
-	  	
+
+		this.listQuery.qsSfz=this.qs.qsSfz
+	  	this.getList()
   	},
 
   }
@@ -197,4 +219,27 @@ export default {
   .clearfix:after {
       clear: both
   }
+  
+table.gridtable {
+font-family: verdana,arial,sans-serif;
+font-size:15px;
+color:#333333;
+border-width: 1px;
+border-color: #76a5af;
+border-collapse: collapse;
+}
+table.gridtable th {
+border-width: 1px;
+padding: 8px;
+border-style: solid;
+border-color: #76a5af;
+background-color: #dedede;
+}
+table.gridtable td {
+border-width: 1px;
+padding: 8px;
+border-style: solid;
+border-color: #76a5af;
+background-color: #ffffff;
+}
 </style>

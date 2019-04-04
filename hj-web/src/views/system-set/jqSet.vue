@@ -54,7 +54,7 @@
     </div>
 
 	<!-- 新增或编辑 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="600px">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="600px" :modal-append-to-body="false">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:10%;' >
         <el-form-item label="监区编号" prop="jqNo">
           <el-input v-if="dialogStatus=='update'" v-model="dataForm.jqNo" :disabled="true"></el-input>
@@ -81,7 +81,7 @@
     </el-dialog>
     
     <!-- 设置会见星期 -->
-		<el-dialog title="设置会见星期" :visible.sync="dialogWeekVisible" width="740px">
+		<el-dialog title="设置会见星期" :visible.sync="dialogWeekVisible" width="740px" :modal-append-to-body="false">
 			<el-card style="width: 540px; margin-left: 10%;">
 				<el-transfer
 			    v-model="weekValue"

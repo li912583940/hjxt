@@ -104,7 +104,7 @@
     </div>
 
     <!-- 人工分配座位 -->
-		<el-dialog title="人工分配座位" :visible.sync="dialogRgFpVisible" width="600px">
+		<el-dialog title="人工分配座位" :visible.sync="dialogRgFpVisible" width="600px" :modal-append-to-body="false">
 			<el-form :rules="rules" :model="rgFpDataForm" ref="rgFpDataForm" label-position="right" label-width="120px" style='width: 400px;margin-left: 10%;' >
         <el-form-item label="服刑人员姓名" prop="frName">
           <el-input v-model="rgFpDataForm.frName" :disabled="true"></el-input>

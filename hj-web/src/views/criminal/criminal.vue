@@ -113,7 +113,7 @@
     </div>
 
     <!-- 新增或编辑 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="800px">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="800px" :modal-append-to-body="false">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="100px" style='width: 400px; margin-left:20%;' >
         <el-form-item :label="$t('currency.frNo')" prop="frNo">
           <el-input v-if="dialogStatus=='create'" v-model="dataForm.frNo"></el-input>
@@ -204,7 +204,7 @@
     </el-dialog>
 
     <!-- 亲属弹框  -->
-    <el-dialog :title="qs_frname" :visible.sync="dialogQsVisible" width="1381px">
+    <el-dialog :title="qs_frname" :visible.sync="dialogQsVisible" width="1381px" :modal-append-to-body="false">
     	<div class="filter-container">
 	      <el-button v-if="buttonRole.addQsPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleQsCreate" type="primary" icon="el-icon-edit">{{$t('criminal.add')}}</el-button>
 	    </div>
@@ -271,8 +271,8 @@
     </el-dialog>
 
 		<!-- 亲属新增或编辑 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogQsFormVisible">
-      <el-form :rules="rulesQs" :model="dataQsForm" ref="dataQsForm" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogQsFormVisible" width="600px" :modal-append-to-body="false">
+      <el-form :rules="rulesQs" :model="dataQsForm" ref="dataQsForm" label-position="right" label-width="120px" style='width: 400px; margin-left:10%;' >
         <el-form-item label="证件类别" prop="qsZjlb">
           <el-select class="filter-item" v-model="dataQsForm.qsZjlb" placeholder="请选择">
             <el-option v-for="item in qsZjlbs" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -322,12 +322,14 @@
 </template>
 
 <script>
-import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, exportExcel, findJqList, findJbList, findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList  } from '@/api/criminal'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, exportExcel } from '@/api/criminal'
+import { findList as findJqList} from '@/api/jqSet'
+import { findList as findJbList} from '@/api/criminalLevel'
+import { findList as findGxList} from '@/api/gxManage'
+import { findPojo as findQsPojo, findOne as findQsOne, RequestAdd as RequestQsAdd, RequestEdit as RequestQsEdit, RequestDelete as RequestQsDelete} from '@/api/relatives'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
-import { getToken } from '@/utils/auth'
 import { Message, MessageBox } from 'element-ui'
 
 
@@ -520,30 +522,6 @@ export default {
   	},
     getList() { // 犯人列表
       this.listLoading = true
-//    if(this.listQuery.frName==undefined || this.listQuery.frName==''){
-//    	this.listQuery.frName = undefined
-//    }
-//    if(this.listQuery.frNo==undefined || this.listQuery.frNo==''){
-//    	this.listQuery.frNo = undefined
-//    }
-//    if(this.listQuery.jq==undefined || this.listQuery.jq=='' ){
-//    	this.listQuery.jq = undefined
-//    }
-// 		if(this.listQuery.jbNo==undefined || this.listQuery.jbNo==''){
-// 			this.listQuery.jbNo = undefined
-// 		}
-// 		if(this.listQuery.frCard==undefined || this.listQuery.frCard==''){
-// 			this.listQuery.frCard = undefined
-// 		}
-// 		if(this.listQuery.state==undefined || this.listQuery.state==''){
-// 			this.listQuery.state = undefined
-// 		}
-// 		if(this.listQuery.isHjStop==undefined || this.listQuery.isHjStop=='' ){
-// 			this.listQuery.isHjStop = undefined
-// 		}
-// 		if(this.listQuery.stateZdzf==undefined || this.listQuery.stateZdzf=='' ){
-// 			this.listQuery.stateZdzf = undefined
-// 		}
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count
@@ -786,31 +764,6 @@ export default {
 			})
 		},
     handleDownload() {
-//			if(!this.listQuery.frName){
-//    	this.listQuery.frName = undefined
-//    }
-//    if(!this.listQuery.frNo){
-//    	this.listQuery.frNo = undefined
-//    }
-//    if(!this.listQuery.jq){
-//    	this.listQuery.jq = undefined
-//    }
-//    if(!this.listQuery.jbNo){
-// 			this.listQuery.jbNo = undefined
-// 		}
-// 		if(!this.listQuery.frCard){
-// 			this.listQuery.frCard = undefined
-// 		}
-// 		if(!this.listQuery.state){
-// 			this.listQuery.state = undefined
-// 		}
-// 		if(!this.listQuery.isHjStop){
-// 			this.listQuery.isHjStop = undefined
-// 		}
-// 		if(!this.listQuery.stateZdzf){
-// 			this.listQuery.stateZdzf = undefined
-// 		}
-   		
    		Message({
         message: '已准备导出罪犯信息文件，请稍等几秒。',
 	      type: 'success',

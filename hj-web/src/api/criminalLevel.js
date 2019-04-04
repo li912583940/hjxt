@@ -1,6 +1,9 @@
 // 服刑人员级别
 import request from '@/utils/request'
 
+// 获取犯人级别集合
+export const findList = params => { return request.get('/jlJb/findList', { params: params } ).then(res => res) }
+
 export const findPojo = params => { return request.get('/jlJb/findPojo', { params: params } ).then(res => res) }
 
 export const findOne = params => { return request.get('/jlJb/findOne', { params: params } ).then(res => res) }

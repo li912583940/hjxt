@@ -53,8 +53,8 @@
     
     
     <!-- 新增或编辑 -->
-    <el-dialog title="修改密码" :visible.sync="dialogFormVisible">
-      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:25%;' >
+    <el-dialog title="修改密码" :visible.sync="dialogFormVisible" width="600px" :modal-append-to-body="false">
+      <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:10%;' >
         <el-form-item label="姓名">
           <el-input v-model="dataForm.userName" :disabled="true"></el-input>
         </el-form-item>

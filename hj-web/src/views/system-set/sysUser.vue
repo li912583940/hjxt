@@ -50,7 +50,7 @@
     </div>
 
     <!-- 新增或编辑 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="600px">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="600px" :modal-append-to-body="false">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:10%;' >
         <el-form-item label="登陆账号" prop="userNo">
           <el-input v-model="dataForm.userNo"></el-input>
@@ -72,7 +72,7 @@
     </el-dialog>
 
 		 <!-- 添加角色 -->
-		<el-dialog title="添加角色" :visible.sync="dialogRoleVisible" width="740px">
+		<el-dialog title="添加角色" :visible.sync="dialogRoleVisible" width="740px" :modal-append-to-body="false">
 			<el-card style="width: 540px; margin-left: 10%;">
 				<el-transfer
 			    filterable

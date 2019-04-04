@@ -106,8 +106,10 @@ public class JlQsWeb extends Result{
         JlFrVO jlFr = new JlFrVO();
         jlFr.setFrNo(model.getFrNo());
         List<JlFrVO> jrFrList = jlFrSQL.findList(jlFr);
-        jlFr = jrFrList.get(0);
-        model.setFrName(jlFr.getFrName());
+        if(jrFrList.size()>0){
+        	jlFr = jrFrList.get(0);
+            model.setFrName(jlFr.getFrName());
+        }
         this.putJson(model);
         return this.toResult();
     }

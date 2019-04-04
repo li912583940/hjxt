@@ -104,7 +104,7 @@
 
 
     <!-- 打印小票 -->
-    <el-dialog title="" :visible.sync="dialogFormVisible" width="300px">
+    <el-dialog title="" :visible.sync="dialogFormVisible" width="300px" :modal-append-to-body="false">
       <div id="wrap" class="wrap">
 		  	<span v-for="x in this.printList">
 		  	  <li>{{ x}}</li>
@@ -118,7 +118,7 @@
     </el-dialog>
     
     <!-- 新增或编辑 -->
-    <el-dialog title="修改会见登记" :visible.sync="dialogDjVisible">
+    <el-dialog title="修改会见登记" :visible.sync="dialogDjVisible" :modal-append-to-body="false">
       <div class="filter-container">
 	    	<span>{{$t('currency.frNo')}}</span> <el-input style="width: 200px;" v-model="dataForm.frNo" :disabled="true"></el-input>
 	      <span style="margin-left: 20px;">{{$t('currency.frName')}}</span> <el-input style="width: 200px;" v-model="dataForm.frName":disabled="true"></el-input>

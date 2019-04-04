@@ -71,7 +71,7 @@
     </div>
 
 		<!-- 当前阶段的审批者 -->
-		<el-dialog title="当前阶段的审批者" :visible.sync="dialogSpUserVisible" width="500px">
+		<el-dialog title="当前阶段的审批者" :visible.sync="dialogSpUserVisible" width="500px" :modal-append-to-body="false">
 			<el-tabs type="border-card" style="margin-left: 14px;">
 			  <el-tab-pane label="审批部门" v-if="is_seeDept==1">
 			    <el-table :key='tableKey' :data="seeDeptlist"   border fit highlight-current-row style="width: 281px">
@@ -99,7 +99,7 @@
 			</el-tabs>
 		</el-dialog>	
 		
-		 <el-dialog title="详情" :visible.sync="dialogSpDetailsVisible"  width="1000px">
+		 <el-dialog title="详情" :visible.sync="dialogSpDetailsVisible"  width="1000px" :modal-append-to-body="false">
 		 		<el-table :key='tableKey' :data="spDetailsList"   border fit highlight-current-row
 		      style="941px">
 		      <el-table-column width="110px" align="center" label="审批人编号">
@@ -144,7 +144,7 @@
       </div>
 		 </el-dialog>
 		 
-		 <el-dialog title="审批" :visible.sync="dialogSpVisible"  width="1000px">
+		 <el-dialog title="审批" :visible.sync="dialogSpVisible"  width="1000px" :modal-append-to-body="false">
 		 		<el-table :key='tableKey' :data="toSpDetailsList"   border fit highlight-current-row
 		      style="941px">
 		      <el-table-column width="110px" align="center" label="审批人编号">

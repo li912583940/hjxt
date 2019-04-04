@@ -195,7 +195,7 @@
     </div>
 
     <!-- 播放录音录像 开始 -->
-    <el-dialog title="播放录音录像 " :visible.sync="dialogPlayVisible" @close='closePlayDialog'>
+    <el-dialog title="播放录音录像 " :visible.sync="dialogPlayVisible" @close='closePlayDialog' :modal-append-to-body="false">
     	<div style="position: relative;margin-top: 10px; margin-bottom: 30px;">
     		<el-row :gutter="12">
     			<el-col :span="8" :offset="1" style="margin-left: 50px;" >
@@ -227,7 +227,7 @@
     <!-- 播放录音录像 结束 -->
 
 		<!-- 下载录音录像  IE浏览器 -->
-    <el-dialog title="录音录像下载" :visible.sync="dialogPlayDownVisible" width="40%">
+    <el-dialog title="录音录像下载" :visible.sync="dialogPlayDownVisible" width="40%" :modal-append-to-body="false">
     	<div style="position: relative;margin-top: 10px; margin-bottom: 30px; margin-left: 20%;">
     		<span style="margin-left: 20px;">
     			<el-button type="primary" size="mini" @click="down1(callVideofile1Url)">录像文件1</el-button>
@@ -246,7 +246,7 @@
     <!-- 下载录音录像 结束 下载 IE浏览器 -->
     
     <!-- 注释 开始 -->
-    <el-dialog title="注释" :visible.sync="dialogZSVisible"  width="600px">
+    <el-dialog title="注释" :visible.sync="dialogZSVisible"  width="600px" :modal-append-to-body="false">
 	      <el-form  :model="dataFormZS" ref="dataFormZS" label-position="right" label-width="120px" style='width: 400px; margin-left:10%;' >
 	        <el-form-item label="呼叫ID" >
 	          <el-input v-model="dataFormZS.callId" :disabled="true"></el-input>
@@ -266,7 +266,7 @@
 	  <!-- 注释 结束 -->
 	  
 	  <!-- 查看所有注释  开始  -->
-    <el-dialog title="查看所有注释" :visible.sync="dialogZsAllVisible" width="900px">
+    <el-dialog title="查看所有注释" :visible.sync="dialogZsAllVisible" width="900px" :modal-append-to-body="false">
       <el-table :key='zsAllTableKey' :data="zsAllList" v-loading="zsAllListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
 	      style="width: 100%">
 	      <el-table-column width="160" align="center" label="用户编号">
@@ -302,7 +302,7 @@
     <!-- 查看所有注释  结束  -->
     
     <!-- 播放录音 开始 -->
-    <el-dialog title="播放录音" :visible.sync="dialogTapeVisible" @close='closeTapeDialog'  width="40%">
+    <el-dialog title="播放录音" :visible.sync="dialogTapeVisible" @close='closeTapeDialog'  width="40%" :modal-append-to-body="false">
     	<div style="position: relative;margin-top: 10px; margin-bottom: 30px; margin-left: 25%;">
 				<audio id="audio1" :src="callRecfileUrl" controls="controls" controlsList="nodownload">
 				</audio>
@@ -342,7 +342,7 @@
     <!-- 录音评级 开始 -->
     
     <!-- 查看所有录音评级  开始  -->
-    <el-dialog title="查看所有录音评级" :visible.sync="dialogRatingStateAllVisible" width="900px">
+    <el-dialog title="查看所有录音评级" :visible.sync="dialogRatingStateAllVisible" width="900px" :modal-append-to-body="false">
       <el-table :key='ratingStateAllTableKey' :data="ratingStateAllList" v-loading="ratingStateAllListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
 	      style="width: 100%">
 	      <el-table-column width="160" align="center" label="用户编号">
@@ -379,7 +379,7 @@
     
     
     <!-- 复听详情  开始  -->
-    <el-dialog title="复听详情" :visible.sync="dialogAllAssessmentVisible" width="900px">
+    <el-dialog title="复听详情" :visible.sync="dialogAllAssessmentVisible" width="900px" :modal-append-to-body="false">
       <el-table :key='allAssessmentTableKey' :data="allAssessmentList" v-loading="allAssessmentListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
 	      style="width: 100%">
 	      <el-table-column width="160" align="center" label="用户编号">
@@ -415,7 +415,7 @@
     <!-- 复听详情  结束  -->
     
     <!-- 其他详情  开始  -->
-    <el-dialog title="其他详情" :visible.sync="dialogOtherInfoVisible" width="900px">
+    <el-dialog title="其他详情" :visible.sync="dialogOtherInfoVisible" width="900px" :modal-append-to-body="false">
       <el-card class="box-card">
 	      <el-table :key='otherInfoTableKey' :data="otherInfoList" v-loading="otherInfoListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
 		      style="width: 100%">

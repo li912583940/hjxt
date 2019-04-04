@@ -68,7 +68,7 @@
     </div>
 
 	<!-- 新增或编辑 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="600px">
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="600px" :modal-append-to-body="false">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 400px; margin-left:10%;' >
         <el-form-item label="名称" prop="name">
           <el-input v-model="dataForm.name"></el-input>
@@ -86,7 +86,7 @@
     
     
     <!-- 设置权限 --> <!--default-expand-all-->
-    <el-dialog title="设置权限" :visible.sync="dialogAuthorityVisible" width="800px">
+    <el-dialog title="设置权限" :visible.sync="dialogAuthorityVisible" width="800px" :modal-append-to-body="false">
     	<el-row >
     		<el-col :span="12">
 		      <el-card style="width: 85%; margin-left: 30px;">
@@ -136,7 +136,7 @@
 
 
     <!-- 添加用户 -->
-		<el-dialog title="添加用户" :visible.sync="dialogUserVisible" width="660px">
+		<el-dialog title="添加用户" :visible.sync="dialogUserVisible" width="660px" :modal-append-to-body="false">
 			<!--<el-card style="width: 80%; margin-left: 30px;">-->
 				<el-transfer style="width: 522px; margin-left: 10%;"
 			    filterable

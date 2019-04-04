@@ -39,7 +39,7 @@
     </div>-->
 
   <!--描述：查看流程 -->
-  <!--<el-dialog title="查看流程" :visible.sync="dialogSearchVisible">
+  <!--<el-dialog title="查看流程" :visible.sync="dialogSearchVisible" :modal-append-to-body="false">
   	<el-tabs type="border-card" style="margin-left: 14px;">
 			  <el-tab-pane label="审批部门" v-if="is_seeDept==1">
 			    <el-table :key='tableKey' :data="seeDeptlist"   border fit highlight-current-row style="width: 281px">
@@ -68,7 +68,7 @@
   </el-dialog>-->
   
 	<!-- 新增或编辑 -->
-    <el-dialog title="配 置" :visible.sync="dialogFormVisible" width="700px">
+    <el-dialog title="配 置" :visible.sync="dialogFormVisible" width="700px" :modal-append-to-body="false">
       <el-form :rules="rules" :model="dataForm" ref="dataForm" label-position="right" label-width="120px" style='width: 420px; margin-left:15%;' >
         <el-form-item label="审批流程名称" prop="spName">
           <el-input v-model="dataForm.spName" :disabled="true"></el-input>

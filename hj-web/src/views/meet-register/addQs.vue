@@ -83,7 +83,8 @@
 </template>
 
 <script>
-import { findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList, WordDownload  } from '@/api/criminal'
+import { findList as findGxList} from '@/api/gxManage'
+import { findPojo as findQsPojo, findOne as findQsOne, RequestAdd as RequestQsAdd, RequestEdit as RequestQsEdit, RequestDelete as RequestQsDelete, WordDownload} from '@/api/relatives'
 import { Message, MessageBox } from 'element-ui'
 
 export default {
@@ -319,33 +320,38 @@ export default {
     
     openPort(){ // 打开读卡器驱动
     	console.log('打开port')
-		//document.all.qsCard.focus();
-	//	var isSuc=false;
-	//	for(var i=1;i<10;i++){
-	//		 isSuc=document.getElementById("WM1711").OpenPort1(i,"115200");
-	//		 if(isSuc==true){
-	//		 	break;
-	//		 }
-	//	}
-		//reID.ReadCardID(4, "baud=9600 parity=N data=8 stop=1");
-		let str=document.getElementById("IDCard2").FindReader()
-		if(str>1000){
-			document.getElementById("IDCard2").SetloopTime(1000);
-	  		document.getElementById("IDCard2").SetReadType(1);
-	  		document.getElementById("IDCard2").SetPhotoType(1);
-		}
-		
-		this.cardEvent()
+    	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1) ){ // IE浏览器
+    		//document.all.qsCard.focus();
+		//	var isSuc=false;
+		//	for(var i=1;i<10;i++){
+		//		 isSuc=document.getElementById("WM1711").OpenPort1(i,"115200");
+		//		 if(isSuc==true){
+		//		 	break;
+		//		 }
+		//	}
+			//reID.ReadCardID(4, "baud=9600 parity=N data=8 stop=1");
+			
+			let str=document.getElementById("IDCard2").FindReader()
+			if(str>1000){
+				document.getElementById("IDCard2").SetloopTime(1000);
+		  		document.getElementById("IDCard2").SetReadType(1);
+		  		document.getElementById("IDCard2").SetPhotoType(1);
+			}
+			
+			this.cardEvent()
+    	}
 	},
 	
 	colsePort(){ // 关闭读卡器驱动
-		console.log('关闭port')
-		if(this.scriptAddHjDj){ // 删除节点
-			document.body.removeChild(this.scriptAddHjDj);
-			console.log('节点删除成功')
-		}
-		document.getElementById("IDCard2").SetReadType(0);
-	//	document.getElementById("WM1711").FunCloseCard();
+		if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1)){ // IE浏览器
+    		console.log('关闭port')
+			if(this.scriptAddHjDj){ // 删除节点
+				document.body.removeChild(this.scriptAddHjDj);
+				console.log('节点删除成功')
+			}
+			document.getElementById("IDCard2").SetReadType(0);
+		//	document.getElementById("WM1711").FunCloseCard();
+    	}
 	},
   	cardEvent() {// 设置读卡器监听事件  并根据亲属身份证信息查询犯人
 		console.log('cardEvent start')

@@ -14,20 +14,20 @@
 		          	<img src="dataQsForm.jzUrl"  width="100px" height="126px" />
 		          </span>
 		        </el-form-item>
-		        <el-form-item label="近照" >
+		        <!--<el-form-item label="近照" >
 		        	<span v-if="ie==1">
 		        		<video id="video" autoplay width="150" height="110" controls>
 						</video>
 						<canvas id="canvas" width="150" height="110"></canvas>
 		        	</span>
-		        	<!-- IE浏览器 flash控件 调用摄像头 -->
+		        	 IE浏览器 flash控件 调用摄像头 
 		        	<span v-if="ie==0">
 		        		<span  id="zp" style="width:160,height:176"></span>
 		        	</span>
 					<div>
 					  <button id="capture" @click="paizhao">拍照</button>
 					</div>
-		        </el-form-item>
+		        </el-form-item>-->
 		        <el-form-item label="证件号码" prop="qsSfz">
 		          <el-input v-model="dataQsForm.qsSfz"></el-input>
 		        </el-form-item>
@@ -71,13 +71,13 @@
 	        
         </el-card>
         
-        
 		<button hidden="hidden" id="shibie1" @click="shibie()"></button>
     </div>
 </template>
 
 <script>
-import { findQsPojo, findQsOne, RequestQsAdd, RequestQsEdit, RequestQsDelete, findGxList } from '@/api/criminal'
+import { findList as findGxList} from '@/api/gxManage'
+import { findPojo as findQsPojo, findOne as findQsOne, RequestAdd as RequestQsAdd, RequestEdit as RequestQsEdit, RequestDelete as RequestQsDelete} from '@/api/relatives'
 
 export default {
   name: 'addQs',
@@ -145,11 +145,11 @@ export default {
   },
   created() {
   	this.getGxList()
-  	this.isIe()
+  	//this.isIe()
   },
   mounted() {
     //this.openPort()
-    this.openVideo()
+    //this.openVideo()
     
     //this.openGaoPaiYi()
 

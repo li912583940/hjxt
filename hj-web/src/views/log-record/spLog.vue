@@ -94,7 +94,7 @@
     </div>
 
 
-    <el-dialog title="详情" :visible.sync="dialogSpDetailsVisible"  width="1000px">
+    <el-dialog title="详情" :visible.sync="dialogSpDetailsVisible"  width="1000px" :modal-append-to-body="false">
 		<el-table :key='tableKey' :data="spDetailsList"   border fit highlight-current-row
 		    style="941px">
 		      <el-table-column width="110" align="center" label="审批人编号">

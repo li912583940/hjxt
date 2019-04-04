@@ -230,7 +230,6 @@
 	    </div>-->
 	  </el-card>
     
-    <!-- 亲属结束 -->
     <button hidden="hidden" id="shibie1" @click="shibie()"></button>
     <!-- 放大图片 -->
     <big-img v-if="showImg" @clickit="viewImg" :imgSrc="imgSrc"></big-img>
@@ -366,16 +365,15 @@ export default {
    
   },
   mounted() {
-  		this.setButtonRole()
-  		
-      //this.getFrList()
-      this.noFrSearch()
-      
-      this.getJqList()
-      
-      this.openPort()
+		this.setButtonRole()
+		
+	  //this.getFrList()
+	  this.noFrSearch()
+	  
+	  this.getJqList()
+	  
+	  this.openPort()
   },
-
   destroyed(){
   	this.colsePort()
   },
@@ -507,7 +505,8 @@ export default {
     },
     openPort(){ // 打开读卡器驱动
     	console.log('打开port')
-			//document.all.qsCard.focus();
+    	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1) ){ // IE浏览器
+    		//document.all.qsCard.focus();
 		//	var isSuc=false;
 		//	for(var i=1;i<10;i++){
 		//		 isSuc=document.getElementById("WM1711").OpenPort1(i,"115200");
@@ -516,26 +515,26 @@ export default {
 		//		 }
 		//	}
 			//reID.ReadCardID(4, "baud=9600 parity=N data=8 stop=1");
-			let str=document.getElementById("IDCard2").FindReader()
-			console.log(str)
-			if(str>1000){
-				document.getElementById("IDCard2").SetloopTime(1000);
-		  		document.getElementById("IDCard2").SetReadType(1);
-		  		document.getElementById("IDCard2").SetPhotoType(1);
-			}
 			
-			this.cardEvent()
+				let str=document.getElementById("IDCard2").FindReader()
+				if(str>1000){
+					document.getElementById("IDCard2").SetloopTime(1000);
+			  		document.getElementById("IDCard2").SetReadType(1);
+			  		document.getElementById("IDCard2").SetPhotoType(1);
+				}
+				
+				this.cardEvent()
+    	}
 		},
 		
 		colsePort(){ // 关闭读卡器驱动
-			console.log('关闭port')
-			if(this.scriptAddHjDj){ // 删除节点
-				document.body.removeChild(this.scriptAddHjDj);
-				console.log('节点删除成功')
-			}
-			console.log(this.scriptAddHjDj)
-			document.getElementById("IDCard2").SetReadType(0);
-		//	document.getElementById("WM1711").FunCloseCard();
+			if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1)){ // IE浏览器
+				if(this.scriptAddHjDj){ // 删除节点
+					document.body.removeChild(this.scriptAddHjDj);
+				}
+				document.getElementById("IDCard2").SetReadType(0);
+			//document.getElementById("WM1711").FunCloseCard();
+    	}
 		},
 		
     addHjdj() { //提交会见登记
@@ -630,7 +629,6 @@ export default {
   		this.$router.push({ path: '/addQs', query: {frNo: row.frNo, frName:row.frName, qswebid:row.webid} })
   	},
   	cardEvent() {// 设置读卡器监听事件  并根据亲属身份证信息查询犯人
-  		console.log('cardEvent start')
 			let handler =	document.createElement("script")
 			handler.setAttribute("for", "IDCard2");
 			handler.setAttribute("event","CardIn(State);")
@@ -644,9 +642,7 @@ export default {
 			this.scriptAddHjDj = handler
   	},
   	shibie(){ // 识别身份证信息并查询
-  		console.log('shibie start')
     	var IDCard2=document.getElementById("IDCard2");
-    	console.log(IDCard2.CardNo)
 		  IDCard2.SetPhotoName(2);
 		  //let a = IDCard2.Base64Photo;
 		//document.getElementById("base64").value=a;
