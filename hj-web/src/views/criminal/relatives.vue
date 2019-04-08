@@ -23,7 +23,7 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 1911px">
+      style="width: 1911px;">
       <el-table-column width="100" align="center"  :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
@@ -39,7 +39,9 @@
           <span v-if="scope.row.qsZjlb==1">身份证</span>
           <span v-if="scope.row.qsZjlb==2">警官证</span>
           <span v-if="scope.row.qsZjlb==3">工作证</span>
-          <span v-if="scope.row.qsZjlb==4">其他</span>
+          <span v-if="scope.row.qsZjlb==4">港澳通行证</span>
+	        <span v-if="scope.row.qsZjlb==5">台湾通行证</span>
+	        <span v-if="scope.row.qsZjlb==9">其他</span>
         </template>
       </el-table-column>
       <el-table-column width="180" align="center" label="证件号码">
@@ -174,6 +176,7 @@
 
 <script>
 import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, exportExcel } from '@/api/relatives'
+import { findList as findGxList} from '@/api/gxManage'
 
 import moment from 'moment'
 import waves from '@/directive/waves' // 水波纹指令
@@ -247,6 +250,14 @@ export default {
       	},
       	{
       		id: 4,
+      		name: '港澳通行证'
+      	},
+      	{
+      		id: 5,
+      		name: '台湾通行证'
+      	},
+      	{
+      		id: 9,
       		name: '其他'
       	}
       ],
@@ -282,6 +293,7 @@ export default {
   mounted() {
   	//this.isIe()
     this.setButtonRole()
+    this.getGxList()
     //this.openVideo()
     
     //this.openGaoPaiYi()
@@ -312,6 +324,19 @@ export default {
     handleCurrentChange(val) {
       this.listQuery.pageNum = val
       this.getList()
+    },
+    getGxList() { // 获取关系
+    	if(this.gxs.length === 0) {
+    		findGxList({}).then((res) => {
+	    		let list = res.list
+	    		for(let x of list){
+				  let value = {}
+				  value.id = x.qsGx
+				  value.name = x.qsGx
+				  this.gxs.push(value)
+				}
+	    	})
+    	}
     },
     excelSuccess() {
     	this.$refs.upload.clearFiles()
@@ -546,18 +571,18 @@ export default {
     		id: row.webid
     	}
     	findOne(param).then((res) =>{
-    		this.dataForm.webid = res.data.webid,
-        this.dataForm.frName =  res.data.frName,
-        this.dataForm.frNo = res.data.frNo,
-        this.dataForm.qsZjlb = res.data.qsZjlb,
-        this.dataForm.qsSfz = res.data.qsSfz,
-        this.dataForm.qsName = res.data.qsName,
-        this.dataForm.gx = res.data.gx,
-        this.dataForm.qsCard = res.data.qsCard,
-        this.dataForm.dz = res.data.dz,
-        this.dataForm.xb = res.data.xb,
-        this.dataForm.tele = res.data.tele,
-        this.dataForm.spState = res.data.spState,
+    		this.dataForm.webid = res.data.webid
+        this.dataForm.frName =  res.data.frName
+        this.dataForm.frNo = res.data.frNo
+        this.dataForm.qsZjlb = res.data.qsZjlb
+        this.dataForm.qsSfz = res.data.qsSfz
+        this.dataForm.qsName = res.data.qsName
+        this.dataForm.gx = res.data.gx
+        this.dataForm.qsCard = res.data.qsCard
+        this.dataForm.dz = res.data.dz
+        this.dataForm.xb = res.data.xb
+        this.dataForm.tele = res.data.tele
+        this.dataForm.spState = res.data.spState
         this.dataForm.bz = res.data.bz
     	})
       this.dialogStatus = 'update'
@@ -590,7 +615,6 @@ export default {
 				RequestDelete(param).then(() => {
 	    		this.getList()
 	    	}).catch(error => {
-	        this.dialogFormVisible = false
 	      })
 			})
 		},

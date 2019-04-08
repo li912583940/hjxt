@@ -793,7 +793,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			
 			if(resu==0){
 				
-			}else if(resu==1){
+			}else{
 				result.error(Result.error_103,"当前已没有空闲座位可供使用");
 			}
 		}else{
@@ -805,16 +805,16 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 	public String qxFpZw(Long hjId, HttpServletRequest request){
 		Result result = new Result();
 		
-		SysParamVO sysParam = new SysParamVO();
-		sysParam.setParamName("HJ_Client4");
-		List<SysParamVO> sysParamList = sysParamSQL.findList(sysParam);
-		if(sysParamList.size()>0){
-			SysParamVO t = sysParamList.get(0);
-			if(!request.getRemoteAddr().equals(t.getParamData1())){
-				result.error(Result.error_103, "电脑IP地址非法");
-				return result.toResult();
-			}
-		}
+//		SysParamVO sysParam = new SysParamVO();
+//		sysParam.setParamName("HJ_Client4");
+//		List<SysParamVO> sysParamList = sysParamSQL.findList(sysParam);
+//		if(sysParamList.size()>0){
+//			SysParamVO t = sysParamList.get(0);
+//			if(!request.getRemoteAddr().equals(t.getParamData1())){
+//				result.error(Result.error_103, "电脑IP地址非法");
+//				return result.toResult();
+//			}
+//		}
 		
 		if(hjId == null){
 			result.error(Result.error_102);
@@ -881,16 +881,16 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 	public String rgFpZw(Long hjId, Integer lineNo, HttpServletRequest request){
 		Result result = new Result();
 		
-		SysParamVO sysParam = new SysParamVO();
-		sysParam.setParamName("HJ_Client4");
-		List<SysParamVO> sysParamList = sysParamSQL.findList(sysParam);
-		if(sysParamList.size()>0){
-			SysParamVO t = sysParamList.get(0);
-			if(!request.getRemoteAddr().equals(t.getParamData1())){
-				result.error(Result.error_103, "电脑IP地址非法");
-				return result.toResult();
-			}
-		}
+//		SysParamVO sysParam = new SysParamVO();
+//		sysParam.setParamName("HJ_Client4");
+//		List<SysParamVO> sysParamList = sysParamSQL.findList(sysParam);
+//		if(sysParamList.size()>0){
+//			SysParamVO t = sysParamList.get(0);
+//			if(!request.getRemoteAddr().equals(t.getParamData1())){
+//				result.error(Result.error_103, "电脑IP地址非法");
+//				return result.toResult();
+//			}
+//		}
 		
 		if(hjId == null){
 			result.error(Result.error_102);
@@ -930,7 +930,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			
 			if(resu==0){
 				
-			}else if(resu==1){
+			}else{
 				result.error(Result.error_103,"当前已没有空闲座位可供使用");
 			}
 		}else{
@@ -1304,7 +1304,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		return result.toResult();
 	}
 	
-	public String editDj(Long hjid, Integer hjTime, Integer hjType, String hjInfo, String qsIds){
+	public String editDj(Long hjid, Integer hjTime, Integer hjType, Integer hjMode, String hjInfo, String qsIds){
 		Result result = new Result();
 		JlHjDjVO model = new JlHjDjVO();
 		if(hjid==null){
@@ -1316,6 +1316,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			model.setHjTime(hjTime*60);
 		}
 		model.setHjType(hjType);
+		model.setHjMode(hjMode);
 		model.setHjInfo(hjInfo);
 		
 		model.setQsInfo1("");

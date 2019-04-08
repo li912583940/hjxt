@@ -74,7 +74,7 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 		// 查询当前用户是否为管理员权限
 		SysUserRoleVO userRole = new SysUserRoleVO();
 		userRole.setUserId(sysUser.getWebid());
-		List<SysUserRoleVO> userRoleList = sysUserRoleSQL.findList(userRole);
+		List<SysUserRoleVO> userRoleList = sysUserRoleSQL.findList(userRole, null, null, "ASC");
 		if(userRoleList.size() == 0){
 			result.error(Result.error_103, "当前账号无权限");
 			return result.toResult();
@@ -88,7 +88,7 @@ public class SysUserServiceImpl extends BaseSqlImpl<SysUserVO> implements SysUse
 		SysResourceVO sysResource = new SysResourceVO();
 		sysResource.setLeftJoinTable(" left join sys_role_resource b ON a.id=b.resource_id");
 		sysResource.setLeftJoinWhere(" AND b.role_id in ("+StringUtil.lastComma(roleIds)+") AND a.useble=1");
-		List<SysResourceVO> resourceList = SysResourceSQL.findList(sysResource);
+		List<SysResourceVO> resourceList = SysResourceSQL.findList(sysResource, null, null, "ASC");
 		
 		// 需要计算真实的菜单权限，因为
 		Map<Integer,SysResourceVO> menuMap = new HashMap<>();

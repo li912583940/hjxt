@@ -9,9 +9,6 @@ export const UpdateSJ = params => { return request.post('/hjMonitor/updateSJ', p
 // 更新监听警察信息
 export const UpdateYJ = params => { return request.post('/hjMonitor/updateYJ', params ).then(res => res) }
 
-//  获取服务器
-export const GetHjServerList = params => { return request.get('/sysHjServer/findList', { params: params } ).then(res => res) }
-
 // 获取网络监控插话表
 export const GetMonitorVocList = params => { return request.get('/jlMonitorVoc/findList', { params: params } ).then(res => res) }
 

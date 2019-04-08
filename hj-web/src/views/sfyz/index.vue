@@ -6,12 +6,14 @@
 	      <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
 	    </div>
 	    
-	    <div style="width: 800px; margin-left: 10%;">
+	    <div style="width: 1200px; margin-left: 10%;">
 	    	<table class="gridtable" >
 	      	 	<tr>
 	      	 		<td width="30%" colspan="2">亲属姓名&nbsp;&nbsp;&nbsp;：<el-input style="width: 200px;" size="mini" v-model="qs.qsName" :disabled="true"></el-input></td>
 	      	 		<td width="20%" colspan="3" rowspan="4">
-						<img :src="sfzImg" id="zp" name="zp"  width="150px" height="176px">
+	      	 			<span >
+	      	 				<img :src="sfzImg" id="zp" name="zp"  width="150px" height="176px">
+	      	 			</span>
 	      	 		</td>
 	      	 	</tr>
 	      	 	<tr>
@@ -24,35 +26,38 @@
 	      	 		<td width="30%" colspan="2">亲属地址&nbsp;&nbsp;&nbsp;：<el-input style="width: 200px;" size="mini" v-model="qs.dz" :disabled="true"></el-input></td>
 	      	 	</tr>
 	      	</table>
-	      	<div style="padding: 14px;">
-		        <el-table :key='tableKey' :data="list" element-loading-text="给我一点时间" border fit highlight-current-row
-			      style="width: 741px">
-			      <el-table-column width="100" align="center"  :label="$t('currency.frNo')">
-			        <template slot-scope="scope">
-			          <span>{{scope.row.frNo}}</span>
-			        </template>
-			      </el-table-column>
-			      <el-table-column width="160" align="center" :label="$t('currency.frName')">
-			        <template slot-scope="scope">
-			          <span>{{scope.row.frName}}</span>
-			        </template>
-			      </el-table-column>
-			      <el-table-column width="180" align="center" :label="$t('currency.jqName')">
-			        <template slot-scope="scope">
-			          <span>{{scope.row.jqName}}</span>
-			        </template>
-			      </el-table-column>
-			      <el-table-column width="100" align="center" label="分管等级">
-			        <template slot-scope="scope">
-			          <span>{{scope.row.jbName}}</span>
-			        </template>
-			      </el-table-column>
-			      <el-table-column width="200" align="center" label="罪名">
-			        <template slot-scope="scope">
-			          <span>{{scope.row.infoZm}}</span>
-			        </template>
-			      </el-table-column>
-			    </el-table>
+	      	<div style="margin-top: 14px;">
+	      		<table  class="gridtable" v-if="jlFr!=null">
+		      	 	<tr>
+		      	 		<th width="15%">罪犯编号</th>
+		      	 		<th width="15%">罪犯姓名</th>
+		      	 		<th width="15%">监区名称</th>
+		      	 		<th width="15%">座位</th>
+		      	 		<th width="15%">分管等级</th>
+		      	 		<th width="25%">罪名</th>
+		      	 	</tr>
+		      	 	<tr>
+		      	 		<td width="15%">{{jlFr.frNo}}</td>
+		      	 		<td width="15%">{{jlFr.frName}}</td>
+		      	 		<td width="15%">{{jlFr.jqName}}</td>
+		      	 		<td width="15%">{{jlFr.zw}}</td>
+		      	 		<td width="15%">{{jlFr.jbName}}</td>
+		      	 		<td width="25%">{{jlFr.infoZm}}</td>
+		      	 	</tr>
+		      	</table>
+		      	<table class="gridtable"  v-if="jlFr==null">
+		      	 	<tr>
+		      	 		<th width="15%">罪犯编号</th>
+		      	 		<th width="15%">罪犯姓名</th>
+		      	 		<th width="15%">监区名称</th>
+		      	 		<th width="15%">座位</th>
+		      	 		<th width="15%">分管等级</th>
+		      	 		<th width="25%">罪名</th>
+		      	 	</tr>
+		      	 	<tr>
+		      	 		<td colspan="6" ><font color="red" >没有相关信息</font></td>
+		      	 	</tr>
+		      	</table>
 	        </div>
         </div>
         <button hidden="hidden" id="shibie1" @click="shibie()"></button>
@@ -72,8 +77,7 @@ export default {
   data() {
     return {
       sfzImg: '/static/image/zpbj.jpg',
-      tableKey: 0,
-      list: null,
+      jlFr: null,	
       listQuery: {
         qsSfz: undefined,
       },
@@ -101,7 +105,7 @@ export default {
   methods: {
   	getList() {
       RequestSfyz(this.listQuery).then((res) => {
-      	 this.list = res.jlFrList
+      	 this.jlFr = res.jlFr
       	 if(res.jlQs){
       	 	this.qs.qsName=res.jlQs.qsName
       	 	this.qs.xb=res.jlQs.xb
@@ -226,6 +230,7 @@ font-size:15px;
 color:#333333;
 border-width: 1px;
 border-color: #76a5af;
+width: 1100px;
 border-collapse: collapse;
 }
 table.gridtable th {
@@ -241,5 +246,6 @@ padding: 8px;
 border-style: solid;
 border-color: #76a5af;
 background-color: #ffffff;
+text-align:center;
 }
 </style>

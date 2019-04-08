@@ -5,7 +5,7 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入名称" v-model="listQuery.name" clearable>
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('criminal.add')}}</el-button>
+      <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('criminal.add')}}</el-button>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
@@ -47,16 +47,16 @@
           <span v-if="scope.row.authorityJq==0">未设置</span>
         </template>
       </el-table-column>-->
-      <el-table-column align="center" :label="$t('criminal.actions')" width="200" >
+      <el-table-column v-if="buttonRole.editPermission==1 || buttonRole.deletePermission==1" align="center" :label="$t('criminal.actions')" width="200" >
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-if="buttonRole.editPermission==1" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button v-if="buttonRole.deletePermission==1" size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="权限设置" width="260" >
+      <el-table-column v-if="buttonRole.assignRolesPermission==1 || buttonRole.addUserPermission==1" align="center" label="权限设置" width="260" >
         <template slot-scope="scope">
-          <el-button size="mini" type="info" icon="el-icon-setting" @click="openAuthority(scope.row)">分配权限</el-button>
-          <el-button type="info" size="mini" icon="el-icon-plus" @click="openUser(scope.row)">添加用户</el-button>
+          <el-button v-if="buttonRole.assignRolesPermission==1" size="mini" type="info" icon="el-icon-setting" @click="openAuthority(scope.row)">分配权限</el-button>
+          <el-button v-if="buttonRole.addUserPermission==1" type="info" size="mini" icon="el-icon-plus" @click="openUser(scope.row)">添加用户</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -180,7 +180,7 @@ export default {
       listLoading: true,
       listQuery: {
         pageNum: 1,
-        pageSize: 20,
+        pageSize: 10,
         name: undefined
       },
       // 新增或编辑弹窗
@@ -219,6 +219,16 @@ export default {
 		  userData: [],
 		  userValue: [],
 		  /** 添加用户结束 */
+		 
+		 //按钮权限   1：有权限， 0：无权限
+      buttonRole: { 
+      	queryPermission: 1, 
+      	addPermission: 0,
+      	editPermission: 0,
+      	deletePermission: 0,
+      	assignRolesPermission: 0,
+      	addUserPermission: 0,
+      },
     }
   },
   filters: {
@@ -232,6 +242,15 @@ export default {
   },
   created() {
     this.getList()
+  },
+  mounted() {
+  	this.setButtonRole()
+  	if(this.menuData.length === 0){ // 只查询一次
+			this.getMenuTree()
+		}
+		if(this.jqData.length === 0){ // 只查询一次
+			this.getJqTree()
+		}
   },
   methods: {
   	/** 角色增删改查开始 */
@@ -344,13 +363,6 @@ export default {
 	openAuthority(row){ //打开权限弹框
 		this.resetCheckedTree()
 		
-		if(this.menuData.length === 0){ // 只查询一次
-			this.getMenuTree()
-		}
-		if(this.jqData.length === 0){ // 只查询一次
-			this.getJqTree()
-		}
-		
 		this.roleId = row.id
 		// 获取当前角色的目录
 		this.getCheckedMenu(this.roleId)
@@ -436,7 +448,8 @@ export default {
 		 		}
 		 		list.forEach((item, index) => {
 		 			if(item.isSuper==0){
-		 				let name = item.userName +"-"+item.userDepart
+		 				let deptName = item.deptName!=null?item.deptName:""
+		 				let name = item.userName +"-"+deptName
 			 			this.userData.push({
 			 				label: name,
 			 				key:item.webid
@@ -473,6 +486,35 @@ export default {
   },
   /**---------------------------添加用户结束-3-------------------------- */
  
+  setButtonRole() { //设置按钮的权限
+		let roles = sessionStorage.getItem("roles")
+		if(roles.includes('admin')){
+			this.buttonRole.addPermission= 1
+			this.buttonRole.editPermission= 1
+			this.buttonRole.deletePermission= 1
+			this.buttonRole.assignRolesPermission= 1
+			this.buttonRole.addUserPermission= 1
+		}else{
+			let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
+			let sysRoles = buttonRoles.sysRoles
+			if(sysRoles.length>0){
+				for(let value of sysRoles){
+					if(value=='addPermission'){
+						this.buttonRole.addPermission= 1
+					}else if(value=='editPermission'){
+						this.buttonRole.editPermission= 1
+					}else if(value=='deletePermission'){
+						this.buttonRole.deletePermission= 1
+					}else if(value=='assignRolesPermission'){
+						this.buttonRole.assignRolesPermission= 1
+					}else if(value=='addUserPermission'){
+						this.buttonRole.addUserPermission= 1
+					}
+				}
+			}
+		}
+	},
+    
 	dateFormats: function (val) {
 		if(!val){
 			return undefined

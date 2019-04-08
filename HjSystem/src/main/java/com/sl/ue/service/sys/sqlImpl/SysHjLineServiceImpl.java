@@ -188,7 +188,7 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 		}
 		JlHjDjVO jlHjDj = jlHjDjSQL.findOne(hjid);
 		if(jlHjDj != null){
-			jlHjDj.setState(3);
+			jlHjDj.setState(4);
 			jlHjDjSQL.edit(jlHjDj);
 		}
 		return result.toResult();

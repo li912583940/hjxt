@@ -13,6 +13,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.service.jl.JlQsService;
+import com.sl.ue.util.ExcelUtil;
 import com.sl.ue.util.component.SpringTool;
 
 public class QsThreadXLSX implements Runnable {
@@ -54,33 +55,45 @@ public class QsThreadXLSX implements Runnable {
 				if(row == null){
 					break;
 				}
-				// 0罪犯编号，1证件类型，2证件号码，3关系人姓名，4性别，5称谓，6电话，7家庭住址
+				// 0罪犯编号，1罪犯姓名，2证件类型，3证件号码，4关系人姓名，5性别，6称谓，7电话，8家庭住址
 				JlQsVO jlQs = new JlQsVO();
-				String frNo = row.getCell(0).getStringCellValue();   //0罪犯编号
-				String qsSfz = row.getCell(2).getStringCellValue();  //2证件号码
-				String qsName = row.getCell(3).getStringCellValue(); //3关系人姓名
-				jlQs.setFrNo(frNo!=null?frNo.trim():null);
-				if(StringUtils.isNotBlank(qsSfz)){
-					jlQs.setQsSfz(qsSfz.trim());
-				}
-				jlQs.setQsName(qsName!=null?qsName.trim():null);
-				if(StringUtils.isNotBlank(frNo)){
+				
+				String frNo = ExcelUtil.getCellValue(row.getCell(0));   //0罪犯编号
+				String qsSfz = ExcelUtil.getCellValue(row.getCell(3));  //3证件号码
+				String qsName = ExcelUtil.getCellValue(row.getCell(4)); //4关系人姓名
+				if(StringUtils.isBlank(frNo) || StringUtils.isBlank(qsName)){
+					
+				}else{
+					jlQs.setFrNo(frNo);
+					if(StringUtils.isNotBlank(qsSfz)){
+						jlQs.setQsSfz(qsSfz);
+					}
+					jlQs.setQsName(qsName);
 					List<JlQsVO> list = jlQsSQL.findList(jlQs);
 					if(list.size()>0){
 					}else{
-						Integer qsZjlb = 1;
-						if(StringUtils.isNotBlank(row.getCell(1).getStringCellValue())){ //1证件类型
-							qsZjlb = Integer.parseInt(row.getCell(1).getStringCellValue());
+						String qsZjlb = ExcelUtil.getCellValue(row.getCell(2)); //2证件类型
+						if(StringUtils.isNotBlank(qsZjlb)){
+							if(qsZjlb.equals("身份证")){
+								jlQs.setQsZjlb(1);
+							}else if(qsZjlb.equals("警官证")){
+								jlQs.setQsZjlb(2);
+							}else if(qsZjlb.equals("工作证")){
+								jlQs.setQsZjlb(3);
+							}else if(qsZjlb.equals("港澳通行证")){
+								jlQs.setQsZjlb(4);
+							}else if(qsZjlb.equals("台湾通行证")){
+								jlQs.setQsZjlb(5);
+							}else if(qsZjlb.equals("其他")){
+								jlQs.setQsZjlb(9);
+							}
 						}
-						jlQs.setQsZjlb(qsZjlb);
-						jlQs.setXb(row.getCell(4).getStringCellValue()); 	//4性别
-						jlQs.setGx(row.getCell(5).getStringCellValue()); 	//5称谓
-						jlQs.setTele(row.getCell(6).getStringCellValue()); 	//6电话
-						jlQs.setDz(row.getCell(7).getStringCellValue());	//7家庭住址
+						jlQs.setXb(ExcelUtil.getCellValue(row.getCell(5))); 	//5性别
+						jlQs.setGx(ExcelUtil.getCellValue(row.getCell(6))); 	//6称谓
+						jlQs.setTele(ExcelUtil.getCellValue(row.getCell(7))); 	//7电话
+						jlQs.setDz(ExcelUtil.getCellValue(row.getCell(8)));	//8家庭住址
 						jlQsSQL.add(jlQs);
 					}
-				}else{
-					break;
 				}
 				index++;
 			}

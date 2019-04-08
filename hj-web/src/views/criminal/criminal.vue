@@ -43,7 +43,7 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 1471px">
+      style="width: 1421px">
       <el-table-column width="100" align="center" :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
@@ -54,9 +54,15 @@
           <span>{{scope.row.frName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" :label="$t('currency.jqName')">
+      <el-table-column width="160" align="center" :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" align="center" label="重点罪犯">
+        <template slot-scope="scope">
+          <span v-if="scope.row.stateZdzf==1" style="color: red;">是/{{scope.row.infoZdzf}}</span>
+          <span v-if="scope.row.stateZdzf==0">否</span>
         </template>
       </el-table-column>
       <el-table-column width="160" align="center" label="IC卡号">
@@ -74,20 +80,14 @@
           <span>{{scope.row.hjUse}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="110" align="center" label="当月剩余次数">
+      <!--<el-table-column width="110" align="center" label="当月剩余次数">
         <template slot-scope="scope">
           <span>{{scope.row.hjLeft}}</span>
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column width="160" align="center" label="入监时间">
         <template slot-scope="scope">
           <span>{{scope.row.infoRjsj}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="100" align="center" label="重点罪犯">
-        <template slot-scope="scope">
-          <span v-if="scope.row.stateZdzf==1" style="color: red;">是</span>
-          <span v-if="scope.row.stateZdzf==0">否</span>
         </template>
       </el-table-column>
       <el-table-column width="100" align="center" label="会见级别">
@@ -154,7 +154,7 @@
           <el-input  v-else v-model="dataForm.hjStopSm" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="入监时间" prop="infoRjsj">
-          <el-date-picker v-model="dataForm.infoRjsj" type="datetime" placeholder="请选取入监时间">
+        	<el-input v-model="dataForm.infoRjsj"></el-input>
           </el-date-picker>
         </el-form-item>
         <el-form-item label="罪名" prop="infoZm">
@@ -166,6 +166,12 @@
         <el-form-item label="出生日期" prop="infoCsrq">
           <el-date-picker v-model="dataForm.infoCsrq" type="datetime" placeholder="请选取出生日期">
           </el-date-picker>
+        </el-form-item>
+        <el-form-item label="国籍" prop="frGj">
+          <el-input v-model="dataForm.frGj"></el-input>
+        </el-form-item>
+        <el-form-item label="籍贯" prop="infoJg">
+          <el-input v-model="dataForm.infoJg"></el-input>
         </el-form-item>
         <el-form-item label="住址" prop="infoHome">
           <el-input v-model="dataForm.infoHome"></el-input>
@@ -220,7 +226,9 @@
 	          <span v-if="scope.row.qsZjlb==1">身份证</span>
 	          <span v-if="scope.row.qsZjlb==2">警官证</span>
 	          <span v-if="scope.row.qsZjlb==3">工作证</span>
-	          <span v-if="scope.row.qsZjlb==4">其他</span>
+	          <span v-if="scope.row.qsZjlb==4">港澳通行证</span>
+	          <span v-if="scope.row.qsZjlb==5">台湾通行证</span>
+	          <span v-if="scope.row.qsZjlb==9">其他</span>
 	        </template>
 	      </el-table-column>
 	      <el-table-column width="180" align="center" label="证件号码">
@@ -372,9 +380,11 @@ export default {
         infoZm: undefined,
         infoXq: undefined,
         infoCsrq: undefined,
+        frGj: undefined,
+        infoJg: undefined,
         infoHome: undefined,
         monitorFlag: '0',
-        stateZdzf: 1,
+        stateZdzf: 0,
         state: 0,
         outTime: undefined,
       },
@@ -476,6 +486,14 @@ export default {
       	},
       	{
       		id: 4,
+      		name: '港澳通行证'
+      	},
+      	{
+      		id: 5,
+      		name: '台湾通行证'
+      	},
+      	{
+      		id: 9,
       		name: '其他'
       	}
       ],
@@ -649,9 +667,11 @@ export default {
 	    this.dataForm.infoZm= undefined
 	    this.dataForm.infoXq= undefined
 	    this.dataForm.infoCsrq= undefined
+	    this.dataForm.frGj= undefined
+      this.dataForm.infoJg= undefined
 	    this.dataForm.infoHome= undefined
 	    this.dataForm.monitorFlag= '0'
-	    this.dataForm.stateZdzf= 1
+	    this.dataForm.stateZdzf= 0
 	    this.dataForm.state= 0
 	    this.dataForm.outTime=undefined
 	  },
@@ -672,9 +692,6 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-        	if(this.dataForm.infoRjsj){
-        		this.dataForm.infoRjsj = this.dateFormats(this.dataForm.infoRjsj);
-        	}
         	if(this.dataForm.infoCsrq){
         		this.dataForm.infoCsrq = this.dateFormats(this.dataForm.infoCsrq);
         	}
@@ -711,6 +728,8 @@ export default {
         this.dataForm.infoZm = res.data.infoZm
         this.dataForm.infoXq = res.data.infoXq
         this.dataForm.infoCsrq = res.data.infoCsrq
+        this.dataForm.frGj= res.data.frGj
+        this.dataForm.infoJg= res.data.infoJg
         this.dataForm.infoHome = res.data.infoHome
         this.dataForm.monitorFlag = res.data.monitorFlag
         this.dataForm.stateZdzf = res.data.stateZdzf
@@ -726,9 +745,6 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-        	if(this.dataForm.infoRjsj){
-        		this.dataForm.infoRjsj = this.dateFormats(this.dataForm.infoRjsj);
-        	}
         	if(this.dataForm.infoCsrq){
         		this.dataForm.infoCsrq = this.dateFormats(this.dataForm.infoCsrq);
         	}

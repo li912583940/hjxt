@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
-      style="width: 1971px">
+      style="width: 2081px">
        <el-table-column  align="center" :label="$t('criminal.actions')" width="160" fixed="left" >
         <template slot-scope="scope">
         	<span v-if="scope.row.pageTzState==0"><el-button type="primary" size="mini" @click="sdNotice(scope.row)">接收</el-button></span>
@@ -25,7 +25,7 @@
       </el-table-column>
       <el-table-column width="100" align="center" label="会见窗口">
         <template slot-scope="scope">
-          <span v-if="scope.row.fpFlag ==0">未分配</span>
+          <span v-if="scope.row.fpFlag ==0" style="color: red;">未分配</span>
           <span else>{{scope.row.zw}}</span>
         </template>
       </el-table-column>
@@ -38,13 +38,21 @@
       <el-table-column width="110" align="center" label="会见类型">
         <template slot-scope="scope">
           <span v-if="scope.row.hjType==1">亲属会见</span>
-          <span v-else-if="scope.row.hjType==2">监护人会见</span>
-          <span v-else-if="scope.row.hjType==3">律师会见</span>
-          <span v-else-if="scope.row.hjType==4">使领馆探视</span>
-          <span v-else-if="scope.row.hjType==5">提审会见</span>
-          <span v-else-if="scope.row.hjType==6">公务会见</span>
-          <span v-else-if="scope.row.hjType==9">特批会见</span>
-          <span v-else-if="scope.row.hjType==99">其他会见</span>
+          <span v-else-if="scope.row.hjType==2" style="color: red;">监护人会见</span>
+          <span v-else-if="scope.row.hjType==3" style="color: red;">律师会见</span>
+          <span v-else-if="scope.row.hjType==4" style="color: red;">使领馆探视</span>
+          <span v-else-if="scope.row.hjType==5" style="color: red;">提审会见</span>
+          <span v-else-if="scope.row.hjType==6" style="color: red;">公务会见</span>
+          <span v-else-if="scope.row.hjType==9" style="color: red;">特批会见</span>
+          <span v-else-if="scope.row.hjType==99" style="color: red;">其他会见</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="110" align="center" label="会见方式">
+        <template slot-scope="scope">
+          <span v-if="scope.row.hjMode==1">隔离会见</span>
+          <span v-else-if="scope.row.hjMode==2" style="color: red;">非隔离会见</span>
+          <span v-else-if="scope.row.hjMode==3" style="color: red;">远程视频会见</span>
+          <span v-else-if="scope.row.hjMode==9" style="color: red;">其他方式</span>
         </template>
       </el-table-column>
       <el-table-column width="90" align="center" label="会见时长">
@@ -142,7 +150,7 @@ export default {
   	}else{
   		this.timer = setInterval(() =>{
   			this.getList()
-  		}, 10000)
+  		}, 30000)
   	}
   },
   destroyed() {

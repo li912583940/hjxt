@@ -14,11 +14,14 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlJbVO;
 import com.sl.ue.entity.jl.vo.JlJqVO;
+import com.sl.ue.entity.sys.vo.SysHjServerVO;
 import com.sl.ue.entity.sys.vo.SysServerVO;
 import com.sl.ue.service.jl.JlFrService;
 import com.sl.ue.service.jl.JlJbService;
 import com.sl.ue.service.jl.JlJqService;
+import com.sl.ue.service.sys.SysHjServerService;
 import com.sl.ue.service.sys.SysServerService;
+import com.sl.ue.util.ExcelUtil;
 import com.sl.ue.util.component.SpringTool;
 
 /**
@@ -43,10 +46,10 @@ public class FrThreadXLSX implements Runnable{
 	public void run() {
 		JlFrService jlFrSQL = (JlFrService) SpringTool.getBean("jlFrSQL");
 		/** servername 开始 */
-		SysServerService sysServerSQL = (SysServerService) SpringTool.getBean("sysServerSQL");
-		List<SysServerVO> sysServerList = sysServerSQL.findList(new SysServerVO());
+		SysHjServerService sysHjServerSQL = (SysHjServerService) SpringTool.getBean("sysHjServerSQL");
+		List<SysHjServerVO> sysHjServerList = sysHjServerSQL.findList(new SysHjServerVO(), null,null,"ASC");
 		String serverName = "Server1";
-		if(sysServerList.size()>0)serverName = sysServerList.get(0).getServerName();
+		if(sysHjServerList.size()>0)serverName = sysHjServerList.get(0).getServerName();
 		/** servername 结束 */
 		
 		/** 监区 开始 */
@@ -80,17 +83,20 @@ public class FrThreadXLSX implements Runnable{
 				if(row == null){
 					break;
 				}
-				// 0罪犯编号，1姓名，2监区名称，3籍贯，4出生日期，5家庭住址，6罪名，7刑期，8入监日期，9犯人级别
+				// 0罪犯编号，1姓名，2监区名称，3级别，4罪名，5刑期，6入监时间，7重点罪犯，8国籍，9籍贯，10出生日期，11家庭住址
 				JlFrVO jlFr = new JlFrVO();
-				String frNo = row.getCell(0).getStringCellValue(); //0罪犯编号
-				jlFr.setFrNo(frNo!=null?frNo.trim():null);
-				if(StringUtils.isNotBlank(frNo)){
+				String frNo = ExcelUtil.getCellValue(row.getCell(0)); //0罪犯编号
+				String frName = ExcelUtil.getCellValue(row.getCell(1)); //1姓名
+				if(StringUtils.isBlank(frNo) || StringUtils.isBlank(frName)){
+					
+				}else{
+					jlFr.setFrNo(frNo); //0罪犯编号
 					List<JlFrVO> list = jlFrSQL.findList(jlFr);
 					if(list.size()>0){
 					}else{
-						jlFr.setFrName(row.getCell(1).getStringCellValue()); //1姓名
+						jlFr.setFrName(frName); //1姓名
 						jlFr.setJy(serverName);
-						String jq = row.getCell(2).getStringCellValue(); //2监区名称
+						String jq = ExcelUtil.getCellValue(row.getCell(2)); //2监区名称
 						jlFr.setJq("-1");
 						jlFr.setJqName("未定义");
 						for(JlJqVO t : jlJqList){
@@ -99,13 +105,8 @@ public class FrThreadXLSX implements Runnable{
 								jlFr.setJqName(t.getJqName());
 							}
 						}
-						jlFr.setInfoJg(row.getCell(3).getStringCellValue());   //3籍贯
-						jlFr.setInfoCsrq(row.getCell(4).getStringCellValue()); //4出生日期
-						jlFr.setInfoHome(row.getCell(5).getStringCellValue()); //5家庭住址
-						jlFr.setInfoZm(row.getCell(6).getStringCellValue());   //6罪名
-						jlFr.setInfoXq(row.getCell(7).getStringCellValue());   // 7刑期
-						jlFr.setInfoRjsj(row.getCell(8).getStringCellValue()); //8入监日期
-						String jb = row.getCell(9).getStringCellValue();
+						
+						String jb = ExcelUtil.getCellValue(row.getCell(3)); //3级别
 						jlFr.setJbNo("-1");
 						jlFr.setJbName("未定义");
 						for(JlJbVO t : jlJbList){
@@ -114,10 +115,32 @@ public class FrThreadXLSX implements Runnable{
 								jlFr.setJbName(t.getJbName());
 							}
 						}
+						jlFr.setInfoZm(ExcelUtil.getCellValue(row.getCell(4)));   //4罪名
+						jlFr.setInfoXq(ExcelUtil.getCellValue(row.getCell(5)));   //5刑期
+						jlFr.setInfoRjsj(ExcelUtil.getCellValue(row.getCell(6))); //6入监日期
+						String zdzf = ExcelUtil.getCellValue(row.getCell(7)); //7重点罪犯
+						if(StringUtils.isNotBlank(zdzf)){
+							zdzf = zdzf.trim();
+							if(zdzf.equals("重点罪犯")){
+								jlFr.setStateZdzf(1);
+								jlFr.setInfoZdzf("");
+							}else if(zdzf.equals("非重点罪犯")){
+								jlFr.setStateZdzf(0);
+								jlFr.setInfoZdzf("");
+							}else{
+								jlFr.setStateZdzf(1);
+								jlFr.setInfoZdzf(zdzf);
+							}
+						}else{
+							jlFr.setStateZdzf(0);
+							jlFr.setInfoZdzf("");
+						}
+						jlFr.setFrGj(ExcelUtil.getCellValue(row.getCell(8))); //8国籍
+						jlFr.setInfoJg(ExcelUtil.getCellValue(row.getCell(9)));   //9籍贯
+						jlFr.setInfoCsrq(ExcelUtil.getCellValue(row.getCell(10))); //10出生日期
+						jlFr.setInfoHome(ExcelUtil.getCellValue(row.getCell(11))); //11家庭住址
 						jlFrSQL.add(jlFr);
 					}
-				}else{
-					break;
 				}
 				index++;
 			}

@@ -4,9 +4,9 @@
 <template>
   <div class="app-container">
   	<div class="filter-container">
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('currency.add')}}</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="openConfJq" type="info" icon="el-icon-setting">{{$t('currency.confJq')}}</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="emptyDate" type="danger" icon="el-icon-delete">清空日期</el-button>
+      <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('currency.add')}}</el-button>
+      <el-button v-if="buttonRole.confJqPermission==1" class="filter-item" style="margin-left: 10px;" @click="openConfJq" type="info" icon="el-icon-setting">{{$t('currency.confJq')}}</el-button>
+      <el-button v-if="buttonRole.deleteAllPermission==1" class="filter-item" style="margin-left: 10px;" @click="emptyDate" type="danger" icon="el-icon-delete">清空日期</el-button>
   	</div>
     
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
@@ -16,9 +16,9 @@
           <span>{{scope.row.holiday}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="200">
+      <el-table-column v-if="buttonRole.deletePermission==1" align="center" :label="$t('criminal.actions')" width="200">
         <template slot-scope="scope">
-          <el-button  size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-if="buttonRole.deletePermission==1" size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -94,6 +94,15 @@ export default {
       dialogJqVisible:false,
       jqData:[],
       jqValue:[],
+      
+      //按钮权限   1：有权限， 0：无权限
+      buttonRole: { 
+      	queryPermission: 1, 
+      	addPermission: 0,
+      	deletePermission: 0,
+      	confJqPermission: 0,
+      	deleteAllPermission: 0,
+      },
     }
   },
   filters: {
@@ -102,6 +111,9 @@ export default {
   created() {
     this.getList()
     this.findJqList()
+  },
+  mounted() {
+    this.setButtonRole()
   },
   methods: {
     getList() {
@@ -214,6 +226,32 @@ export default {
 			    });
 			})
 		})
+    },
+    
+    setButtonRole() { //设置按钮的权限
+    	let roles = sessionStorage.getItem("roles")
+    	if(roles.includes('admin')){
+    		this.buttonRole.addPermission= 1
+    		this.buttonRole.deletePermission= 1
+    		this.buttonRole.confJqPermission= 1
+    		this.buttonRole.deleteAllPermission= 1
+    	}else{
+    		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
+    		let holidaySet = buttonRoles.holidaySet
+    		if(holidaySet.length>0){
+    			for(let value of holidaySet){
+    				if(value=='addPermission'){
+    					this.buttonRole.addPermission= 1
+    				}else if(value=='deletePermission'){
+    					this.buttonRole.deletePermission= 1
+    				}else if(value=='confJqPermission'){
+    					this.buttonRole.confJqPermission= 1
+    				}else if(value=='deleteAllPermission'){
+    					this.buttonRole.deleteAllPermission= 1
+    				}
+    			}
+    		}
+    	}
     },
 	dateFormats: function (val) {
 		if(!val){

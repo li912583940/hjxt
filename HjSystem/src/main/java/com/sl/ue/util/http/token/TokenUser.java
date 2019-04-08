@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.sl.ue.entity.sys.vo.SysAccessTokenVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
+import com.sl.ue.service.sys.SysAccessTokenService;
 import com.sl.ue.service.sys.SysUserService;
 import com.sl.ue.util.Constants;
 import com.sl.ue.util.component.SpringTool;
@@ -22,13 +24,15 @@ public class TokenUser {
 	 */
 	public static SysUserVO getUser(){
 		SysUserService sysUserSQL = (SysUserService) SpringTool.getBean("sysUserSQL");
+		SysAccessTokenService sysAccessTokenSQL = (SysAccessTokenService) SpringTool.getBean("sysAccessTokenSQL");
 		// 从 request header 中获取当前 token
 		String token = WebContextUtil.getRequest().getHeader(Constants.TOKEN_NAME);
-		SysUserVO sysUser = new SysUserVO();
-		sysUser.setToken(token);
-		List<SysUserVO> userList = sysUserSQL.findList(sysUser);
-		if(userList.size()>0){
-			return userList.get(0);
+		SysAccessTokenVO sysAccessToken = new SysAccessTokenVO();
+		sysAccessToken.setAccessToken(token);
+		List<SysAccessTokenVO> sysAccesstokenList = sysAccessTokenSQL.findList(sysAccessToken);
+		if(sysAccesstokenList.size()>0){
+			SysUserVO sysUser = sysUserSQL.findOne(sysAccesstokenList.get(0).getUserId());
+			return sysUser;
 		}
 		return new SysUserVO();
 	}

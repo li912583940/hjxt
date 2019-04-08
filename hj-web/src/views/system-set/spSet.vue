@@ -24,10 +24,10 @@
           <span>{{scope.row.maxNum}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="200">
+      <el-table-column v-if="buttonRole.confPermission==1" align="center" :label="$t('criminal.actions')" width="200">
         <template slot-scope="scope">
         <!--	<el-button type="primary" size="mini" icon="el-icon-edit" @click="search(scope.row)">查看</el-button>-->
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleConf(scope.row)">配置</el-button>
+          <el-button v-if="buttonRole.confPermission==1" type="primary" size="mini" icon="el-icon-edit" @click="handleConf(scope.row)">配置</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -222,7 +222,7 @@ export default {
       listQuery: {
       	jqName: undefined,
         pageNum: 1,
-        pageSize: 20
+        pageSize: 10
       },
       /** 查看流程 开始 */
     	add:'adffg',
@@ -256,6 +256,13 @@ export default {
       rules: {
         
       },
+      
+      //按钮权限   1：有权限， 0：无权限
+      buttonRole: { 
+      	queryPermission: 1, 
+      	confPermission: 0,
+      },
+      
     }
   },
   filters: {
@@ -271,6 +278,7 @@ export default {
     this.getList()
   },
   mounted() {
+  	this.setButtonRole()
     this.getDeptList()
     this.getUserList()
     this.getGxList()
@@ -461,6 +469,23 @@ export default {
 	  	return item.label.indexOf(query) > -1;
 	  },
 	  
+	  setButtonRole() { //设置按钮的权限
+    	let roles = sessionStorage.getItem("roles")
+    	if(roles.includes('admin')){
+    		this.buttonRole.confPermission= 1
+    	}else{
+    		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
+    		let spSet = buttonRoles.spSet
+    		if(spSet.length>0){
+    			for(let value of spSet){
+    				if(value=='confPermission'){
+    					this.buttonRole.confPermission= 1
+    				}
+    			}
+    		}
+    	}
+    },
+    
 		dateFormats: function (val) {
 			if(!val){
 				return undefined

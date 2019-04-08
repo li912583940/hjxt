@@ -148,14 +148,18 @@ public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
 				cell1.setCellValue(jlQs.getFrName()!=null?jlQs.getFrName():"");
 				
 				HSSFCell cell2 = row2.createCell(2);
-				if(jlQs.getQsZjlb()==2){
+				if(jlQs.getQsZjlb()==1){
+					cell2.setCellValue("身份证");
+				}else if(jlQs.getQsZjlb()==2){
 					cell2.setCellValue("警官证");
 				}else if(jlQs.getQsZjlb()==3){
 					cell2.setCellValue("工作证");
 				}else if(jlQs.getQsZjlb()==4){
+					cell2.setCellValue("港澳通行证");
+				}else if(jlQs.getQsZjlb()==5){
+					cell2.setCellValue("台湾通行证");
+				}else if(jlQs.getQsZjlb()==9){
 					cell2.setCellValue("其他");
-				}else{
-					cell2.setCellValue("身份证");
 				}
 				
 				HSSFCell cell3 = row2.createCell(3);

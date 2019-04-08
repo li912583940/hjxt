@@ -154,15 +154,6 @@ export default {
   },
   methods: {
     getList() {
-//  	if(!this.listQuery.yjNo){
-//    	this.listQuery.yjNo = undefined
-//    }
-//    if(!this.listQuery.yjName){
-//    	this.listQuery.yjName = undefined
-//    }
-//    if(!this.listQuery.deptName){
-//    	this.listQuery.deptName = undefined
-//    }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count

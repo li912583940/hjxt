@@ -8,7 +8,7 @@
         </el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('criminal.add')}}</el-button>
+      <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">{{$t('criminal.add')}}</el-button>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
@@ -33,12 +33,12 @@
           <span>{{scope.row.deptName}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="300">
+      <el-table-column v-if="buttonRole.editPermission==1 || buttonRole.deletePermission==1 || buttonRole.addRolesPermission==1" align="center" :label="$t('criminal.actions')" width="300">
         <template slot-scope="scope">
         	<span v-if="scope.row.isSuper==1">超级管理员不能更改</span>
-          <el-button v-if="scope.row.isSuper==0" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button v-if="scope.row.isSuper==0" size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
-          <el-button v-if="scope.row.isSuper==0" size="mini" type="info" icon="el-icon-setting" @click="openRole(scope.row)">添加角色</el-button>
+          <el-button v-if="scope.row.isSuper==0 && buttonRole.editPermission==1" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button v-if="scope.row.isSuper==0 && buttonRole.deletePermission==1" size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-if="scope.row.isSuper==0 && buttonRole.addRolesPermission==1" size="mini" type="info" icon="el-icon-setting" @click="openRole(scope.row)">添加角色</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -113,7 +113,7 @@ export default {
       listLoading: true,
       listQuery: {
         pageNum: 1,
-        pageSize: 20,
+        pageSize: 10,
         userName: undefined,
         deptId: undefined
       },
@@ -149,6 +149,15 @@ export default {
 		  roleValue: [],
 		  /**------------添加角色结束-2-----------*/
    		
+   		//按钮权限   1：有权限， 0：无权限
+      buttonRole: { 
+      	queryPermission: 1, 
+      	addPermission: 0,
+      	editPermission: 0,
+      	deletePermission: 0,
+      	addRolesPermission: 0
+      },
+      
     }
   },
   filters: {
@@ -156,7 +165,12 @@ export default {
   },
   created() {
     this.getList()
-    this.getDeptList()
+
+  },
+  mounted() {
+  	this.setButtonRole()
+  	this.getDeptList()
+    
   },
   methods: {
   	/**------------用户增删改查开始-1-----------*/
@@ -331,6 +345,32 @@ export default {
 	  
 	  /**------------添加角色结束-2-----------*/
 	 
+	  setButtonRole() { //设置按钮的权限
+    	let roles = sessionStorage.getItem("roles")
+    	if(roles.includes('admin')){
+    		this.buttonRole.addPermission= 1
+    		this.buttonRole.editPermission= 1
+    		this.buttonRole.deletePermission= 1
+    		this.buttonRole.addRolesPermission=1
+    	}else{
+    		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
+    		let sysUser = buttonRoles.sysUser
+    		if(sysUser.length>0){
+    			for(let value of sysUser){
+    				if(value=='addPermission'){
+    					this.buttonRole.addPermission= 1
+    				}else if(value=='editPermission'){
+    					this.buttonRole.editPermission= 1
+    				}else if(value=='deletePermission'){
+    					this.buttonRole.deletePermission= 1
+    				}else if(value=='addRolesPermission'){
+    					this.buttonRole.addRolesPermission= 1
+    				}
+    			}
+    		}
+    	}
+    },
+    
 		dateFormats: function (val) {
 			if(!val){
 				return undefined

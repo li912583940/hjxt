@@ -307,7 +307,6 @@ public class JlQsWeb extends Result{
     		if(oldJlQs.getGx().equals(model.getGx())){
     			
     		}else{
-    			jlQsSQL.deleteKey(model.getWebid());
     			
     			JlHjSpSetVO jlHjSpSet = new JlHjSpSetVO();
         		jlHjSpSet.setUsable(1);
@@ -318,6 +317,8 @@ public class JlQsWeb extends Result{
         			if(StringUtils.isNotBlank(jlHjSpSet.getSpValue())){
         				List<String> spGx = Arrays.asList(jlHjSpSet.getSpValue().split(","));
         				if(spGx.contains(model.getGx())){
+        					jlQsSQL.deleteKey(model.getWebid());
+        					
         					JlQsSpVO jlQsSp = new JlQsSpVO();
         					jlQsSp.setFrNo(model.getFrNo());
         					jlQsSp.setQsZjlb(model.getQsZjlb());

@@ -65,21 +65,21 @@
       <el-table-column width="110" align="center" label="会见类型">
         <template slot-scope="scope">
           <span v-if="scope.row.hjType==1">亲属会见</span>
-          <span v-else-if="scope.row.hjType==2">监护人会见</span>
-          <span v-else-if="scope.row.hjType==3">律师会见</span>
-          <span v-else-if="scope.row.hjType==4">使领馆探视</span>
-          <span v-else-if="scope.row.hjType==5">提审会见</span>
-          <span v-else-if="scope.row.hjType==6">公务会见</span>
-          <span v-else-if="scope.row.hjType==9">特批会见</span>
-          <span v-else-if="scope.row.hjType==99">其他会见</span>
+          <span v-else-if="scope.row.hjType==2" style="color: red;">监护人会见</span>
+          <span v-else-if="scope.row.hjType==3" style="color: red;">律师会见</span>
+          <span v-else-if="scope.row.hjType==4" style="color: red;">使领馆探视</span>
+          <span v-else-if="scope.row.hjType==5" style="color: red;">提审会见</span>
+          <span v-else-if="scope.row.hjType==6" style="color: red;">公务会见</span>
+          <span v-else-if="scope.row.hjType==9" style="color: red;">特批会见</span>
+          <span v-else-if="scope.row.hjType==99" style="color: red;">其他会见</span>
         </template>
       </el-table-column>
       <el-table-column width="110" align="center" label="会见方式">
         <template slot-scope="scope">
           <span v-if="scope.row.hjMode==1">隔离会见</span>
-          <span v-else-if="scope.row.hjMode==2">非隔离会见</span>
-          <span v-else-if="scope.row.hjMode==3">远程视频会见</span>
-          <span v-else-if="scope.row.hjMode==9">其他方式</span>
+          <span v-else-if="scope.row.hjMode==2" style="color: red;">非隔离会见</span>
+          <span v-else-if="scope.row.hjMode==3" style="color: red;">远程视频会见</span>
+          <span v-else-if="scope.row.hjMode==9" style="color: red;">其他方式</span>
         </template>
       </el-table-column>
       <el-table-column width="200" align="center" label="会见说明">
@@ -118,17 +118,22 @@
     </el-dialog>
     
     <!-- 新增或编辑 -->
-    <el-dialog title="修改会见登记" :visible.sync="dialogDjVisible" :modal-append-to-body="false">
+    <el-dialog title="修改会见登记" :visible.sync="dialogDjVisible" width="1000px" :modal-append-to-body="false">
       <div class="filter-container">
-	    	<span>{{$t('currency.frNo')}}</span> <el-input style="width: 200px;" v-model="dataForm.frNo" :disabled="true"></el-input>
-	      <span style="margin-left: 20px;">{{$t('currency.frName')}}</span> <el-input style="width: 200px;" v-model="dataForm.frName":disabled="true"></el-input>
+	    	<!--<span>{{$t('currency.frNo')}}</span> <el-input style="width: 200px;" v-model="dataForm.frNo" :disabled="true"></el-input>-->
+	      <span>{{$t('currency.frName')}}</span> <el-input style="width: 200px;" v-model="dataForm.frName":disabled="true"></el-input>
 	      <span style="margin-left: 20px;">监区名称</span> <el-input  style="width: 200px;" v-model="dataForm.jqName":disabled="true"></el-input>
-	    </div>
+	      <span style="margin-left: 20px;">会见时长</span> <el-input v-if="buttonRole.editScPermission==1" style="width: 200px;" v-model="dataForm.hjTime"></el-input>
+	    											 <el-input v-if="buttonRole.editScPermission==0" style="width: 200px;" v-model="dataForm.hjTime" :disabled="true"></el-input>
+      </div>
 	    <div class="filter-container">
-	    	<span>会见时长</span> <el-input style="width: 200px;" v-model="dataForm.hjTime"></el-input>
-	      <span style="margin-left: 20px;">会见类型</span> 
+	      <span>会见类型</span> 
 	        <el-select  v-model="dataForm.hjType" placeholder="请选择会见类型">
             <el-option v-for="item in hjTypes" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        <span style="margin-left: 20px;">会见方式</span> 
+	        <el-select  v-model="dataForm.hjMode" placeholder="请选择会见方式">
+            <el-option v-for="item in hjModes" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
 	      <span style="margin-left: 20px;">会见说明</span> <el-input  style="width: 200px;" v-model="dataForm.hjInfo"></el-input>
 	    </div>
@@ -224,6 +229,7 @@ import { findPojo, RequestPrintXp, RequestEditDj, RequestCancelDj, findQsPojo, G
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
+import { Message, MessageBox } from 'element-ui'
 
 export default {
   name: 'meetRegister',
@@ -265,6 +271,7 @@ export default {
       	jqName: undefined,
       	hjTime: undefined,
       	hjType: undefined,
+      	hjMode: undefined,
       	hjInfo: undefined,
       	qsIds: []
       },
@@ -300,6 +307,24 @@ export default {
       	{
       		id: 99,
       		name: '其他会见'
+      	},
+      ],
+      hjModes: [
+      	{
+      		id: 1,
+      		name: '隔离会见'
+      	},
+      	{
+      		id: 2,
+      		name: '非隔离会见'
+      	},
+      	{
+      		id: 3,
+      		name: '远程视频会见'
+      	},
+      	{
+      		id: 9,
+      		name: '其他方式'
       	},
       ],
       
@@ -435,6 +460,7 @@ export default {
     	this.dataForm.jqName = undefined
     	this.dataForm.hjTime = undefined
     	this.dataForm.hjType = undefined
+    	this.dataForm.hjMode = undefined
     	this.dataForm.hjInfo = undefined
     	
     	this.qsListQuery.frNo = undefined
@@ -448,6 +474,7 @@ export default {
     	this.dataForm.frName = row.frName
     	this.dataForm.jqName = row.jqName
     	this.dataForm.hjTime = row.hjTime!=null?row.hjTime/60:0
+    	this.dataForm.hjMode = row.hjMode
     	this.dataForm.hjType = row.hjType
     	this.dataForm.hjInfo = row.hjInfo
     	
@@ -467,10 +494,11 @@ export default {
     },
     updateData() {
     	if(this.qsSelections.length == 0) {
-    		this.$notify.error({
-          title: '错误',
-          message: '提交登记时，至少选择一位家属'
-        })
+    		Message({
+	        message: '提交登记时，至少选择一位家属',
+		      type: 'error',
+		      duration: 5 * 1000
+	      });
     		return false
     	}
     	let qsid = ''
@@ -501,19 +529,17 @@ export default {
 	    	}
 				RequestCancelDj(param).then((res) => {
 	    		if(res.data == 0) {
-          	this.$notify({
-		          title: '成功',
-		          message: '会见登记取消成功',
-		          position: 'top-right',
-		          type: 'success'
-		        });
+	    			Message({
+			        message: '会见登记取消成功',
+				      type: 'success',
+				      duration: 5 * 1000
+			      });
           }else if(res.data == 1) {
-          	this.$notify({
-		          title: '警告',
-		          message: '已处会见通话状态，无法取消',
-		          position: 'top-right',
-		          type: 'warning'
-		        });
+		        Message({
+			        message: '已处会见通话状态，无法取消',
+				      type: 'error',
+				      duration: 5 * 1000
+			      });
           }
           this.getList()
 	    	}).catch(error => {

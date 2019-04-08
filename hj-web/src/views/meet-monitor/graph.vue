@@ -90,7 +90,8 @@
 </template>
 
 <script>
-import { findPojo, UpdateSJ, GetHjServerList, GetMonitorVocList, AddMonitorFlag, GetZs, QieduanHj } from '@/api/meetMonitor'
+import { findPojo, UpdateSJ, GetMonitorVocList, AddMonitorFlag, GetZs, QieduanHj } from '@/api/meetMonitor'
+import {findList as GetHjServerList} from '@/api/sysParam'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -110,6 +111,9 @@ export default {
         pageNum: 1,
         pageSize: 20
       },
+      
+      hjServerList: null, // 服务器server
+      
       jtState: 1,
       
       /** 修改时间 开始 */ 
@@ -175,6 +179,8 @@ export default {
   	
   	this.getMonitorVocList()
   	
+  	this.openServerOcx()
+  	
   	if(this.timer){
   		this.clearInterval(this.timer)
   	}else{
@@ -184,6 +190,8 @@ export default {
   	}
   },
   destroyed() {
+  	//this.closeServerOcx()
+  	
   	clearInterval(this.timer)
   },
   methods: {
@@ -395,6 +403,24 @@ export default {
 	},
 	/** 注释 结束 */
 	
+	openServerOcx() { // 获取服务器用于控件连接
+		if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1) ){ // IE浏览器
+			GetHjServerList({}).then(res => {
+				this.hjServerList = res.list
+				for(let x of this.hjServerList){
+					document.getElementById(x.serverName).ConnectSvr(x.ip, x.port);//修改
+				}
+			})
+		}
+	},
+	closeServerOcx(){ //关闭服务器控件连接
+		if(this.hjServerList){
+			for(let x of this.hjServerList){
+					document.getElementById(x.serverName).DisconnectSvr();//修改
+				}
+		}
+	},
+		
 	dateFormats(val) {
 		if(!val){
 			return undefined

@@ -1,16 +1,32 @@
 <template>
 	<div id="" style="margin-left: 10%;margin-top: 40px;">
 		<el-card shadow="never" style="width: 50%;">
-			<el-switch
-			  style="display: block"
-			  v-model="noticeValue"
-			  @change="noticeChange"
-			  inactive-color="#ff4949"
-			  active-color="#13ce66"
-			  inactive-text="身份验证成功发起会见通知"
-			  active-text="登记完成发起会见通知"
-			 >
-			</el-switch>
+			<span v-if="buttonRole.confPermission==1">
+				<el-switch
+				  style="display: block"
+				  v-model="noticeValue"
+				  @change="noticeChange"
+				  inactive-color="#ff4949"
+				  active-color="#13ce66"
+				  inactive-text="身份验证成功发起会见通知"
+				  active-text="登记完成发起会见通知"
+				 >
+				</el-switch>
+			</span>
+			<span else>
+				<el-switch
+				  style="display: block"
+				  v-model="noticeValue"
+				  @change="noticeChange"
+				  inactive-color="#ff4949"
+				  active-color="#13ce66"
+				  inactive-text="身份验证成功发起会见通知"
+				  active-text="登记完成发起会见通知"
+				  :disabled="true"
+				 >
+				</el-switch>
+			</span>
+			
 		</el-card>
 	</div>
 </template>
@@ -30,6 +46,13 @@ export default {
   data() {
     return {
       noticeValue: true,
+      
+      //按钮权限   1：有权限， 0：无权限
+      buttonRole: { 
+      	queryPermission: 1, 
+      	confPermission: 0,
+      },
+      
     }
   },
   filters: {
@@ -46,7 +69,7 @@ export default {
     this.getList()
   },
   mounted() {
-
+	this.setButtonRole()
   },
   destroyed() {
   },
@@ -66,7 +89,23 @@ export default {
     		
     	})
     },
-
+	setButtonRole() { //设置按钮的权限
+    	let roles = sessionStorage.getItem("roles")
+    	if(roles.includes('admin')){
+    		this.buttonRole.confPermission= 1
+    	}else{
+    		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
+    		let noticeSet = buttonRoles.noticeSet
+    		if(noticeSet.length>0){
+    			for(let value of noticeSet){
+    				if(value=='confPermission'){
+    					this.buttonRole.confPermission= 1
+    				}
+    			}
+    		}
+    	}
+    },
+    
 	dateFormats: function (val) {
 		if(!val){
 			return undefined

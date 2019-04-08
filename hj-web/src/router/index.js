@@ -8,11 +8,6 @@ import Layout from '@/views/layout/Layout'
 
 /* Router Modules */
 
-//import componentsRouter from './modules/components'
-//import chartsRouter from './modules/charts'
-//import tableRouter from './modules/table'
-//import nestedRouter from './modules/nested'
-
 /** note: Submenu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
  **/
@@ -190,19 +185,19 @@ export const asyncRouterMap = [
     }]
   },
   
-  { // 会见监控-图形
-    path: '/meetMonitorGraph',
-    component: Layout,
-    meta: {
-      roles:'meetMonitorGraph'
-    },
-    children: [{
-      path: 'index',
-      component: () => import('@/views/meet-monitor/graph'),
-      name: 'meetMonitorGraph',
-      meta: { title: 'meetMonitorGraph', icon: 'eye', roles:'meetMonitorGraph' }
-    }]
-  },
+//{ // 会见监控-图形
+//  path: '/meetMonitorGraph',
+//  component: Layout,
+//  meta: {
+//    roles:'meetMonitorGraph'
+//  },
+//  children: [{
+//    path: 'index',
+//    component: () => import('@/views/meet-monitor/graph'),
+//    name: 'meetMonitorGraph',
+//    meta: { title: 'meetMonitorGraph', icon: 'eye', roles:'meetMonitorGraph' }
+//  }]
+//},
   
   { // 会见监控
     path: '/meetMonitor',

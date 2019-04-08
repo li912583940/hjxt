@@ -25,12 +25,12 @@
       </el-table-column>
       <el-table-column width="280" align="center" label="录音网络地址">
         <template slot-scope="scope">
-          <span>{{scope.row.recUrl}}</span>
+          <span>{{scope.row.recurl}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="200">
+      <el-table-column v-if="buttonRole.confPermission==1" align="center" :label="$t('criminal.actions')" width="200">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">配置</el-button>
+          <el-button v-if="buttonRole.confPermission==1" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">配置</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -56,8 +56,8 @@
         <el-form-item label="监听端口" prop="audioPort">
           <el-input v-model="dataForm.audioPort"></el-input>
         </el-form-item>
-        <el-form-item label="录音网络地址" prop="recUrl">
-          <el-input v-model="dataForm.recUrl"></el-input>
+        <el-form-item label="录音网络地址" prop="recurl">
+          <el-input v-model="dataForm.recurl"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -91,7 +91,7 @@ export default {
       listQuery: {
       	jqName: undefined,
         pageNum: 1,
-        pageSize: 20
+        pageSize: 10
       },
       // 新增或编辑弹窗
       dataForm: { 
@@ -100,7 +100,7 @@ export default {
         ip: undefined,
         port: undefined,
         audioPort: undefined,
-        recUrl: undefined
+        recurl: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -111,6 +111,13 @@ export default {
     
       rules: {
         ip: [{ required: true, message: 'ip不能为空', trigger: 'blur' }]
+      },
+      
+      //按钮权限   1：有权限， 0：无权限
+      buttonRole: { 
+      	queryPermission: 1, 
+      	confPermission: 0
+      	
       },
     }
   },
@@ -125,6 +132,9 @@ export default {
   },
   created() {
     this.getList()
+  },
+  mounted() {
+    this.setButtonRole()
   },
   methods: {
     getList() {
@@ -182,7 +192,7 @@ export default {
 	        this.dataForm.ip = res.data.ip,
 	        this.dataForm.port = res.data.port,
 	        this.dataForm.audioPort = res.data.audioPort,
-	        this.dataForm.recUrl = res.data.recUrl
+	        this.dataForm.recurl = res.data.recurl
     	})
 	    this.dialogStatus = 'update'
 	    this.dialogFormVisible = true
@@ -219,6 +229,23 @@ export default {
 		})
 	},
 	
+	setButtonRole() { //设置按钮的权限
+    	let roles = sessionStorage.getItem("roles")
+    	if(roles.includes('admin')){
+    		this.buttonRole.confPermission= 1
+    	}else{
+    		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
+    		let sysParam = buttonRoles.sysParam
+    		if(sysParam.length>0){
+    			for(let value of sysParam){
+    				if(value=='confPermission'){
+    					this.buttonRole.confPermission= 1
+    				}
+    			}
+    		}
+    	}
+    },
+    
 	dateFormats: function (val) {
 		if(!val){
 			return undefined

@@ -2,7 +2,7 @@
   <div class="app-container">
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 2121px">
+      style="width: 1841px">
       <el-table-column v-if="buttonRole.distributionPermission==1 || buttonRole.cancelDistributionPermission==1 || buttonRole.artificialPermission==1" align="center" :label="$t('criminal.actions')" width="300" fixed="left" >
         <template slot-scope="scope">
           <el-button v-if="buttonRole.distributionPermission==1" type="primary" size="mini" @click="fpZw(scope.row)">自动分配</el-button>
@@ -11,7 +11,7 @@
         </template>
       </el-table-column>
       
-      <el-table-column width="100" align="center" label="罪犯编号">
+      <el-table-column width="100" align="center" :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
@@ -29,7 +29,7 @@
       <el-table-column width="100" align="center" label="重点犯">
         <template slot-scope="scope">
           <span v-if="scope.row.stateZdzf=='否'">否</span>
-          <span v-if="scope.row.stateZdzf!='否'">是</span>
+          <span v-if="scope.row.stateZdzf!='否'" style="color: red;">是</span>
         </template>
       </el-table-column>
       <el-table-column width="90" align="center" label="座位">
@@ -41,24 +41,24 @@
       <el-table-column width="110" align="center" label="会见类型">
         <template slot-scope="scope">
           <span v-if="scope.row.hjType==1">亲属会见</span>
-          <span v-else-if="scope.row.hjType==2">监护人会见</span>
-          <span v-else-if="scope.row.hjType==3">律师会见</span>
-          <span v-else-if="scope.row.hjType==4">使领馆探视</span>
-          <span v-else-if="scope.row.hjType==5">提审会见</span>
-          <span v-else-if="scope.row.hjType==6">公务会见</span>
-          <span v-else-if="scope.row.hjType==9">特批会见</span>
-          <span v-else-if="scope.row.hjType==99">其他会见</span>
+          <span v-else-if="scope.row.hjType==2" style="color: red;">监护人会见</span>
+          <span v-else-if="scope.row.hjType==3" style="color: red;">律师会见</span>
+          <span v-else-if="scope.row.hjType==4" style="color: red;">使领馆探视</span>
+          <span v-else-if="scope.row.hjType==5" style="color: red;">提审会见</span>
+          <span v-else-if="scope.row.hjType==6" style="color: red;">公务会见</span>
+          <span v-else-if="scope.row.hjType==9" style="color: red;">特批会见</span>
+          <span v-else-if="scope.row.hjType==99" style="color: red;">其他会见</span>
         </template>
       </el-table-column>
       <el-table-column width="110" align="center" label="会见方式">
         <template slot-scope="scope">
           <span v-if="scope.row.hjMode==1">隔离会见</span>
-          <span v-else-if="scope.row.hjMode==2">非隔离会见</span>
-          <span v-else-if="scope.row.hjMode==3">远程视频会见</span>
-          <span v-else-if="scope.row.hjMode==9">其他方式</span>
+          <span v-else-if="scope.row.hjMode==2" style="color: red;">非隔离会见</span>
+          <span v-else-if="scope.row.hjMode==3" style="color: red;">远程视频会见</span>
+          <span v-else-if="scope.row.hjMode==9" style="color: red;">其他方式</span>
         </template>
       </el-table-column>
-      <el-table-column width="90" align="center" label="监区">
+      <el-table-column width="90" align="center" :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
         </template>
@@ -83,18 +83,18 @@
           <span>{{scope.row.djTime | dateFormat}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" label="授权状态">
+      <!--<el-table-column width="100" align="center" label="授权状态">
         <template slot-scope="scope">
           <span v-if="scope.row.shState=='1'">已授权</span>
           <span v-if="scope.row.shState=='0'">未授权</span>
         </template>
-      </el-table-column>
-      <el-table-column v-if="buttonRole.grantPermission==1 || buttonRole.cancelGrantPermission==1" width="180" align="center" label="操作" fixed="right">
+      </el-table-column>-->
+      <!--<el-table-column v-if="buttonRole.grantPermission==1 || buttonRole.cancelGrantPermission==1" width="180" align="center" label="操作" fixed="right">
         <template slot-scope="scope">
           <el-button v-if="buttonRole.grantPermission==1" type="primary" size="mini" @click="grantCall(scope.row)">授权</el-button>
           <el-button v-if="buttonRole.cancelGrantPermission==1" type="primary" size="mini" @click="cancelGrantCall(scope.row)">取消授权</el-button>
         </template>
-      </el-table-column>
+      </el-table-column>-->
     </el-table>
 
 		<!-- 分页 -->
@@ -152,8 +152,8 @@ export default {
       	distributionPermission: 0, 
       	cancelDistributionPermission: 0,
       	artificialPermission: 0,
-      	grantPermission : 0,
-      	cancelGrantPermission: 0,
+      	//grantPermission : 0,
+      	//cancelGrantPermission: 0,
       },
       
       rgFpDataForm: {
@@ -191,6 +191,17 @@ export default {
   },
   mounted() {
     this.setButtonRole()
+    
+    if(this.timer){
+  		this.clearInterval(this.timer)
+  	}else{
+  		this.timer = setInterval(() =>{
+  			this.getList()
+  		}, 30000)
+  	}
+  },
+  destroyed() {
+  	clearInterval(this.timer)
   },
   methods: {
     getList() {
@@ -218,8 +229,8 @@ export default {
     		this.buttonRole.distributionPermission= 1
     		this.buttonRole.cancelDistributionPermission= 1
     		this.buttonRole.artificialPermission= 1
-    		this.buttonRole.grantPermission= 1
-    		this.buttonRole.cancelGrantPermission= 1
+    		//this.buttonRole.grantPermission= 1
+    		//this.buttonRole.cancelGrantPermission= 1
     	}else{
     		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
     		let meetSign = buttonRoles.meetSign
@@ -231,11 +242,12 @@ export default {
     					this.buttonRole.cancelDistributionPermission= 1
     				}else if(value=='artificialPermission'){
     					this.buttonRole.artificialPermission= 1
-    				}else if(value=='grantPermission'){
-    					this.buttonRole.grantPermission= 1
-    				}else if(value=='cancelGrantPermission'){
-    					this.buttonRole.cancelGrantPermission= 1
     				}
+//  				else if(value=='grantPermission'){
+//  					this.buttonRole.grantPermission= 1
+//  				}else if(value=='cancelGrantPermission'){
+//  					this.buttonRole.cancelGrantPermission= 1
+//  				}
     			}
     		}
     	}
@@ -296,16 +308,22 @@ export default {
     },
     
     rgFpZw() {
-    	RgFpZw(this.rgFpDataForm).then(res => {
-    		Message({
-          message: res.errMsg,
-          type: 'success',
-          duration: 5 * 1000
-	      });
-	      
-	      this.dialogRgFpVisible=false
-    	  this.getList();
-    	})
+    	this.$refs['rgFpDataForm'].validate((valid) => {
+        if (valid) {
+	        RgFpZw(this.rgFpDataForm).then(res => {
+		    		Message({
+		          message: res.errMsg,
+		          type: 'success',
+		          duration: 5 * 1000
+			      });
+			      
+			      this.dialogRgFpVisible=false
+		    	  this.getList();
+		    	})
+        }
+      })
+    	
+    	
     	
     },
     

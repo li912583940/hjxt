@@ -25,7 +25,7 @@
         </el-option>
       </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
-      <el-button class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
+      <el-button v-if="buttonRole.exportPermission==1" class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
@@ -213,6 +213,12 @@ export default {
       	},
       ],
       
+      //按钮权限   1：有权限， 0：无权限
+      buttonRole: { 
+      	queryPermission: 1, 
+      	exportPermission: 0
+      },
+      
     }
   },
   filters: {
@@ -235,6 +241,7 @@ export default {
     this.getJqList()
   },
   mounted() {
+  	this.setButtonRole()
   },
   methods: {
     getList() {
@@ -343,14 +350,23 @@ export default {
         }
       }))
     },
-    dateFormat(row, column) {
-		//时间格式化  
-	    let date = row[column.property];  
-	    if (date == undefined) {  
-	      return "";  
-	    }  
-	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-		},
+		setButtonRole() { //设置按钮的权限
+    	let roles = sessionStorage.getItem("roles")
+    	if(roles.includes('admin')){
+    		this.buttonRole.exportPermission= 1
+    	}else{
+    		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
+    		let registerLog = buttonRoles.registerLog
+    		if(registerLog.length>0){
+    			for(let value of registerLog){
+    				if(value=='exportPermission'){
+    					this.buttonRole.exportPermission= 1
+    				}
+    			}
+    		}
+    	}
+    },
+    
 		dateFormats: function (val) {
 			if(!val){
 				return undefined

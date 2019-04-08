@@ -37,10 +37,10 @@
 		<!-- 服刑人员开始 -->
 		<el-card class="box-card">
 	    <el-table :key='frTableKey' ref="frMultipleTable" :data="frList" v-loading="frListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-	       @row-click="frRowClick" @row-dblclick="handleSearchQs" @select="frSelectionChang" @select-all="frAllSelectionChang" style="width: 2381px">
-	      <el-table-column align="center" type="selection" width="70" fixed="left">
+	       @row-click="frRowClick" @row-dblclick="handleSearchQs" @select="frSelectionChang" @select-all="frAllSelectionChang" style="width: 2411px">
+	      <el-table-column align="center" type="selection" width="50" fixed="left">
 	      </el-table-column>
-	      <el-table-column align="center" label="监区" width="70">
+	      <el-table-column align="center" label="监区" width="160">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.jqName}}</span>
 	        </template>
@@ -62,7 +62,7 @@
 	      </el-table-column>
 	      <el-table-column width="110px" align="center" label="上次会见时间">
 	        <template slot-scope="scope">
-	          <span>{{scope.row.hjLastTime}}</span>
+	          <span>{{scope.row.hjLastTime | dateFormat}}</span>
 	        </template>
 	      </el-table-column>
 	      <el-table-column width="150px" align="center" label="上次会见家属信息">
@@ -122,10 +122,14 @@
 	          <span v-if="scope.row.hjJb!='-1'">否</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column v-if="buttonRole.addQsPermission==1" align="center" :label="$t('criminal.actions')" width="150"  fixed="right">
+	      <el-table-column v-if="buttonRole.addQsPermission==1 || buttonRole.syncQsPermission==1" align="center" :label="$t('criminal.actions')" width="100"  fixed="right">
 	        <template slot-scope="scope">
-	          <el-button v-if="buttonRole.addQsPermission==1" type="primary" size="mini" @click="handleAddQs(scope.row)">添加亲属</el-button>
-	          </el-button>
+	          <div>
+	          	<el-button v-if="buttonRole.addQsPermission==1" type="primary" size="mini" @click="handleAddQs(scope.row)">添加亲属</el-button>
+	          </div>
+	          <div style="margin-top: 2px;">
+	          	<el-button v-if="buttonRole.syncQsPermission==1" type="primary" size="mini" @click="handleSyncQs(scope.row)">同步亲属</el-button>
+	          </div>
 	        </template>
 	      </el-table-column>
 	    </el-table>
@@ -140,8 +144,8 @@
 		<!-- 亲属开始 -->
 		<el-card class="box-card">
 	    <el-table :key='qsTableKey' ref="qsMultipleTable" :data="qsList" v-loading="qsListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-	     @selection-change="qsAllSelectionChange"  @row-click="qsRowClick" @row-dblclick="toEditQs" style="width: 1888px">
-	      <el-table-column align="center" type="selection"  width="70" fixed="left">
+	     @selection-change="qsAllSelectionChange"  @row-click="qsRowClick" @row-dblclick="toEditQs" style="width: 1968px">
+	      <el-table-column align="center" type="selection"  width="50" fixed="left">
 	      </el-table-column>
 	      <el-table-column align="center" label="亲属姓名" width="100">
 	        <template slot-scope="scope">
@@ -163,7 +167,9 @@
 	          <span v-if="scope.row.qsZjlb==1">身份证</span>
 	          <span v-if="scope.row.qsZjlb==2">警官证</span>
 	          <span v-if="scope.row.qsZjlb==3">工作证</span>
-	          <span v-if="scope.row.qsZjlb==4">其他</span>
+	          <span v-if="scope.row.qsZjlb==4">港澳通行证</span>
+	          <span v-if="scope.row.qsZjlb==5">台湾通行证</span>
+	          <span v-if="scope.row.qsZjlb==9">其他</span>
 	        </template>
 	      </el-table-column>
 	      <el-table-column width="150px" align="center" label="证件号码">
@@ -221,7 +227,12 @@
 	          <span v-if="scope.row.hjStopTime==null">否/{{scope.row.hjStopTime}}</span>
 	        </template>
 	      </el-table-column>
-	      
+	      <el-table-column v-if="buttonRole.deleteQsPermission==1" align="center" :label="$t('criminal.actions')" width="100"  fixed="right">
+	        <template slot-scope="scope">
+	          <el-button v-if="buttonRole.deleteQsPermission==1" type="danger" size="mini" @click="handleDeleteQs(scope.row)">删除</el-button>
+	          </el-button>
+	        </template>
+	      </el-table-column>
 	    </el-table>
 	
 	    <!--<div class="pagination-container">
@@ -238,6 +249,9 @@
 
 <script>
 import { findFrPojo, findQsPojo, findJqList, RequestAddHjdj, WordDownload } from '@/api/meetRegister'
+import {RequestDelete as  RequestQsDelete} from '@/api/relatives'
+
+import moment from 'moment'
 import waves from '@/directive/waves' // 水波纹指令
 import { Message, MessageBox } from 'element-ui'
 import BigImg from './components/BigImg'
@@ -295,7 +309,10 @@ export default {
       
       //按钮权限   1：有权限， 0：无权限
       buttonRole: { 
-      	addQsPermission: 0
+      	addQsPermission: 0,
+      	editQsPermission: 0,
+      	deleteQsPermission: 0,
+      	syncQsPermission: 0
       },
       
       hjTypes:[
@@ -359,7 +376,13 @@ export default {
       'big-img': BigImg
     },
   filters: {
-
+		dateFormat(date) {
+		  //时间格式化  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+	  }
   },
   created() {
    
@@ -476,6 +499,8 @@ export default {
     	let roles = sessionStorage.getItem("roles")
     	if(roles.includes('admin')){
     		this.buttonRole.addQsPermission= 1
+    		this.buttonRole.deleteQsPermission= 1
+    		this.buttonRole.syncQsPermission= 1
     	}else{
     		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
     		let meetRegister = buttonRoles.meetRegister
@@ -483,6 +508,10 @@ export default {
     			for(let value of meetRegister){
     					if(value=='addQsPermission'){
     					this.buttonRole.addQsPermission= 1
+    				}else if(value=='deleteQsPermission'){
+    					this.buttonRole.deleteQsPermission= 1
+    				}else if(value=='syncQsPermission'){
+    					this.buttonRole.syncQsPermission= 1
     				}
     			}
     		}
@@ -626,7 +655,9 @@ export default {
 	    this.showImg = false
 	  },
   	toEditQs(row){ // 双击亲属行进入编辑亲属的页面
-  		this.$router.push({ path: '/addQs', query: {frNo: row.frNo, frName:row.frName, qswebid:row.webid} })
+  		if(this.buttonRole.editQsPermission==1){
+  			this.$router.push({ path: '/addQs', query: {frNo: row.frNo, frName:row.frName, qswebid:row.webid} })
+  		}
   	},
   	cardEvent() {// 设置读卡器监听事件  并根据亲属身份证信息查询犯人
 			let handler =	document.createElement("script")
@@ -659,7 +690,18 @@ export default {
   	handleAddQs(row) { //打开亲属
     	this.$router.push({ path: '/addQs', query: {frNo: row.frNo, frName:row.frName} })
 		},
-		
+		handleSyncQs(){ // 同步亲属
+			
+		},
+		handleDeleteQs(row){
+			let param={
+				id: row.webid
+			}
+			RequestQsDelete(param).then(res=>{
+				this.getQsFrList()
+			}).catch(error => {
+	    })
+		},
 		wordDownload(row){
     	let param ={
     		enclosureUrl: row.enclosureUrl
@@ -685,59 +727,10 @@ export default {
 	        console.log(error)
 	    })
     },
-
-    
-    
   }
   
    
 }
-
-
-/*<script for="IDCard2" event="CardIn( State );">
-{ 
-if(State == 1)
-{
-	consol.log(1334)
-		var IDCard2=document.getElementById("IDCard2");
-		  	  	IDCard2.SetPhotoName(2);
-		  	  	var a = IDCard2.Base64Photo;
-		//	  	  	document.getElementById("base64").value=a;
-		  	  	var b = IDCard2.CardNo;
-		  	  	document.getElementById("sfzzzz").value=b;
-		  	document.getElementById("qsName").value=IDCard2.NameA;
-		  	document.getElementById("qsSfz").value=IDCard2.CardNo;
-		  	document.getElementById("dz").value=IDCard2.Address;
-		  	var sex=IDCard2.Sex;
-		  	if(sex==2){
-		 	for(var i=0;i<xb.length;i++){
-		if(xb.options[i].value=='女'){
-		xb.options[i].selected=true;
-		break;
-		}
-		}
-		  	}else{
-		  	for(var i=0;i<xb.length;i++){
-		if(xb.options[i].value=='男'){
-		xb.options[i].selected=true;
-		break;
-		}
-		}
-		  	}
-//		a=encodeURIComponent(encodeURIComponent(a));
-//		  	$.ajax({
-//		      type:"POST",
-//		      url:"hjdj.do",
-//		      data:"method=GenerateImage&sfzzBase64="+a+"&sfz="+b,
-//		      dataType:"json",
-//		      success:aaaa,
-//		      error:bbbb
-//		});
-}
-}
-   <script>*/
-
-
 </script>
 
 <style>

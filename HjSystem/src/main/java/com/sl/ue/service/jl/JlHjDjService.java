@@ -46,7 +46,7 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 	 * @return
 	 * L_晓天  @2018年12月27日
 	 */
-	public String editDj(Long hjid, Integer hjTime, Integer hjType, String hjInfo, String qsIds);
+	public String editDj(Long hjid, Integer hjTime, Integer hjType, Integer hjMode, String hjInfo, String qsIds);
 	
 	/**
 	 * 说明 [取消登记]

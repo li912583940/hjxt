@@ -7,27 +7,27 @@
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="监区名称" v-model="listQuery.jqName" clearable>
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索</el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">添加</el-button>
+      <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">添加</el-button>
     </div>
     
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
-      style="width: 1021px">
+      style="width: 1031px">
       <el-table-column width="100" align="center" :label="$t('currency.jqNo')">
         <template slot-scope="scope">
           <span>{{scope.row.jqNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" :label="$t('currency.jqName')">
+      <el-table-column width="160" align="center" :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" label="楼层">
+      <!--<el-table-column width="100" align="center" label="楼层">
         <template slot-scope="scope">
           <span>{{scope.row.floor}}</span>
         </template>
-      </el-table-column>
-      <el-table-column width="300" align="center" label="会见星期时间">
+      </el-table-column>-->
+      <el-table-column width="350" align="center" label="会见星期时间">
         <template slot-scope="scope">
           <span>{{scope.row.jqWeek}}</span>
         </template>
@@ -38,11 +38,11 @@
           <span v-if="scope.row.isTs==1" style="color: red;">是</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" :label="$t('criminal.actions')" width="320" fixed="right">
+      <el-table-column v-if="buttonRole.editPermission==1 || buttonRole.deletePermission==1 || buttonRole.holidayPermission==1" align="center" :label="$t('criminal.actions')" width="320" fixed="right">
         <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
-          <el-button size="mini" type="info" icon="el-icon-setting" @click="openWeek(scope.row)">设置会见星期</el-button>
+          <el-button v-if="buttonRole.editPermission==1" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
+          <el-button v-if="buttonRole.deletePermission==1" size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-if="buttonRole.holidayPermission==1" size="mini" type="info" icon="el-icon-setting" @click="openWeek(scope.row)">设置会见星期</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -63,9 +63,9 @@
         <el-form-item label="监区名称" prop="jqName">
           <el-input v-model="dataForm.jqName"></el-input>
         </el-form-item>
-        <el-form-item label="楼层" prop="floor">
+        <!--<el-form-item label="楼层" prop="floor">
           <el-input v-model="dataForm.floor"></el-input>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="特殊监区">
           <el-radio-group v-model="dataForm.isTs">
 		    <el-radio :label="0">否</el-radio>
@@ -119,7 +119,7 @@ export default {
       listQuery: {
       	jqName: undefined,
         pageNum: 1,
-        pageSize: 20
+        pageSize: 10
       },
       // 新增或编辑弹窗
       dataForm: { 
@@ -127,7 +127,7 @@ export default {
         jqNo: undefined,
         jqName: undefined,
         isTs: 0,
-        floor: undefined
+        //floor: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -153,7 +153,16 @@ export default {
       	{label: '星期日',key:7}
       ],
       /**---------------------设置会见星期日   结束--------------------------*/
-
+			
+			//按钮权限   1：有权限， 0：无权限
+      buttonRole: { 
+      	queryPermission: 1, 
+      	addPermission: 0,
+      	editPermission: 0,
+      	deletePermission: 0,
+      	holidayPermission: 0,
+      },
+      
     }
   },
   filters: {
@@ -167,6 +176,9 @@ export default {
   },
   created() {
     this.getList()
+  },
+  mounted() {
+    this.setButtonRole()
   },
   methods: {
     getList() {
@@ -226,7 +238,7 @@ export default {
 	        this.dataForm.jqNo =  res.data.jqNo
 	        this.dataForm.jqName = res.data.jqName
 	        this.dataForm.isTs = res.data.isTs
-	        this.dataForm.floor = res.data.floor
+	        //this.dataForm.floor = res.data.floor
     	})
 	    this.dialogStatus = 'update'
 	    this.dialogFormVisible = true
@@ -294,7 +306,32 @@ export default {
 		})
 	},
 	/**------------------ 设置会见星期日结束 ----------------------*/
-
+  
+  setButtonRole() { //设置按钮的权限
+		let roles = sessionStorage.getItem("roles")
+		if(roles.includes('admin')){
+			this.buttonRole.addPermission= 1
+			this.buttonRole.editPermission= 1
+			this.buttonRole.deletePermission= 1
+			this.buttonRole.holidayPermission= 1
+		}else{
+			let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
+			let jqSet = buttonRoles.jqSet
+			if(jqSet.length>0){
+				for(let value of jqSet){
+					if(value=='addPermission'){
+						this.buttonRole.addPermission= 1
+					}else if(value=='editPermission'){
+						this.buttonRole.editPermission= 1
+					}else if(value=='deletePermission'){
+						this.buttonRole.deletePermission= 1
+					}else if(value=='holidayPermission'){
+						this.buttonRole.holidayPermission= 1
+					}
+				}
+			}
+		}
+	},
 	dateFormats: function (val) {
 		if(!val){
 			return undefined

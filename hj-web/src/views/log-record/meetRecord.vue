@@ -170,13 +170,13 @@
           <span v-if="scope.row.recAssessmentState==1">已听</span>
         </template>
       </el-table-column>
-      <el-table-column  v-if="buttonRole.seeAssessmentPermission==1" width="100" align="center" label="详情信息" fixed="right">
+      <el-table-column  v-if="buttonRole.seeAssessmentPermission==1 || buttonRole.seeOtherPermission==1" width="100" align="center" label="详情信息" fixed="right">
         <template slot-scope="scope">
         	<div>
-            <el-button type="primary" size="mini" @click="openAllAssessment(scope.row)">查看复听</el-button>
+            <el-button v-if="buttonRole.seeAssessmentPermission==1" type="primary" size="mini" @click="openAllAssessment(scope.row)">查看复听</el-button>
           </div>
           <div style="margin-top: 2px;">
-            <el-button type="primary" size="mini" @click="openOtherInfo(scope.row)">查看其他</el-button>
+            <el-button v-if="buttonRole.seeOtherPermission==1" type="primary" size="mini" @click="openOtherInfo(scope.row)">查看其他</el-button>
           </div>
         </template>
       </el-table-column>

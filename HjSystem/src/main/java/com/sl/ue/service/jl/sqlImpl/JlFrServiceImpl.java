@@ -118,11 +118,14 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 			title.add("姓名");
 			title.add("监区");
 			title.add("级别");
-			title.add("当月会见次数");
-			title.add("当月剩余次数");
+			title.add("罪名");
+			title.add("刑期");
 			title.add("入监时间");
 			title.add("重点罪犯");
-			title.add("会见级别");
+			title.add("国籍");
+			title.add("籍贯");
+			title.add("出生日期");
+			title.add("家庭住址");
 			// 标题 start
 			HSSFRow row1 = sheet.createRow(0);
 			for(int i=0; i<title.size(); i++){
@@ -150,26 +153,38 @@ public class JlFrServiceImpl extends BaseSqlImpl<JlFrVO> implements JlFrService{
 				cell3.setCellValue(jlFr.getJbName()!=null?jlFr.getJbName():"");
 				
 				HSSFCell cell4 = row2.createCell(4);
-				cell4.setCellValue(jlFr.getHjUse()!=null?jlFr.getHjUse():0);
+				cell4.setCellValue(StringUtils.isNotBlank(jlFr.getInfoZm())?jlFr.getInfoZm():"");
 				
 				HSSFCell cell5 = row2.createCell(5);
-				cell5.setCellValue(jlFr.getHjLeft()!=null?jlFr.getHjLeft():0);
+				cell5.setCellValue(StringUtils.isNotBlank(jlFr.getInfoXq())?jlFr.getInfoXq():"");
 				
 				HSSFCell cell6 = row2.createCell(6);
 				cell6.setCellValue(jlFr.getInfoRjsj()!=null?jlFr.getInfoRjsj():"");
 				
 				HSSFCell cell7 = row2.createCell(7);
-				cell7.setCellValue(jlFr.getInfoZdzf()!=null?jlFr.getInfoZdzf():"");
-				
-				HSSFCell cell8 = row2.createCell(8);
-				if(jlFr.getHjJb()!=null && jlFr.getHjJb()==1){
-					cell8.setCellValue("正常");
-				}else if(jlFr.getHjJb()!=null && jlFr.getHjJb()==-1){
-					cell8.setCellValue("禁止");
+				String zdzf ="";
+				if(jlFr.getStateZdzf()==1){
+					if(StringUtils.isNotBlank(jlFr.getInfoZdzf())){
+						zdzf=jlFr.getInfoZdzf();
+					}else{
+						zdzf="重点罪犯";
+					}
 				}else{
-					cell8.setCellValue("未定义");
+					zdzf="非重点罪犯";
 				}
+				cell7.setCellValue(zdzf);
 				
+				HSSFCell cell8 = row2.createCell(8); // 国籍
+				cell8.setCellValue(StringUtils.isNotBlank(jlFr.getFrGj())?jlFr.getFrGj():"");
+				
+				HSSFCell cell9 = row2.createCell(9); // 籍贯
+				cell9.setCellValue(StringUtils.isNotBlank(jlFr.getInfoJg())?jlFr.getInfoJg():"");
+				
+				HSSFCell cell10 = row2.createCell(10); // 出生日期
+				cell10.setCellValue(StringUtils.isNotBlank(jlFr.getInfoCsrq())?jlFr.getInfoCsrq():"");
+				
+				HSSFCell cell11 = row2.createCell(11); // 家庭住址
+				cell11.setCellValue(StringUtils.isNotBlank(jlFr.getInfoHome())?jlFr.getInfoHome():"");
 			}
 			
 			// 处理不同浏览器中文名称编码

@@ -1,17 +1,7 @@
 <template>
   <div class="app-container">
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间"  border fit highlight-current-row
-      style="width: 1641px">
-      <el-table-column width="100" align="center" label="服务器名称">
-        <template slot-scope="scope">
-          <span>{{scope.row.jy}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="100" align="center" label="通道">
-        <template slot-scope="scope">
-          <span>{{scope.row.lineNo}}</span>
-        </template>
-      </el-table-column>
+      style="width: 1351px">
       <el-table-column width="100" align="center" label="座位号">
         <template slot-scope="scope">
           <span>{{scope.row.zw}}</span>
@@ -19,9 +9,9 @@
       </el-table-column>
       <el-table-column width="100" align="center" label="状态">
         <template slot-scope="scope">
-          <span v-if="scope.row.monitorState =='通话'">通话</span>
+          <span v-if="scope.row.monitorState =='通话'" style="color: red;">通话</span>
           <span v-if="scope.row.monitorState =='空闲'">空闲</span>
-          <span v-if="scope.row.monitorState =='应答'">应答</span>
+          <span v-if="scope.row.monitorState =='应答'" style="color:#409EFF;">应答</span>
         </template>
       </el-table-column>
       <el-table-column width="90" align="center" :label="$t('currency.jqName')">
@@ -49,18 +39,13 @@
           <span>{{scope.row.yjName}}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.jiantingPermission==1 || buttonRole.qieduanPermission==1 || buttonRole.chahuaPermission==1" align="center" :label="$t('criminal.actions')" width="300" fixed="right">
+      <el-table-column v-if="buttonRole.jiantingPermission==1 || buttonRole.qieduanPermission==1 || buttonRole.chahuaPermission==1 || buttonRole.zhushiPermission==1" align="center" :label="$t('criminal.actions')" width="420" fixed="right">
         <template slot-scope="scope">
-          <el-button v-if="jtState==1 && buttonRole.jiantingPermission==1" type="primary" size="mini" icon="el-icon-service" @click="jianting(scope.row)">监听</el-button>
-          <el-button v-if="jtState==2 && buttonRole.jiantingPermission==1" size="mini" type="info" icon="el-icon-phone" @click="jiantingStop(scope.row)">停止监听</el-button>
-          <el-button v-if="jtState==2 && buttonRole.qieduanPermission==1" size="mini" type="danger" icon="el-icon-phone" @click="qieduan(scope.row)">切断</el-button>
-          <el-button v-if="buttonRole.chahuaPermission==1" type="primary" size="mini" icon="el-icon-phone-outline" @click="chahua(scope.row)">插话</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column v-if="buttonRole.zhushiPermission==1" align="center" label="功能" width="110" fixed="right">
-        <template slot-scope="scope">
-          <el-button v-if="buttonRole.zhushiPermission==1" size="mini" type="info" icon="el-icon-document" @click="zhushi(scope.row)">注释</el-button>
-          <!--<el-button v-if="buttonRole.updateTimePermission==1" size="mini" type="info" icon="el-icon-time" @click="xiugaiTime(scope.row)">修改时间</el-button>-->
+          <el-button v-if="jtState!=scope.row.lineNo && buttonRole.jiantingPermission==1" type="primary" size="mini" icon="el-icon-service" @click="jianting(scope.row)">监听</el-button>
+          <el-button v-if="jtState==scope.row.lineNo && buttonRole.jiantingPermission==1" size="mini" type="info" icon="el-icon-phone" @click="jiantingStop(scope.row)">停止监听</el-button>
+          <el-button v-if="jtState==scope.row.lineNo && buttonRole.qieduanPermission==1" size="mini" type="danger" icon="el-icon-phone" @click="qieduan(scope.row)">切断</el-button>
+          <el-button v-if="jtState==scope.row.lineNo && buttonRole.chahuaPermission==1" type="primary" size="mini" icon="el-icon-phone-outline" @click="chahua(scope.row)">插话</el-button>
+          <el-button v-if="jtState==scope.row.lineNo && buttonRole.zhushiPermission==1" size="mini" type="info" icon="el-icon-document" @click="zhushi(scope.row)">注释</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -123,7 +108,8 @@
 
 <script>
 	
-import { findPojo, UpdateSJ, UpdateYJ, GetHjServerList, GetMonitorVocList, AddMonitorFlag, GetZs, QieduanHj } from '@/api/meetMonitor'
+import { findPojo, UpdateSJ, UpdateYJ, GetMonitorVocList, AddMonitorFlag, GetZs, QieduanHj } from '@/api/meetMonitor'
+import {findList as GetHjServerList} from '@/api/sysParam'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -145,8 +131,9 @@ export default {
         pageNum: 1,
         pageSize: 20
       },
+      hjServerList: null, // 服务器server
       
-      jtState: 1, //监听状态
+      jtState: null, //监听状态
       
       /** 修改时间 开始 */ 
       dialogSJVisible: false,
@@ -211,6 +198,8 @@ export default {
   	
   	this.getMonitorVocList()
   	
+  	this.openServerOcx()
+  	
   	if(this.timer){
   		this.clearInterval(this.timer)
   	}else{
@@ -220,6 +209,8 @@ export default {
   	}
   },
   destroyed() {
+  	//this.closeServerOcx()
+  	
   	clearInterval(this.timer)
   },
   methods: {
@@ -272,13 +263,16 @@ export default {
     },
     /** 监听 开始 */
     jianting(row){
+    	if(this.jtState!=null){
+    		document.getElementById(row.jy).ListenStop(this.jtState);
+    	}
     	if(row.monitorState=='通话'){
     		UpdateYJ({webid:row.webid, state:1}).then(res =>{
     			this.getList()
     		})
     		
     		document.getElementById(row.jy).ListenTele(row.lineNo);
-    		this.jtState = 2
+    		this.jtState = row.lineNo
     	}else{
     		Message({
 	        message: '当前线路不在通话状态',
@@ -295,7 +289,7 @@ export default {
 				this.getList()
 			})
     	document.getElementById(row.jy).ListenStop(row.lineNo);
-    	this.jtState = 1
+    	this.jtState = null
     	Message({
         message: '停止监听',
 	      type: 'success',
@@ -319,7 +313,7 @@ export default {
 					
 					document.getElementById(row.jy).StopTele(row.lineNo);
 					
-					this.jtState = 1
+					this.jtState = null
 					this.getList()
 					
 					Message({
@@ -443,7 +437,25 @@ export default {
 			this.dialogZSVisible = false
 		},
 		/** 注释 结束 */
-	
+		
+		openServerOcx() { // 获取服务器用于控件连接
+			if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1) ){ // IE浏览器
+				GetHjServerList({}).then(res => {
+					this.hjServerList = res.list
+					for(let x of this.hjServerList){
+						document.getElementById(x.serverName).ConnectSvr(x.ip, x.port);//修改
+					}
+				})
+			}
+			
+		},
+		closeServerOcx(){ //关闭服务器控件连接
+			if(this.hjServerList){
+				for(let x of this.hjServerList){
+						document.getElementById(x.serverName).DisconnectSvr();//修改
+					}
+			}
+		},
 		dateFormats: function (val) {
 			if(!val){
 				return undefined

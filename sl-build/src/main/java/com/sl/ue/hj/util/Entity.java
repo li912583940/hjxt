@@ -30,7 +30,9 @@ public class Entity {
 		//enMap.put("jl_hj_jq_holiday", "JlHjJqHoliday");
 		//enMap.put("jl_hj_holiday", "JlHjHoliday");
 //		enMap.put("sys_notice_conf", "SysNoticeConf");
-		enMap.put("JL_QS", "JlQs");
+//		enMap.put("JL_QS", "JlQs");
+		enMap.put("sys_access_token", "SysAccessToken");
+		
 	}
 	
 	

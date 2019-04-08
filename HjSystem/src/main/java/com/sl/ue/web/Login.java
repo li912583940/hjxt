@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sl.ue.entity.sys.vo.SysAccessTokenVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
+import com.sl.ue.service.sys.SysAccessTokenService;
 import com.sl.ue.service.sys.SysUserService;
 import com.sl.ue.util.Constants;
 import com.sl.ue.util.anno.IgnoreSecurity;
@@ -30,7 +32,8 @@ public class Login extends Result{
 
 	@Autowired
     private SysUserService sysUserSQL;
-	
+	@Autowired
+	private SysAccessTokenService sysAccessTokenSQL;
 	/**
 	 * 说明 [登录]
 	 * @作者 LXT @2018年9月4日
@@ -48,11 +51,16 @@ public class Login extends Result{
 		List<SysUserVO> list = sysUserSQL.findList(user);
 		if(list.size()>0){
 			SysUserVO loginUser = list.get(0);
+			SysAccessTokenVO sysAccessToken = new SysAccessTokenVO();
 			TokenManager tokenManager = new TokenManager();
 			String token = tokenManager.createToken(username);
 			loginUser.setToken(token);
+			sysAccessToken.setAccessToken(token);
 			Date overdue = DateUtils.addHours(new Date(), Constants.TOKEN_EXPIRES_HOURS); // token 到期时间
 			loginUser.setTokenTime(overdue);
+			sysAccessToken.setDueTime(overdue);
+			sysAccessToken.setUserId(loginUser.getWebid());
+			sysAccessTokenSQL.add(sysAccessToken);
 			sysUserSQL.edit(loginUser);
 			this.putJson(loginUser);
 			

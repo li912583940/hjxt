@@ -74,8 +74,7 @@
     <object width="0px" height="0px" id="IDCard2" name="IDCard2"  codebase="../../../ocx/SynCardOcx1.CAB#version=1,0,0,1" classid="clsid:4B3CB088-9A00-4D24-87AA-F65C58531039">
 		</object>
 		<div v-for="(item, index) in sysHjServerList">
-			<object :id="item.serverName" :name="item.serverName" codebase="../../ocx/TeleQqOcx.ocx#version=1,0,0,1" classid="clsid:561E476B-6C4F-4FCC-A8CE-A85C7F781620" 
-		 		width="0" height="0">
+			<object :id="item.serverName" :name="item.serverName" codebase="../../../ocx/TeleQqOcx.ocx#version=1,0,0,1" classid="clsid:561E476B-6C4F-4FCC-A8CE-A85C7F781620" width="0px" height="0px">
 			</object>
 		</div>
 		<audio id="audio1" :src="wavUrl"></audio>
@@ -105,7 +104,7 @@ import { findNotTzList } from '@/api/meetNotice'
 import { EditPassword, ResetUserPassword } from '@/api/login'
 import { Message, MessageBox } from 'element-ui'
 import { findSpNotice } from '@/api/meetSp'
-
+import {findList as GetHjServerList} from '@/api/sysParam'
 
 export default {
   components: {
@@ -297,9 +296,11 @@ export default {
     },
    
     getHjServerList() { // 获取服务器用于注册控件
-			GetHjServerList({}).then(res => {
-				this.sysHjServerList = res.list
-			})
+    	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1) ){ // IE浏览器
+				GetHjServerList({}).then(res => {
+					this.sysHjServerList = res.list
+				})
+			}
 		},
   }
 }

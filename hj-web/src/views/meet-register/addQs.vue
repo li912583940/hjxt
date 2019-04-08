@@ -20,14 +20,14 @@
 		          	<img src="dataQsForm.jzUrl"  width="100px" height="126px" />
 		          </span>
 		        </el-form-item>
-		        <el-form-item label="近照" >
+		        <!--<el-form-item label="近照" >
 		         <video id="video" autoplay width="150" height="110" controls>
 				</video>
 				<canvas id="canvas" width="150" height="110"></canvas>
 				<div>
 				  <button id="capture" @click="paizhao">拍照</button>
 				</div>
-		        </el-form-item>
+		        </el-form-item>-->
 		        <el-form-item label="证件号码" prop="qsSfz">
 		          <el-input v-model="dataQsForm.qsSfz"></el-input>
 		        </el-form-item>
@@ -132,6 +132,14 @@ export default {
       	},
       	{
       		id: 4,
+      		name: '港澳通行证'
+      	},
+      	{
+      		id: 5,
+      		name: '台湾通行证'
+      	},
+      	{
+      		id: 9,
       		name: '其他'
       	}
       ],

@@ -197,7 +197,7 @@ public class JlHjDjWeb extends Result{
 	 * L_晓天  @2018年12月27日
 	 */
 	@RequestMapping("/editDj")
-	public String editDj(Long hjid, Integer hjTime, Integer hjType, String hjInfo, String qsIds){
+	public String editDj(Long hjid, Integer hjTime, Integer hjType, Integer hjMode, String hjInfo, String qsIds){
 		JlHjDjVO model = jlHjDjSQL.findOne(hjid);
 		SysUserVO user = TokenUser.getUser();
 		SysLogVO sysLog = new SysLogVO();
@@ -220,17 +220,27 @@ public class JlHjDjWeb extends Result{
 			hjTypeStr="其他会见";
 		}
 		
+		String hjModeStr = "";
+		if(hjMode==1){
+			hjModeStr = "隔离会见";
+		}else if(hjMode==2){
+			hjModeStr = "非隔离会见";
+		}else if(hjMode==3){
+			hjModeStr = "远程视频会见";
+		}else if(hjMode==9){
+			hjModeStr = "其他方式";
+		}
 		Integer hjscInt = hjTime;
 		sysLog.setType("正常");
 		sysLog.setOp("修改会见登记");
-		sysLog.setInfo("修改会见登记，罪犯编号： "+model.getFrNo()+"，罪犯姓名："+model.getFrName()+"，会见类型："+hjTypeStr+"，会见时长："+hjscInt+"分钟");
+		sysLog.setInfo("修改会见登记，罪犯编号： "+model.getFrNo()+"，罪犯姓名："+model.getFrName()+"，会见类型："+hjTypeStr+"，会见方式："+hjModeStr+"，会见时长："+hjscInt+"分钟");
 		sysLog.setModel("会见登记");
 		sysLog.setUserNo(user.getUserNo());
 		sysLog.setUserName(user.getUserName());
 		sysLog.setLogTime(DateUtil.getDefaultNow());
 		sysLogSQL.add(sysLog);
 		
-		return jlHjDjSQL.editDj(hjid, hjTime, hjType, hjInfo, qsIds);
+		return jlHjDjSQL.editDj(hjid, hjTime, hjType, hjMode, hjInfo, qsIds);
 	}
 	
 	/**
