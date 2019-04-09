@@ -36,20 +36,15 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 	
 	@Override
 	public Map<String, Object> findPojoMonitor(Integer pageSize, Integer pageNum) {
+		SysUserVO sysUser = TokenUser.getUser();
 		
 		StringBuffer leftJoinField = new StringBuffer();
 		leftJoinField.append(",b.IP AS ip");
 		leftJoinField.append(",b.Port AS port");
 		leftJoinField.append(",b.AudioPort AS audioPort");
-		leftJoinField.append(",c.Write_Txt");
 		
 		StringBuffer leftJoinTable = new StringBuffer();
 		leftJoinTable.append(" LEFT JOIN SYS_HJ_SERVER AS b ON a.JY=b.Server_Name");
-		//leftJoinTable.append(" LEFT JOIN JL_HJ_MON AS c ON a.Monitor_CallID=c.Call_ID AND c.User_No='"+Constants.sysUser.getUserNo()+"'");
-		leftJoinTable.append(" LEFT JOIN JL_HJ_MON AS c ON a.Monitor_CallID=c.Call_ID");
-		
-		StringBuffer leftJoinWhere = new StringBuffer();
-		leftJoinWhere.append("");
 		
 		SysHjLineVO sysHjLine = new SysHjLineVO();
 		sysHjLine.setLeftJoinField(leftJoinField.toString());
@@ -57,17 +52,24 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 		Map<String, Object> map = this.findPojo(sysHjLine, pageSize, pageNum, "ASC");
 		List<SysHjLineVO> list = (List<SysHjLineVO>) map.get("list");
 		for(SysHjLineVO t : list){
-			if(StringUtils.isNotBlank(t.getMonitorQs())){
-				String[] ss = t.getMonitorQs().split(";");
-				List<String> ls = new ArrayList<String>();
-				for(int i=0;i<ss.length;i++){
-					if(i==3){
-						break;
-					}
-					ls.add(ss[i]);
-				}
-				t.setQsList(ls);
+			JlHjMonVO jlHjMon = new JlHjMonVO();
+			jlHjMon.setCallId(t.getMonitorCallid());
+			jlHjMon.setUserNo(sysUser.getUserNo());
+			List<JlHjMonVO> jlHjMonList = jlHjMonSQL.findList(jlHjMon);
+			if(jlHjMonList.size()>0){
+				t.setWriteTxt(jlHjMonList.get(0).getWriteTxt());
 			}
+//			if(StringUtils.isNotBlank(t.getMonitorQs())){
+//				String[] ss = t.getMonitorQs().split(";");
+//				List<String> ls = new ArrayList<String>();
+//				for(int i=0;i<ss.length;i++){
+//					if(i==3){
+//						break;
+//					}
+//					ls.add(ss[i]);
+//				}
+//				t.setQsList(ls);
+//			}
 		}
 		return map;
 	}

@@ -53,4 +53,15 @@ public interface JlHjRecService extends BaseService<JlHjRecVO>{
 	 * L_晓天  @2018年12月2日
 	 */
 	public String getWeekCount();
+	
+	/**
+	 * 说明 [下载录音录像]
+	 * @param webid
+	 * @param request
+	 * @param response
+	 * L_晓天  @2019年4月9日
+	 */
+	public void downVideo(Long webid, HttpServletRequest request, HttpServletResponse response);
+	
+	public void downAudio(Long webid, HttpServletRequest request, HttpServletResponse response);
 }

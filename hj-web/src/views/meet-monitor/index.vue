@@ -94,7 +94,7 @@
           <el-input v-model="dataFormZS.frName" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="注释" >
-          <el-input v-model="dataFormZS.writeTxt"></el-input>
+          <el-input type="textarea" :rows="8" v-model="dataFormZS.writeTxt"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

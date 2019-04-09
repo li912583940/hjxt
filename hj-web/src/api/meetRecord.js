@@ -49,3 +49,25 @@ export function exportExcel(param) {
 
 // 获取一个星期内每天会见总数
 export const GetWeekCount = params => { return request.get('/jlHjRec/getWeekCount', { params: params } ).then(res => res) }
+
+// 下载音视频
+export function DownVideo(param) {
+  return request({
+    url: '/jlHjRec/downVideo',
+    method: 'post',
+    data: param,
+    timeout: 600000,
+    responseType:'blob'
+  }).then(res => res)
+}
+
+// 下载音频
+export function DownAudio(param) {
+  return request({
+    url: '/jlHjRec/downAudio',
+    method: 'post',
+    data: param,
+    timeout: 600000,
+    responseType:'blob'
+  }).then(res => res)
+}

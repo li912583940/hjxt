@@ -104,12 +104,75 @@
 
 
     <!-- 打印小票 -->
-    <el-dialog title="" :visible.sync="dialogFormVisible" width="300px" :modal-append-to-body="false">
+    <el-dialog title="" :visible.sync="dialogFormVisible" width="650px" :modal-append-to-body="false">
       <div id="wrap" class="wrap">
-		  	<span v-for="x in this.printList">
+		  	<!--<span v-for="x in this.printList">
 		  	  <li>{{ x}}</li>
-		  	</span>
-		  </div>
+		  	</span>-->
+		  	<span v-if="jlHjDj!=null">
+		  	<div style="text-align: center"><font size="5"><b>广东省东莞监狱会见通知书（存根）</b></font></div>
+    		<br></br>
+    		<div style="margin-left: 10px;margin-right: 10px;">
+    			<font size="4">
+    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{jlHjDj.jqName }}罪犯:&nbsp;{{jlHjDj.frName }}（编号:{{jlHjDj.frNo}}）的亲属：<span v-for="x in this.jlHjDjQsList">{{x.qsName}}&nbsp;</span>等{{jlHjDj.qsNum}}人于{{jlHjDj.djTime | dateFormatYMD }}前往会见室窗口办理会见
+    			</font>
+    		</div>
+    		<br></br>
+    		<div style="margin-left: 10px">
+    			<font size="4">
+    				<span style="width: 200px;float: left">经办人：{{jlHjDj.djUser }}</span>
+    				<span style="margin-left: 150px;">会见编号：{{jlHjDj.hjIndex }}</span>
+    			</font>
+    		</div>
+    		<br></br>
+    		<div style="margin-left: 10px">-----------------------------------------------------------------------------------------------------------------</div>                                                                               
+    		<br></br>
+    		<div style="text-align: center"><font size="5"><b>广东省东莞监狱会见通知书</b></font></div>
+    		<br></br>
+    		<div style="margin-left: 10px">
+    			<font size="4">
+    				<span style="width: 200px;float: left">{{jlHjDj.jqName }}:</span>
+    			  <span style="margin-left: 150px;">会见编号：{{jlHjDj.hjIndex }}</span>
+    			</font>
+    		</div>
+    		<br></br>
+				<div style="margin-left: 10px;margin-right: 10px;">
+					<font size="4">
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;现有罪犯{{jlHjDj.frName }}（编号:{{jlHjDj.frNo}}；罪名：{{jlHjDj.infoZm }}）的亲属（共{{jlHjDj.qsNum}}人）：
+					</font>
+				</div>
+    		<div>
+	    		<table width="95%" style="margin-left: 10px" border="1"  cellpadding="0" cellspacing="0" font size="4">
+	    			<tr>
+	    				<td width="30%" height="30px" nowrap="nowrap" align="center">关系</td>
+	    				<td width="30%" height="30px" nowrap="nowrap" align="center">亲属姓名</td>
+	    				<td width="30%" height="30px" nowrap="nowrap" align="center">证件号码</td>
+	    			</tr>
+	    				<tr v-for="x in jlHjDjQsList">
+    						<td width="30%" height="30px" nowrap="nowrap" align="center">{{x.gx }}&nbsp;</td>
+    						<td width="30%" height="30px" nowrap="nowrap" align="center">{{x.qsName }}&nbsp;</td>
+    						<td width="30%" nowrap="nowrap" align="center">{{x.qsSfz }}&nbsp;</td>
+	    				</tr>
+	    		</table>
+
+    		</div>
+    		<div style="margin-left: 10px">
+    			<font size="4">
+    				于{{jlHjDj.djTime | dateFormatYMD }}前往会见室窗口办理会见
+    			</font>
+    		</div>
+    		<br></br>
+    		
+    		<br></br>
+    		<div style="margin-left: 10px">
+    			<font size="4">
+    				<span style="width: 200px;float: left">经办人：{{jlHjDj.djUser }}</span>
+    				<span style="margin-left: 200px;">{{jlHjDj.djTime | dateFormatYMD }}</span>
+    			</font>
+    		</div>
+		  	</span> 
+      </div>
+		   
       <div slot="footer" class="dialog-footer">
       	<el-button type="primary" @click="print">打 印</el-button>
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -224,7 +287,8 @@
 </template>
 
 <script>
-import { findPojo, RequestPrintXp, RequestEditDj, RequestCancelDj, findQsPojo, GetQsIdsByHjid } from '@/api/meetRegister'
+import { findPojo, RequestPrintXp, RequestEditDj, RequestCancelDj, GetQsIdsByHjid } from '@/api/meetRegister'
+import {findPojo as findQsPojo} from '@/api/relatives'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -250,7 +314,11 @@ export default {
       },
       
       dialogFormVisible: false,
-      printList : [],
+      
+      /** 打印小票 **/
+      jlHjDj: null,
+      jlHjDjQsList : [],
+      
       
       //按钮权限   1：有权限， 0：无权限
       buttonRole: { 
@@ -339,7 +407,8 @@ export default {
         frNo: undefined
       },
       /** 修改会见登记  亲属表格 结束 */
-     
+      
+   
      refreshZ: this.$route.query.refreshZ, //监控页面是否刷新
     }
   },
@@ -350,6 +419,13 @@ export default {
 	      return "";  
 	    }  
 	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
+	  },
+	  dateFormatYMD(date) {
+	  	//时间格式化  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY年MM月DD日"); 
 	  },
 	  hjTimeFilter(d){ //会见时长
 	  	if(d == undefined){
@@ -374,12 +450,6 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      if(!this.listQuery.frName){
-      	this.listQuery.frName = undefined
-      }
-      if(!this.listQuery.frNo){
-      	this.listQuery.frNo = undefined
-      }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count
@@ -440,7 +510,8 @@ export default {
     		hjid: row.hjid
     	}
     	RequestPrintXp(param).then((res) => {
-          this.printList = res.list
+          this.jlHjDj = res.jlHjDj
+          this.jlHjDjQsList = res.jlHjDjQsList
       }).catch(error => {
 	    })
 			this.dialogFormVisible = true

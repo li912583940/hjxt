@@ -13,7 +13,7 @@
 				 >
 				</el-switch>
 			</span>
-			<span else>
+			<span v-if="buttonRole.confPermission==0">
 				<el-switch
 				  style="display: block"
 				  v-model="noticeValue"

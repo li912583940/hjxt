@@ -2,6 +2,7 @@ package com.sl.ue.web.other;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,7 @@ import com.sl.ue.service.jl.JlJqService;
 import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.service.sys.SysHjLineService;
 import com.sl.ue.service.sys.SysNoticeConfService;
+import com.sl.ue.util.Config;
 import com.sl.ue.util.http.Result;
 
 @RestController
@@ -112,7 +114,12 @@ public class SfyzWeb  extends Result{
 		jlQs.setQsSfz(qsSfz);
 		List<JlQsVO> jlQsList = jlQsSQL.findList(jlQs);
 		if(jlQsList.size()>0){
-			this.putJson("jlQs", jlQsList.get(0));
+			jlQs = jlQsList.get(0);
+			String imageHttp = Config.getPropertiesValue("file.http");
+			String imageFile = Config.getPropertiesValue("file.file");
+			String url = StringUtils.isNotBlank(jlQs.getZpUrl())?imageHttp+imageFile+jlQs.getZpUrl():"";
+			jlQs.setZpUrl(url);
+			this.putJson("jlQs", jlQs);
 		}
         return this.toResult();
     }

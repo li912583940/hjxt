@@ -32,21 +32,7 @@ public class JlYjWeb extends Result{
 
     @RequestMapping("/findPojo")
     public String findPojo(JlYjVO model, Integer pageSize, Integer pageNum){
-    	StringBuffer leftJoinWhere = new StringBuffer();
-    	if(StringUtils.isNotBlank(model.getYjNo())){
-    		String str = model.getYjNo();
-    		leftJoinWhere.append(" AND a.YJ_No LIKE '%"+str+"%' ");
-    		model.setYjNo(null);
-    	}
-    	if(StringUtils.isNotBlank(model.getYjName())){
-    		String str = model.getYjName();
-    		leftJoinWhere.append(" AND a.YJ_Name LIKE '%"+str+"%' ");
-    		model.setYjName(null);
-    	}
-    	model.setLeftJoinWhere(leftJoinWhere.toString());
-        Map<String, Object> map = jlYjSQL.findPojo(model, pageSize, pageNum);
-        this.putPojo(map);
-        return this.toResult();
+        return jlYjSQL.findPojoJoin(model, pageSize, pageNum);
     }
 
     @RequestMapping("/findCount")
@@ -69,17 +55,28 @@ public class JlYjWeb extends Result{
     	jlYjQuery.setYjNo(model.getYjNo());
     	int count = jlYjSQL.count(jlYjQuery);
     	if(count>0){
-    		this.error(error_103, "狱警编号已存在");
+    		this.error(error_103, "警察编号已存在");
     		return this.toResult();
     	}
-    	model.setJy("");
-    	model.setJq("");
+    	model.setJy("Server1");
         jlYjSQL.add(model);
         return this.toResult();
     }
 
     @RequestMapping("/edit")
     public String edit(JlYjVO model){
+    	if(model.getWebid()!=null){
+    		JlYjVO oldModel = jlYjSQL.findOne(model.getWebid());
+    		if(oldModel.getYjNum()!=null && !oldModel.getYjNum().equals(model.getYjNum())){
+    			JlYjVO jlYjQuery = new JlYjVO();
+    			jlYjQuery.setYjNum(model.getYjNum());
+    			int count = jlYjSQL.count(jlYjQuery);
+    			if(count>0){
+    				this.error(error_103, "警察警号已存在");
+    	    		return this.toResult();
+    			}
+    		}
+    	}
         jlYjSQL.edit(model);
         return this.toResult();
     }

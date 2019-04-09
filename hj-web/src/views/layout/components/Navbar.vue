@@ -16,7 +16,7 @@
           <size-select class="international right-menu-item"/>
         </el-tooltip>
 
-        <lang-select class="international right-menu-item"/>
+        <!--<lang-select class="international right-menu-item"/>-->
 
         <el-tooltip :content="$t('navbar.theme')" effect="dark" placement="bottom">
           <theme-picker class="theme-switch right-menu-item"/>
@@ -34,6 +34,11 @@
               {{ $t('navbar.dashboard') }}
             </el-dropdown-item>
           </router-link>
+          <a target="_blank" @click="openDriver">
+            <el-dropdown-item>
+              	下载驱动
+            </el-dropdown-item>
+          </a>
           <a target="_blank" @click="openEditUser">
             <el-dropdown-item>
               	修改密码
@@ -51,6 +56,92 @@
       </el-dropdown>
     </div>
     
+    <!--下载驱动 -->
+    <el-dialog title="下载驱动" :visible.sync="dialogDriverVisible" width="800px" :modal-append-to-body="false">
+      <table  class="gridtable">
+      	<tr height="20px">
+      		<th width="15%">序号</th>
+      		<th width="15%">操作系统</th>
+      		<th width="50%">驱动名称</th>
+      		<th width="20%">操作</th>
+      	</tr>
+	  	 	<tr>
+	  	 		<td>1</td>
+	  	 		<td>全部</td>
+	  	 		<td>网页所需控件</td>
+	  	 		<td><a href="/static/Drivers/AllOcx.rar"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td>2</td>
+	  	 		<td>全部</td>
+	  	 		<td>IC读卡器驱动</td>
+	  	 		<td><a href="/static/Drivers/CH341SER.rar"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td>3</td>
+	  	 		<td>全部</td>
+	  	 		<td>佳博热敏打印驱动</td>
+	  	 		<td><a href="/static/Drivers/GAINSCHAV18.exe"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td>4</td>
+	  	 		<td>全部</td>
+	  	 		<td>海康Hik_DSFilters_Setup</td>
+	  	 		<td><a href="/static/Drivers/Hik_DSFilters_Setup.exe"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td>5</td>
+	  	 		<td>全部</td>
+	  	 		<td>海康Hik_MFPlugins_Setup</td>
+	  	 		<td><a href="/static/Drivers/Hik_MFPlugins_Setup.exe"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td>6</td>
+	  	 		<td>全部</td>
+	  	 		<td>ID-Ocx</td>
+	  	 		<td><a href="/static/Drivers/ID-Ocx.rar"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td>7</td>
+	  	 		<td>WindowsServer2003</td>
+	  	 		<td>IE8-WindowsServer2003-x86-CHS</td>
+	  	 		<td><a href="/static/Drivers/IE8-WindowsServer2003-x86-CHS.exe"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td>8</td>
+	  	 		<td>WindowsXP-x86</td>
+	  	 		<td>IE8-WindowsXP-x86-CHS</td>
+	  	 		<td><a href="/static/Drivers/IE8-WindowsXP-x86-CHS.exe"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td>9</td>
+	  	 		<td>win7(XP)-32位</td>
+	  	 		<td>身份证读卡器驱动</td>
+	  	 		<td><a href="/static/Drivers/USBDrv3.0-Win32.msi"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td>10</td>
+	  	 		<td>64位</td>
+	  	 		<td>身份证读卡器驱动</td>
+	  	 		<td><a href="/static/Drivers/Win7_64bit.rar"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td>11</td>
+	  	 		<td>win10-32位</td>
+	  	 		<td>身份证读卡器驱动</td>
+	  	 		<td><a href="/static/Drivers/二代证读验机具USB驱动.rar"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td>12</td>
+	  	 		<td>全部</td>
+	  	 		<td>二代证验证软件</td>
+	  	 		<td><a href="/static/Drivers/二代证验证软件.rar"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 	</tr>
+	  	</table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogDriverVisible = false">关 闭</el-button>
+      </div>
+    </el-dialog>
     
     <!-- 新增或编辑 -->
     <el-dialog title="修改密码" :visible.sync="dialogFormVisible" width="600px" :modal-append-to-body="false">
@@ -128,6 +219,8 @@ export default {
     return {
       imagephoto: '/static/image/user.jpg',
     	wavUrl: '/static/video/hjnotice.wav',
+    	
+    	dialogDriverVisible : false, //下载驱动
     	
     	dialogFormVisible: false,
     	dataForm: { 
@@ -241,6 +334,9 @@ export default {
     	var audio1 = document.getElementById("audio1")
 			audio1.currentTime = 0;
 			//audio1.play()
+    },
+    openDriver(){ // 下载驱动
+    	this.dialogDriverVisible=true
     },
     //重置表单
 		resetForm() {
@@ -364,5 +460,30 @@ export default {
       }
     }
   }
+}
+table.gridtable {
+font-family: verdana,arial,sans-serif;
+font-size:15px;
+color:#333333;
+border-width: 1px;
+border-color: #76a5af;
+width: 700px;
+border-collapse: collapse;
+margin-left: 30px;
+}
+table.gridtable th {
+border-width: 1px;
+padding: 1px;
+border-style: solid;
+border-color: #76a5af;
+background-color: #dedede;
+}
+table.gridtable td {
+border-width: 1px;
+padding: 1px;
+border-style: solid;
+border-color: #76a5af;
+background-color: #ffffff;
+text-align:center;
 }
 </style>

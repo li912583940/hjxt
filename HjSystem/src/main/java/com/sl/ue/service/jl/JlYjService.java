@@ -5,4 +5,5 @@ import com.sl.ue.service.base.BaseService;
 
 public interface JlYjService extends BaseService<JlYjVO>{
 
+	 public String findPojoJoin(JlYjVO model, Integer pageSize, Integer pageNum);
 }

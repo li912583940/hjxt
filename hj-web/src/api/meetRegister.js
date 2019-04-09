@@ -38,3 +38,6 @@ export function WordDownload(param) {
     responseType:'blob'
   }).then(res => res)
 }
+
+//同步家属 
+export const SyncQs = params => { return request.post('/jlHjDj/SyncQs', params ).then(res => res) }

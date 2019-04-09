@@ -110,6 +110,11 @@ public class JlQsWeb extends Result{
         	jlFr = jrFrList.get(0);
             model.setFrName(jlFr.getFrName());
         }
+        String imageHttp = Config.getPropertiesValue("file.http");
+		String imageFile = Config.getPropertiesValue("file.file");
+		if(StringUtils.isNotBlank(model.getZpUrl())){
+			model.setZpUrl(imageHttp+imageFile+model.getZpUrl());
+		}
         this.putJson(model);
         return this.toResult();
     }
@@ -216,6 +221,12 @@ public class JlQsWeb extends Result{
     			}
     		}
     	}
+    	model.setQsName(model.getQsName().trim());
+		model.setQsSfz(model.getQsSfz().trim());
+		if(StringUtils.isNotBlank(model.getDz())){
+			model.setDz(model.getDz().trim());
+		}
+		
     	SysUserVO user = TokenUser.getUser();
 		SysLogVO sysLog = new SysLogVO();
 		sysLog.setType("正常");
@@ -227,7 +238,7 @@ public class JlQsWeb extends Result{
 		sysLog.setLogTime(DateUtil.getDefaultNow());
 		sysLogSQL.add(sysLog);
 		
-    	
+		
         jlQsSQL.add(model);
         return this.toResult();
     }
@@ -304,7 +315,7 @@ public class JlQsWeb extends Result{
     	
     	// 查看审批亲属关系是否开启
     	if(StringUtils.isNotBlank(model.getGx())){
-    		if(oldJlQs.getGx().equals(model.getGx())){
+    		if(oldJlQs.getGx()==null || oldJlQs.getGx().equals(model.getGx())){
     			
     		}else{
     			
@@ -373,7 +384,12 @@ public class JlQsWeb extends Result{
     		}
     		
     	}
-    	
+    	model.setQsName(model.getQsName().trim());
+		model.setQsSfz(model.getQsSfz().trim());
+		if(StringUtils.isNotBlank(model.getDz())){
+			model.setDz(model.getDz().trim());
+		}
+		
     	SysUserVO user = TokenUser.getUser();
 		SysLogVO sysLog = new SysLogVO();
 		sysLog.setType("正常");
@@ -384,6 +400,7 @@ public class JlQsWeb extends Result{
 		sysLog.setUserName(user.getUserName());
 		sysLog.setLogTime(DateUtil.getDefaultNow());
 		sysLogSQL.add(sysLog);
+		
 		
         jlQsSQL.edit(model);
         return this.toResult();

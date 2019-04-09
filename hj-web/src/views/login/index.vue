@@ -1,17 +1,17 @@
 <template>
   <div class="login-container">
   	
-  	<div class="guohui">
-		  		<img src="/static/image/hjlogo.png" width="15%"  height="15%"/>
-		  		
-		  	</div>
+  	<!--<div class="guohui">
+		  <img src="/static/image/hjlogo.png" width="15%"  height="15%"/>
+		</div>-->
   	<!--<center>-->
 	    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 				
-	      <!--<div class="title-container">
+	      <div class="title-container">
 	        <!--<h3 class="title">{{ $t('login.title') }}</h3>-->
+	        <h3 class="title">广东省东莞监狱会见系统</h3>
 	        <!--<lang-select class="set-language"/>-->
-	      <!--</div>-->
+	      </div>
 				
 				
   	
@@ -230,7 +230,7 @@ $bg:#FFFAFA;
 /*$dark_gray:#889aa4;*/
 $dark_gray:#1E1E1E;
 $light_gray:#1E1E1E;
-$bgImg:url(/static/image/bj_kuaiyu.jpg);
+$bgImg:url(/static/image/广州维实信息科技有限公司.jpg);
 
 
 .login-container {
@@ -284,8 +284,9 @@ $bgImg:url(/static/image/bj_kuaiyu.jpg);
   .title-container {
     position: relative;
     .title {
-      font-size: 26px;
-      color: $light_gray;
+    	font-family: "宋体";
+      font-size: 30px;
+      color: #4F4F4F;
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;

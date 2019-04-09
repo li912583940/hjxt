@@ -27,7 +27,7 @@
 	      	 	</tr>
 	      	</table>
 	      	<div style="margin-top: 14px;">
-	      		<table  class="gridtable" v-if="jlFr!=null">
+	      		<table  class="gridtable">
 		      	 	<tr>
 		      	 		<th width="15%">罪犯编号</th>
 		      	 		<th width="15%">罪犯姓名</th>
@@ -36,25 +36,15 @@
 		      	 		<th width="15%">分管等级</th>
 		      	 		<th width="25%">罪名</th>
 		      	 	</tr>
-		      	 	<tr>
-		      	 		<td width="15%">{{jlFr.frNo}}</td>
-		      	 		<td width="15%">{{jlFr.frName}}</td>
-		      	 		<td width="15%">{{jlFr.jqName}}</td>
-		      	 		<td width="15%">{{jlFr.zw}}</td>
-		      	 		<td width="15%">{{jlFr.jbName}}</td>
-		      	 		<td width="25%">{{jlFr.infoZm}}</td>
+		      	 	<tr v-if="jlFr!=null">
+		      	 		<td width="15%"><font color="red"> {{jlFr.frNo}} </font> </td>
+		      	 		<td width="15%"><font color="red"> {{jlFr.frName}} </font> </td>
+		      	 		<td width="15%"><font color="red"> {{jlFr.jqName}} </font> </td>
+		      	 		<td width="15%"><font color="red"> {{jlFr.zw}} </font> </td>
+		      	 		<td width="15%"><font color="red"> {{jlFr.jbName}} </font> </td>
+		      	 		<td width="25%"><font color="red"> {{jlFr.infoZm}} </font> </td>
 		      	 	</tr>
-		      	</table>
-		      	<table class="gridtable"  v-if="jlFr==null">
-		      	 	<tr>
-		      	 		<th width="15%">罪犯编号</th>
-		      	 		<th width="15%">罪犯姓名</th>
-		      	 		<th width="15%">监区名称</th>
-		      	 		<th width="15%">座位</th>
-		      	 		<th width="15%">分管等级</th>
-		      	 		<th width="25%">罪名</th>
-		      	 	</tr>
-		      	 	<tr>
+		      	 	<tr v-if="jlFr==null">
 		      	 		<td colspan="6" ><font color="red" >没有相关信息</font></td>
 		      	 	</tr>
 		      	</table>
@@ -111,6 +101,11 @@ export default {
       	 	this.qs.xb=res.jlQs.xb
       	 	this.qs.sfz=res.jlQs.qsSfz
       	 	this.qs.dz=res.jlQs.dz
+      	 	if(res.jlQs.zpUrl){
+      	 		this.sfzImg = res.jlQs.zpUrl
+      	 	}else{
+      	 		this.sfzImg = '/static/image/zpbj.jpg'
+      	 	}
       	 }else{
       	 	this.qs.qsName=undefined
       	 	this.qs.xb=undefined
@@ -184,7 +179,9 @@ export default {
 		this.qs.dz = IDCard2.Address
 		this.qs.xb = IDCard2.Sex==2?'女':'男'
 //		document.getElementById("sfzzzz").value=b;
-
+		var zpAddress=IDCard2.PhotoName
+		document.getElementById("zp").src=zpAddress
+		
 		this.listQuery.qsSfz=this.qs.qsSfz
 	  	this.getList()
   	},

@@ -154,7 +154,7 @@
 	      </el-table-column>
 	      <el-table-column align="center" label="亲属相片" width="100">
 	        <template slot-scope="scope">
-	          <span><img :src="sfzImg" id="zp" name="zp" width="25px" height="31px" @click="clickImg($event)"/></span>
+	          <span><img :src="scope.row.zpUrl"  width="25px" height="31px" @click="clickImg($event)"/></span>
 	        </template>
 	      </el-table-column>
 	      <el-table-column width="100px" align="center" label="关系">
@@ -241,6 +241,83 @@
 	    </div>-->
 	  </el-card>
     
+    <!-- 打印小票 -->
+    <el-dialog title="" :visible.sync="dialogFormVisible" width="650px" :modal-append-to-body="false">
+      <div id="wrap" class="wrap">
+		  	<!--<span v-for="x in this.printList">
+		  	  <li>{{ x}}</li>
+		  	</span>-->
+		  	<span v-if="jlHjDj!=null">
+		  	<div style="text-align: center"><font size="5"><b>广东省东莞监狱会见通知书（存根）</b></font></div>
+    		<br></br>
+    		<div style="margin-left: 10px;margin-right: 10px;">
+    			<font size="4">
+    				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{jlHjDj.jqName }}罪犯:&nbsp;{{jlHjDj.frName }}（编号:{{jlHjDj.frNo}}）的亲属：<span v-for="x in this.jlHjDjQsList">{{x.qsName}}&nbsp;</span>等{{jlHjDj.qsNum}}人于{{jlHjDj.djTime | dateFormatYMD }}前往会见室窗口办理会见
+    			</font>
+    		</div>
+    		<br></br>
+    		<div style="margin-left: 10px">
+    			<font size="4">
+    				<span style="width: 200px;float: left">经办人：{{jlHjDj.djUser }}</span>
+    				<span style="margin-left: 150px;">会见编号：{{jlHjDj.hjIndex }}</span>
+    			</font>
+    		</div>
+    		<br></br>
+    		<div style="margin-left: 10px">-----------------------------------------------------------------------------------------------------------------</div>                                                                               
+    		<br></br>
+    		<div style="text-align: center"><font size="5"><b>广东省东莞监狱会见通知书</b></font></div>
+    		<br></br>
+    		<div style="margin-left: 10px">
+    			<font size="4">
+    				<span style="width: 200px;float: left">{{jlHjDj.jqName }}:</span>
+    			  <span style="margin-left: 150px;">会见编号：{{jlHjDj.hjIndex }}</span>
+    			</font>
+    		</div>
+    		<br></br>
+				<div style="margin-left: 10px;margin-right: 10px;">
+					<font size="4">
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;现有罪犯{{jlHjDj.frName }}（编号:{{jlHjDj.frNo}}；罪名：{{jlHjDj.infoZm }}）的亲属（共{{jlHjDj.qsNum}}人）：
+					</font>
+				</div>
+    		<div>
+	    		<table width="95%" style="margin-left: 10px" border="1"  cellpadding="0" cellspacing="0" font size="4">
+	    			<tr>
+	    				<td width="30%" height="30px" nowrap="nowrap" align="center">关系</td>
+	    				<td width="30%" height="30px" nowrap="nowrap" align="center">亲属姓名</td>
+	    				<td width="30%" height="30px" nowrap="nowrap" align="center">证件号码</td>
+	    			</tr>
+	    				<tr v-for="x in jlHjDjQsList">
+    						<td width="30%" height="30px" nowrap="nowrap" align="center">{{x.gx }}&nbsp;</td>
+    						<td width="30%" height="30px" nowrap="nowrap" align="center">{{x.qsName }}&nbsp;</td>
+    						<td width="30%" nowrap="nowrap" align="center">{{x.qsSfz }}&nbsp;</td>
+	    				</tr>
+	    		</table>
+
+    		</div>
+    		<div style="margin-left: 10px">
+    			<font size="4">
+    				于{{jlHjDj.djTime | dateFormatYMD }}前往会见室窗口办理会见
+    			</font>
+    		</div>
+    		<br></br>
+    		
+    		<br></br>
+    		<div style="margin-left: 10px">
+    			<font size="4">
+    				<span style="width: 200px;float: left">经办人：{{jlHjDj.djUser }}</span>
+    				<span style="margin-left: 200px;">{{jlHjDj.djTime | dateFormatYMD }}</span>
+    			</font>
+    		</div>
+		  	</span> 
+      </div>
+		   
+      <div slot="footer" class="dialog-footer">
+      	<el-button type="primary" @click="print">打 印</el-button>
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        
+      </div>
+    </el-dialog>
+    
     <button hidden="hidden" id="shibie1" @click="shibie()"></button>
     <!-- 放大图片 -->
     <big-img v-if="showImg" @clickit="viewImg" :imgSrc="imgSrc"></big-img>
@@ -248,8 +325,8 @@
 </template>
 
 <script>
-import { findFrPojo, findQsPojo, findJqList, RequestAddHjdj, WordDownload } from '@/api/meetRegister'
-import {RequestDelete as  RequestQsDelete} from '@/api/relatives'
+import { findFrPojo, findJqList, RequestAddHjdj, WordDownload, SyncQs, RequestPrintXp } from '@/api/meetRegister'
+import {findPojo as findQsPojo, RequestDelete as  RequestQsDelete} from '@/api/relatives'
 
 import moment from 'moment'
 import waves from '@/directive/waves' // 水波纹指令
@@ -288,7 +365,7 @@ export default {
       qsListLoading: false,
       qsListQuery: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 20,
         frNo: undefined
       },
       
@@ -370,6 +447,10 @@ export default {
       ],
       
       frNoQuery: this.$route.query.frNoQuery,
+      
+      jlHjDj: null,
+      jlHjDjQsList: [],
+      hjid:null,
     }
   },
   components: {
@@ -382,7 +463,14 @@ export default {
 	      return "";  
 	    }  
 	    return moment(date).format("YYYY-MM-DD HH:mm:ss");  
-	  }
+	 },
+	 dateFormatYMD(date) {
+	  	//时间格式化  
+	    if (date == undefined) {  
+	      return "";  
+	    }  
+	    return moment(date).format("YYYY年MM月DD日"); 
+	  },
   },
   created() {
    
@@ -412,10 +500,7 @@ export default {
 	      	 this.frTotal = res.pojo.count
 	      	 this.frListLoading = false
 
-						let qsparam={
-							 frNo:this.frNoQuery
-						}
-						findQsPojo(qsparam).then((res) => {
+						findQsPojo(param).then((res) => {
 			      	 this.qsList = res.pojo.list
 			      	 this.qsTotal = res.pojo.count
 			      	 this.qsListLoading = false
@@ -425,27 +510,11 @@ export default {
 	      }).catch(error => {
 	          this.frListLoading = false
 	      })
-  			this.getQsFrList()
   		}
   		this.frListLoading = false
   	},
     getFrList() {
       this.frListLoading = true
-      if(!this.frListQuery.frName){
-      	this.frListQuery.frName = undefined
-      }
-      if(!this.frListQuery.frNo){
-      	this.frListQuery.frNo = undefined
-      }
-      if(!this.frListQuery.jq){
-      	this.frListQuery.jq = undefined
-      }
-      if(!this.frListQuery.qsSfz){
-      	this.frListQuery.qsSfz = undefined
-      }
-      if(!this.frListQuery.qsName){
-      	this.frListQuery.qsName = undefined
-      }
       findFrPojo(this.frListQuery).then((res) => {
       	 this.frList = res.pojo.list
       	 this.frTotal = res.pojo.count
@@ -463,9 +532,6 @@ export default {
     },
     getQsFrList() {
       this.qsListLoading = true
-      if(!this.qsListQuery.frNo){
-      	this.qsListQuery.frNo = undefined
-      }
       findQsPojo(this.qsListQuery).then((res) => {
       	 this.qsList = res.pojo.list
       	 this.qsTotal = res.pojo.count
@@ -499,6 +565,7 @@ export default {
     	let roles = sessionStorage.getItem("roles")
     	if(roles.includes('admin')){
     		this.buttonRole.addQsPermission= 1
+    		this.buttonRole.editQsPermission=1
     		this.buttonRole.deleteQsPermission= 1
     		this.buttonRole.syncQsPermission= 1
     	}else{
@@ -506,8 +573,10 @@ export default {
     		let meetRegister = buttonRoles.meetRegister
     		if(meetRegister.length>0){
     			for(let value of meetRegister){
-    					if(value=='addQsPermission'){
+    				if(value=='addQsPermission'){
     					this.buttonRole.addQsPermission= 1
+    				}else if(value=='editQsPermission'){
+    					this.buttonRole.editQsPermission= 1
     				}else if(value=='deleteQsPermission'){
     					this.buttonRole.deleteQsPermission= 1
     				}else if(value=='syncQsPermission'){
@@ -595,6 +664,8 @@ export default {
 	      background: 'rgba(0, 0, 0, 0.7)'
 	    })
     	RequestAddHjdj(this.formdata).then((res) => {
+    		this.hjid = res.hjid
+    		console.log(res.hjid)
     		loading.close();
         Message({
 	        message: res.errMsg,
@@ -606,12 +677,18 @@ export default {
       	this.frListQuery.jq = undefined
       	this.frListQuery.qsSfz = undefined
       	this.frListQuery.qsName = undefined
+      	if(this.hjid){
+	    		console.log(this.hjid)
+	    		this.printXp(this.hjid)
+	    	}
     		//history.go(-1) 
     		//let timestamp=new Date().getTime()
     		//this.$router.push({ path: '/meetRegister/index', query: {refreshZ:timestamp} })
     	}).catch(error =>{
     		loading.close();
     	})
+    	
+    	
     },
     returnPrevious(){ // 返回上一页
     	let timestamp=new Date().getTime()
@@ -675,10 +752,10 @@ export default {
   	shibie(){ // 识别身份证信息并查询
     	var IDCard2=document.getElementById("IDCard2");
 		  IDCard2.SetPhotoName(2);
-		  //let a = IDCard2.Base64Photo;
-		//document.getElementById("base64").value=a;
-		  this.frListQuery.qsSfz = IDCard2.CardNo
-		  this.frListQuery.qsName = IDCard2.NameA
+		  var qsSfz = IDCard2.CardNo
+		  this.frListQuery.qsSfz = qsSfz.trim()
+		  var qsName = IDCard2.NameA
+		  this.frListQuery.qsName = qsName.trim()
 //		  document.getElementById("sfzzzz").value=b;
 //	  	document.getElementById("qsName").value=IDCard2.NameA;
 //	  	document.getElementById("qsSfz").value=IDCard2.CardNo;
@@ -690,17 +767,39 @@ export default {
   	handleAddQs(row) { //打开亲属
     	this.$router.push({ path: '/addQs', query: {frNo: row.frNo, frName:row.frName} })
 		},
-		handleSyncQs(){ // 同步亲属
-			
+		handleSyncQs(row){ // 同步亲属
+			this.$confirm('确认同步亲属吗?', '提示', {
+				type: 'warning'
+			}).then(() => {
+				let param={
+					frNo: row.frNo
+				}
+				SyncQs(param).then(res=>{
+					let qsNum = res.qsNum
+					Message({
+		        message: '本次同步到了亲属 '+qsNum+' 人',
+			      type: 'success',
+			      duration: 5 * 1000
+		      });
+				}).catch(error =>{
+					
+				})
+			})
 		},
 		handleDeleteQs(row){
-			let param={
-				id: row.webid
-			}
-			RequestQsDelete(param).then(res=>{
-				this.getQsFrList()
-			}).catch(error => {
-	    })
+			this.$confirm('确认删除亲属吗?', '提示', {
+				type: 'warning'
+			}).then(() => {
+				let param={
+					id: row.webid
+				}
+				RequestQsDelete(param).then(res=>{
+					this.qsListQuery.frNo = row.frNo
+					this.getQsFrList()
+				}).catch(error => {
+		    })
+			})
+			
 		},
 		wordDownload(row){
     	let param ={
@@ -726,6 +825,27 @@ export default {
 	    }).catch(error => {
 	        console.log(error)
 	    })
+    },
+    
+    // 打印小票
+    printXp(hjid) {
+    	let param = {
+    		hjid: hjid
+    	}
+    	RequestPrintXp(param).then((res) => {
+          this.jlHjDj = res.jlHjDj
+          this.jlHjDjQsList = res.jlHjDjQsList
+      }).catch(error => {
+	    })
+			this.dialogFormVisible = true
+    },
+    
+    print(){
+    	var newstr = document.getElementsByClassName('wrap')[0].innerHTML
+    	document.body.innerHTML = newstr
+      window.print()
+      // 重新加载页面，以刷新数据
+      window.location.reload()
     },
   }
   

@@ -23,6 +23,11 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.dom4j.Attribute;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
@@ -63,10 +68,12 @@ import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.service.sys.SysHjLineService;
 import com.sl.ue.service.sys.SysNoticeConfService;
 import com.sl.ue.service.sys.SysParamService;
+import com.sl.ue.service.sys.SysUserService;
 import com.sl.ue.util.Config;
 import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.token.TokenUser;
+import com.sl.ue.util.webservice.entlogic.RtInterface;
 
 
 @Service("jlHjDjSQL")
@@ -100,7 +107,8 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 	private SysNoticeConfService sysNoticeConfSQL;
 	@Autowired
 	private JlHjDjQsService jlHjDjQsSQL;
-	
+	@Autowired
+	private SysUserService sysUserSQL;
 	@Override
 	public String addHjdj(
 			String frNo, // 罪犯编号
@@ -357,12 +365,12 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		
 		
 		
-		//亲属关系为其他
+		//查看是否有亲属关系需要审批
 		JlHjSpSetVO jlHjSpSetQuery = new JlHjSpSetVO();
 		jlHjSpSetQuery.setUsable(1);
 		jlHjSpSetQuery.setSpNo("5");
 		List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
-		if(jlHjSpSetList.size()>0){ // 开启了《罪犯本月会见次数已用完》的审批
+		if(jlHjSpSetList.size()>0){ // 开启了亲属关系需要审批
 			jlHjSpSet=jlHjSpSetList.get(0);
 			List<String> spGx = Arrays.asList(jlHjSpSet.getSpValue().split(","));
 			for(String gx :qsGxList){
@@ -475,8 +483,10 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 				jlHjSpSQL.add(jlHjSp);
 				result.msg("提交登记成功，但此次会见需要审批，审批通过后才能参与会见");
 			}else{
+				result.putJson("hjid", addJlHjDj.getHjid());
 				result.msg("提交登记成功");
 			}
+			
 		} catch (Exception e) {
 			result.error(Result.error_103, "添加会见登记失败");
 			return result.toResult();
@@ -546,6 +556,40 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		return result.toResult();
 	}
 
+	public String printXpDG(Long id){
+		Result result = new Result();
+		JlHjDjVO jlHjDj = this.findOne(id);
+		if(jlHjDj == null){
+			result.error(Result.error_103, "当前登记记录不存在");
+			return result.toResult();
+		}
+		
+		SysUserVO sysUser = new SysUserVO();
+		sysUser.setUserNo(jlHjDj.getDjUser());
+		List<SysUserVO> sysUserList = sysUserSQL.findList(sysUser);
+		if(sysUserList.size()>0){
+			sysUser = sysUserList.get(0);
+			jlHjDj.setDjUserName(sysUser.getUserName());
+		}
+		
+		JlHjDjQsVO jlHjDjQs = new JlHjDjQsVO();
+		jlHjDjQs.setHjId(jlHjDj.getHjid());
+		List<JlHjDjQsVO> jlHjDjQsList = jlHjDjQsSQL.findList(jlHjDjQs);
+		
+		JlFrVO jlFr = new JlFrVO();
+		jlFr.setFrNo(jlHjDj.getFrNo());
+		List<JlFrVO> jlFrList = jlFrSQL.findList(jlFr);
+		if(jlFrList.size()>0){
+			jlFr = jlFrList.get(0);
+			jlHjDj.setInfoZm(jlFr.getInfoZm());
+		}
+		jlHjDj.setQsNum(jlHjDjQsList.size());
+		result.putJson("jlHjDj", jlHjDj);
+		result.putData("jlHjDjQsList", jlHjDjQsList);
+		
+		return result.toResult();
+	}
+	
 	public String cancelDj(Long id, String cancelInfo){
 		Result result = new Result();
 		JlHjDjVO jlHjDj = this.findOne(id);
@@ -668,9 +712,9 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 				for(int i=0; i<jlQsList.size();i++){
 					JlQsVO jlQs = jlQsList.get(i);
 					if(i==0){
-						frNos = jlQs.getFrNo();
+						frNos = "'"+jlQs.getFrNo()+"'";
 					}else{
-						frNos +=","+jlQs.getFrNo();
+						frNos +=",'"+jlQs.getFrNo()+"'";
 					}
 				}
 			}else{
@@ -1338,39 +1382,125 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		model.setQsInfo9("");
 		model.setQsCard9("");
 		
+		List<String> qsGxList = new ArrayList(); // 将登记的亲属关系存储起来， 最后判断其中是否有家属关系需要审批
+		
+		//会见登记家属表，用来作身份验证
+		List<JlHjDjQsVO> jlHjDjQsList = new ArrayList<>();
 		String[] qsIdss = qsIds.split(",");
+		String qsInfo="";
 		for(int i=0; i<qsIdss.length;i++){ // 亲属
 			JlQsVO jlQs = jlQsSQL.findOne(qsIdss[i]);
-			String gx = StringUtils.isNotBlank(jlQs.getGx())?"["+jlQs.getGx()+"]":"";
+			if(StringUtils.isBlank(jlQs.getGx()) || StringUtils.isBlank(jlQs.getQsSfz())){ //先判断提交的亲属中是否有身份证号码和亲属关系没有的
+				result.error(Result.error_103, "提交的登记中，有家属没有绑定身份证号码或者亲属关系");
+				return result.toResult();
+			}
+			if(StringUtils.isNotBlank(jlQs.getGx())){
+				qsGxList.add(jlQs.getGx());
+			}
+			//添加登记家属，用来作验证
+			JlHjDjQsVO jlHjDjQs =JSON.parseObject(JSONObject.toJSONString(jlQs), JlHjDjQsVO.class);
+			jlHjDjQs.setWebid(null);
+			jlHjDjQs.setQsId(jlQs.getWebid());
+			jlHjDjQsList.add(jlHjDjQs);
+			
+			String gx = "["+jlQs.getGx()+"]";
 			String name = StringUtils.isNotBlank(jlQs.getQsName())?jlQs.getQsName():"";
 			if(i==0){
 				model.setQsInfo1(gx+name);
 				model.setQsCard1(jlQs.getQsCard());
+				qsInfo=model.getQsInfo1();
 			}else if(i==1){
 				model.setQsInfo2(gx+name);
 				model.setQsCard2(jlQs.getQsCard());
+				qsInfo+=model.getQsInfo2();
 			}else if(i==2){
 				model.setQsInfo3(gx+name);
 				model.setQsCard3(jlQs.getQsCard());
+				qsInfo+=model.getQsInfo3();
 			}else if(i==3){
 				model.setQsInfo4(gx+name);
 				model.setQsCard4(jlQs.getQsCard());
+				qsInfo+=model.getQsInfo4();
 			}else if(i==4){
 				model.setQsInfo5(gx+name);
 				model.setQsCard5(jlQs.getQsCard());
+				qsInfo+=model.getQsInfo5();
 			}else if(i==5){
 				model.setQsInfo6(gx+name);
 				model.setQsCard6(jlQs.getQsCard());
+				qsInfo+=model.getQsInfo6();
 			}else if(i==6){
 				model.setQsInfo7(gx+name);
 				model.setQsCard7(jlQs.getQsCard());
+				qsInfo+=model.getQsInfo7();
 			}else if(i==7){
 				model.setQsInfo8(gx+name);
 				model.setQsCard8(jlQs.getQsCard());
+				qsInfo+=model.getQsInfo8();
 			}else if(i==8){
 				model.setQsInfo9(gx+name);
 				model.setQsCard9(jlQs.getQsCard());
+				qsInfo+=model.getQsInfo9();
 			}
+		}
+		JlHjSpSetVO jlHjSpSet = null;
+		String explain = "";
+		boolean is_sp=false;
+		//查看是否有亲属关系需要审批
+		JlHjSpSetVO jlHjSpSetQuery = new JlHjSpSetVO();
+		jlHjSpSetQuery.setUsable(1);
+		jlHjSpSetQuery.setSpNo("5");
+		List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
+		if(jlHjSpSetList.size()>0){ // 开启了亲属关系需要审批
+			jlHjSpSet=jlHjSpSetList.get(0);
+			List<String> spGx = Arrays.asList(jlHjSpSet.getSpValue().split(","));
+			for(String gx :qsGxList){
+				if(spGx.contains(gx)){ //有亲属关系需要审批
+					if(StringUtils.isNotBlank(explain)){
+						explain+=";"+jlHjSpSet.getSpName();
+					}else{
+						explain=jlHjSpSet.getSpName();
+					}
+					is_sp=true;
+					break;
+				}
+			}
+		}
+		//先删除
+		JlHjDjQsVO deleteQs = new JlHjDjQsVO();
+		deleteQs.setHjId(model.getHjid());
+		jlHjDjQsSQL.delete(deleteQs);
+		//再添加
+		for(JlHjDjQsVO t : jlHjDjQsList){
+			t.setHjId(model.getHjid());
+			jlHjDjQsSQL.add(t);
+		}
+		
+		if(is_sp){
+			JlHjSpVO jlHjSp = new JlHjSpVO();
+			jlHjSp.setHjid(model.getHjid());
+			List<JlHjSpVO> jlHjSpList = jlHjSpSQL.findList(jlHjSp);
+			if(jlHjSpList.size()>0){
+				result.msg("提交登记成功");
+			}else{
+				jlHjSp.setType(1);
+				jlHjSp.setSetNo(jlHjSpSet.getSpNo());
+				jlHjSp.setSetName(jlHjSpSet.getSpName());
+				jlHjSp.setExplain(explain);
+				jlHjSp.setMaxNum(jlHjSpSet.getMaxNum());
+				jlHjSp.setSpeedProgress(1);
+				jlHjSp.setState(0);
+				jlHjSp.setFrNo(model.getFrNo());
+				jlHjSp.setFrName(model.getFrName());
+				jlHjSp.setJqNo(model.getJqNo());
+				jlHjSp.setJqName(model.getJqName());
+				jlHjSp.setQsInfo(qsInfo);
+				jlHjSp.setTjTime(new Date());
+				jlHjSpSQL.add(jlHjSp);
+				result.msg("修改登记成功，但此次修改的亲属需要审批，审批通过后才能参与会见");
+			}
+		}else{
+			result.msg("修改登记成功");
 		}
 		this.edit(model);
 		return result.toResult();
@@ -1438,5 +1568,81 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		return result.toResult();
 	}
 
-	
+	public String syncQs(String frNo){
+		Result result = new Result();
+		if(StringUtils.isBlank(frNo)){
+			result.error(Result.error_102);
+			return result.toResult();
+		}
+		com.sl.ue.util.webservice.entlogic.Service service1 = new com.sl.ue.util.webservice.entlogic.Service();
+		com.sl.ue.util.webservice.entlogic.RtInterface rtInterface = service1.getRtInterfaceImpPort();
+										
+		System.out.println("访问webservice接口成功。。。。。");
+		String bh = "@bh='"+frNo+"'";					
+		String zfshgxdg = rtInterface.invoke("unitop","unitop","zf_shgx_dg",bh);
+		System.out.println("开始处理罪犯家属数据");
+		Document doc2;
+		try {
+			doc2 = DocumentHelper.parseText(zfshgxdg);
+			Element rootElement2 = doc2.getRootElement();
+			Element root2 = doc2.getRootElement();
+			List attrList2 = root2.attributes();
+			Attribute item3 = (Attribute)attrList2.get(0);
+			System.out.println("获取到家属根节点判断登录成功属性"+item3.getName()+"="+item3.getValue());
+			String code2 = item3.getValue();
+			if(!code2.equals("0")){
+				result.error(Result.error_103, "同步亲属时，调用对方接口返回失败");				
+				return result.toResult();
+			}else{
+				List<Element> shgx1 = rootElement2.elements("zf_shgx_dg");
+				
+				int a=0;
+				for (int i = 0; i < shgx1.size(); i++) {
+					Element shgx = shgx1.get(i);
+					String bhss = shgx.element("bh").getText();
+					String xmss = shgx.element("xm").getText();						
+					JlQsVO jlQsQuery = new JlQsVO();
+					jlQsQuery.setFrNo(frNo);
+					jlQsQuery.setQsName(xmss);
+					List<JlQsVO> jlQsList = jlQsSQL.findList(jlQsQuery);
+					if(jlQsList.size()>0){
+						
+					}else{
+						JlQsVO jlQs = new JlQsVO();
+						jlQs.setFrNo(shgx.element("bh").getText());
+						jlQs.setQsName(shgx.element("xm").getText());
+						if(shgx.element("zjbm").getText() != null && !shgx.element("zjbm").getText().equals("null")){
+							jlQs.setQsSfz(shgx.element("zjbm").getText());
+						}else{
+							jlQs.setQsSfz(null);
+						}
+						if(shgx.element("gx").getText() != null && !shgx.element("gx").getText().equals("null")){
+							jlQs.setGx(shgx.element("gx").getText());
+						}
+						if(shgx.element("jtqh").getText() != null && !shgx.element("jtqh").getText().equals("null")){
+							jlQs.setDz(shgx.element("jtqh").getText());
+						}
+						if(shgx.element("dh").getText() != null && !shgx.element("dh").getText().equals("null")){
+							jlQs.setTele(shgx.element("dh").getText());
+						}
+						if(shgx.element("dh").getText() != null && !shgx.element("dh").getText().equals("null")){
+							jlQs.setTele(shgx.element("dh").getText());
+						}
+						jlQs.setSpState(1);
+						jlQs.setFaceState(0);
+						jlQs.setCreatetime(new Date());
+						jlQs.setQsZjlb(1);
+						a++;	
+						jlQsSQL.add(jlQs);
+					}						
+				}
+				result.putJson("qsNum", a);
+				
+			}
+		} catch (DocumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result.toResult();
+	}
 }

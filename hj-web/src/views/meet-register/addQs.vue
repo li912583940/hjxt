@@ -16,8 +16,8 @@
 		        </el-form-item>
 		        <el-form-item label="证件图像" prop="zp">
 		          <img :src="sfzImg" id="zp" name="zp" width="100px" height="126px" />
-		          <span v-if="dataQsForm.jzUrl!=null || dataQsForm.jzUrl!=undefined">
-		          	<img src="dataQsForm.jzUrl"  width="100px" height="126px" />
+		          <span v-if="zpUrl!=null">
+		          	<img :src="zpUrl"  width="100px" height="126px" />
 		          </span>
 		        </el-form-item>
 		        <!--<el-form-item label="近照" >
@@ -84,7 +84,7 @@
 
 <script>
 import { findList as findGxList} from '@/api/gxManage'
-import { findPojo as findQsPojo, findOne as findQsOne, RequestAdd as RequestQsAdd, RequestEdit as RequestQsEdit, RequestDelete as RequestQsDelete, WordDownload} from '@/api/relatives'
+import { findOne, RequestAdd, RequestEdit, WordDownload} from '@/api/relatives'
 import { Message, MessageBox } from 'element-ui'
 
 export default {
@@ -92,6 +92,7 @@ export default {
   data() {
     return {
       sfzImg: '/static/image/zpbj.jpg',
+      //sfzImg: 'D:/tmp.jpg',
       wordPath: process.env.BASE_API+"/jlQs/uploadWord", //上传亲属附件
       // 新增或编辑弹窗
       dataQsForm: { 
@@ -110,9 +111,10 @@ export default {
         bz: undefined,
         jzBase64: undefined,
         zpBase64: undefined,
-        jzUrl: undefined,
         enclosureUrl: undefined,
       },
+      zpUrl: null,
+      jzUrl: null,
       uploadBoolean: 0,
       gxs: [ // 关系
       	
@@ -180,7 +182,7 @@ export default {
   			let param ={
   				id:this.dataQsForm.webid
   			}
-  			findQsOne(param).then(res =>{
+  			findOne(param).then(res =>{
   				let x = res.data
   				this.dataQsForm.frName= x.frName
   				this.dataQsForm.qsZjlb = x.qsZjlb
@@ -193,7 +195,8 @@ export default {
   				this.dataQsForm.tele = x.tele
   				this.dataQsForm.spState = x.spState
   				this.dataQsForm.bz = x.bz
-  				this.dataQsForm.jzUrl = x.jzUrl
+  				this.jzUrl = x.jzUrl
+  				this.zpUrl = x.zpUrl
   				this.dataQsForm.enclosureUrl = x.enclosureUrl
   				if(x.enclosureUrl){
   					this.uploadBoolean=1
@@ -218,7 +221,7 @@ export default {
       this.$refs['dataQsForm'].validate((valid) => {
         if (valid) {
         	if(this.dataQsForm.webid != undefined){
-        		RequestQsEdit(this.dataQsForm).then(res => {
+        		RequestEdit(this.dataQsForm).then(res => {
 		          	Message({
 				        message: res.errMsg,
 					    type: 'success',
@@ -228,7 +231,7 @@ export default {
 		        }).catch(error => {
 			    })
         	}else{
-        		RequestQsAdd(this.dataQsForm).then(res => {
+        		RequestAdd(this.dataQsForm).then(res => {
 		          	Message({
 				        message: res.errMsg,
 					    type: 'success',
@@ -380,28 +383,31 @@ export default {
     	var IDCard2=document.getElementById("IDCard2");
     	
 		IDCard2.SetPhotoName(2);
-		//let a = IDCard2.Base64Photo;
-		//document.getElementById("base64").value=a;
-		this.dataQsForm.qsSfz = IDCard2.CardNo
-		this.dataQsForm.qsName = IDCard2.NameA
-		this.dataQsForm.dz = IDCard2.Address
+		
+		var qsSfz = IDCard2.CardNo
+		this.dataQsForm.qsSfz = qsSfz.trim()
+		var qsName = IDCard2.NameA
+		this.dataQsForm.qsName = qsName.trim()
+		var dz = IDCard2.Address
+		this.dataQsForm.dz = dz.trim()
 		this.dataQsForm.xb = IDCard2.Sex==2?'女':'男'
 //		document.getElementById("sfzzzz").value=b;
 		var zpAddress=IDCard2.PhotoName
+		document.getElementById("zp").src=zpAddress
 		
-		var image = new Image();
-		image.src = zpAddress;
-		//var canvas = document.createElement("canvas");
-		var canvas = document.getElementById('canvas');
-	    canvas.width = 100;
-	    canvas.height = 126;
-	    var ctx = canvas.getContext("2d");
-	    ctx.drawImage(image, 0, 0, 100, 126);
-	    var imgData = canvas.toDataURL("image/jpg");
-		this.dataQsForm.zpBase64=imgData.substr(22);
-		//document.getElementById("zp").src=zpAddress;
-		this.sfzImg=zpAddress
-		console.log(zpAddress)
+		this.dataQsForm.zpBase64=IDCard2.Base64Photo
+//		var image = new Image();
+//		image.src = zpAddress;
+//		//var canvas = document.createElement("canvas");
+//		var canvas = document.getElementById('canvas');
+//	    canvas.width = 100;
+//	    canvas.height = 126;
+//	    var ctx = canvas.getContext("2d");
+//	    ctx.drawImage(image, 0, 0, 100, 126);
+//	    var imgData = canvas.toDataURL("image/jpg");
+//		this.dataQsForm.zpBase64=imgData.substr(22);
+//		console.log(this.dataQsForm.zpBase64)
+		//this.sfzImg=zpAddress
   	},
 
     wordSuccess(res) {

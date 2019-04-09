@@ -33,6 +33,13 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 	public String printXp(Long id);
 	
 	/**
+	 * 说明 [打印小票 东莞监狱]
+	 * @param id
+	 * @return
+	 * L_晓天  @2019年4月9日
+	 */
+	public String printXpDG(Long id);
+	/**
 	 * 说明 [获取当前会见登记的亲属id集合]
 	 * @param hjid
 	 * @return
@@ -137,4 +144,12 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 	 * L_晓天  @2018年12月28日
 	 */
 	public String editTz(JlHjDjVO model);
+	
+	/**
+	 * 说明 [同步亲属信息]
+	 * @param frNo
+	 * @return
+	 * L_晓天  @2019年4月8日
+	 */
+	public String syncQs(String frNo);
 }

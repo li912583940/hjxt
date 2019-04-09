@@ -13,6 +13,12 @@ public class JlHjDjVO extends JlHjDj{
     
     private String qsInfo; // 登记中的亲属信息
     
+    private String djUserName; //登记人姓名
+    
+    private Integer qsNum; //亲属人数
+    
+    private String infoZm;
+    
     public String getZw() {
 		return zw;
 	}
@@ -37,9 +43,31 @@ public class JlHjDjVO extends JlHjDj{
 		this.qsInfo = qsInfo;
 	}
 
+	public String getDjUserName() {
+		return djUserName;
+	}
+
+	public void setDjUserName(String djUserName) {
+		this.djUserName = djUserName;
+	}
+	
+	public Integer getQsNum() {
+		return qsNum;
+	}
+
+	public void setQsNum(Integer qsNum) {
+		this.qsNum = qsNum;
+	}
+	
+	public String getInfoZm() {
+		return infoZm;
+	}
+
+	public void setInfoZm(String infoZm) {
+		this.infoZm = infoZm;
+	}
     /*---------------------------  处理关联表  -----------------------------*/
 
-	
 	private String leftJoinField; // 关联表字段
 
     private String leftJoinTable; // 关联表

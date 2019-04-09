@@ -123,7 +123,7 @@
             <el-button v-if="buttonRole.playAudioVideoPermission==1" type="primary" size="mini" @click="playRecor(scope.row)">播放录音录像</el-button>
           </div>
           <div style="margin-top: 2px;">
-            <el-button v-if="buttonRole.downAudioVideoPermission==1" type="primary" size="mini" @click="downRecord(scope.row)">下载录音录像</el-button>
+            <el-button v-if="buttonRole.downAudioVideoPermission==1" type="primary" size="mini" @click="downVideo(scope.row)">下载录音录像</el-button>
        		</div>
         </template>
       </el-table-column>
@@ -133,7 +133,7 @@
             <el-button v-if="buttonRole.playAudioPermission==1" type="primary" size="mini" @click="palyTape(scope.row)">播放录音</el-button>
           </div>
           <div style="margin-top: 2px;">
-            <el-button v-if="buttonRole.downAudioPermission==1" type="primary" size="mini" @click="down3(scope.row.callRecfileUrl)">下载录音</el-button>
+            <el-button v-if="buttonRole.downAudioPermission==1" type="primary" size="mini" @click="downAudio(scope.row)">下载录音</el-button>
           </div>
         </template>
       </el-table-column>
@@ -488,7 +488,7 @@
 
 <script>
 import { findPojo, findOne, findJqList, GetZwList, GetZs, AddRecordFlag, GetZsAllPojo, GetRatingState, UpdateRatingState, 
-	GetRatingStateAllPojo, GetAllAssessmentPojo, GetOtherInfo, exportExcel } from '@/api/meetRecord'
+	GetRatingStateAllPojo, GetAllAssessmentPojo, GetOtherInfo, exportExcel, DownVideo, DownAudio } from '@/api/meetRecord'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -857,6 +857,52 @@ export default {
     	  this.callRecfileUrl = row.callRecfileUrl
     	}
     	
+    },
+    downVideo(row){
+    	let param={
+    		webid: row.webid
+    	}
+    	let fileName = row.frName+"-"+row.frNo+"音视频.zip";
+    	DownVideo(param).then(res =>{
+    		var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
+	     	if (window.navigator && window.navigator.msSaveOrOpenBlob) { // IE浏览器
+        	window.navigator.msSaveOrOpenBlob(blob, fileName);
+    		}else{ //非IE浏览器
+	     		var downloadElement = document.createElement('a')
+		     	var href = window.URL.createObjectURL(blob)
+		     	downloadElement.href = href
+		     	downloadElement.download = fileName
+		     	document.body.appendChild(downloadElement)
+		     	downloadElement.click()
+	     		document.body.removeChild(downloadElement) // 下载完成移除元素
+		     	window.URL.revokeObjectURL(href) // 释放掉blob对象
+	     	}
+    	}).catch(error => {
+	        console.log(error)
+	    })
+    },
+    downAudio(row){
+    	let param={
+    		webid: row.webid
+    	}
+    	let fileName = row.frName+"-"+row.frNo+"音频.wav";
+    	DownAudio(param).then(res =>{
+    		var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
+	     	if (window.navigator && window.navigator.msSaveOrOpenBlob) { // IE浏览器
+        	window.navigator.msSaveOrOpenBlob(blob, fileName);
+    		}else{ //非IE浏览器
+	     		var downloadElement = document.createElement('a')
+		     	var href = window.URL.createObjectURL(blob)
+		     	downloadElement.href = href
+		     	downloadElement.download = fileName
+		     	document.body.appendChild(downloadElement)
+		     	downloadElement.click()
+	     		document.body.removeChild(downloadElement) // 下载完成移除元素
+		     	window.URL.revokeObjectURL(href) // 释放掉blob对象
+	     	}
+    	}).catch(error => {
+	        console.log(error)
+	    })
     },
     downRecord(row){ //下载录音录像
     	var userAgent = navigator.userAgent.toLowerCase();

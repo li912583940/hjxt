@@ -9,15 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
-import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.entity.sys.vo.SysLogVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
-import com.sl.ue.service.jl.JlFrService;
 import com.sl.ue.service.jl.JlHjDjService;
-import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.service.sys.SysLogService;
 import com.sl.ue.util.DateUtil;
-import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.token.TokenUser;
 
@@ -27,10 +23,6 @@ public class JlHjDjWeb extends Result{
 
     @Autowired
     private JlHjDjService jlHjDjSQL;
-    @Autowired
-    private JlFrService jlFrSQL;
-	@Autowired
-    private JlQsService jlQsSQL;
 	@Autowired
 	private SysLogService sysLogSQL;
 	
@@ -91,16 +83,6 @@ public class JlHjDjWeb extends Result{
         return this.toResult();
     }
 	
-	/**
-	 * 说明 [查询家属]
-	 * L_晓天  @2018年10月6日
-	 */
-	@RequestMapping("/findQsPojo")
-    public String findQsPojo(JlQsVO model, Integer pageSize, Integer pageNum){
-        Map<String, Object> map = jlQsSQL.findPojo(model, pageSize, pageNum);
-        this.putPojo(map);
-        return this.toResult();
-    }
 	
 	/**
 	 * 说明 [提交会见登记]
@@ -174,7 +156,7 @@ public class JlHjDjWeb extends Result{
 			this.error(error_102);
 			return this.toResult();
 		}
-		return jlHjDjSQL.printXp(hjid);
+		return jlHjDjSQL.printXpDG(hjid);
 	}
 	
 	/**
@@ -266,5 +248,10 @@ public class JlHjDjWeb extends Result{
 		sysLogSQL.add(sysLog);
 		
 		return jlHjDjSQL.cancelDj(id, cancelInfo);
+	}
+	
+	@RequestMapping("/syncQs")
+	public String syncQs(String frNo){
+		return jlHjDjSQL.syncQs(frNo);
 	}
 }

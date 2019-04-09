@@ -35,11 +35,14 @@ import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.util.Config;
+import com.sl.ue.util.Constants;
 import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.business.FrThreadXLS;
 import com.sl.ue.util.business.QsThreadXLS;
 import com.sl.ue.util.business.QsThreadXLSX;
 import com.sl.ue.util.http.Result;
+import com.sl.ue.util.http.WebContextUtil;
+import com.sl.ue.util.http.token.JqRoleManager;
 
 @Service("jlQsSQL")
 public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
@@ -68,11 +71,31 @@ public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
     		where.append(" AND (a.QS_Name LIKE '%"+str+"%' OR dbo.f_get_fryp(a.QS_Name,'"+str+"') =1 ) ");
     		model.setQsName(null);
     	}
+    	
+    	String token = WebContextUtil.getRequest().getHeader(Constants.TOKEN_NAME);
+		JqRoleManager jqRoleManager = new JqRoleManager();
+		String jqs = jqRoleManager.getJqs(token);
+		if("admin".equals(jqs)){
+			
+		}else if(StringUtils.isBlank(jqs)){
+			where.append(" AND 1<>1 ");
+		}else if(StringUtils.isNotBlank(jqs)){
+			where.append(" AND b.JQ in ("+jqs+") ");
+		}
+		
 		model.setLeftJoinField(field.toString());
 		model.setLeftJoinTable(table.toString());
 		model.setLeftJoinWhere(where.toString());
+		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
+		List<JlQsVO> list = (List<JlQsVO>) map.get("list");
 		
-		return this.findPojo(model, pageSize, pageNum);
+		String imageHttp = Config.getPropertiesValue("file.http");
+		String imageFile = Config.getPropertiesValue("file.file");
+		for(JlQsVO t : list){
+			String url = StringUtils.isNotBlank(t.getZpUrl())?imageHttp+imageFile+t.getZpUrl():"";
+			t.setZpUrl(url);
+		}
+		return map;
 	}
 	@Override
 	public void exportExcel(JlQsVO model, HttpServletRequest request, HttpServletResponse response) {
