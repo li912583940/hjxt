@@ -18,6 +18,8 @@ import './icons' // icon
 import './errorLog' // error log
 import './permission' // permission control
 // import './mock' // simulation data
+//import promise from 'es6-promise'
+
 
 import * as filters from './filters' // global filters
 
@@ -32,6 +34,8 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.config.productionTip = false
+
+//promise.polyfill()
 
 new Vue({
   el: '#app',

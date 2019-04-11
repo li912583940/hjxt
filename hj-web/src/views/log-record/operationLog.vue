@@ -35,7 +35,9 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 1281px">
+      style="width: 1331px">
+      <el-table-column type="index" width="50">
+      </el-table-column>
       <el-table-column width="160" align="center"  label="时间">
         <template slot-scope="scope">
           <span>{{scope.row.logTime}}</span>

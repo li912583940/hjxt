@@ -156,4 +156,9 @@ public class JlHjRecWeb extends Result{
 	public void downAudio(Long webid, HttpServletRequest request, HttpServletResponse response){
 		jlHjRecSQL.downAudio(webid, request, response);
 	}
+	
+	@RequestMapping("/downTest")
+	public void downTest(Long webid, HttpServletRequest request, HttpServletResponse response){
+		jlHjRecSQL.downTest(webid, request, response);
+	}
 }

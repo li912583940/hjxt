@@ -121,7 +121,8 @@ public class JlHjRec implements java.io.Serializable {
 	private Integer recRatingState;
 	@DbField("Rec_Assessment_State")
 	private Integer recAssessmentState;
-	
+	@DbField("Info_JG")
+	private String infoJg;
 	
 
 	public Long getWebid() {
@@ -553,6 +554,14 @@ public class JlHjRec implements java.io.Serializable {
 
 	public void setRecAssessmentState(Integer recAssessmentState) {
 		this.recAssessmentState = recAssessmentState;
+	}
+
+	public String getInfoJg() {
+		return infoJg;
+	}
+
+	public void setInfoJg(String infoJg) {
+		this.infoJg = infoJg;
 	}
 
 }

@@ -24,10 +24,7 @@ public class HjNoticeWeb extends Result{
 	
 	@RequestMapping("/findPojo")
     public String findPojo(Integer pageSize, Integer pageNum){
-		JlHjDjVO jlHjDj = new JlHjDjVO();
-		jlHjDj.setState(0);
-		jlHjDj.setPageTzMode(0);
-        Map<String, Object> map = jlHjDjSQL.findPojoByNotice(jlHjDj, pageSize, pageNum);
+        Map<String, Object> map = jlHjDjSQL.findPojoByNotice(pageSize, pageNum);
         this.putPojo(map);
         return this.toResult();
     }

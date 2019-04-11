@@ -23,8 +23,10 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 1911px;">
-      <el-table-column width="100" align="center"  :label="$t('currency.frNo')">
+      style="width: 1971px;">
+      <el-table-column type="index" width="50">
+      </el-table-column>
+      <el-table-column width="110" align="center"  :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>

@@ -29,6 +29,8 @@
       </el-input>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="listQuery.qsName">
       </el-input>
+      <!--<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入籍贯" v-model="listQuery.infoJg">
+      </el-input>-->
       <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.recRatingState" placeholder="选择评级状态">
         <el-option v-for="item in recRatingStates" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
@@ -54,7 +56,9 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 2121px">
+      style="width: 2301px">
+      <el-table-column type="index" width="50">
+      </el-table-column>
       <el-table-column width="160" align="center" label="通话开始时间">
         <template slot-scope="scope">
           <span>{{scope.row.callTimeStart}}</span>
@@ -92,7 +96,7 @@
           <span>{{scope.row.jqName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" :label="$t('currency.frNo')">
+      <el-table-column width="110" align="center" :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
@@ -100,6 +104,11 @@
       <el-table-column width="120" align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="120" align="center" label="籍贯">
+        <template slot-scope="scope">
+          <span>{{scope.row.infoJg}}</span>
         </template>
       </el-table-column>
       <el-table-column width="90" align="center" label="亲属个数">
@@ -200,19 +209,27 @@
     		<el-row :gutter="12">
     			<el-col :span="8" :offset="1" style="margin-left: 50px;" >
 				    	<div>
-				    		<video id="video1" width="360" height="240" controls="controls">
-				    			<source :src="callRecfileUrl" type="video/ogg" />
-				    			<!--<source :src="callRecfileUrl" type="video/mp4" />-->
-				    			<!--<audio :src="callRecfileUrl" controls="controls" controlsList="nodownload"></audio>-->
-				    		</video>
+				    		<span v-if="ie==1">
+				    			<!--<span id="videoOcx"></span>-->
+				    			<video id="video1" width="360" height="240" controls="controls">
+					    			<source :src="callVideofile1Url" type="video/MPEG4" />
+					    			</video>
+					    	</span>
+					    	<span v-if="ie==0">
+					    		<video id="video1" width="360" height="240" controls="controls">
+					    			<!--<source :src="callVideofile1Url" type="video/ogg" />-->
+					    			<source :src="callVideofile1Url" type="video/mp4" />
+					    			<!--<audio :src="callRecfileUrl" controls="controls" controlsList="nodownload"></audio>-->
+					    		</video>
+					    	</span>
 				    	</div>
 				  </el-col>
 				  
 				  <el-col :span="8" :offset="1" style="margin-left: 120px;">
 				    	<div>
 				    		<video id="video2" width="360" height="240" controls="controls">
-				    			<source :src="callRecfileUrl" type="video/ogg" />
-				    			<!--<source :src="callRecfileUrl" type="video/mp4" />-->
+				    			<!--<source :src="callVideofile2Url" type="video/ogg" />-->
+				    			<source :src="callVideofile2Url" type="video/mp4" />
 				    			<!--<audio :src="callRecfileUrl" controls="controls" controlsList="nodownload"></audio>-->
 				    		</video>
 				    	</div>
@@ -302,10 +319,15 @@
     <!-- 查看所有注释  结束  -->
     
     <!-- 播放录音 开始 -->
-    <el-dialog title="播放录音" :visible.sync="dialogTapeVisible" @close='closeTapeDialog'  width="40%" :modal-append-to-body="false">
-    	<div style="position: relative;margin-top: 10px; margin-bottom: 30px; margin-left: 25%;">
-				<audio id="audio1" :src="callRecfileUrl" controls="controls" controlsList="nodownload">
-				</audio>
+    <el-dialog title="播放录音" :visible.sync="dialogTapeVisible" @close='closeTapeDialog'  width="500px" :modal-append-to-body="false">
+    	<div  style="position: relative;margin-top: 10px; margin-bottom: 30px; margin-left: 15%;">
+    		<span v-if="ie==1">
+    			<!--<embed id="audio1" :src="callRecfileUrl" mastersound autostart=true loop=false height=40 width=300 />-->
+	    		<span id="audioPlay"></span>
+    		</span>
+	    	<span v-if="ie==0">
+	    		<audio id="audio1" :src="callRecfileUrl" autoplay controls="controls" controlsList="nodownload" />
+	    	</span>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogTapeVisible = false">关 闭</el-button>
@@ -483,17 +505,19 @@
     </el-dialog>
     <!-- 其他详情  结束  -->
     
+
   </div>
 </template>
 
 <script>
 import { findPojo, findOne, findJqList, GetZwList, GetZs, AddRecordFlag, GetZsAllPojo, GetRatingState, UpdateRatingState, 
-	GetRatingStateAllPojo, GetAllAssessmentPojo, GetOtherInfo, exportExcel, DownVideo, DownAudio } from '@/api/meetRecord'
+	GetRatingStateAllPojo, GetAllAssessmentPojo, GetOtherInfo, exportExcel, DownVideo, DownAudio, DownTest } from '@/api/meetRecord'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
 import { Message, MessageBox } from 'element-ui'
+import Vue from 'vue'
 
 export default {
   name: 'meetRecord',
@@ -517,6 +541,7 @@ export default {
         frNo: undefined,
         frName: undefined,
         qsName: undefined,
+        infoJg: undefined,
         recRatingState: undefined,
         zw: undefined,
         hjType: undefined,
@@ -757,7 +782,7 @@ export default {
       	seeAssessmentPermission: 0, //查看复听详情
       	seeOtherPermission: 0 //查看其它详情
       },
-      
+      ie:1,
     }
   },
   filters: {
@@ -775,6 +800,8 @@ export default {
     
     this.getJqList()
     this.getZwList()
+    
+    this.isIe()
   },
   mounted() {
     this.setButtonRole()
@@ -844,6 +871,13 @@ export default {
       this.listQuery.pageNum = val
       this.getList()
     },
+    isIe(){
+    	if(navigator.appVersion.indexOf("MSIE") != -1 || (navigator.appVersion.toLowerCase().indexOf("trident") > -1 && navigator.appVersion.indexOf("rv") > -1) ){ // IE浏览器
+    		this.ie=1
+    	}else{
+    		this.ie=0
+    	}
+    },
     /** 播放录音录像 开始 */
     playRecor(row){ //播放录音录像
     	if(!row.callRecfileUrl){
@@ -853,8 +887,15 @@ export default {
 		      duration: 5 * 1000
 	      });
     	}else{
-    		this.dialogPlayVisible =true
-    	  this.callRecfileUrl = row.callRecfileUrl
+    		if(this.ie==1){
+    			console.log(row.callVideofile1Url)
+    			console.log(row.callVideofile2Url)
+    			window.open("/static/html/video.html?callRecfileUrl="+row.callVideofile2Url,"","width=1000,height=500,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
+    		}
+    		console.log(this.ie)
+    		//this.dialogPlayVisible =true
+    	  this.callVideofile1Url = row.callVideofile1Url
+    	  this.callVideofile2Url = row.callVideofile2Url
     	}
     	
     },
@@ -1069,14 +1110,31 @@ export default {
     /** 录音操作 开始 */
     palyTape(row) {
     	this.callRecfileUrl = row.callRecfileUrl
-    	this.dialogTapeVisible = true
+    	if(this.ie==1){
+//  		var str = '<embed id=\"audio1\" src=\"'+this.callRecfileUrl+'\" autostart=true loop=false mastersound height=40 width=300 />'
+    		window.open("/static/html/audio.html?callRecfileUrl="+row.callRecfileUrl,"","width=360,height=116,left=900,top=620,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
+    	}else{
+    		this.dialogTapeVisible = true
+    	}
+    	
     },
     closeTapeDialog(){
-    	var audio1 = document.getElementById("audio1")
-    	if(audio1.play){
-    		audio1.currentTime = 0;
-        audio1.pause();
+      var x = document.getElementById("audio1")
+    	if(this.ie==1){
+    		if(x.play){
+    			x.pause()
+    		}
+    		Vue.nextTick(() => {
+		      document.getElementById("audioPlay").innerHTML= ''
+		    });
+    	}else{
+    		if(x.play){
+	    		x.currentTime = 0;
+	        x.pause();
+	    	}
     	}
+      
+    	
     },
     /** 录音操作 结束 */
     
@@ -1193,15 +1251,6 @@ export default {
       }else{
       	this.listQuery.callTimeEnd = this.dateFormatYMD(this.callTimeEnd)+" 23:59:59";
       }
-//			if(!this.listQuery.frName){
-//    	this.listQuery.frName = undefined
-//    }
-//    if(!this.listQuery.frNo){
-//    	this.listQuery.frNo = undefined
-//    }
-//    if(!this.listQuery.jq){
-//    	this.listQuery.jq = undefined
-//    }
 
       Message({
         message: '已准备导出会见记录文件，请稍等几秒。',

@@ -71,3 +71,13 @@ export function DownAudio(param) {
     responseType:'blob'
   }).then(res => res)
 }
+
+export function DownTest(param) {
+  return request({
+    url: '/jlHjRec/downTest',
+    method: 'post',
+    data: param,
+    timeout: 600000,
+    responseType:'blob'
+  }).then(res => res)
+}

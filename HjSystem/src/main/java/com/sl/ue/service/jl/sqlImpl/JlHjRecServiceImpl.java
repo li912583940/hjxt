@@ -83,7 +83,14 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     		model.setFrName(null);
     	}
     	if(StringUtils.isNotBlank(model.getQsName())){
-    		
+    		String str = model.getQsName();
+    		leftJoinWhere.append(" AND (a.QS_Info1 LIKE '%"+str+"%' OR a.QS_Info2 LIKE '%"+str+"%' OR a.QS_Info3 LIKE '%"+str+"%')");
+    		model.setQsName(null);
+    	}
+    	if(StringUtils.isNotBlank(model.getInfoJg())){
+    		String str = model.getInfoJg();
+    		leftJoinWhere.append(" AND a.Info_JG LIKE '%"+str+"%'");
+    		model.setInfoJg(null);
     	}
     	model.setLeftJoinWhere(leftJoinWhere.toString());
     	Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
@@ -606,5 +613,70 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 			catch (IOException ex) {
 			}
 		}
+    }
+    
+    public void downTest(Long webid, HttpServletRequest request, HttpServletResponse response){
+
+    	Result result = new Result();
+    	JlHjRecVO jlHjRec = this.findOne(webid);
+    	if(jlHjRec==null){
+    		result.error(Result.error_103,"数据库查询不到此记录");
+    		return;
+    	}
+    	File file = null;
+    	if(StringUtils.isNotBlank(jlHjRec.getCallVideofile1())){
+    		file = new File(jlHjRec.getCallVideofile1());
+    		if(!file.exists()){
+    			return;
+    		}
+    	}
+    	OutputStream out = null;
+		BufferedInputStream in =null;
+		try {
+			String fileName ="录音.mp4";
+			// 处理不同浏览器中文名称编码
+			String userAgent=request.getHeader("USER-AGENT");
+			if(userAgent.indexOf("Chrome")!=-1 || userAgent.indexOf("Safari")!=-1 || userAgent.indexOf("Firefox")!=-1){
+				fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+			}else{
+				fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+				//fileName = URLEncoder.encode(fileName,"UTF8");
+			}
+			response.setHeader("Content-Disposition", "attachment;filename="+fileName);
+			response.setHeader("Cache-Control","no-cache");//设置头
+			response.setCharacterEncoding("UTF-8");
+			response.setContentType("application/octet-stream");
+			out = response.getOutputStream();
+			in = new BufferedInputStream(new FileInputStream(file));
+			int l = 2*1024*1024;//1M 默认，可在配置文件中设置此值大小
+			//int byteCount = 0;
+			byte[] buffer = new byte[l];
+			int bytesRead = -1;//文件大小
+			while ((bytesRead = in.read(buffer)) != -1) {
+				out.write(buffer, 0, bytesRead);
+				//byteCount += bytesRead;
+			}
+			out.flush();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {
+				if(in!=null){
+					in.close();
+				}
+			}
+			catch (IOException ex) {
+			}
+			try {
+				if(out!=null){
+					out.close();
+				}
+			}
+			catch (IOException ex) {
+			}
+		}
+    
     }
 }

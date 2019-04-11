@@ -2,7 +2,7 @@
   <div class="app-container">
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 1841px">
+      style="width: 2011px">
       <el-table-column v-if="buttonRole.distributionPermission==1 || buttonRole.cancelDistributionPermission==1 || buttonRole.artificialPermission==1" align="center" :label="$t('criminal.actions')" width="300" fixed="left" >
         <template slot-scope="scope">
           <el-button v-if="buttonRole.distributionPermission==1" type="primary" size="mini" @click="fpZw(scope.row)">自动分配</el-button>
@@ -11,12 +11,12 @@
         </template>
       </el-table-column>
       
-      <el-table-column width="100" align="center" :label="$t('currency.frNo')">
+      <el-table-column width="110" align="center" :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" :label="$t('currency.frName')">
+      <el-table-column width="160" align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
         </template>
@@ -28,8 +28,8 @@
       </el-table-column>
       <el-table-column width="100" align="center" label="重点犯">
         <template slot-scope="scope">
-          <span v-if="scope.row.stateZdzf=='否'">否</span>
-          <span v-if="scope.row.stateZdzf!='否'" style="color: red;">是</span>
+          <span v-if="scope.row.stateZdzf==0">否</span>
+          <span v-if="scope.row.stateZdzf==1" style="color: red;">是/{{scope.row.infoZdzf}}</span>
         </template>
       </el-table-column>
       <el-table-column width="90" align="center" label="座位">
@@ -68,7 +68,7 @@
           <span>{{scope.row.hjInfo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300" align="center" label="亲属">
+      <el-table-column width="400" align="center" label="亲属">
         <template slot-scope="scope">
           <span>{{scope.row.qsInfo1}}</span>
         </template>

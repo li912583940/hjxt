@@ -238,6 +238,7 @@ export default {
       },
       // 注册控件
       sysHjServerList: null,
+      
     }
   },
   created() {

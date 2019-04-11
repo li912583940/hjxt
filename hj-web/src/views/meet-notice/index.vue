@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
-      style="width: 2081px">
+      style="width: 2151px">
        <el-table-column  align="center" :label="$t('criminal.actions')" width="160" fixed="left" >
         <template slot-scope="scope">
         	<span v-if="scope.row.pageTzState==0"><el-button type="primary" size="mini" @click="sdNotice(scope.row)">接收</el-button></span>
@@ -13,12 +13,12 @@
           <span>{{scope.row.jqName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" :label="$t('currency.frNo')">
+      <el-table-column width="110" align="center" :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" :label="$t('currency.frName')">
+      <el-table-column width="160" align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
         </template>

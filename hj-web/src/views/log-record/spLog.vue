@@ -21,7 +21,7 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 1791px">
+      style="width: 1851px">
       <el-table-column width="280" align="center" label="审批名称">
         <template slot-scope="scope">
           <span>{{scope.row.setName}}</span>
@@ -33,7 +33,7 @@
           <span v-if="scope.row.type==2">添加亲属</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" label="监区名称">
+      <el-table-column width="160" align="center" label="监区名称">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
         </template>

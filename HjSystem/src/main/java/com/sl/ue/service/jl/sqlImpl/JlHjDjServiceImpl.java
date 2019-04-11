@@ -30,8 +30,11 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -661,8 +664,9 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		model.setLeftJoinWhere(leftJoinWhere.toString());
 		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
 		List<JlHjDjVO> list = (List<JlHjDjVO>) map.get("list");
-		String qsInfo="";
+		
 		for(JlHjDjVO t :list){
+			String qsInfo="";
 			if(StringUtils.isNotBlank(t.getQsInfo1())){
 				qsInfo+=t.getQsInfo1()+";";
 			}
@@ -760,11 +764,19 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 	public Map<String, Object> findPojoByHjSign(JlHjDjVO model, Integer pageSize, Integer pageNum){
 		StringBuffer leftJoinField = new StringBuffer(); // 字段 
 		leftJoinField.append(",dbo.get_ck(a.FP_Line_No,a.JY) as zw");
+		leftJoinField.append(",b.State_ZDZF AS stateZdzf");
+		leftJoinField.append(",b.Info_ZDZF AS infoZdzf");
+		leftJoinField.append(",c.JB_Name AS jbName");
+		
+		StringBuffer leftJoinTable = new StringBuffer();
+		leftJoinTable.append(" LEFT JOIN JL_FR b ON a.FR_No=b.FR_No");
+		leftJoinTable.append(" LEFT JOIN JL_JB c ON b.JB_No=c.JB_No");
 		
 		StringBuffer leftJoinWhere = new StringBuffer();  // 条件
 		leftJoinWhere.append(" AND a.State=0 and (a.DJ_Type=0 or a.DJ_Type=2)");
 		
 		model.setLeftJoinField(leftJoinField.toString());
+		model.setLeftJoinTable(leftJoinTable.toString());
 		model.setLeftJoinWhere(leftJoinWhere.toString());
 		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
 		List<JlHjDjVO> list = (List<JlHjDjVO>) map.get("list");
@@ -1051,6 +1063,14 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 	
 	public Map<String, Object> findPojoByLog(JlHjDjVO model, Integer pageSize, Integer pageNum){
 		StringBuffer where = new StringBuffer();
+		if(StringUtils.isNotBlank(model.getCallTimeStart())){ // 开始时间
+			where.append(" AND a.DJ_Time>='"+ model.getCallTimeStart() + "' ");
+    		model.setCallTimeStart(null);
+    	}
+    	if(StringUtils.isNotBlank(model.getCallTimeEnd())){ // 结束时间
+    		where.append(" AND a.DJ_Time<='"+ model.getCallTimeEnd() + "' ");
+    		model.setCallTimeEnd(null);
+    	}
 		if(StringUtils.isNotBlank(model.getFrNo())){
 			String str = model.getFrNo();
 			where.append(" AND a.FR_No LIKE '%"+str+"%' ");
@@ -1117,6 +1137,14 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			HttpServletRequest request, HttpServletResponse response){
 
 		StringBuffer where = new StringBuffer();
+		if(StringUtils.isNotBlank(model.getCallTimeStart())){ // 开始时间
+			where.append(" AND a.DJ_Time>='"+ model.getCallTimeStart() + "' ");
+    		model.setCallTimeStart(null);
+    	}
+    	if(StringUtils.isNotBlank(model.getCallTimeEnd())){ // 结束时间
+    		where.append(" AND a.DJ_Time<='"+ model.getCallTimeEnd() + "' ");
+    		model.setCallTimeEnd(null);
+    	}
 		if(StringUtils.isNotBlank(model.getFrNo())){
 			String str = model.getFrNo();
 			where.append(" AND a.FR_No LIKE '%"+str+"%' ");
@@ -1507,13 +1535,28 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 	}
 	
 	@Override
-	public Map<String, Object> findPojoByNotice(JlHjDjVO model, Integer pageSize, Integer pageNum) {
+	public Map<String, Object> findPojoByNotice(Integer pageSize, Integer pageNum) {
+		Map<String, Object> map = new HashMap();
 		StringBuffer leftJoinField = new StringBuffer(); // 字段 
 		leftJoinField.append(",dbo.get_ck(a.FP_Line_No,a.JY) as zw");
 		
-		model.setLeftJoinField(leftJoinField.toString());
-		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
-		List<JlHjDjVO> list = (List<JlHjDjVO>) map.get("list");
+		StringBuffer leftJoinWhere = new StringBuffer();
+		leftJoinWhere.append(" AND a.state=0");
+		leftJoinWhere.append(" AND a.page_tz_mode=0");
+		int startNum = (pageNum-1)*pageSize;
+		int endNum = pageNum*pageSize;
+		String sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a.page_tz_state ASC) AS rowid,a.* "+leftJoinField.toString()+" from JL_HJ_DJ a where 1=1 "+leftJoinWhere.toString()+" ) t"
+				+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
+		RowMapper<JlHjDjVO> rowMapper = BeanPropertyRowMapper.newInstance(JlHjDjVO.class);
+		List<JlHjDjVO> list = jdbcTemplate.query(sql, rowMapper);
+		map.put("list", list);
+		String countSql = "select ISNULL(count(*),0) AS count from JL_HJ_DJ a  where 1=1 "+leftJoinWhere.toString();
+		SqlRowSet rowSet = jdbcTemplate.queryForRowSet(countSql);
+		Integer count = 0 ;
+		while(rowSet.next()) {
+			count = rowSet.getInt("count");
+		}
+		map.put("count", count);
 		for(JlHjDjVO t : list){
 			String qsName = "";
 			if(StringUtils.isNotBlank(t.getQsInfo1())){

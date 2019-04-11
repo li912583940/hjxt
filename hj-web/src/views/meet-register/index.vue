@@ -10,7 +10,9 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 1901px">
+      style="width: 1951px">
+      <el-table-column type="index" width="50">
+      </el-table-column>
       <el-table-column width="100" align="center" :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>

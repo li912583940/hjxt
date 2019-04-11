@@ -40,4 +40,4 @@ export function WordDownload(param) {
 }
 
 //同步家属 
-export const SyncQs = params => { return request.post('/jlHjDj/SyncQs', params ).then(res => res) }
+export const SyncQs = params => { return request.post('/jlHjDj/syncQs', params ).then(res => res) }

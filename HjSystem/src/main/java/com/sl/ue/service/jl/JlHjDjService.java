@@ -135,7 +135,7 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 	 * 说明 [会见通知 查询会见登记信息]
 	 * L_晓天  @2018年11月8日
 	 */
-	public Map<String, Object> findPojoByNotice(JlHjDjVO model, Integer pageSize, Integer pageNum);
+	public Map<String, Object> findPojoByNotice(Integer pageSize, Integer pageNum);
 	
 	/**
 	 * 说明 [会见通知修改通知状态]

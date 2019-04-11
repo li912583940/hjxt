@@ -37,7 +37,8 @@
 		<!-- 服刑人员开始 -->
 		<el-card class="box-card">
 	    <el-table :key='frTableKey' ref="frMultipleTable" :data="frList" v-loading="frListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-	       @row-click="frRowClick" @row-dblclick="handleSearchQs" @select="frSelectionChang" @select-all="frAllSelectionChang" style="width: 2411px">
+	       @row-click="frRowClick" @row-dblclick="handleSearchQs" @select="frSelectionChang" @select-all="frAllSelectionChang" 
+	       style="width: 3081px">
 	      <el-table-column align="center" type="selection" width="50" fixed="left">
 	      </el-table-column>
 	      <el-table-column align="center" label="监区" width="160">
@@ -45,12 +46,12 @@
 	          <span>{{scope.row.jqName}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="100px" align="center" label="罪犯编号">
+	      <el-table-column width="110px" align="center" label="罪犯编号">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.frNo}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="100px" align="center" label="罪犯姓名">
+	      <el-table-column width="160px" align="center" label="罪犯姓名">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.frName}}</span>
 	        </template>
@@ -60,7 +61,7 @@
 	          <span>{{scope.row.hjUse}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="上次会见时间">
+	      <el-table-column width="160px" align="center" label="上次会见时间">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.hjLastTime | dateFormat}}</span>
 	        </template>
@@ -75,22 +76,22 @@
 	          <span>{{scope.row.infoRjsj}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="90px" align="center" label="分管等级">
+	      <el-table-column width="150px" align="center" label="分管等级">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.jbName}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="刑期">
+	      <el-table-column width="160px" align="center" label="刑期">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.infoXq}}</span>
 	        </template>
 	      </el-table-column>
-				<el-table-column width="150px" align="center" label="罪名">
+				<el-table-column width="500px" align="center" label="罪名">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.infoZm}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="320px" align="center" label="家庭住址">
+	      <el-table-column width="400px" align="center" label="家庭住址">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.infoHome}}</span>
 	        </template>
@@ -103,7 +104,7 @@
 	      <el-table-column width="90px" align="center" label="重点罪犯">
 	        <template slot-scope="scope">
 	          <span v-if="scope.row.stateZdzf=='0'">否</span>
-	          <span v-if="scope.row.stateZdzf=='1'">是</span>
+	          <span v-if="scope.row.stateZdzf=='1'" style="color: red;">是</span>
 	        </template>
 	      </el-table-column>
 	      <el-table-column width="150px" align="center" label="备注">
@@ -116,9 +117,9 @@
 	          <span>{{scope.row.frGj}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="是否禁止/禁止时间">
+	      <el-table-column width="160px" align="center" label="是否禁止/禁止时间">
 	        <template slot-scope="scope">
-	          <span v-if="scope.row.hjJb=='-1'">是/{{scope.row.hjStopTime}}</span>
+	          <span v-if="scope.row.hjJb=='-1'">是/{{scope.row.hjStopTime | dateFormatYMD}}</span>
 	          <span v-if="scope.row.hjJb!='-1'">否</span>
 	        </template>
 	      </el-table-column>
@@ -144,7 +145,8 @@
 		<!-- 亲属开始 -->
 		<el-card class="box-card">
 	    <el-table :key='qsTableKey' ref="qsMultipleTable" :data="qsList" v-loading="qsListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-	     @selection-change="qsAllSelectionChange"  @row-click="qsRowClick" @row-dblclick="toEditQs" style="width: 1968px">
+	     @selection-change="qsAllSelectionChange"  @row-click="qsRowClick" @row-dblclick="toEditQs" 
+	     style="width: 2168px">
 	      <el-table-column align="center" type="selection"  width="50" fixed="left">
 	      </el-table-column>
 	      <el-table-column align="center" label="亲属姓名" width="100">
@@ -172,7 +174,7 @@
 	          <span v-if="scope.row.qsZjlb==9">其他</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="证件号码">
+	      <el-table-column width="170" align="center" label="证件号码">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.qsSfz}}</span>
 	        </template>
@@ -200,7 +202,7 @@
 	           <span else></span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="320px" align="center" label="地址">
+	      <el-table-column width="500px" align="center" label="地址">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.dz}}</span>
 	        </template>

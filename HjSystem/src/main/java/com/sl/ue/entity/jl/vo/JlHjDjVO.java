@@ -1,6 +1,7 @@
 package com.sl.ue.entity.jl.vo;
 
 import com.sl.ue.entity.jl.JlHjDj;
+import com.sl.ue.util.anno.DbField;
 
 public class JlHjDjVO extends JlHjDj{
 
@@ -19,6 +20,15 @@ public class JlHjDjVO extends JlHjDj{
     
     private String infoZm;
     
+    private String callTimeStart; //查询时间 开始
+	private String callTimeEnd; //查询时间 结束
+	
+	private Integer stateZdzf;
+	
+	private String infoZdzf;
+	
+	private String jbName;
+	
     public String getZw() {
 		return zw;
 	}
@@ -66,7 +76,51 @@ public class JlHjDjVO extends JlHjDj{
 	public void setInfoZm(String infoZm) {
 		this.infoZm = infoZm;
 	}
+	
+	public String getCallTimeStart() {
+		return callTimeStart;
+	}
+
+	public void setCallTimeStart(String callTimeStart) {
+		this.callTimeStart = callTimeStart;
+	}
+
+	public String getCallTimeEnd() {
+		return callTimeEnd;
+	}
+
+	public void setCallTimeEnd(String callTimeEnd) {
+		this.callTimeEnd = callTimeEnd;
+	}
+	
+	public Integer getStateZdzf() {
+		return stateZdzf;
+	}
+
+	public void setStateZdzf(Integer stateZdzf) {
+		this.stateZdzf = stateZdzf;
+	}
+
+	public String getInfoZdzf() {
+		return infoZdzf;
+	}
+
+	public void setInfoZdzf(String infoZdzf) {
+		this.infoZdzf = infoZdzf;
+	}
+	
+	public String getJbName() {
+		return jbName;
+	}
+
+	public void setJbName(String jbName) {
+		this.jbName = jbName;
+	}
+	
     /*---------------------------  处理关联表  -----------------------------*/
+
+
+	
 
 	private String leftJoinField; // 关联表字段
 

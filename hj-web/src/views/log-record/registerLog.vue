@@ -2,6 +2,23 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
+    	<el-date-picker
+    		style="width: 200px"
+    		class="filter-item"
+	      v-model="callTimeStart"
+	      align="right"
+	      type="date"
+	      placeholder="选择开始日期"
+	      :picker-options="pickerOptionsStart">
+	    </el-date-picker>
+	    <el-date-picker
+	    	style="width: 200px"
+	    	class="filter-item"
+	      v-model="callTimeEnd"
+	      align="right"
+	      type="date"
+	      placeholder="选择结束日期">
+	    </el-date-picker>
     	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入罪犯编号" v-model="listQuery.frNo" clearable>
       </el-input>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入罪犯姓名" v-model="listQuery.frName" clearable>
@@ -29,18 +46,18 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 1601px">
-      <el-table-column width="100" align="center"  :label="$t('currency.jqName')">
+      style="width: 1731px">
+      <el-table-column width="160" align="center"  :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center"  :label="$t('currency.frNo')">
+      <el-table-column width="110" align="center"  :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" :label="$t('currency.frName')">
+      <el-table-column width="160" align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
         </template>
@@ -130,9 +147,13 @@ export default {
       list: null,
       total: null,
       listLoading: true,
+      callTimeStart: undefined,
+      callTimeEnd: undefined,
       listQuery: {
         pageNum: 1,
         pageSize: 10,
+        callTimeStart: undefined,
+        callTimeEnd: undefined,
         frNo: undefined,
         frName: undefined,
         qsName: undefined,
@@ -212,7 +233,50 @@ export default {
       		name: '其他方式'
       	},
       ],
-      
+      pickerOptionsStart: {
+	      shortcuts: [{
+	        text: '今天',
+	        onClick(picker) {
+	          picker.$emit('pick', new Date());
+	        }
+	      }, {
+	        text: '昨天',
+	        onClick(picker) {
+	          const date = new Date();
+	          date.setTime(date.getTime() - 3600 * 1000 * 24);
+	          picker.$emit('pick', date);
+	        }
+	      }, {
+	        text: '最近一周',
+	        onClick(picker) {
+	          const date = new Date();
+	          date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+	          picker.$emit('pick', date);
+	        }
+	      }, {
+	        text: '最近一个月',
+	        onClick(picker) {
+	          const date = new Date();
+	          date.setTime(date.getTime() - 3600 * 1000 * 24 * 30);
+	          picker.$emit('pick', date);
+	        }
+	      }, {
+	        text: '最近三个月',
+	        onClick(picker) {
+	          const date = new Date();
+	          date.setTime(date.getTime() - 3600 * 1000 * 24 * 90);
+	          picker.$emit('pick', date);
+	        }
+	      }, {
+	        text: '最近一年',
+	        onClick(picker) {
+	          const date = new Date();
+	          date.setTime(date.getTime() - 3600 * 1000 * 24 * 365);
+	          picker.$emit('pick', date);
+	        }
+	      }]
+	    },
+	    
       //按钮权限   1：有权限， 0：无权限
       buttonRole: { 
       	queryPermission: 1, 
@@ -246,26 +310,17 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      if(this.listQuery.frName== undefined || this.listQuery.frName== ''){
-      	this.listQuery.frName = undefined
+      if(!this.callTimeStart){
+      	this.listQuery.callTimeStart = undefined
+      }else{
+      	let startTime = this.dateFormatYMD(this.callTimeStart)
+      	this.listQuery.callTimeStart = startTime+" 00:00:00"
       }
-      if(this.listQuery.frNo== undefined || this.listQuery.frNo==''){
-      	this.listQuery.frNo = undefined
-      }
-      if(this.listQuery.qsName== undefined || this.listQuery.qsName== ''){
-      	this.listQuery.qsName = undefined
-      }
-      if(this.listQuery.state==undefined || this.listQuery.state==''){
-      	this.listQuery.state = undefined
-      }
-      if(this.listQuery.hjType==undefined || this.listQuery.hjType==''){
-      	this.listQuery.hjType = undefined
-      }
-      if(this.listQuery.jqNo==undefined || this.listQuery.jqNo==''){
-      	this.listQuery.jqNo = undefined
-      }
-      if(this.listQuery.hjMode==undefined || this.listQuery.hjMode==''){
-      	this.listQuery.hjMode = undefined
+      if(!this.callTimeEnd){
+      	this.listQuery.callTimeEnd = undefined
+      }else{
+      	let endTime = this.dateFormatYMD(this.callTimeEnd)
+      	this.listQuery.callTimeEnd = endTime+" 23:59:59"
       }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
@@ -372,6 +427,12 @@ export default {
 				return undefined
 			}
 			return moment(val).format("YYYY-MM-DD HH:mm:ss");
+		},
+		dateFormatYMD: function (val) {
+			if(!val){
+				return undefined
+			}
+			return moment(val).format("YYYY-MM-DD");
 		},
   }
 }

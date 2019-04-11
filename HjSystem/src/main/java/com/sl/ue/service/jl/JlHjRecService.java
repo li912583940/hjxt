@@ -64,4 +64,6 @@ public interface JlHjRecService extends BaseService<JlHjRecVO>{
 	public void downVideo(Long webid, HttpServletRequest request, HttpServletResponse response);
 	
 	public void downAudio(Long webid, HttpServletRequest request, HttpServletResponse response);
+	
+	public void downTest(Long webid, HttpServletRequest request, HttpServletResponse response);
 }

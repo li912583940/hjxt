@@ -85,15 +85,15 @@ export default {
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 5) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('请输入账号密码！'))
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
