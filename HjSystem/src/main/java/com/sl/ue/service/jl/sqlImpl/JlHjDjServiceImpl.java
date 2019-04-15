@@ -76,7 +76,6 @@ import com.sl.ue.util.Config;
 import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.token.TokenUser;
-import com.sl.ue.util.webservice.entlogic.RtInterface;
 
 
 @Service("jlHjDjSQL")
@@ -1617,8 +1616,8 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			result.error(Result.error_102);
 			return result.toResult();
 		}
-		com.sl.ue.util.webservice.entlogic.Service service1 = new com.sl.ue.util.webservice.entlogic.Service();
-		com.sl.ue.util.webservice.entlogic.RtInterface rtInterface = service1.getRtInterfaceImpPort();
+		com.entlogic.jgxt.realtime.webservices.Service service1 = new com.entlogic.jgxt.realtime.webservices.Service();
+		com.entlogic.jgxt.realtime.webservices.RtInterface rtInterface = service1.getRtInterfaceImpPort();
 										
 		System.out.println("访问webservice接口成功。。。。。");
 		String bh = "@bh='"+frNo+"'";					

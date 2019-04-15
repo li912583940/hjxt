@@ -24,7 +24,7 @@ public class JlHjRecWeb extends Result{
 
     @Autowired
     private JlHjRecService jlHjRecSQL;
-
+    
     @RequestMapping("/findList")
     public String findList(JlHjRecVO model,Integer pageSize, Integer pageNum){
         List<JlHjRecVO> list = jlHjRecSQL.findList(model, pageSize, pageNum);
@@ -154,6 +154,7 @@ public class JlHjRecWeb extends Result{
 	 */
 	@RequestMapping("/downAudio")
 	public void downAudio(Long webid, HttpServletRequest request, HttpServletResponse response){
+		
 		jlHjRecSQL.downAudio(webid, request, response);
 	}
 	

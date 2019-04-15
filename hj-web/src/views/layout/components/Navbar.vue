@@ -3,8 +3,14 @@
     <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container"/>
 
     <breadcrumb class="breadcrumb-container"/>
-
+		
     <div class="right-menu">
+    	<span v-if="isHjDjAcd==1"  style="margin-right: 50px;">
+    			
+    			<font color="red">排队序号：<span v-if="acdInfo!=d">{{acdInfo.acdgetno}}</span>; 叫号序号：<span v-if="acdInfo!=null">{{acdInfo.acdsetno}}</span></font>
+    			<el-button size="mini" type="info"   @click="nextCallNum">下一位</el-button>
+    	</span>
+    	
       <template v-if="device!=='mobile'">
         <error-log class="errLog-container right-menu-item"/>
 
@@ -169,7 +175,7 @@
 			</object>
 		</div>
 		<audio id="audio1" :src="wavUrl"></audio>
-		
+	
 		<!-- 拍照-->
 		<!--<object id="camera" classid="clsid:792FD9B8-5917-45D2-889D-C49FD174D4E0"
 		  codebase="../../../ocx/capProj1.ocx#version=1,0,0,0"
@@ -196,6 +202,7 @@ import { EditPassword, ResetUserPassword } from '@/api/login'
 import { Message, MessageBox } from 'element-ui'
 import { findSpNotice } from '@/api/meetSp'
 import {findList as GetHjServerList} from '@/api/sysParam'
+import {findHjDjAcd, NextCallNum} from '@/api/hjdjAcdInfo'
 
 export default {
   components: {
@@ -229,9 +236,13 @@ export default {
         userPwdOld: undefined,
         userPwdNew: undefined,
       },
+      acdInfo: null,
+      acdindex: null,
+      acdServerName: null,
       
       isHjNotice:0,
       isSpNotice:0,
+      isHjDjAcd:0,
       
     	rules: {
         password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
@@ -243,6 +254,7 @@ export default {
   },
   created() {
   	this.getHjServerList()
+  	
   },
   mounted() {
   	if(this.setButtonRole()==1){
@@ -256,7 +268,10 @@ export default {
 	  			if(this.isSpNotice==1){
 	  				this.getSpNotice()
 	  			}
-	  		}, 60000) //60秒一次
+	  			if(this.isHjDjAcd==1){
+	  				this.getHjDjAcd()
+	  			}
+	  		}, 5000) //5秒一次
 	  	}
   	}
 
@@ -298,7 +313,7 @@ export default {
     	let roles = sessionStorage.getItem("roles")
     	if(roles.includes('admin')){
     		bool=1
-    		this.isHjNotice=1
+    		//this.isHjNotice=1
     		this.isSpNotice=1
     	}else{
     		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
@@ -308,6 +323,10 @@ export default {
     		}
     		if(buttonRoles.meetSp){
     			this.isSpNotice=1
+    			bool=1
+    		}
+    		if(buttonRoles.meetRegister){
+    			this.isHjDjAcd=1
     			bool=1
     		}
     	}
@@ -330,12 +349,28 @@ export default {
 				}
 			})
     },
-    
+    getHjDjAcd(){
+    	findHjDjAcd({}).then(res=>{
+    		this.acdInfo = res.acdInfo
+    		this.acdindex = res.acdindex
+    		this.acdServerName = res.acdServerName
+    	})
+    },
     audioPaly() {
     	var audio1 = document.getElementById("audio1")
 			audio1.currentTime = 0;
 			//audio1.play()
     },
+    nextCallNum(){ // 叫号下一位
+    	let param={
+    		acdindex:this.acdindex,
+    		acdServerName:this.acdServerName
+    	}
+    	NextCallNum(param).then(res=>{
+    		this.acdInfo = res.acdInfo
+    	})
+    },
+    
     openDriver(){ // 下载驱动
     	this.dialogDriverVisible=true
     },

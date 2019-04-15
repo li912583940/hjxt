@@ -21,4 +21,11 @@ public interface JlJqService extends BaseService<JlJqVO>{
 	 */
 	public String addJqWeek(String jqNo, String weeks);
 
+	/**
+	 * 说明 [提交所有监区的会见星期日]
+	 * @param weeks
+	 * @return
+	 * L_晓天  @2019年4月11日
+	 */
+	public String addJqAllWeek(String weeks);
 }

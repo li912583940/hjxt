@@ -25,3 +25,5 @@ export const GetCheckedRole = params => { return request.get('/sysUser/getChecke
 // 为当前用户添加角色
 export const AddUserRole = params => { return request.post('/sysUser/addUserRole', params ).then(res => res) }
 
+export const ResetPassword = params => { return request.post('/sysUser/resetPassword', params ).then(res => res) }
+

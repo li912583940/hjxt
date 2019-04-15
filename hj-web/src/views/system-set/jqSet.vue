@@ -8,7 +8,8 @@
       </el-input>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">搜索</el-button>
       <el-button v-if="buttonRole.addPermission==1" class="filter-item" style="margin-left: 10px;" @click="handleCreate" type="primary" icon="el-icon-circle-plus-outline">添加</el-button>
-    </div>
+    	<el-button v-if="isAdmin==1" class="filter-item" style="margin-left: 10px;" @click="createAll" type="primary" icon="el-icon-circle-plus-outline">批量添加会见星期</el-button>
+  	</div>
     
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
       style="width: 1031px">
@@ -95,12 +96,24 @@
 		  </div>
 		</el-dialog>
 	
-	  
+	  <el-dialog title="批量添加会见星期" :visible.sync="dialogAllWeekVisible" width="740px" :modal-append-to-body="false">
+			<el-card style="width: 540px; margin-left: 10%;">
+				<el-transfer
+			    v-model="allWeekValue"
+			    :data="weekData"
+			    :titles="['未拥有', '已拥有']">
+			  </el-transfer>
+		  </el-card>
+		  <div slot="footer" class="dialog-footer">
+		    <el-button @click="dialogAllWeekVisible = false">取 消</el-button>
+		    <el-button type="primary" @click="updateAllWeekData">确 定</el-button>
+		  </div>
+		</el-dialog>
   </div>
 </template>
 
 <script>
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, GetCheckedWeek, AddJqWeek} from '@/api/jqSet'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, GetCheckedWeek, AddJqWeek, AddJqAllWeek} from '@/api/jqSet'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -155,6 +168,7 @@ export default {
       /**---------------------设置会见星期日   结束--------------------------*/
 			
 			//按钮权限   1：有权限， 0：无权限
+			isAdmin: 0,
       buttonRole: { 
       	queryPermission: 1, 
       	addPermission: 0,
@@ -163,6 +177,8 @@ export default {
       	holidayPermission: 0,
       },
       
+      dialogAllWeekVisible:false,
+      allWeekValue: [],
     }
   },
   filters: {
@@ -310,6 +326,7 @@ export default {
   setButtonRole() { //设置按钮的权限
 		let roles = sessionStorage.getItem("roles")
 		if(roles.includes('admin')){
+			this.isAdmin=1
 			this.buttonRole.addPermission= 1
 			this.buttonRole.editPermission= 1
 			this.buttonRole.deletePermission= 1
@@ -331,6 +348,21 @@ export default {
 				}
 			}
 		}
+	},
+	createAll(){
+		this.allWeekValue = []
+		this.dialogAllWeekVisible=true
+	},
+	// 批量添加会见星期日
+	updateAllWeekData(){
+		let weeks = this.allWeekValue.join()
+		let param = {
+			weeks: weeks
+		}
+		AddJqAllWeek(param).then(res => {
+			this.dialogAllWeekVisible = false
+			this.getList()
+		})
 	},
 	dateFormats: function (val) {
 		if(!val){

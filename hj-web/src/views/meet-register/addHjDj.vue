@@ -41,32 +41,32 @@
 	       style="width: 3081px">
 	      <el-table-column align="center" type="selection" width="50" fixed="left">
 	      </el-table-column>
-	      <el-table-column align="center" label="监区" width="160">
+	      <el-table-column width="160" align="center" :label="$t('currency.jqName')" >
 	        <template slot-scope="scope">
 	          <span>{{scope.row.jqName}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="罪犯编号">
+	      <el-table-column width="110" align="center" label="罪犯编号">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.frNo}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="160px" align="center" label="罪犯姓名">
+	      <el-table-column width="160" align="center" label="罪犯姓名">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.frName}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="110px" align="center" label="本月已见次数">
+	      <el-table-column width="110" align="center" label="本月已见次数">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.hjUse}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="160px" align="center" label="上次会见时间">
+	      <el-table-column width="160" align="center" label="上次会见时间">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.hjLastTime | dateFormat}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="上次会见家属信息">
+	      <el-table-column width="150" align="center" label="上次会见家属信息">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.qsName}}</span>
 	        </template>
@@ -76,48 +76,48 @@
 	          <span>{{scope.row.infoRjsj}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="分管等级">
+	      <el-table-column width="150" align="center" label="分管等级">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.jbName}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="160px" align="center" label="刑期">
+	      <el-table-column width="160" align="center" label="刑期">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.infoXq}}</span>
 	        </template>
 	      </el-table-column>
-				<el-table-column width="500px" align="center" label="罪名">
+				<el-table-column width="500" align="center" label="罪名">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.infoZm}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="400px" align="center" label="家庭住址">
+	      <el-table-column width="400" align="center" label="家庭住址">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.infoHome}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="上次会见所在监区">
+	      <el-table-column width="150" align="center" label="上次会见所在监区">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.formerJQName}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="90px" align="center" label="重点罪犯">
+	      <el-table-column width="90" align="center" label="重点罪犯">
 	        <template slot-scope="scope">
 	          <span v-if="scope.row.stateZdzf=='0'">否</span>
 	          <span v-if="scope.row.stateZdzf=='1'" style="color: red;">是</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="备注">
+	      <el-table-column width="150" align="center" label="备注">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.zdzfType}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="150px" align="center" label="国籍">
+	      <el-table-column width="150" align="center" label="国籍">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.frGj}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column width="160px" align="center" label="是否禁止/禁止时间">
+	      <el-table-column width="160" align="center" label="是否禁止/禁止时间">
 	        <template slot-scope="scope">
 	          <span v-if="scope.row.hjJb=='-1'">是/{{scope.row.hjStopTime | dateFormatYMD}}</span>
 	          <span v-if="scope.row.hjJb!='-1'">否</span>
@@ -849,6 +849,8 @@ export default {
       // 重新加载页面，以刷新数据
       window.location.reload()
     },
+    
+    
   }
   
    

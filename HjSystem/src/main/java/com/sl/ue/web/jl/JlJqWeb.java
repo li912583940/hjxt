@@ -116,4 +116,13 @@ public class JlJqWeb extends Result{
     	return jlJqSQL.addJqWeek(jqNo, weeks);
     }
 
+    /**
+     * 说明 [提交所有监区的会见星期日]
+     * @return
+     * L_晓天  @2019年4月11日
+     */
+    @RequestMapping("/addJqAllWeek")
+    public String addJqAllWeek(String weeks){
+    	return jlJqSQL.addJqAllWeek(weeks);
+    }
 }

@@ -106,5 +106,32 @@ public class JlJqServiceImpl extends BaseSqlImpl<JlJqVO> implements JlJqService{
 		return result.toResult();
 	}
 
+	public String addJqAllWeek(String weeks){
+		Result result = new Result();
+		// 先删
+		jlHjJqWeekSQL.delete(new JlHjJqWeekVO());
+		
+		String jy = "Server1";
+		SysHjServerVO sysHjServer = new SysHjServerVO();
+    	List<SysHjServerVO> list = sysHjServerSQL.findList(sysHjServer);
+    	if(list.size()>0){
+    		jy = list.get(0).getServerName();
+    	}
+    	
+    	List<JlJqVO> jlJqList = this.findList(new JlJqVO(), null, null, "ASC");
+		//再添加
+		if(StringUtils.isNotBlank(weeks)){
+			for(JlJqVO jlJq : jlJqList){
+				for(String i : weeks.split(",")){
+					JlHjJqWeekVO t = new JlHjJqWeekVO();
+					t.setJy(jy);
+					t.setJqNo(jlJq.getJqNo());
+					t.setJqWeek(Integer.parseInt(i));
+					jlHjJqWeekSQL.add(t);
+				}
+			}
+		}
+		return result.toResult();
+	}
 
 }

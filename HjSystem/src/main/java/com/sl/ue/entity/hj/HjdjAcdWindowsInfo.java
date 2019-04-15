@@ -22,9 +22,9 @@ public class HjdjAcdWindowsInfo implements java.io.Serializable {
 	@DbField("ACDIP")
 	private String acdip;
 	@DbField("ACDSetNo")
-	private Integer acdsetNo;
+	private Integer acdsetno;
 	@DbField("ACDSetTime")
-	private Date acdsetTime;
+	private Date acdsettime;
 	@DbField("Server_Name")
 	private String serverName;
 	
@@ -46,17 +46,18 @@ public class HjdjAcdWindowsInfo implements java.io.Serializable {
 	public void setAcdip(String acdip) {
 		this.acdip = acdip;
 	}
-	public Integer getAcdsetNo() {
-		return acdsetNo;
+
+	public Integer getAcdsetno() {
+		return acdsetno;
 	}
-	public void setAcdsetNo(Integer acdsetNo) {
-		this.acdsetNo = acdsetNo;
+	public void setAcdsetno(Integer acdsetno) {
+		this.acdsetno = acdsetno;
 	}
-	public Date getAcdsetTime() {
-		return acdsetTime;
+	public Date getAcdsettime() {
+		return acdsettime;
 	}
-	public void setAcdsetTime(Date acdsetTime) {
-		this.acdsetTime = acdsetTime;
+	public void setAcdsettime(Date acdsettime) {
+		this.acdsettime = acdsettime;
 	}
 	public String getServerName() {
 		return serverName;

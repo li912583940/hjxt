@@ -63,6 +63,9 @@
             <el-option v-for="item in depts" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="重置密码">
+          <el-button type="info" @click="resetPassword">重置</el-button>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -93,11 +96,11 @@
 </template>
 
 <script>
-import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, FindUserDepartList, FindRoleList, GetCheckedRole, AddUserRole, GetDeptList } from '@/api/sysUser'
+import { findPojo, findOne, RequestAdd, RequestEdit, RequestDelete, FindUserDepartList, FindRoleList, GetCheckedRole, AddUserRole, GetDeptList, ResetPassword } from '@/api/sysUser'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
-
+import { Message, MessageBox } from 'element-ui'
 
 export default {
   name: 'relatives',
@@ -270,6 +273,20 @@ export default {
 		      })
         }
       })
+    },
+    resetPassword() { //重置密码
+    	let param={
+    		id: this.dataForm.webid
+    	}
+    	ResetPassword(param).then(res=>{
+    		Message({
+	        message: '密码重置成功。新的密码为123456，下次登录时请使用新密码。',
+		      type: 'success',
+		      duration: 5 * 1000
+	      });
+    	}).catch(error=>{
+    		
+    	})
     },
     //删除
 		handleDelete(row) {

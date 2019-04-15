@@ -18,19 +18,19 @@ public class HjdjAcdInfo implements java.io.Serializable {
 	@DbField("ACDIndex")
 	private Integer acdindex;
 	@DbField("ACDGetNo")
-	private Integer acdgetNo;
+	private Integer acdgetno;
 	@DbField("ACDGetTime")
-	private Date acdgetTime;
+	private Date acdgettime;
 	@DbField("ACDSetNo")
-	private Integer acdsetNo;
+	private Integer acdsetno;
 	@DbField("ACDSetTime")
-	private Date acdsetTime;
+	private Date acdsettime;
 	@DbField("CurDate")
-	private Integer curDate;
+	private Integer curdate;
 	@DbField("InitNo")
-	private Integer initNo;
+	private Integer initno;
 	@DbField("UnitNo")
-	private Integer unitNo;
+	private Integer unitno;
 	@DbField("Server_Name")
 	private String serverName;
 	@DbField("ACDurl")
@@ -42,47 +42,48 @@ public class HjdjAcdInfo implements java.io.Serializable {
 	public void setAcdindex(Integer acdindex) {
 		this.acdindex = acdindex;
 	}
-	public Integer getAcdgetNo() {
-		return acdgetNo;
+	
+	public Integer getAcdgetno() {
+		return acdgetno;
 	}
-	public void setAcdgetNo(Integer acdgetNo) {
-		this.acdgetNo = acdgetNo;
+	public void setAcdgetno(Integer acdgetno) {
+		this.acdgetno = acdgetno;
 	}
-	public Date getAcdgetTime() {
-		return acdgetTime;
+	public Date getAcdgettime() {
+		return acdgettime;
 	}
-	public void setAcdgetTime(Date acdgetTime) {
-		this.acdgetTime = acdgetTime;
+	public void setAcdgettime(Date acdgettime) {
+		this.acdgettime = acdgettime;
 	}
-	public Integer getAcdsetNo() {
-		return acdsetNo;
+	public Integer getAcdsetno() {
+		return acdsetno;
 	}
-	public void setAcdsetNo(Integer acdsetNo) {
-		this.acdsetNo = acdsetNo;
+	public void setAcdsetno(Integer acdsetno) {
+		this.acdsetno = acdsetno;
 	}
-	public Date getAcdsetTime() {
-		return acdsetTime;
+	public Date getAcdsettime() {
+		return acdsettime;
 	}
-	public void setAcdsetTime(Date acdsetTime) {
-		this.acdsetTime = acdsetTime;
+	public void setAcdsettime(Date acdsettime) {
+		this.acdsettime = acdsettime;
 	}
-	public Integer getCurDate() {
-		return curDate;
+	public Integer getCurdate() {
+		return curdate;
 	}
-	public void setCurDate(Integer curDate) {
-		this.curDate = curDate;
+	public void setCurdate(Integer curdate) {
+		this.curdate = curdate;
 	}
-	public Integer getInitNo() {
-		return initNo;
+	public Integer getInitno() {
+		return initno;
 	}
-	public void setInitNo(Integer initNo) {
-		this.initNo = initNo;
+	public void setInitno(Integer initno) {
+		this.initno = initno;
 	}
-	public Integer getUnitNo() {
-		return unitNo;
+	public Integer getUnitno() {
+		return unitno;
 	}
-	public void setUnitNo(Integer unitNo) {
-		this.unitNo = unitNo;
+	public void setUnitno(Integer unitno) {
+		this.unitno = unitno;
 	}
 	public String getServerName() {
 		return serverName;

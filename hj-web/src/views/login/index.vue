@@ -9,7 +9,7 @@
 				
 	      <div class="title-container">
 	        <!--<h3 class="title">{{ $t('login.title') }}</h3>-->
-	        <h3 class="title">广东省东莞监狱会见系统</h3>
+	        <h3 class="title">会见电话监控系统</h3>
 	        <!--<lang-select class="set-language"/>-->
 	      </div>
 				
@@ -230,7 +230,7 @@ $bg:#FFFAFA;
 /*$dark_gray:#889aa4;*/
 $dark_gray:#1E1E1E;
 $light_gray:#1E1E1E;
-$bgImg:url(/static/image/广州维实信息科技有限公司.jpg);
+$bgImg:url(/static/image/bj_kuaiyu.jpg);
 
 
 .login-container {

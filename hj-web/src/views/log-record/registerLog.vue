@@ -19,6 +19,7 @@
 	      type="date"
 	      placeholder="选择结束日期">
 	    </el-date-picker>
+	    <input id="startType" type="text" value="0" hidden="hidden"/>
     	<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入罪犯编号" v-model="listQuery.frNo" clearable>
       </el-input>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入罪犯姓名" v-model="listQuery.frName" clearable>
@@ -234,7 +235,20 @@ export default {
       	},
       ],
       pickerOptionsStart: {
-	      shortcuts: [{
+	      shortcuts: [
+	      {
+	        text: '今天上午',
+	        onClick(picker) {
+	        	document.getElementById("startType").value="1"  // 1:今天上午，2：今天下午
+	          picker.$emit('pick', new Date());
+	        }
+	      },{
+	        text: '今天下午',
+	        onClick(picker) {
+	        	document.getElementById("startType").value="2"  // 1:今天上午，2：今天下午
+	          picker.$emit('pick', new Date());
+	        }
+	      },{
 	        text: '今天',
 	        onClick(picker) {
 	          picker.$emit('pick', new Date());
@@ -310,18 +324,27 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      if(!this.callTimeStart){
-      	this.listQuery.callTimeStart = undefined
-      }else{
-      	let startTime = this.dateFormatYMD(this.callTimeStart)
-      	this.listQuery.callTimeStart = startTime+" 00:00:00"
-      }
       if(!this.callTimeEnd){
       	this.listQuery.callTimeEnd = undefined
       }else{
       	let endTime = this.dateFormatYMD(this.callTimeEnd)
       	this.listQuery.callTimeEnd = endTime+" 23:59:59"
       }
+      
+      if(!this.callTimeStart){  
+      	this.listQuery.callTimeStart = undefined
+      }else{
+      	let startTime = this.dateFormatYMD(this.callTimeStart)
+      	this.listQuery.callTimeStart = startTime+" 00:00:00"
+      	
+      	let startType = document.getElementById("startType").value
+		  	if(startType!=null && startType==1){ //针对东莞监狱特殊处理  1:今天上午 2：今天下午
+		  		this.listQuery.callTimeEnd = startTime+" 12:00:00"
+		  	}else if(startType!=null && startType==2){
+		  		this.listQuery.callTimeStart = startTime+" 12:00:00"
+		  	}
+      }
+      
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
       	 this.total = res.pojo.count
@@ -329,6 +352,7 @@ export default {
       }).catch(error => {
           this.listLoading = false
       })
+      document.getElementById("startType").value="0"
     },
     handleFilter() {
       this.listQuery.pageNum = 1

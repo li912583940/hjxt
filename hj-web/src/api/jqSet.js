@@ -19,3 +19,5 @@ export const GetCheckedWeek = params => { return request.get('/jlJq/getCheckedWe
 
 //提交当前监区的会见星期日
 export const AddJqWeek = params => { return request.post('/jlJq/addJqWeek', params ).then(res => res) }
+
+export const AddJqAllWeek = params => { return request.post('/jlJq/addJqAllWeek', params ).then(res => res) }

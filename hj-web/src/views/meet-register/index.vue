@@ -10,10 +10,10 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 1951px">
+      style="width: 2081px">
       <el-table-column type="index" width="50">
       </el-table-column>
-      <el-table-column width="100" align="center" :label="$t('currency.jqName')">
+      <el-table-column width="160" align="center" :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.jqName}}</span>
         </template>
@@ -23,12 +23,12 @@
           <span>{{scope.row.hjIndex}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" :label="$t('currency.frNo')">
+      <el-table-column width="110" align="center" :label="$t('currency.frNo')">
         <template slot-scope="scope">
           <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" min-width align="center" :label="$t('currency.frName')">
+      <el-table-column width="160" min-width align="center" :label="$t('currency.frName')">
         <template slot-scope="scope">
           <span>{{scope.row.frName}}</span>
         </template>

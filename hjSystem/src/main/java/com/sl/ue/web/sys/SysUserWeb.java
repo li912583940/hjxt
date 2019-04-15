@@ -107,4 +107,20 @@ public class SysUserWeb extends Result{
     public String addUserRole(Integer userId, String roles){
     	return sysUserSQL.addUserRole(userId, roles);
     }
+    
+    @RequestMapping("/resetPassword")
+	public String resetPassword(Integer id){
+		if(id == null){
+			this.error(error_102);
+			return this.toResult();
+		}
+		SysUserVO user =  sysUserSQL.findOne(id);
+		if(user != null){
+			user.setUserPwd("123456");
+			sysUserSQL.edit(user);
+		}else{
+			this.error(error_103, "查询不到用户信息，密码重置失败。");
+		}
+		return this.toResult();
+	}
 }

@@ -37,6 +37,7 @@ import com.sl.ue.entity.jl.vo.JlHjMonVO;
 import com.sl.ue.entity.jl.vo.JlHjRecRatingInfoVO;
 import com.sl.ue.entity.jl.vo.JlHjRecVO;
 import com.sl.ue.entity.sys.vo.SysHjServerVO;
+import com.sl.ue.entity.sys.vo.SysLogVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlHjDjQsService;
@@ -45,8 +46,10 @@ import com.sl.ue.service.jl.JlHjInfoService;
 import com.sl.ue.service.jl.JlHjRecRatingInfoService;
 import com.sl.ue.service.jl.JlHjRecService;
 import com.sl.ue.service.sys.SysHjServerService;
+import com.sl.ue.service.sys.SysLogService;
 import com.sl.ue.util.Config;
 import com.sl.ue.util.Constants;
+import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.WebContextUtil;
 import com.sl.ue.util.http.token.JqRoleManager;
@@ -65,6 +68,8 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 	private JlHjDjQsService jlHjDjQsSQL;
 	@Autowired
 	private JlHjDjService jlHjDjSQL;
+	@Autowired
+	private SysLogService sysLogSQL;
 	
 	@Override
 	public Map<String, Object> findPojoLeft(JlHjRecVO model, Integer pageSize, Integer pageNum) {
@@ -559,6 +564,16 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     		result.error(Result.error_103,"数据库查询不到此记录");
     		return;
     	}
+    	SysUserVO user = TokenUser.getUser();
+    	SysLogVO sysLog = new SysLogVO();
+    	sysLog.setType("严重");
+		sysLog.setOp("下载录音");
+		sysLog.setInfo("下载罪犯编号: "+jlHjRec.getFrNo()+"，罪犯姓名: "+jlHjRec.getFrName()+"；时间: "+jlHjRec.getCallTimeStart()+" 的录音");
+		sysLog.setModel("会见记录");
+		sysLog.setUserNo(user.getUserNo());
+		sysLog.setUserName(user.getUserName());
+		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLogSQL.add(sysLog);
     	File file = null;
     	if(StringUtils.isNotBlank(jlHjRec.getCallRecfile())){
     		file = new File(jlHjRec.getCallRecfile());
