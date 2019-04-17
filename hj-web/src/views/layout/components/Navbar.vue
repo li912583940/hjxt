@@ -5,9 +5,14 @@
     <breadcrumb class="breadcrumb-container"/>
 		
     <div class="right-menu">
+    	<span v-if="isHjDjAcd==1"  style="margin-right: 550px;">
+    			
+    			<font color="red">普通座位：<span v-if="yanjian!=null">{{yanjian}}</span>; 特殊座位：<span v-if="kuanjian!=null">{{kuanjian}}</span></font>
+    	</span>
+    	
     	<span v-if="isHjDjAcd==1"  style="margin-right: 50px;">
     			
-    			<font color="red">排队序号：<span v-if="acdInfo!=d">{{acdInfo.acdgetno}}</span>; 叫号序号：<span v-if="acdInfo!=null">{{acdInfo.acdsetno}}</span></font>
+    			<font color="red">排队序号：<span v-if="acdInfo!=null">{{acdInfo.acdgetno}}</span>; 叫号序号：<span v-if="acdInfo!=null">{{acdInfo.acdsetno}}</span></font>
     			<el-button size="mini" type="info"   @click="nextCallNum">下一位</el-button>
     	</span>
     	
@@ -203,6 +208,7 @@ import { Message, MessageBox } from 'element-ui'
 import { findSpNotice } from '@/api/meetSp'
 import {findList as GetHjServerList} from '@/api/sysParam'
 import {findHjDjAcd, NextCallNum} from '@/api/hjdjAcdInfo'
+import {getSurplusZwCount} from '@/api/lineSet'
 
 export default {
   components: {
@@ -240,6 +246,9 @@ export default {
       acdindex: null,
       acdServerName: null,
       
+      yanjian:null,
+      kuanjian:null,
+      
       isHjNotice:0,
       isSpNotice:0,
       isHjDjAcd:0,
@@ -254,7 +263,7 @@ export default {
   },
   created() {
   	this.getHjServerList()
-  	
+  	this.getHjDjAcd()
   },
   mounted() {
   	if(this.setButtonRole()==1){
@@ -354,6 +363,10 @@ export default {
     		this.acdInfo = res.acdInfo
     		this.acdindex = res.acdindex
     		this.acdServerName = res.acdServerName
+    	})
+    	getSurplusZwCount({}).then(res =>{
+    		this.yanjian=res.yanjian
+    		this.kuanjian=res.kuanjian
     	})
     },
     audioPaly() {

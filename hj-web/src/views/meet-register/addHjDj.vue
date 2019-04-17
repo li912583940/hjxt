@@ -146,7 +146,7 @@
 		<el-card class="box-card">
 	    <el-table :key='qsTableKey' ref="qsMultipleTable" :data="qsList" v-loading="qsListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
 	     @selection-change="qsAllSelectionChange"  @row-click="qsRowClick" @row-dblclick="toEditQs" 
-	     style="width: 2168px">
+	     style="width: 2068px">
 	      <el-table-column align="center" type="selection"  width="50" fixed="left">
 	      </el-table-column>
 	      <el-table-column align="center" label="亲属姓名" width="100">
@@ -154,11 +154,11 @@
 	          <span>{{scope.row.qsName}}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column align="center" label="亲属相片" width="100">
+	      <!--<el-table-column align="center" label="亲属相片" width="100">
 	        <template slot-scope="scope">
 	          <span><img :src="scope.row.zpUrl"  width="25px" height="31px" @click="clickImg($event)"/></span>
 	        </template>
-	      </el-table-column>
+	      </el-table-column>-->
 	      <el-table-column width="100px" align="center" label="关系">
 	        <template slot-scope="scope">
 	          <span>{{scope.row.gx}}</span>
@@ -281,7 +281,7 @@
 						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;现有罪犯{{jlHjDj.frName }}（编号:{{jlHjDj.frNo}}；罪名：{{jlHjDj.infoZm }}）的亲属（共{{jlHjDj.qsNum}}人）：
 					</font>
 				</div>
-    		<div>
+    		<div style="margin-top: 2px;">
 	    		<table width="95%" style="margin-left: 10px" border="1"  cellpadding="0" cellspacing="0" font size="4">
 	    			<tr>
 	    				<td width="30%" height="30px" nowrap="nowrap" align="center">关系</td>
@@ -296,13 +296,15 @@
 	    		</table>
 
     		</div>
-    		<div style="margin-left: 10px">
+    		<div style="margin-left: 10px;margin-top: 2px;">
     			<font size="4">
     				于{{jlHjDj.djTime | dateFormatYMD }}前往会见室窗口办理会见
+    				<span  v-if="jlHjDj.zw!=null" style="margin-left: 30px">
+    					座位：{{jlHjDj.zw}}
+    				</span>
     			</font>
     		</div>
     		<br></br>
-    		
     		<br></br>
     		<div style="margin-left: 10px">
     			<font size="4">
@@ -450,9 +452,12 @@ export default {
       
       frNoQuery: this.$route.query.frNoQuery,
       
+      /** 打印小票开始 */
+      dialogFormVisible: false,
       jlHjDj: null,
       jlHjDjQsList: [],
       hjid:null,
+      /** 打印小票结束 */
     }
   },
   components: {
@@ -667,7 +672,6 @@ export default {
 	    })
     	RequestAddHjdj(this.formdata).then((res) => {
     		this.hjid = res.hjid
-    		console.log(res.hjid)
     		loading.close();
         Message({
 	        message: res.errMsg,
@@ -680,7 +684,6 @@ export default {
       	this.frListQuery.qsSfz = undefined
       	this.frListQuery.qsName = undefined
       	if(this.hjid){
-	    		console.log(this.hjid)
 	    		this.printXp(this.hjid)
 	    	}
     		//history.go(-1) 

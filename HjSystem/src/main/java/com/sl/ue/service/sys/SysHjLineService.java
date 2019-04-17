@@ -40,4 +40,11 @@ public interface SysHjLineService extends BaseService<SysHjLineVO>{
 	 * L_晓天  @2018年11月22日
 	 */
 	public String qieduanHj(Long hjid);
+	
+	/**
+	 * 说明 [获取剩余座位数]
+	 * @return
+	 * L_晓天  @2019年4月17日
+	 */
+	public String getSurplusZwCount();
 }

@@ -311,7 +311,7 @@ export const asyncRouterMap = [
       { path: 'lineSet', component: () => import('@/views/system-set/lineSet'), name: 'lineSet', meta: { title: 'lineSet', icon: 'tab', roles:'lineSet' }}, // 线路设置
       { path: 'gxManage', component: () => import('@/views/system-set/gxManage'), name: 'gxManage', meta: { title: 'gxManage', icon: 'tab', roles:'gxManage' }}, // 亲属关系
       { path: 'deptManage', component: () => import('@/views/system-set/deptManage'), name: 'deptManage', meta: { title: 'deptManage', icon: 'tab', roles:'deptManage' }}, // 部门管理
-      { path: 'noticeSet', component: () => import('@/views/system-set/noticeSet'), name: 'noticeSet', meta: { title: 'noticeSet', icon: 'tab', roles:'noticeSet' }}, // 会见通知配置
+      { path: 'confSet', component: () => import('@/views/system-set/confSet'), name: 'confSet', meta: { title: 'confSet', icon: 'tab', roles:'confSet' }}, // 会见通知配置
       { path: 'sysParam', component: () => import('@/views/system-set/sysParam'), name: 'sysParam', meta: { title: 'sysParam', icon: 'tab', roles:'sysParam' }} // 系统参数
     ]
   },

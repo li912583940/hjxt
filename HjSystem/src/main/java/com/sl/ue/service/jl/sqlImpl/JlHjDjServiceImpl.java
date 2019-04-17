@@ -51,8 +51,8 @@ import com.sl.ue.entity.jl.vo.JlHjSpVO;
 import com.sl.ue.entity.jl.vo.JlJbVO;
 import com.sl.ue.entity.jl.vo.JlJqVO;
 import com.sl.ue.entity.jl.vo.JlQsVO;
+import com.sl.ue.entity.sys.vo.SysConfVO;
 import com.sl.ue.entity.sys.vo.SysHjLineVO;
-import com.sl.ue.entity.sys.vo.SysNoticeConfVO;
 import com.sl.ue.entity.sys.vo.SysParamVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
@@ -68,8 +68,8 @@ import com.sl.ue.service.jl.JlHjSpSetService;
 import com.sl.ue.service.jl.JlJbService;
 import com.sl.ue.service.jl.JlJqService;
 import com.sl.ue.service.jl.JlQsService;
+import com.sl.ue.service.sys.SysConfService;
 import com.sl.ue.service.sys.SysHjLineService;
-import com.sl.ue.service.sys.SysNoticeConfService;
 import com.sl.ue.service.sys.SysParamService;
 import com.sl.ue.service.sys.SysUserService;
 import com.sl.ue.util.Config;
@@ -106,7 +106,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 	@Autowired
     private JlHjHolidayService jlHjHolidaySQL;
 	@Autowired
-	private SysNoticeConfService sysNoticeConfSQL;
+	private SysConfService sysConfSQL;
 	@Autowired
 	private JlHjDjQsService jlHjDjQsSQL;
 	@Autowired
@@ -125,12 +125,14 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			) {
 		Result result = new Result();
 		
-		List<SysNoticeConfVO> sysNoticeConfList = sysNoticeConfSQL.findList(new SysNoticeConfVO());
+		List<SysConfVO> sysConfList = sysConfSQL.findList(new SysConfVO());
 		int notice = 0; // 会见通知。 0：登记完自动发起。1：身份验证成功后发起
-		if(sysNoticeConfList.size()>0){
-			SysNoticeConfVO sysNoticeConf = sysNoticeConfList.get(0);
-			notice = sysNoticeConf.getHjNotice();
+		SysConfVO sysConf = null;
+		if(sysConfList.size()>0){
+			sysConf = sysConfList.get(0);
+			notice = sysConf.getHjNotice();
 		}
+		
 		List<String> qsGxList = new ArrayList(); // 将登记的亲属关系存储起来， 最后判断其中是否有家属关系需要审批
 		JlHjDjVO addJlHjDj = new JlHjDjVO(); // 创建会见登记
 		
@@ -252,7 +254,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			c.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天 
 			String ymd = DateUtil.getFormat(c.getTime(), "yyyy-MM-dd");
 			ymd+=" 00:00:00";
-			jlHjRecQuery.setLeftJoinWhere(" AND a.Call_Time_Start>'"+ymd+"'");
+			jlHjRecQuery.setLeftJoinWhere(" AND a.Call_Time_Start>'"+ymd+"' AND a.HJ_Type=1");
 			int count = jlHjRecSQL.count(jlHjRecQuery); // 犯人当月会见次数
 			if(jlJb.getHjCount()<=count){
 				// 查看 《罪犯本月会见次数已用完》是否开始了审批，如果没有开启，直接返回提示信息
@@ -485,7 +487,45 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 				jlHjSpSQL.add(jlHjSp);
 				result.msg("提交登记成功，但此次会见需要审批，审批通过后才能参与会见");
 			}else{
-				result.putJson("hjid", addJlHjDj.getHjid());
+				if(sysConf!=null && sysConf.getPrintXp()==1){ // PrintXp==1 登记完成打印小票
+					result.putJson("hjid", addJlHjDj.getHjid());
+				}
+				if(sysConf!=null && sysConf.getFpZw()==1){ // FpZw==1 登记完成分配座位
+					final Integer hjTypeZw = addJlHjDj.getHjType();
+					final String frNoZw = addJlHjDj.getFrNo();
+					Integer resu = (Integer) jdbcTemplate.execute(  // 调用存储过程 获取会见批次号
+						     new CallableStatementCreator() {
+								@Override
+								public CallableStatement createCallableStatement(Connection con) throws SQLException {
+									
+									 String storedProc = "{call set_ZW_ex_new1(?,?,?)}";// 调用的sql   
+							           CallableStatement cs = con.prepareCall(storedProc); 
+							           cs.setInt(1, hjTypeZw);
+							           cs.setString(2, frNoZw);// 设置输入参数的值   
+							           cs.registerOutParameter(3, java.sql.Types.INTEGER);// 注册输出参数的类型   
+							           return cs;   
+								}
+							}, 
+						    new CallableStatementCallback<Integer>() {  
+								@Override
+						        public Integer doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException {   
+						           cs.execute();   
+						           return cs.getInt(3);// 获取输出参数的值   
+						        }   
+					});
+					
+					if(resu==0){
+						
+					}else{
+						if(sysConf.getSaveHjdj()==0){ // 默认0; 当会见登记为自动分配座位时，即fp_zw=1。 0:座位不够，不让登记。1：座位不够，可以继续提交登记
+							jlHjSpSQL.deleteKey(addJlHjDj.getHjid());  //没有空闲座位直接删除
+							result.error(Result.error_103,"登记失败，当前已没有空闲座位可供使用");
+						}else{
+							result.msg("登记成功，但当前已没有空闲座位可供使用");
+						}
+						return result.toResult();
+					}
+				}
 				result.msg("提交登记成功");
 			}
 			
@@ -586,6 +626,20 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			jlHjDj.setInfoZm(jlFr.getInfoZm());
 		}
 		jlHjDj.setQsNum(jlHjDjQsList.size());
+		
+		List<SysConfVO> sysConfList = sysConfSQL.findList(new SysConfVO());
+		if(sysConfList.size()>0){
+			SysConfVO sysConf = sysConfList.get(0);
+			if(sysConf.getFpZw()==1){ // 登记完成分配座位
+				SysHjLineVO sysHjLine = new SysHjLineVO();
+				sysHjLine.setHjid(jlHjDj.getHjid());
+				List<SysHjLineVO> sysHjLineList = sysHjLineSQL.findList(sysHjLine);
+				if(sysHjLineList.size()>0){
+					sysHjLine = sysHjLineList.get(0);
+					jlHjDj.setZw(sysHjLine.getZw());
+				}
+			}
+		}
 		result.putJson("jlHjDj", jlHjDj);
 		result.putData("jlHjDjQsList", jlHjDjQsList);
 		

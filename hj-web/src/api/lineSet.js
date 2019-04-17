@@ -10,3 +10,5 @@ export const RequestAdd = params => { return request.post('/sysHjLine/add', para
 export const RequestEdit = params => { return request.post('/sysHjLine/edit', params ).then(res => res) }
 
 export const RequestDelete = params => { return request.post('/sysHjLine/delete', params ).then(res => res) }
+
+export const getSurplusZwCount = params => { return request.get('/sysHjLine/getSurplusZwCount', { params: params } ).then(res => res) }

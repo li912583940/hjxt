@@ -85,4 +85,5 @@ public class HjSignWeb extends Result{
 	public String cancelGrantCall(Long hjId, HttpServletRequest request){
 		return jlHjDjSQL.cancelGrantCall(hjId, request);
 	}
+	
 }

@@ -64,4 +64,8 @@ public class SysHjLineWeb extends Result{
         return this.toResult();
     }
 
+    @RequestMapping("/getSurplusZwCount")
+	public String getSurplusZwCount(){
+		return sysHjLineSQL.getSurplusZwCount();
+	}
 }

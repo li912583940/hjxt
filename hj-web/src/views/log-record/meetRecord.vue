@@ -7,17 +7,19 @@
     		class="filter-item"
 	      v-model="callTimeStart"
 	      align="right"
-	      type="date"
+	      type="datetime"
 	      placeholder="选择开始日期"
-	      :picker-options="pickerOptionsStart">
+	      :picker-options="pickerOptionsStart"
+	      default-time="00:00:00">
 	    </el-date-picker>
 	    <el-date-picker
 	    	style="width: 200px"
 	    	class="filter-item"
 	      v-model="callTimeEnd"
 	      align="right"
-	      type="date"
-	      placeholder="选择结束日期">
+	      type="datetime"
+	      placeholder="选择结束日期"
+	      default-time="23:59:59">
 	    </el-date-picker>
 	    <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.jqNo" placeholder="选择监区">
         <el-option v-for="item in jqs" :key="item.id" :label="item.name" :value="item.id">
@@ -816,14 +818,12 @@ export default {
       if(!this.callTimeStart){
       	this.listQuery.callTimeStart = undefined
       }else{
-      	let startTime = this.dateFormatYMD(this.callTimeStart)
-      	this.listQuery.callTimeStart = startTime+" 00:00:00"
+				this.listQuery.callTimeStart = this.dateFormats(this.callTimeStart)
       }
       if(!this.callTimeEnd){
       	this.listQuery.callTimeEnd = undefined
       }else{
-      	let endTime = this.dateFormatYMD(this.callTimeEnd)
-      	this.listQuery.callTimeEnd = endTime+" 23:59:59"
+				this.listQuery.callTimeEnd = this.dateFormats(this.callTimeEnd)
       }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list
@@ -890,7 +890,7 @@ export default {
     		if(this.ie==1){
     			console.log(row.callVideofile1Url)
     			console.log(row.callVideofile2Url)
-    			window.open("/static/html/video.html?callRecfileUrl="+row.callVideofile2Url,"","width=1000,height=500,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
+    			window.open("/static/html/video.html?callRecfileUrl="+row.callVideofile1Url,"","width=1000,height=500,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
     		}
     		console.log(this.ie)
     		//this.dialogPlayVisible =true

@@ -195,4 +195,24 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 		}
 		return result.toResult();
 	}
+	
+	public String getSurplusZwCount(){
+		Result result = new Result();
+		SysHjLineVO sysHjLine0 = new SysHjLineVO();
+		sysHjLine0.setState(1);
+		sysHjLine0.setHjstate(0);
+		sysHjLine0.setLineType(0);
+		sysHjLine0.setLeftJoinWhere(" AND hjid is null");
+		Integer yanjian = this.count(sysHjLine0);
+		result.putJson("yanjian", yanjian);
+		
+		SysHjLineVO sysHjLine1 = new SysHjLineVO();
+		sysHjLine1.setState(1);
+		sysHjLine1.setHjstate(0);
+		sysHjLine1.setLineType(1);
+		sysHjLine1.setLeftJoinWhere(" AND hjid is null");
+		Integer kuanjian = this.count(sysHjLine1);
+		result.putJson("kuanjian", kuanjian);
+		return result.toResult();
+	}
 }

@@ -14,14 +14,14 @@ import com.sl.ue.entity.jl.vo.JlJbVO;
 import com.sl.ue.entity.jl.vo.JlJqVO;
 import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.entity.sys.vo.SysHjLineVO;
-import com.sl.ue.entity.sys.vo.SysNoticeConfVO;
+import com.sl.ue.entity.sys.vo.SysConfVO;
 import com.sl.ue.service.jl.JlFrService;
 import com.sl.ue.service.jl.JlHjDjService;
 import com.sl.ue.service.jl.JlJbService;
 import com.sl.ue.service.jl.JlJqService;
 import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.service.sys.SysHjLineService;
-import com.sl.ue.service.sys.SysNoticeConfService;
+import com.sl.ue.service.sys.SysConfService;
 import com.sl.ue.util.Config;
 import com.sl.ue.util.http.Result;
 
@@ -38,7 +38,7 @@ public class SfyzWeb  extends Result{
 	@Autowired
 	private JlJbService jlJbSQL;
 	@Autowired
-	private SysNoticeConfService sysNoticeConfSQL;
+	private SysConfService sysNoticeConfSQL;
 	@Autowired
 	private JlQsService jlQsSQL;
 	@Autowired
@@ -96,10 +96,10 @@ public class SfyzWeb  extends Result{
 			this.putJson("state", 0);
 			
 			// 身份验证成功后发起会见通知
-			List<SysNoticeConfVO> sysNoticeConfList = sysNoticeConfSQL.findList(new SysNoticeConfVO());
+			List<SysConfVO> sysNoticeConfList = sysNoticeConfSQL.findList(new SysConfVO());
 			int notice = 0; // 会见通知。 0：登记完自动发起。1：身份验证成功后发起
 			if(sysNoticeConfList.size()>0){
-				SysNoticeConfVO sysNoticeConf = sysNoticeConfList.get(0);
+				SysConfVO sysNoticeConf = sysNoticeConfList.get(0);
 				notice = sysNoticeConf.getHjNotice();
 			}
 			if(notice==1){

@@ -24,6 +24,8 @@ public class JlHjSpVO extends JlHjSp{
 	
     private Integer spPermission; // 1:有审批权限。0：没有审批权限
     
+    private String callTimeStart; //查询条件  开始时间
+	private String callTimeEnd;	  //查询条件  结束时间
     
 	public String getEnclosureUrl() {
 		return enclosureUrl;
@@ -112,14 +114,25 @@ public class JlHjSpVO extends JlHjSp{
 	public void setSpPermission(Integer spPermission) {
 		this.spPermission = spPermission;
 	}
+	
+	public String getCallTimeStart() {
+		return callTimeStart;
+	}
+
+	public void setCallTimeStart(String callTimeStart) {
+		this.callTimeStart = callTimeStart;
+	}
+
+	public String getCallTimeEnd() {
+		return callTimeEnd;
+	}
+
+	public void setCallTimeEnd(String callTimeEnd) {
+		this.callTimeEnd = callTimeEnd;
+	}
 
 	
     /*---------------------------  处理关联表  -----------------------------*/
-
-
-
-
-	
 
 	private String leftJoinField; // 关联表字段
 

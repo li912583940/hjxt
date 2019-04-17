@@ -88,6 +88,14 @@ public class JlHjSpServiceImpl extends BaseSqlImpl<JlHjSpVO> implements JlHjSpSe
 //		model.setLeftJoinTable(leftJoinTable.toString());
 		
 		StringBuffer leftJoinWhere = new StringBuffer();
+		if(StringUtils.isNotBlank(model.getCallTimeStart())){ // 开始时间
+    		leftJoinWhere.append(" AND a.tj_time>='"+ model.getCallTimeStart() + "' ");
+    		model.setCallTimeStart(null);
+    	}
+    	if(StringUtils.isNotBlank(model.getCallTimeEnd())){ // 结束时间
+    		leftJoinWhere.append(" AND a.tj_time<='"+ model.getCallTimeEnd() + "' ");
+    		model.setCallTimeEnd(null);
+    	}
 		if(StringUtils.isNotBlank(model.getFrNo())){
 			String str = model.getFrNo();
 			leftJoinWhere.append(" AND a.fr_no LIKE '%"+str+"%' ");
@@ -98,7 +106,7 @@ public class JlHjSpServiceImpl extends BaseSqlImpl<JlHjSpVO> implements JlHjSpSe
 			leftJoinWhere.append(" AND (a.fr_name LIKE '%"+str+"%' OR dbo.f_get_fryp(a.fr_name,'"+str+"') =1 )");
 			model.setFrName(null);
 		}
-
+		
 		leftJoinWhere.append(" AND a.state<>0");
 		model.setLeftJoinWhere(leftJoinWhere.toString()); // 查询审批结束的记录
 		Map<String, Object> map = this.findPojo(model, pageSize, pageNum);

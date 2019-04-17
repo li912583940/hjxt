@@ -4,6 +4,25 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
+      <el-date-picker
+		style="width: 200px"
+		class="filter-item"
+	    v-model="callTimeStart"
+	    align="right"
+	    type="datetime"
+	    placeholder="选择开始日期"
+	    :picker-options="pickerOptionsStart"
+	    default-time="00:00:00">
+      </el-date-picker>
+      <el-date-picker
+    	style="width: 200px"
+    	class="filter-item"
+	    v-model="callTimeEnd"
+	    align="right"
+	    type="datetime"
+	    placeholder="选择结束日期"
+	    default-time="23:59:59">
+      </el-date-picker>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入罪犯编号" v-model="listQuery.frNo" clearable>
       </el-input>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入罪犯姓名" v-model="listQuery.frName" clearable>
@@ -160,9 +179,13 @@ export default {
       list: null,
       total: null,
       listLoading: true,
+      callTimeStart: undefined,
+      callTimeEnd: undefined,
       listQuery: {
         pageNum: 1,
         pageSize: 10,
+        callTimeStart: undefined,
+        callTimeEnd: undefined,
         frNo: undefined,
         frName: undefined,
         state: undefined,
@@ -186,7 +209,51 @@ export default {
 	  jqs: [ // 监区下拉选框
       
       ],
-      
+      pickerOptionsStart: {
+	      shortcuts: [{
+	        text: '今天',
+	        onClick(picker) {
+	          picker.$emit('pick', new Date());
+	        }
+	      }, {
+	        text: '昨天',
+	        onClick(picker) {
+	          const date = new Date();
+	          date.setTime(date.getTime() - 3600 * 1000 * 24);
+	          picker.$emit('pick', date);
+	        }
+	      }, {
+	        text: '最近一周',
+	        onClick(picker) {
+	          const date = new Date();
+	          date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+	          picker.$emit('pick', date);
+	        }
+	      }, {
+	        text: '最近一个月',
+	        onClick(picker) {
+	          const date = new Date();
+	          date.setTime(date.getTime() - 3600 * 1000 * 24 * 30);
+	          picker.$emit('pick', date);
+	        }
+	      }, {
+	        text: '最近三个月',
+	        onClick(picker) {
+	          const date = new Date();
+	          date.setTime(date.getTime() - 3600 * 1000 * 24 * 90);
+	          picker.$emit('pick', date);
+	        }
+	      }, {
+	        text: '最近一年',
+	        onClick(picker) {
+	          const date = new Date();
+	          date.setTime(date.getTime() - 3600 * 1000 * 24 * 365);
+	          picker.$emit('pick', date);
+	        }
+	      }]
+	    },
+	    
+	    
 	  /** 查看详情 开始 */
       dialogSpDetailsVisible: false,
       spDetailsList: null,
@@ -212,17 +279,15 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      if(this.listQuery.frNo== undefined || this.listQuery.frNo== ''){
-      	this.listQuery.frNo = undefined
+      if(!this.callTimeStart){
+      	this.listQuery.callTimeStart = undefined
+      }else{
+		this.listQuery.callTimeStart = this.dateFormats(this.callTimeStart)
       }
-  	  if(this.listQuery.frName== undefined || this.listQuery.frName== ''){
-      	this.listQuery.frName = undefined
-      }
-  	  if(this.listQuery.state== undefined || this.listQuery.state== ''){
-      	this.listQuery.state = undefined
-      }
-  	  if(this.listQuery.jqNo== undefined || this.listQuery.jqNo== ''){
-      	this.listQuery.jqNo = undefined
+      if(!this.callTimeEnd){
+      	this.listQuery.callTimeEnd = undefined
+      }else{
+		this.listQuery.callTimeEnd = this.dateFormats(this.callTimeEnd)
       }
       findPojo(this.listQuery).then((res) => {
       	 this.list = res.pojo.list

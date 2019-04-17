@@ -15,6 +15,7 @@ public class JlHjRecVO extends JlHjRec{
 	private String callVideofile1Url;
 	private String callVideofile2Url;
 	
+	
     public String getQsName() {
   		return qsName;
   	}
@@ -63,13 +64,9 @@ public class JlHjRecVO extends JlHjRec{
 		this.callVideofile2Url = callVideofile2Url;
 	}
 
-  	
 
     /*---------------------------  处理关联表  -----------------------------*/
   
-
-
-
 
 	private String leftJoinField; // 关联表字段
 
