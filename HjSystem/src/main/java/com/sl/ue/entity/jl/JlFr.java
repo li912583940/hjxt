@@ -104,7 +104,9 @@ public class JlFr implements java.io.Serializable {
 	private Date hjStopTime; //会见禁止时间
 	@DbField("HJ_STOP_SM")
 	private String hjStopSm;
-
+	/** 户口*/
+	@DbField("info_hkfl")
+	private String infoHkfl;
 	
 	public Integer getWebid() {
 		return webid;
@@ -447,6 +449,14 @@ public class JlFr implements java.io.Serializable {
 
 	public void setHjStopSm(String hjStopSm) {
 		this.hjStopSm = hjStopSm;
+	}
+
+	public String getInfoHkfl() {
+		return infoHkfl;
+	}
+
+	public void setInfoHkfl(String infoHkfl) {
+		this.infoHkfl = infoHkfl;
 	}
 
 }

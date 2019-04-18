@@ -298,21 +298,21 @@ export const asyncRouterMap = [
     name: 'systemSet',
     meta: {
       title: 'systemSet',
-      icon: 'tab',
+      icon: '设置',
       roles:'systemSet'
     },
     children: [
-      { path: 'sysUser', component: () => import('@/views/system-set/sysUser'), name: 'sysUser', meta: { title: 'sysUser', icon: 'user', roles:'sysUser' }}, //系统用户管理
-      { path: 'sysRoles', component: () => import('@/views/system-set/sysRoles'), name: 'sysRoles', meta: { title: 'sysRoles', icon: 'user', roles:'sysRoles'}}, //系统权限配置
-      { path: 'criminalLevel', component: () => import('@/views/system-set/criminalLevel'), name: 'criminalLevel', meta: { title: 'criminalLevel', icon: 'tree', roles:'criminalLevel' }}, //服刑人员级别
-      { path: 'jqSet', component: () => import('@/views/system-set/jqSet'), name: 'jqSet', meta: { title: 'jqSet', icon: 'tab', roles:'jqSet' }}, //监区设置
-      { path: 'holidaySet', component: () => import('@/views/system-set/holidaySet'), name: 'holidaySet', meta: { title: 'holidaySet', icon: 'tab', roles:'holidaySet' }}, //特殊会见日
-      { path: 'spSet', component: () => import('@/views/system-set/spSet'), name: 'spSet', meta: { title: 'spSet', icon: 'tab', roles:'spSet' }}, //审批设置
-      { path: 'lineSet', component: () => import('@/views/system-set/lineSet'), name: 'lineSet', meta: { title: 'lineSet', icon: 'tab', roles:'lineSet' }}, // 线路设置
-      { path: 'gxManage', component: () => import('@/views/system-set/gxManage'), name: 'gxManage', meta: { title: 'gxManage', icon: 'tab', roles:'gxManage' }}, // 亲属关系
-      { path: 'deptManage', component: () => import('@/views/system-set/deptManage'), name: 'deptManage', meta: { title: 'deptManage', icon: 'tab', roles:'deptManage' }}, // 部门管理
-      { path: 'confSet', component: () => import('@/views/system-set/confSet'), name: 'confSet', meta: { title: 'confSet', icon: 'tab', roles:'confSet' }}, // 会见通知配置
-      { path: 'sysParam', component: () => import('@/views/system-set/sysParam'), name: 'sysParam', meta: { title: 'sysParam', icon: 'tab', roles:'sysParam' }} // 系统参数
+      { path: 'sysUser', component: () => import('@/views/system-set/sysUser'), name: 'sysUser', meta: { title: 'sysUser', icon: '用户', roles:'sysUser' }}, //系统用户管理
+      { path: 'sysRoles', component: () => import('@/views/system-set/sysRoles'), name: 'sysRoles', meta: { title: 'sysRoles', icon: '账号权限管理', roles:'sysRoles'}}, //系统权限配置
+      { path: 'criminalLevel', component: () => import('@/views/system-set/criminalLevel'), name: 'criminalLevel', meta: { title: 'criminalLevel', icon: '级别', roles:'criminalLevel' }}, //服刑人员级别
+      { path: 'jqSet', component: () => import('@/views/system-set/jqSet'), name: 'jqSet', meta: { title: 'jqSet', icon: '监区', roles:'jqSet' }}, //监区设置
+      { path: 'holidaySet', component: () => import('@/views/system-set/holidaySet'), name: 'holidaySet', meta: { title: 'holidaySet', icon: '会见日', roles:'holidaySet' }}, //特殊会见日
+      { path: 'spSet', component: () => import('@/views/system-set/spSet'), name: 'spSet', meta: { title: 'spSet', icon: '审批设置', roles:'spSet' }}, //审批设置
+      { path: 'lineSet', component: () => import('@/views/system-set/lineSet'), name: 'lineSet', meta: { title: 'lineSet', icon: '线路', roles:'lineSet' }}, // 线路设置
+      { path: 'gxManage', component: () => import('@/views/system-set/gxManage'), name: 'gxManage', meta: { title: 'gxManage', icon: '关系', roles:'gxManage' }}, // 亲属关系
+      { path: 'deptManage', component: () => import('@/views/system-set/deptManage'), name: 'deptManage', meta: { title: 'deptManage', icon: '部门', roles:'deptManage' }}, // 部门管理
+      { path: 'confSet', component: () => import('@/views/system-set/confSet'), name: 'confSet', meta: { title: 'confSet', icon: '设置', roles:'confSet' }}, // 会见通知配置
+      { path: 'sysParam', component: () => import('@/views/system-set/sysParam'), name: 'sysParam', meta: { title: 'sysParam', icon: '系统参数', roles:'sysParam' }} // 系统参数
     ]
   },
  

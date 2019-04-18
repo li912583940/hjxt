@@ -15,6 +15,8 @@ public class JlHjRecVO extends JlHjRec{
 	private String callVideofile1Url;
 	private String callVideofile2Url;
 	
+	private String frGj; // 查询条件 国籍
+	private String infoHkfl; //查询条件， 户口
 	
     public String getQsName() {
   		return qsName;
@@ -64,9 +66,27 @@ public class JlHjRecVO extends JlHjRec{
 		this.callVideofile2Url = callVideofile2Url;
 	}
 
+	public String getFrGj() {
+		return frGj;
+	}
 
+	public void setFrGj(String frGj) {
+		this.frGj = frGj;
+	}
+
+	public String getInfoHkfl() {
+		return infoHkfl;
+	}
+
+	public void setInfoHkfl(String infoHkfl) {
+		this.infoHkfl = infoHkfl;
+	}
+	
     /*---------------------------  处理关联表  -----------------------------*/
   
+
+	
+
 
 	private String leftJoinField; // 关联表字段
 

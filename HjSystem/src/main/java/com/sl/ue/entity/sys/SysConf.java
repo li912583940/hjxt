@@ -15,6 +15,10 @@ public class SysConf implements java.io.Serializable{
     @DbField("id")
     private Integer id;
 
+    /** 会见登记验证总开关。默认：0； 0：开启会见登记验证总开关，1：关闭会见登记验证总开关 */
+    @DbField("hjdj_switch")
+    private Integer hjdjSwitch;
+    
     /** 默认0; 会见通知。 0：登记完自动发起。1：身份验证成功后发起 */
     @DbField("hj_notice")
     private Integer hjNotice;
@@ -39,7 +43,16 @@ public class SysConf implements java.io.Serializable{
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getHjNotice() {
+    
+    public Integer getHjdjSwitch() {
+		return hjdjSwitch;
+	}
+
+	public void setHjdjSwitch(Integer hjdjSwitch) {
+		this.hjdjSwitch = hjdjSwitch;
+	}
+
+	public Integer getHjNotice() {
         return this.hjNotice;
     }
 

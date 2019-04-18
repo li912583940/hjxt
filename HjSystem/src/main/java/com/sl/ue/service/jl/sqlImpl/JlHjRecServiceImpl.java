@@ -50,6 +50,7 @@ import com.sl.ue.service.sys.SysLogService;
 import com.sl.ue.util.Config;
 import com.sl.ue.util.Constants;
 import com.sl.ue.util.DateUtil;
+import com.sl.ue.util.StringUtil;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.WebContextUtil;
 import com.sl.ue.util.http.token.JqRoleManager;
@@ -73,7 +74,17 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 	
 	@Override
 	public Map<String, Object> findPojoLeft(JlHjRecVO model, Integer pageSize, Integer pageNum) {
+		StringBuffer leftJoinField = new StringBuffer();
+		StringBuffer leftJoinTable = new StringBuffer();
 		StringBuffer leftJoinWhere = new StringBuffer();
+		
+		leftJoinField.append(",b.FR_GJ as frGj");
+		leftJoinField.append(",b.info_hkfl as infoHkfl");
+		leftJoinField.append(",c.HJ_Type as hjType");
+		
+		leftJoinTable.append(" LEFT JOIN JL_FR b ON a.FR_No=b.FR_No ");
+		leftJoinTable.append(" LEFT JOIN JL_HJ_DJ c ON a.HJID=c.HJID ");
+		
     	if(StringUtils.isNotBlank(model.getCallTimeStart())){ // 开始时间
     		leftJoinWhere.append(" AND a.Call_Time_Start>='"+ model.getCallTimeStart() + "' ");
     		model.setCallTimeStart(null);
@@ -92,11 +103,22 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     		leftJoinWhere.append(" AND (a.QS_Info1 LIKE '%"+str+"%' OR a.QS_Info2 LIKE '%"+str+"%' OR a.QS_Info3 LIKE '%"+str+"%')");
     		model.setQsName(null);
     	}
-    	if(StringUtils.isNotBlank(model.getInfoJg())){
-    		String str = model.getInfoJg();
-    		leftJoinWhere.append(" AND a.Info_JG LIKE '%"+str+"%'");
-    		model.setInfoJg(null);
+    	if(StringUtils.isNotBlank(model.getFrGj())){
+    		String str = model.getFrGj();
+    		leftJoinWhere.append(" AND b.FR_GJ LIKE '%"+str+"%'");
+    		model.setFrGj(null);
     	}
+    	if(StringUtils.isNotBlank(model.getInfoHkfl())){
+    		String str = model.getInfoHkfl();
+    		leftJoinWhere.append(" AND b.info_hkfl LIKE '%"+str+"%'");
+    		model.setInfoHkfl(null);
+    	}
+    	if(model.getHjType()!=null){
+    		leftJoinWhere.append(" AND c.HJ_Type="+model.getHjType());
+    		model.setHjType(null);
+    	}
+    	model.setLeftJoinField(leftJoinField.toString());
+    	model.setLeftJoinTable(leftJoinTable.toString());
     	model.setLeftJoinWhere(leftJoinWhere.toString());
     	Map<String, Object> map = this.findPojo(model, pageSize, pageNum);
     	List<JlHjRecVO> list = (List<JlHjRecVO>) map.get("list");
@@ -189,7 +211,7 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     			qsInfo.append(hjRec.getQsInfo9()+";");
     		}
     		hjRec.setQsIndex(qsIndex);
-    		hjRec.setQsInfo(qsInfo.toString());
+    		hjRec.setQsInfo(StringUtil.lastComma(qsInfo.toString()));
     	}
 		return map;
 	}
@@ -314,7 +336,17 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 	}
     
     public void exportExcel(JlHjRecVO model, HttpServletRequest request, HttpServletResponse response){
-    	StringBuffer leftJoinWhere = new StringBuffer();
+    	StringBuffer leftJoinField = new StringBuffer();
+		StringBuffer leftJoinTable = new StringBuffer();
+		StringBuffer leftJoinWhere = new StringBuffer();
+		
+		leftJoinField.append(",b.FR_GJ as frGj");
+		leftJoinField.append(",b.info_hkfl as infoHkfl");
+		leftJoinField.append(",c.HJ_Type as hjType");
+		
+		leftJoinTable.append(" LEFT JOIN JL_FR b ON a.FR_No=b.FR_No ");
+		leftJoinTable.append(" LEFT JOIN JL_HJ_DJ c ON a.HJID=c.HJID ");
+		
     	if(StringUtils.isNotBlank(model.getCallTimeStart())){ // 开始时间
     		leftJoinWhere.append(" AND a.Call_Time_Start>='"+ model.getCallTimeStart() + "' ");
     		model.setCallTimeStart(null);
@@ -328,6 +360,27 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     		leftJoinWhere.append(" AND (a.FR_Name LIKE '%"+str+"%'  OR dbo.f_get_fryp(a.FR_Name,'"+str+"') =1 )");
     		model.setFrName(null);
     	}
+    	if(StringUtils.isNotBlank(model.getQsName())){
+    		String str = model.getQsName();
+    		leftJoinWhere.append(" AND (a.QS_Info1 LIKE '%"+str+"%' OR a.QS_Info2 LIKE '%"+str+"%' OR a.QS_Info3 LIKE '%"+str+"%')");
+    		model.setQsName(null);
+    	}
+    	if(StringUtils.isNotBlank(model.getFrGj())){
+    		String str = model.getFrGj();
+    		leftJoinWhere.append(" AND b.FR_GJ LIKE '%"+str+"%'");
+    		model.setFrGj(null);
+    	}
+    	if(StringUtils.isNotBlank(model.getInfoHkfl())){
+    		String str = model.getInfoHkfl();
+    		leftJoinWhere.append(" AND b.info_hkfl LIKE '%"+str+"%'");
+    		model.setInfoHkfl(null);
+    	}
+    	if(model.getHjType()!=null){
+    		leftJoinWhere.append(" AND c.HJ_Type="+model.getHjType());
+    		model.setHjType(null);
+    	}
+    	model.setLeftJoinField(leftJoinField.toString());
+    	model.setLeftJoinTable(leftJoinTable.toString());
 		model.setLeftJoinWhere(leftJoinWhere.toString());
 		
 		List<JlHjRecVO> jlHjRecList = this.findList(model);
@@ -356,7 +409,8 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 			title.add("亲属个数");
 			title.add("亲属信息");
 			title.add("警察信息");
-			
+			title.add("国籍");
+			title.add("户口");
 			// 标题 start
 			HSSFRow row1 = sheet.createRow(0);
 			for(int i=0; i<title.size(); i++){
@@ -443,6 +497,12 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 				
 				HSSFCell cell10 = row2.createCell(10);
 				cell10.setCellValue(StringUtils.isNotBlank(jlHjRec.getYjNo())?jlHjRec.getYjNo()+"/"+jlHjRec.getYjName():"");
+				
+				HSSFCell cell11 = row2.createCell(11);
+				cell11.setCellValue(StringUtils.isNotBlank(jlHjRec.getFrGj())?jlHjRec.getFrGj():"");
+				
+				HSSFCell cell12 = row2.createCell(12);
+				cell12.setCellValue(StringUtils.isNotBlank(jlHjRec.getInfoHkfl())?jlHjRec.getInfoHkfl():"");
 			}
 			
 			// 处理不同浏览器中文名称编码

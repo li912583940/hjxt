@@ -1,7 +1,44 @@
 <template>
 	<div id="" style="margin-left: 10%;margin-top: 40px;">
+		
 		<el-card shadow="always" style="width: 500px;" >
-			<div style="margin-left: 15px;">
+			<div style="margin-left: 33px;">
+				<span v-if="buttonRole.confPermission==1">
+					<el-switch
+					  style="display: block"
+					  v-model="dataForm.hjdjSwitch"
+					  @change="hjdjSwitchChange"
+					  inactive-color="#ff4949"
+					  active-color="#13ce66"
+					  inactive-text="关闭会见登记验证总开关"
+					  active-text="开启会见登记验证总开关"
+					 >
+					</el-switch>
+				</span>
+				<span v-if="buttonRole.confPermission==0">
+					<el-switch
+					  style="display: block"
+					  v-model="dataForm.hjdjSwitch"
+					  inactive-color="#ff4949"
+					  active-color="#13ce66"
+					  inactive-text="关闭会见登记验证总开关"
+					  active-text="开启会见登记验证总开关"
+					  :disabled="true"
+					 >
+					</el-switch>
+				</span>
+			</div>
+			<div style="margin-top: 10px;">
+				<span style="color: red;margin-top: 10px;"> 
+					<font size="2">
+						注意：当会见验证总开关关闭后。提交会见登记时将没有任何条件限制。相关功能如：<审批><特殊会见日><会见级别禁止>等都将关闭
+					</font>
+				</span>
+			</div>
+		</el-card>
+		
+		<el-card shadow="always" style="width: 500px;margin-top: 40px;" >
+			<div style="margin-left: 18px;">
 				<span v-if="buttonRole.confPermission==1">
 					<el-switch
 					  style="display: block"
@@ -30,7 +67,7 @@
 		</el-card>
 		
 		<el-card shadow="always" style="width: 500px;margin-top: 40px;" >
-			<div style="margin-left: 40px;">
+			<div style="margin-left: 44px;">
 				<span v-if="buttonRole.confPermission==1">
 					<el-switch
 					  style="display: block"
@@ -59,7 +96,7 @@
 		</el-card>
 		
 		<el-card shadow="always" style="width: 500px;margin-top: 40px;" >
-			<div style="margin-left: 40px;">
+			<div style="margin-left: 42px;">
 				<span v-if="buttonRole.confPermission==1">
 					<el-switch
 					  style="display: block"
@@ -85,10 +122,8 @@
 					</el-switch>
 				</span>
 			</div>
+		
 			<div style="margin-top: 20px;">
-				<span style="color: red;"><font size="2">下面功能启用条件是选择 <登记完成自动分配座位> </font></span>
-			</div>
-			<div style="margin-top: 10px;">
 				<span v-if="buttonRole.confPermission==1">
 					<el-switch
 					  style="display: block"
@@ -98,6 +133,7 @@
 					  active-color="#13ce66"
 					  inactive-text="座位不够，可以继续提交登记"
 					  active-text="座位不够，不让登记"
+					  :disabled="saveHjdjBoolean"
 					 >
 					</el-switch>
 				</span>
@@ -123,7 +159,7 @@ import { FindConf, EditConf } from '@/api/confSet'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
-
+import { Message, MessageBox } from 'element-ui'
 
 export default {
   name: 'noticeSet',
@@ -134,12 +170,14 @@ export default {
     return {
       dataForm:{
       	id: undefined,
+      	hjdjSwitch: true,
       	hjNotice: true,
       	printXp: true,
       	fpZw: true,
       	saveHjdj: true,
       },
       
+      saveHjdjBoolean:false,
       
       //按钮权限   1：有权限， 0：无权限
       buttonRole: { 
@@ -172,10 +210,30 @@ export default {
       FindConf().then((res) => {
       	let data = res.data
       	this.dataForm.id = data.id
+      	data.hjdjSwitch==0?this.dataForm.hjdjSwitch=true:this.dataForm.hjdjSwitch=false
       	data.hjNotice==0?this.dataForm.hjNotice=true:this.dataForm.hjNotice=false
       	data.printXp==0?this.dataForm.printXp=true:this.dataForm.printXp=false
       	data.fpZw==0?this.dataForm.fpZw=true:this.dataForm.fpZw=false
+      	if(data.fpZw==0){
+      		this.saveHjdjBoolean=true
+      	}else{
+      		this.saveHjdjBoolean=false
+      	}
+      	data.saveHjdj==0?this.dataForm.saveHjdj=true:this.dataForm.saveHjdj=false
       })
+    },
+    hjdjSwitchChange(){
+    	let param ={
+    		id: this.dataForm.id,
+    		hjdjSwitch: this.dataForm.hjdjSwitch==true?0:1
+    	}
+    	EditConf(param).then(res =>{
+    		Message({
+		        message: res.errMsg,
+			    type: 'success',
+			    duration: 5 * 1000
+		    });
+    	})
     },
     noticeChange() {
     	let param ={
@@ -183,7 +241,11 @@ export default {
     		hjNotice: this.dataForm.hjNotice==true?0:1
     	}
     	EditConf(param).then(res =>{
-    		
+    		Message({
+		        message: res.errMsg,
+			    type: 'success',
+			    duration: 5 * 1000
+		    });
     	})
     },
     printXpChange(){
@@ -192,16 +254,29 @@ export default {
     		printXp: this.dataForm.printXp==true?0:1
     	}
     	EditConf(param).then(res =>{
-    		
+    		Message({
+		        message: res.errMsg,
+			    type: 'success',
+			    duration: 5 * 1000
+		    });
     	})
     },
     fpZwChange(){
+    	if(this.dataForm.fpZw==true){
+    		this.saveHjdjBoolean=true
+    	}else{
+    		this.saveHjdjBoolean=false
+    	}
     	let param={
     		id:this.dataForm.id,
     		fpZw: this.dataForm.fpZw==true?0:1
     	}
     	EditConf(param).then(res =>{
-    		
+    		Message({
+		        message: res.errMsg,
+			    type: 'success',
+			    duration: 5 * 1000
+		    });
     	})
     },
     saveHjdjChange(){
@@ -210,7 +285,11 @@ export default {
     		saveHjdj: this.dataForm.saveHjdj==true?0:1
     	}
     	EditConf(param).then(res =>{
-    		
+    		Message({
+		        message: res.errMsg,
+			    type: 'success',
+			    duration: 5 * 1000
+		    });
     	})
     },
 	setButtonRole() { //设置按钮的权限

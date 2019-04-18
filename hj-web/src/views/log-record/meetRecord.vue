@@ -31,12 +31,6 @@
       </el-input>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入亲属姓名" v-model="listQuery.qsName" clearable>
       </el-input>
-      <!--<el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入籍贯" v-model="listQuery.infoJg">
-      </el-input>-->
-      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.recRatingState" placeholder="选择评级状态">
-        <el-option v-for="item in recRatingStates" :key="item.id" :label="item.name" :value="item.id">
-        </el-option>
-      </el-select>
       <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.zw" placeholder="请选择座位">
         <el-option v-for="item in zws" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
@@ -45,6 +39,10 @@
         <el-option v-for="item in hjTypes" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入国籍" v-model="listQuery.frGj" clearable>
+      </el-input>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入户口" v-model="listQuery.infoHkfl" clearable>
+      </el-input>
       <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.recordOverTime" placeholder="请选择复听超时">
         <el-option v-for="item in recordOverTimes" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
@@ -53,12 +51,16 @@
         <el-option v-for="item in recAssessmentStates" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
+      <el-select clearable style="width: 200px" class="filter-item" v-model="listQuery.recRatingState" placeholder="选择评级状态">
+        <el-option v-for="item in recRatingStates" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
       <el-button v-if="buttonRole.exportPermission==1" class="filter-item" type="primary" :loading="downloadLoading" v-waves icon="el-icon-download" @click="handleDownload">{{$t('criminal.export')}}</el-button>
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 2301px">
+      style="width: 2521px">
       <el-table-column type="index" width="50">
       </el-table-column>
       <el-table-column width="160" align="center" label="通话开始时间">
@@ -108,9 +110,14 @@
           <span>{{scope.row.frName}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120" align="center" label="籍贯">
+      <el-table-column width="120" align="center" label="国籍">
         <template slot-scope="scope">
-          <span>{{scope.row.infoJg}}</span>
+          <span>{{scope.row.frGj}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="120" align="center" label="户口">
+        <template slot-scope="scope">
+          <span>{{scope.row.infoHkfl}}</span>
         </template>
       </el-table-column>
       <el-table-column width="90" align="center" label="亲属个数">
@@ -118,7 +125,7 @@
           <span>{{scope.row.qsIndex}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="亲属信息">
+      <el-table-column width="300" align="center" label="亲属信息">
         <template slot-scope="scope">
           <span>{{scope.row.qsInfo}}</span>
         </template>
@@ -543,7 +550,8 @@ export default {
         frNo: undefined,
         frName: undefined,
         qsName: undefined,
-        infoJg: undefined,
+        frGj: undefined,
+        infoHkfl: undefined,
         recRatingState: undefined,
         zw: undefined,
         hjType: undefined,

@@ -81,7 +81,7 @@
 		    <el-radio :label="1">开启</el-radio>
 		  </el-radio-group>
         </el-form-item>
-        <el-form-item label="线路模式">
+        <el-form-item label="线路模式" v-if="isAdmin==1">
           <el-radio-group v-model="dataForm.model">
 		    <el-radio :label="0">正常</el-radio>
 		    <el-radio :label="1">特殊</el-radio>
@@ -140,6 +140,7 @@ export default {
       	queryPermission: 1, 
       	confPermission: 0
       },
+      isAdmin: 0,
     }
   },
   filters: {
@@ -251,6 +252,7 @@ export default {
 	setButtonRole() { //设置按钮的权限
     	let roles = sessionStorage.getItem("roles")
     	if(roles.includes('admin')){
+    		this.isAdmin=1
     		this.buttonRole.confPermission= 1
     	}else{
     		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
