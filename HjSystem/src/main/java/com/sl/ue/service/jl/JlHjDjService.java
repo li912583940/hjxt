@@ -23,7 +23,8 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 			Integer hjMode, //会见方式
 			Integer callNo, //排队号
 			Integer tpQsNum, //特批亲属个数
-			Integer qzSp // 强制审批
+			Integer qzSp, // 强制审批
+			HttpServletRequest request
 			);
 	
 	/**
@@ -33,12 +34,12 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 	public String printXp(Long id);
 	
 	/**
-	 * 说明 [打印小票 东莞监狱]
+	 * 说明 [打印小票 A4格式 东莞监狱]
 	 * @param id
 	 * @return
 	 * L_晓天  @2019年4月9日
 	 */
-	public String printXpDG(Long id);
+	public String printXpA4(Long id);
 	/**
 	 * 说明 [获取当前会见登记的亲属id集合]
 	 * @param hjid

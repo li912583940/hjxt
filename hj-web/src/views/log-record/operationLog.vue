@@ -35,7 +35,7 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 1331px">
+      style="width: 1471px">
       <el-table-column type="index" width="50">
       </el-table-column>
       <el-table-column width="160" align="center"  label="时间">
@@ -73,11 +73,11 @@
           <span>{{scope.row.userName}}</span>
         </template>
       </el-table-column>
-      <!--<el-table-column width="140" align="center" label="来源IP">
+      <el-table-column width="140" align="center" label="来源IP">
         <template slot-scope="scope">
           <span>{{scope.row.userIp}}</span>
         </template>
-      </el-table-column>-->
+      </el-table-column>
     </el-table>
 
 		<!-- 分页 -->

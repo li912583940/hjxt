@@ -27,6 +27,10 @@ public class SysConf implements java.io.Serializable{
     @DbField("print_xp")
     private Integer printXp;
     
+    /** 打印格式： 默认0;  0:A4打印，1：热敏打印 */
+    @DbField("print_format")
+    private Integer printFormat;
+    
     /** 默认0; 0：登记完成不自动分配座位。1：登记完成自动分配座位 */
     @DbField("fp_zw")
     private Integer fpZw;
@@ -66,6 +70,14 @@ public class SysConf implements java.io.Serializable{
 
 	public void setPrintXp(Integer printXp) {
 		this.printXp = printXp;
+	}
+
+	public Integer getPrintFormat() {
+		return printFormat;
+	}
+
+	public void setPrintFormat(Integer printFormat) {
+		this.printFormat = printFormat;
 	}
 
 	public Integer getFpZw() {

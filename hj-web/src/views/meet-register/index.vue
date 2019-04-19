@@ -104,13 +104,20 @@
       </el-pagination>
     </div>
 
-
-    <!-- 打印小票 -->
-    <el-dialog title="" :visible.sync="dialogFormVisible" width="650px" :modal-append-to-body="false">
+		<el-dialog title="" :visible.sync="dialogFormRMVisible" width="300px" :modal-append-to-body="false">
       <div id="wrap" class="wrap">
-		  	<!--<span v-for="x in this.printList">
+		  	<span v-for="x in this.printList">
 		  	  <li>{{ x}}</li>
-		  	</span>-->
+		  	</span>
+		  </div>
+		  <div slot="footer" class="dialog-footer">
+      	<el-button type="primary" @click="print">打 印</el-button>
+        <el-button @click="dialogFormRMVisible = false">取 消</el-button>
+      </div>
+		</el-dialog>  	
+    <!-- 打印小票 -->
+    <el-dialog title="" :visible.sync="dialogFormA4Visible" width="650px" :modal-append-to-body="false">
+      <div id="wrap" class="wrap">
 		  	<span v-if="jlHjDj!=null">
 		  	<div style="text-align: center"><font size="5"><b>广东省东莞监狱会见通知书（存根）</b></font></div>
     		<br></br>
@@ -179,8 +186,7 @@
 		   
       <div slot="footer" class="dialog-footer">
       	<el-button type="primary" @click="print">打 印</el-button>
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        
+        <el-button @click="dialogFormA4Visible = false">取 消</el-button>
       </div>
     </el-dialog>
     
@@ -320,10 +326,11 @@ export default {
       
       
       /** 打印小票 **/
-      dialogFormVisible: false,
-      jlHjDj: null,
-      jlHjDjQsList : [],
-      
+      dialogFormA4Visible: false,
+      dialogFormRMVisible: false,
+      jlHjDj: null, //A4打印机
+      jlHjDjQsList : [], //A4打印机
+      printList:[], //热敏打印机
       
       //按钮权限   1：有权限， 0：无权限
       buttonRole: { 
@@ -515,11 +522,17 @@ export default {
     		hjid: row.hjid
     	}
     	RequestPrintXp(param).then((res) => {
-          this.jlHjDj = res.jlHjDj
-          this.jlHjDjQsList = res.jlHjDjQsList
+    			if(res.printFormat==0){
+    				this.jlHjDj = res.jlHjDj
+          	this.jlHjDjQsList = res.jlHjDjQsList
+          	this.dialogFormA4Visible = true
+    			}else if(res.printFormat==1){
+    				this.printList=res.list
+    				this.dialogFormRMVisible = true
+    			}
       }).catch(error => {
 	    })
-			this.dialogFormVisible = true
+			
     },
     print(){
     	var newstr = document.getElementsByClassName('wrap')[0].innerHTML

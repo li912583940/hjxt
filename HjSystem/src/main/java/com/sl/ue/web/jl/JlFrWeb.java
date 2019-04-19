@@ -63,7 +63,7 @@ public class JlFrWeb extends Result{
     }
 
     @RequestMapping("/add")
-    public String add(JlFrVO model){
+    public String add(JlFrVO model, HttpServletRequest request){
     	// 查看罪犯编号是否已存在 
 		boolean b = jlFrSQL.frExist(model.getFrNo());
 		if(b){
@@ -79,6 +79,7 @@ public class JlFrWeb extends Result{
 		sysLog.setUserNo(user.getUserNo());
 		sysLog.setUserName(user.getUserName());
 		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLog.setUserIp(request.getRemoteAddr());
 		sysLogSQL.add(sysLog);
 		
 		List<SysHjServerVO> sysHjServerList = sysHjServerSQL.findList(new SysHjServerVO(),null,null,"ASC");
@@ -89,7 +90,7 @@ public class JlFrWeb extends Result{
     }
 
     @RequestMapping("/edit")
-    public String edit(JlFrVO model){
+    public String edit(JlFrVO model, HttpServletRequest request){
     	SysUserVO user = TokenUser.getUser();
     	SysLogVO sysLog = new SysLogVO();
     	sysLog.setType("正常");
@@ -99,6 +100,7 @@ public class JlFrWeb extends Result{
 		sysLog.setUserNo(user.getUserNo());
 		sysLog.setUserName(user.getUserName());
 		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLog.setUserIp(request.getRemoteAddr());
 		sysLogSQL.add(sysLog);
 		
         jlFrSQL.edit(model);
@@ -106,7 +108,7 @@ public class JlFrWeb extends Result{
     }
 
     @RequestMapping("/delete")
-    public String del(Integer id){
+    public String del(Integer id, HttpServletRequest request){
     	JlFrVO model = jlFrSQL.findOne(id);
     	
     	SysUserVO user = TokenUser.getUser();
@@ -118,6 +120,7 @@ public class JlFrWeb extends Result{
 		sysLog.setUserNo(user.getUserNo());
 		sysLog.setUserName(user.getUserName());
 		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLog.setUserIp(request.getRemoteAddr());
 		sysLogSQL.add(sysLog);
 		
         jlFrSQL.deleteKey(id);
@@ -131,12 +134,34 @@ public class JlFrWeb extends Result{
     @RequestMapping("/exportExcel")
     public void exportExcel(JlFrVO model,
     		HttpServletRequest request, HttpServletResponse response) {
+    	SysUserVO user = TokenUser.getUser();
+    	SysLogVO sysLog = new SysLogVO();
+    	sysLog.setType("严重");
+		sysLog.setOp("导出罪犯信息");
+		sysLog.setInfo("导出罪犯信息。");
+		sysLog.setModel("罪犯管理");
+		sysLog.setUserNo(user.getUserNo());
+		sysLog.setUserName(user.getUserName());
+		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLog.setUserIp(request.getRemoteAddr());
+		sysLogSQL.add(sysLog);
     	jlFrSQL.exportExcel(model, request, response);
     }
     
     @RequestMapping(value="/importExcel",method={RequestMethod.GET,RequestMethod.POST})
     @IgnoreSecurity
     public String importExcel(HttpServletRequest request, HttpServletResponse response){
+    	SysUserVO user = TokenUser.getUser();
+    	SysLogVO sysLog = new SysLogVO();
+    	sysLog.setType("严重");
+		sysLog.setOp("导入罪犯信息");
+		sysLog.setInfo("导入罪犯信息。");
+		sysLog.setModel("罪犯管理");
+		sysLog.setUserNo(user.getUserNo());
+		sysLog.setUserName(user.getUserName());
+		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLog.setUserIp(request.getRemoteAddr());
+		sysLogSQL.add(sysLog);
     	return jlFrSQL.importExcel(request, response);
     } 
     

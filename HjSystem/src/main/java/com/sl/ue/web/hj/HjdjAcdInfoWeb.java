@@ -22,6 +22,7 @@ import com.sl.ue.entity.hj.vo.HjdjAcdInfoVO;
 import com.sl.ue.entity.hj.vo.HjdjAcdWindowsInfoVO;
 import com.sl.ue.service.hj.HjdjAcdInfoService;
 import com.sl.ue.service.hj.HjdjAcdWindowsInfoService;
+import com.sl.ue.util.IpUtil;
 import com.sl.ue.util.http.Result;
 
 @RestController
@@ -89,11 +90,13 @@ public class HjdjAcdInfoWeb extends Result{
     	}
     	HjdjAcdWindowsInfoVO hjdjAcdWindowsInfo = new HjdjAcdWindowsInfoVO();
 		hjdjAcdWindowsInfo.setAcdip(request.getRemoteAddr());
-		System.out.println(request.getRemoteAddr());
 		List<HjdjAcdWindowsInfoVO>  windowsInfoList = hjdjAcdWindowsInfoSQL.findList(hjdjAcdWindowsInfo);
 		if(windowsInfoList.size()>0){
+			this.putJson("grantIp", "1");
 			this.putJson("acdindex", windowsInfoList.get(0).getAcdindex());
 			this.putJson("acdServerName", windowsInfoList.get(0).getServerName());
+		}else{
+			this.putJson("grantIp", "0");
 		}
     	return this.toResult();
     }

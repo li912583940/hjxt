@@ -3,15 +3,19 @@ package com.sl.ue.web.jl;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.sl.ue.entity.jl.vo.JlFrVO;
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
+import com.sl.ue.entity.sys.vo.SysConfVO;
 import com.sl.ue.entity.sys.vo.SysLogVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.jl.JlHjDjService;
+import com.sl.ue.service.sys.SysConfService;
 import com.sl.ue.service.sys.SysLogService;
 import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.http.Result;
@@ -25,6 +29,8 @@ public class JlHjDjWeb extends Result{
     private JlHjDjService jlHjDjSQL;
 	@Autowired
 	private SysLogService sysLogSQL;
+	@Autowired
+	private SysConfService sysConfSQL;
 	
     @RequestMapping("/findList")
     public String findList(JlHjDjVO model,Integer pageSize, Integer pageNum){
@@ -98,9 +104,10 @@ public class JlHjDjWeb extends Result{
 			Integer hjMode, //会见方式
 			Integer callNo, //排队号
 			Integer tpQsNum, //特批亲属个数
-			Integer qzSp // 强制审批
+			Integer qzSp, // 强制审批
+			HttpServletRequest request
 			){
-		return jlHjDjSQL.addHjdj(frNo, qsIds, hjsc, hjInfo, hjType, hjMode, callNo, tpQsNum, qzSp);
+		return jlHjDjSQL.addHjdj(frNo, qsIds, hjsc, hjInfo, hjType, hjMode, callNo, tpQsNum, qzSp, request);
 		
 	}
 	
@@ -115,7 +122,17 @@ public class JlHjDjWeb extends Result{
 			this.error(error_102);
 			return this.toResult();
 		}
-		return jlHjDjSQL.printXpDG(hjid);
+		List<SysConfVO> sysConfList = sysConfSQL.findList(new SysConfVO());
+		SysConfVO sysConf = null;
+		if(sysConfList.size()>0){
+			sysConf = sysConfList.get(0);
+		}
+		if(sysConf!=null && sysConf.getPrintFormat()==1){
+			return jlHjDjSQL.printXp(hjid);
+		}else{
+			return jlHjDjSQL.printXpA4(hjid);
+		}
+		
 	}
 	
 	/**
@@ -138,7 +155,7 @@ public class JlHjDjWeb extends Result{
 	 * L_晓天  @2018年12月27日
 	 */
 	@RequestMapping("/editDj")
-	public String editDj(Long hjid, Integer hjTime, Integer hjType, Integer hjMode, String hjInfo, String qsIds){
+	public String editDj(Long hjid, Integer hjTime, Integer hjType, Integer hjMode, String hjInfo, String qsIds, HttpServletRequest request){
 		JlHjDjVO model = jlHjDjSQL.findOne(hjid);
 		SysUserVO user = TokenUser.getUser();
 		SysLogVO sysLog = new SysLogVO();
@@ -179,6 +196,7 @@ public class JlHjDjWeb extends Result{
 		sysLog.setUserNo(user.getUserNo());
 		sysLog.setUserName(user.getUserName());
 		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLog.setUserIp(request.getRemoteAddr());
 		sysLogSQL.add(sysLog);
 		
 		return jlHjDjSQL.editDj(hjid, hjTime, hjType, hjMode, hjInfo, qsIds);
@@ -189,7 +207,7 @@ public class JlHjDjWeb extends Result{
 	 * L_晓天  @2018年10月12日
 	 */
 	@RequestMapping("/cancelDj")
-	public String cancelDj(Long id, String cancelInfo){ // 会见ID
+	public String cancelDj(Long id, String cancelInfo, HttpServletRequest request){ // 会见ID
 		if(id == null){
 			this.error(error_102);
 			return this.toResult();
@@ -198,12 +216,13 @@ public class JlHjDjWeb extends Result{
 		SysUserVO user = TokenUser.getUser();
 		SysLogVO sysLog = new SysLogVO();
 		sysLog.setType("严重");
-		sysLog.setOp("删除会见登记");
-		sysLog.setInfo("删除会见登记，罪犯编号： "+model.getFrNo()+"，亲属姓名： "+model.getQsInfo1());
+		sysLog.setOp("取消会见登记");
+		sysLog.setInfo("取消会见登记，罪犯编号： "+model.getFrNo()+"罪犯姓名："+model.getFrName()+"，亲属姓名： "+model.getQsInfo1());
 		sysLog.setModel("会见登记");
 		sysLog.setUserNo(user.getUserNo());
 		sysLog.setUserName(user.getUserName());
 		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLog.setUserIp(request.getRemoteAddr());
 		sysLogSQL.add(sysLog);
 		
 		return jlHjDjSQL.cancelDj(id, cancelInfo);

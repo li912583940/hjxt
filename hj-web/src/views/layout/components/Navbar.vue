@@ -5,12 +5,12 @@
     <breadcrumb class="breadcrumb-container"/>
 		
     <div class="right-menu">
-    	<span v-if="isHjDjAcd==1"  style="margin-right: 550px;">
+    	<span v-if="isHjDjAcd==1"  style="margin-right: 50px;">
     			
     			<font color="red">普通座位：<span v-if="yanjian!=null">{{yanjian}}</span>; 特殊座位：<span v-if="kuanjian!=null">{{kuanjian}}</span></font>
     	</span>
     	
-    	<span v-if="isHjDjAcd==1"  style="margin-right: 50px;">
+    	<span v-if="isHjDjAcd==1 && grantIp==1"  style="margin-right: 50px;">
     			
     			<font color="red">排队序号：<span v-if="acdInfo!=null">{{acdInfo.acdgetno}}</span>; 叫号序号：<span v-if="acdInfo!=null">{{acdInfo.acdsetno}}</span></font>
     			<el-button size="mini" type="info"   @click="nextCallNum">下一位</el-button>
@@ -245,6 +245,7 @@ export default {
       acdInfo: null,
       acdindex: null,
       acdServerName: null,
+      grantIp:null, //当前登记电脑的IP是否已录入到排队叫号表中，没有的话，就不提供排队叫号的功能
       
       yanjian:null,
       kuanjian:null,
@@ -359,11 +360,17 @@ export default {
 			})
     },
     getHjDjAcd(){
-    	findHjDjAcd({}).then(res=>{
-    		this.acdInfo = res.acdInfo
-    		this.acdindex = res.acdindex
-    		this.acdServerName = res.acdServerName
-    	})
+    	if(this.grantIp==null || this.grantIp==1){
+    		findHjDjAcd({}).then(res=>{
+	    		this.grantIp = res.grantIp
+	    		if(res.grantIp==1){
+	    			this.acdInfo = res.acdInfo
+		    		this.acdindex = res.acdindex
+		    		this.acdServerName = res.acdServerName
+	    		}
+	    	})
+    	}
+    	
     	getSurplusZwCount({}).then(res =>{
     		this.yanjian=res.yanjian
     		this.kuanjian=res.kuanjian

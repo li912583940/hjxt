@@ -243,8 +243,21 @@
 	    </div>-->
 	  </el-card>
     
-    <!-- 打印小票 -->
-    <el-dialog title="" :visible.sync="dialogFormVisible" width="650px" :modal-append-to-body="false">
+    <!-- 打印小票 热敏 -->
+    <el-dialog title="" :visible.sync="dialogFormRMVisible" width="300px" :modal-append-to-body="false">
+      <div id="wrap" class="wrap">
+		  	<span v-for="x in this.printList">
+		  	  <li>{{ x}}</li>
+		  	</span>
+		  </div>
+		  <div slot="footer" class="dialog-footer">
+      	<el-button type="primary" @click="print">打 印</el-button>
+        <el-button @click="dialogFormRMVisible = false">取 消</el-button>
+      </div>
+		</el-dialog> 
+		
+    <!-- 打印小票 A4 -->
+    <el-dialog title="" :visible.sync="dialogFormA4Visible" width="650px" :modal-append-to-body="false">
       <div id="wrap" class="wrap">
 		  	<!--<span v-for="x in this.printList">
 		  	  <li>{{ x}}</li>
@@ -317,7 +330,7 @@
 		   
       <div slot="footer" class="dialog-footer">
       	<el-button type="primary" @click="print">打 印</el-button>
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="dialogFormA4Visible = false">取 消</el-button>
         
       </div>
     </el-dialog>
@@ -453,10 +466,12 @@ export default {
       frNoQuery: this.$route.query.frNoQuery,
       
       /** 打印小票开始 */
-      dialogFormVisible: false,
+      dialogFormRMVisible: false,
+      dialogFormA4Visible: false,
       jlHjDj: null,
       jlHjDjQsList: [],
       hjid:null,
+      printList:[],
       /** 打印小票结束 */
     }
   },
@@ -808,6 +823,8 @@ export default {
 		},
 		wordDownload(row){
     	let param ={
+    		frNo:row.frNo,
+    		qsName:row.qsName,
     		enclosureUrl: row.enclosureUrl
     	}
     	let filename= row.enclosureUrl
@@ -838,8 +855,14 @@ export default {
     		hjid: hjid
     	}
     	RequestPrintXp(param).then((res) => {
-          this.jlHjDj = res.jlHjDj
-          this.jlHjDjQsList = res.jlHjDjQsList
+          if(res.printFormat==0){
+    				this.jlHjDj = res.jlHjDj
+          	this.jlHjDjQsList = res.jlHjDjQsList
+          	this.dialogFormA4Visible = true
+    			}else if(res.printFormat==1){
+    				this.printList=res.list
+    				this.dialogFormRMVisible = true
+    			}
       }).catch(error => {
 	    })
 			this.dialogFormVisible = true

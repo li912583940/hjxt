@@ -93,6 +93,33 @@
 					</el-switch>
 				</span>
 			</div>
+			
+			<div style="margin-left: 57px; margin-top: 20px;">
+				<span v-if="buttonRole.confPermission==1">
+					<el-switch
+					  style="display: block"
+					  v-model="dataForm.printFormat"
+					  @change="printFormatChange"
+					  inactive-color="#ff4949"
+					  active-color="#13ce66"
+					  inactive-text="打印格式：热敏打印"
+					  active-text="打印格式：A4打印"
+					 >
+					</el-switch>
+				</span>
+				<span v-if="buttonRole.confPermission==0">
+					<el-switch
+					  style="display: block"
+					  v-model="dataForm.printFormat"
+					  inactive-color="#ff4949"
+					  active-color="#13ce66"
+					  inactive-text="打印格式：热敏打印"
+					  active-text="打印格式：A4打印"
+					  :disabled="true"
+					 >
+					</el-switch>
+				</span>
+			</div>
 		</el-card>
 		
 		<el-card shadow="always" style="width: 500px;margin-top: 40px;" >
@@ -173,6 +200,7 @@ export default {
       	hjdjSwitch: true,
       	hjNotice: true,
       	printXp: true,
+      	printFormat:true,
       	fpZw: true,
       	saveHjdj: true,
       },
@@ -213,6 +241,7 @@ export default {
       	data.hjdjSwitch==0?this.dataForm.hjdjSwitch=true:this.dataForm.hjdjSwitch=false
       	data.hjNotice==0?this.dataForm.hjNotice=true:this.dataForm.hjNotice=false
       	data.printXp==0?this.dataForm.printXp=true:this.dataForm.printXp=false
+      	data.printFormat==0?this.dataForm.printFormat=true:this.dataForm.printFormat=false
       	data.fpZw==0?this.dataForm.fpZw=true:this.dataForm.fpZw=false
       	if(data.fpZw==0){
       		this.saveHjdjBoolean=true
@@ -261,6 +290,20 @@ export default {
 		    });
     	})
     },
+    printFormatChange(){
+    	let param = {
+    		id:this.dataForm.id,
+    		printFormat: this.dataForm.printFormat==true?0:1
+    	}
+    	EditConf(param).then(res =>{
+    		Message({
+		        message: res.errMsg,
+			    type: 'success',
+			    duration: 5 * 1000
+		    });
+    	})
+    },
+    
     fpZwChange(){
     	if(this.dataForm.fpZw==true){
     		this.saveHjdjBoolean=true

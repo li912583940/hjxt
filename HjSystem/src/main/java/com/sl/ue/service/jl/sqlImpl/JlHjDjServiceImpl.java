@@ -126,7 +126,8 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			Integer hjMode, //会见方式
 			Integer callNo, //排队号
 			Integer tpQsNum, //特批亲属个数
-			Integer qzSp // 强制审批
+			Integer qzSp, // 强制审批
+			HttpServletRequest request
 			) {
 		Result result = new Result();
 		
@@ -519,13 +520,13 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 							jlHjSpSQL.deleteKey(addJlHjDj.getHjid());  //没有空闲座位直接删除
 							result.error(Result.error_103,"登记失败，当前已没有空闲座位可供使用");
 						}else{
-							addHjDjLog(frNo, qsIds, hjsc, hjInfo, hjType, hjMode, callNo, tpQsNum, qzSp);
+							addHjDjLog(frNo, qsIds, hjsc, hjInfo, hjType, hjMode, callNo, tpQsNum, qzSp, request);
 							result.msg("登记成功，但当前已没有空闲座位可供使用");
 						}
 						return result.toResult();
 					}
 				}
-				addHjDjLog(frNo, qsIds, hjsc, hjInfo, hjType, hjMode, callNo, tpQsNum, qzSp);
+				addHjDjLog(frNo, qsIds, hjsc, hjInfo, hjType, hjMode, callNo, tpQsNum, qzSp, request);
 				result.msg("提交登记成功");
 			}
 			
@@ -545,7 +546,8 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			Integer hjMode, //会见方式
 			Integer callNo, //排队号
 			Integer tpQsNum, //特批亲属个数
-			Integer qzSp // 强制审批
+			Integer qzSp, // 强制审批
+			HttpServletRequest request
 			){
 		SysUserVO user = TokenUser.getUser();
 		SysLogVO sysLog = new SysLogVO();
@@ -586,6 +588,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		sysLog.setUserNo(user.getUserNo());
 		sysLog.setUserName(user.getUserName());
 		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLog.setUserIp(request.getRemoteAddr());
 		sysLogSQL.add(sysLog);
 	}
 	
@@ -646,11 +649,26 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			list.add(i+"号亲属: "+jlHjDj.getQsInfo9());
 		}
 		list.add("会见总人数: "+i+"人");
+		
+		List<SysConfVO> sysConfList = sysConfSQL.findList(new SysConfVO());
+		if(sysConfList.size()>0){
+			SysConfVO sysConf = sysConfList.get(0);
+			if(sysConf.getFpZw()==1){ // 登记完成分配座位
+				SysHjLineVO sysHjLine = new SysHjLineVO();
+				sysHjLine.setHjid(jlHjDj.getHjid());
+				List<SysHjLineVO> sysHjLineList = sysHjLineSQL.findList(sysHjLine);
+				if(sysHjLineList.size()>0){
+					sysHjLine = sysHjLineList.get(0);
+					list.add("座位： "+sysHjLine.getZw());
+				}
+			}
+		}
 		result.putData(list);
+		result.putJson("printFormat", "1");
 		return result.toResult();
 	}
 
-	public String printXpDG(Long id){
+	public String printXpA4(Long id){
 		Result result = new Result();
 		JlHjDjVO jlHjDj = this.findOne(id);
 		if(jlHjDj == null){
@@ -692,6 +710,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 				}
 			}
 		}
+		result.putJson("printFormat", "0");
 		result.putJson("jlHjDj", jlHjDj);
 		result.putData("jlHjDjQsList", jlHjDjQsList);
 		
@@ -953,7 +972,6 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			});
 			
 			if(resu==0){
-				
 			}else{
 				result.error(Result.error_103,"当前已没有空闲座位可供使用");
 			}
@@ -1515,12 +1533,19 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		model.setQsInfo9("");
 		model.setQsCard9("");
 		
+		List<SysConfVO> sysConfList = sysConfSQL.findList(new SysConfVO());
+		SysConfVO sysConf = null;
+		if(sysConfList.size()>0){
+			sysConf = sysConfList.get(0);
+		}
+		
 		List<String> qsGxList = new ArrayList(); // 将登记的亲属关系存储起来， 最后判断其中是否有家属关系需要审批
 		
 		//会见登记家属表，用来作身份验证
 		List<JlHjDjQsVO> jlHjDjQsList = new ArrayList<>();
 		String[] qsIdss = qsIds.split(",");
 		String qsInfo="";
+		
 		for(int i=0; i<qsIdss.length;i++){ // 亲属
 			JlQsVO jlQs = jlQsSQL.findOne(qsIdss[i]);
 			if(StringUtils.isBlank(jlQs.getGx()) || StringUtils.isBlank(jlQs.getQsSfz())){ //先判断提交的亲属中是否有身份证号码和亲属关系没有的
@@ -1579,26 +1604,29 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		JlHjSpSetVO jlHjSpSet = null;
 		String explain = "";
 		boolean is_sp=false;
-		//查看是否有亲属关系需要审批
-		JlHjSpSetVO jlHjSpSetQuery = new JlHjSpSetVO();
-		jlHjSpSetQuery.setUsable(1);
-		jlHjSpSetQuery.setSpNo("5");
-		List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
-		if(jlHjSpSetList.size()>0){ // 开启了亲属关系需要审批
-			jlHjSpSet=jlHjSpSetList.get(0);
-			List<String> spGx = Arrays.asList(jlHjSpSet.getSpValue().split(","));
-			for(String gx :qsGxList){
-				if(spGx.contains(gx)){ //有亲属关系需要审批
-					if(StringUtils.isNotBlank(explain)){
-						explain+=";"+jlHjSpSet.getSpName();
-					}else{
-						explain=jlHjSpSet.getSpName();
+		if(sysConf!=null && sysConf.getHjdjSwitch()==0){
+			//查看是否有亲属关系需要审批
+			JlHjSpSetVO jlHjSpSetQuery = new JlHjSpSetVO();
+			jlHjSpSetQuery.setUsable(1);
+			jlHjSpSetQuery.setSpNo("5");
+			List<JlHjSpSetVO> jlHjSpSetList = jlHjSpSetSQL.findList(jlHjSpSetQuery);
+			if(jlHjSpSetList.size()>0){ // 开启了亲属关系需要审批
+				jlHjSpSet=jlHjSpSetList.get(0);
+				List<String> spGx = Arrays.asList(jlHjSpSet.getSpValue().split(","));
+				for(String gx :qsGxList){
+					if(spGx.contains(gx)){ //有亲属关系需要审批
+						if(StringUtils.isNotBlank(explain)){
+							explain+=";"+jlHjSpSet.getSpName();
+						}else{
+							explain=jlHjSpSet.getSpName();
+						}
+						is_sp=true;
+						break;
 					}
-					is_sp=true;
-					break;
 				}
 			}
 		}
+		
 		//先删除
 		JlHjDjQsVO deleteQs = new JlHjDjQsVO();
 		deleteQs.setHjId(model.getHjid());
