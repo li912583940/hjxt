@@ -35,4 +35,22 @@ public class SysConfWeb extends Result{
         return sysConfSQL.editConf(sysConf);
     }
 
+    /**
+     * 说明 [获取选中的会见类型数组]
+     * @return
+     * L_晓天  @2019年4月22日
+     */
+    @RequestMapping("/getCheckedHjType")
+    public String getCheckedHjType(){
+    	SysConfVO model = null;
+    	List<SysConfVO> list = sysConfSQL.findList(new SysConfVO());
+    	if(list.size()>0){
+    		model = list.get(0);
+    		this.putData(model.getHjTypes().split(","));
+    	}else{
+    		String[] str = {};
+    		this.putData(str);
+    	}
+    	return this.toResult();
+    }
 }

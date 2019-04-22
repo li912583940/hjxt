@@ -410,6 +410,9 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		}else{
 			addJlHjDj.setHjTime(hjsc*60); // 单位：秒
 		}
+		if(hjType != 1 && hjType !=2 ){
+			addJlHjDj.setHjTime(180*60);
+		}
 		addJlHjDj.setHjInfo(hjInfo); // 会见说明
 		addJlHjDj.setDjUser(TokenUser.getUser().getUserNo()); // 登记人
 		addJlHjDj.setFpFlag(0);
@@ -1661,6 +1664,9 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 				result.msg("修改登记成功，但此次修改的亲属需要审批，审批通过后才能参与会见");
 			}
 		}else{
+			if(sysConf!=null && sysConf.getEditDjXp()==1){ // editDjXp==1 修改登记完成打印小票
+				result.putJson("hjid", model.getHjid());
+			}
 			result.msg("修改登记成功");
 		}
 		this.edit(model);

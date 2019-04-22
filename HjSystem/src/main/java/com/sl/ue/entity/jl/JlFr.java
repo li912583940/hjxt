@@ -90,7 +90,7 @@ public class JlFr implements java.io.Serializable {
 	@DbField("ZP")
 	private byte[] zp;
 	@DbField("Former_JQ_Name")
-	private String formerJQName;
+	private String formerJqName;
 	@DbField("FR_DAH")
 	private String frDah;
 	@DbField("State_ZDZF")
@@ -396,12 +396,12 @@ public class JlFr implements java.io.Serializable {
 		this.infoHome = infoHome;
 	}
 
-	public String getFormerJQName() {
-		return formerJQName;
+	public String getFormerJqName() {
+		return formerJqName;
 	}
 
-	public void setFormerJQName(String formerJQName) {
-		this.formerJQName = formerJQName;
+	public void setFormerJqName(String formerJqName) {
+		this.formerJqName = formerJqName;
 	}
 	public String getFrDah() {
 		return frDah;

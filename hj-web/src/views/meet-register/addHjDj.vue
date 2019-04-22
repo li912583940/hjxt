@@ -17,7 +17,6 @@
       <el-button class="filter-item" type="primary" v-waves icon="el-icon-search" @click="handleFilter">{{$t('criminal.search')}}</el-button>
       <el-button class="filter-item" type="success" v-waves  @click="addHjdj">提交登记</el-button>
       <el-button class="filter-item" type="primary" v-waves  @click="returnPrevious">返回</el-button>
-      <!--<el-button class="filter-item" type="primary" v-waves  @click="colsePort">删除节点</el-button>-->
     </div>
     
     <div class="filter-container">
@@ -98,7 +97,7 @@
 	      </el-table-column>
 	      <el-table-column width="150" align="center" label="上次会见所在监区">
 	        <template slot-scope="scope">
-	          <span>{{scope.row.formerJQName}}</span>
+	          <span>{{scope.row.formerJqName}}</span>
 	        </template>
 	      </el-table-column>
 	      <el-table-column width="90" align="center" label="重点罪犯">
@@ -382,7 +381,7 @@ export default {
       qsListLoading: false,
       qsListQuery: {
         pageNum: 1,
-        pageSize: 20,
+        pageSize: 100,
         frNo: undefined
       },
       
@@ -698,8 +697,8 @@ export default {
       	this.frListQuery.jq = undefined
       	this.frListQuery.qsSfz = undefined
       	this.frListQuery.qsName = undefined
-      	if(this.hjid){
-	    		this.printXp(this.hjid)
+      	if(res.hjid){
+	    		this.printXp(res.hjid)
 	    	}
     		//history.go(-1) 
     		//let timestamp=new Date().getTime()

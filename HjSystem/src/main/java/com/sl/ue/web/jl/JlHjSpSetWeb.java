@@ -3,13 +3,20 @@ package com.sl.ue.web.jl;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.sl.ue.entity.jl.vo.JlHjSpSetVO;
+import com.sl.ue.entity.sys.vo.SysLogVO;
+import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.jl.JlHjSpSetService;
+import com.sl.ue.service.sys.SysLogService;
+import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.http.Result;
+import com.sl.ue.util.http.token.TokenUser;
 
 @RestController
 @RequestMapping("/jlHjSpSet")
@@ -17,7 +24,9 @@ public class JlHjSpSetWeb extends Result{
 
     @Autowired
     private JlHjSpSetService jlHjSpSetSQL;
-
+    @Autowired
+	private SysLogService sysLogSQL;
+    
     @RequestMapping("/findList")
     public String findList(JlHjSpSetVO model,Integer pageSize, Integer pageNum){
         List<JlHjSpSetVO> list = jlHjSpSetSQL.findList(model, pageSize, pageNum);
@@ -87,7 +96,21 @@ public class JlHjSpSetWeb extends Result{
     		String gxValue,
     		String deptValue1, String userValue1,
     		String deptValue2, String userValue2,
-    		String deptValue3, String userValue3){
+    		String deptValue3, String userValue3,
+    		HttpServletRequest request){
+    	
+    	SysUserVO user = TokenUser.getUser();
+    	SysLogVO sysLog = new SysLogVO();
+    	sysLog.setType("正常");
+		sysLog.setOp("修改了审批设置");
+		sysLog.setInfo("修改了审批设置。");
+		sysLog.setModel("审批设置");
+		sysLog.setUserNo(user.getUserNo());
+		sysLog.setUserName(user.getUserName());
+		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLog.setUserIp(request.getRemoteAddr());
+		sysLogSQL.add(sysLog);
+		
         jlHjSpSetSQL.spConf(id, spExplain, usable, 
         		gxValue,
         		deptValue1, userValue1,

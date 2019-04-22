@@ -132,7 +132,7 @@ public class JlJqWeb extends Result{
     	JlJqVO model = jlJqSQL.findOne(id);
     	SysUserVO user = TokenUser.getUser();
     	SysLogVO sysLog = new SysLogVO();
-    	sysLog.setType("正常");
+    	sysLog.setType("严重");
 		sysLog.setOp("删除监区");
 		sysLog.setInfo("删除监区编号: "+model.getJqNo()+"，监区名称: "+model.getJqName()+"。");
 		sysLog.setModel("监区设置");
@@ -170,8 +170,8 @@ public class JlJqWeb extends Result{
     	SysUserVO user = TokenUser.getUser();
     	SysLogVO sysLog = new SysLogVO();
     	sysLog.setType("正常");
-		sysLog.setOp("删除监区");
-		sysLog.setInfo("删除监区编号: "+model.getJqNo()+"，监区名称: "+model.getJqName()+"。");
+		sysLog.setOp("添加监区会见日");
+		sysLog.setInfo("添加监区会见日，监区编号: "+model.getJqNo()+",监区名称"+model.getJqName()+"，星期: "+weeks+"。");
 		sysLog.setModel("监区设置");
 		sysLog.setUserNo(user.getUserNo());
 		sysLog.setUserName(user.getUserName());
@@ -188,7 +188,18 @@ public class JlJqWeb extends Result{
      * L_晓天  @2019年4月11日
      */
     @RequestMapping("/addJqAllWeek")
-    public String addJqAllWeek(String weeks){
+    public String addJqAllWeek(String weeks, HttpServletRequest request){
+    	SysUserVO user = TokenUser.getUser();
+    	SysLogVO sysLog = new SysLogVO();
+    	sysLog.setType("正常");
+		sysLog.setOp("批量添加监区会见日");
+		sysLog.setInfo("批量添加监区会见日，星期: "+weeks+"。");
+		sysLog.setModel("监区设置");
+		sysLog.setUserNo(user.getUserNo());
+		sysLog.setUserName(user.getUserName());
+		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLog.setUserIp(request.getRemoteAddr());
+		sysLogSQL.add(sysLog);
     	return jlJqSQL.addJqAllWeek(weeks);
     }
 }

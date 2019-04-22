@@ -27,6 +27,10 @@ public class SysConf implements java.io.Serializable{
     @DbField("print_xp")
     private Integer printXp;
     
+    /** 默认0; 0:修改登记不打印小票，1：修改登记自动打印小票 */
+    @DbField("edit_dj_xp")
+    private Integer editDjXp;
+    
     /** 打印格式： 默认0;  0:A4打印，1：热敏打印 */
     @DbField("print_format")
     private Integer printFormat;
@@ -39,6 +43,9 @@ public class SysConf implements java.io.Serializable{
     @DbField("save_hjdj")
     private Integer saveHjdj;
     
+    /** 会见类型不记录罪犯会见次数,会见类型id,逗号分隔  */
+    @DbField("hj_types")
+    private String hjTypes;
     
     public Integer getId() {
         return this.id;
@@ -72,6 +79,14 @@ public class SysConf implements java.io.Serializable{
 		this.printXp = printXp;
 	}
 
+	public Integer getEditDjXp() {
+		return editDjXp;
+	}
+
+	public void setEditDjXp(Integer editDjXp) {
+		this.editDjXp = editDjXp;
+	}
+
 	public Integer getPrintFormat() {
 		return printFormat;
 	}
@@ -95,5 +110,14 @@ public class SysConf implements java.io.Serializable{
 	public void setSaveHjdj(Integer saveHjdj) {
 		this.saveHjdj = saveHjdj;
 	}
+
+	public String getHjTypes() {
+		return hjTypes;
+	}
+
+	public void setHjTypes(String hjTypes) {
+		this.hjTypes = hjTypes;
+	}
     
+	
 }

@@ -91,7 +91,7 @@
       </el-table-column>
       <el-table-column v-if="buttonRole.printXpPermission==1 || buttonRole.editDjPermission==1 || buttonRole.cancelDjPermission==1 " align="center" :label="$t('criminal.actions')" width="220" fixed="right">
         <template slot-scope="scope">
-          <el-button v-if="buttonRole.printXpPermission==1" type="primary" size="mini"  @click="printXp(scope.row)">打印</el-button>
+          <el-button v-if="buttonRole.printXpPermission==1" type="primary" size="mini"  @click="printXp(scope.row.hjid)">打印</el-button>
           <el-button v-if="buttonRole.editDjPermission==1" type="primary"  size="mini"  @click="handleOpenEditDj(scope.row)">修改</el-button>
           <el-button v-if="buttonRole.cancelDjPermission==1" type="danger"  size="mini" @click="handleDelete(scope.row)">取消</el-button>
         </template>
@@ -415,7 +415,7 @@ export default {
       qsListLoading: false,
       qsListQuery: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 100,
         frNo: undefined
       },
       /** 修改会见登记  亲属表格 结束 */
@@ -517,9 +517,9 @@ export default {
     	this.$router.push({ path: '/addHjDj' })
     },
     // 打印小票
-    printXp(row) {
+    printXp(hjid) {
     	let param = {
-    		hjid: row.hjid
+    		hjid: hjid
     	}
     	RequestPrintXp(param).then((res) => {
     			if(res.printFormat==0){
@@ -630,6 +630,9 @@ export default {
 				      duration: 5 * 1000
 			      });
           }
+          if(res.hjid){
+		    		this.printXp(res.hjid)
+		    	}
           this.getList()
 	    	}).catch(error => {
 	    		this.listLoading = false;

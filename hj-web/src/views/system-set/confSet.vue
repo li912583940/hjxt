@@ -3,7 +3,7 @@
 		
 		<el-card shadow="always" style="width: 500px;" >
 			<div style="margin-left: 33px;">
-				<span v-if="buttonRole.confPermission==1">
+				<span>
 					<el-switch
 					  style="display: block"
 					  v-model="dataForm.hjdjSwitch"
@@ -12,18 +12,7 @@
 					  active-color="#13ce66"
 					  inactive-text="关闭会见登记验证总开关"
 					  active-text="开启会见登记验证总开关"
-					 >
-					</el-switch>
-				</span>
-				<span v-if="buttonRole.confPermission==0">
-					<el-switch
-					  style="display: block"
-					  v-model="dataForm.hjdjSwitch"
-					  inactive-color="#ff4949"
-					  active-color="#13ce66"
-					  inactive-text="关闭会见登记验证总开关"
-					  active-text="开启会见登记验证总开关"
-					  :disabled="true"
+					  :disabled="permissionBoolean"
 					 >
 					</el-switch>
 				</span>
@@ -39,7 +28,7 @@
 		
 		<el-card shadow="always" style="width: 500px;margin-top: 40px;" >
 			<div style="margin-left: 18px;">
-				<span v-if="buttonRole.confPermission==1">
+				<span>
 					<el-switch
 					  style="display: block"
 					  v-model="dataForm.hjNotice"
@@ -48,18 +37,7 @@
 					  active-color="#13ce66"
 					  inactive-text="身份验证成功发起会见通知"
 					  active-text="登记完成发起会见通知"
-					 >
-					</el-switch>
-				</span>
-				<span v-if="buttonRole.confPermission==0">
-					<el-switch
-					  style="display: block"
-					  v-model="dataForm.hjNotice"
-					  inactive-color="#ff4949"
-					  active-color="#13ce66"
-					  inactive-text="身份验证成功发起会见通知"
-					  active-text="登记完成发起会见通知"
-					  :disabled="true"
+					  :disabled="permissionBoolean"
 					 >
 					</el-switch>
 				</span>
@@ -68,7 +46,7 @@
 		
 		<el-card shadow="always" style="width: 500px;margin-top: 40px;" >
 			<div style="margin-left: 44px;">
-				<span v-if="buttonRole.confPermission==1">
+				<span>
 					<el-switch
 					  style="display: block"
 					  v-model="dataForm.printXp"
@@ -77,25 +55,30 @@
 					  active-color="#13ce66"
 					  inactive-text="登记完成自动打印小票"
 					  active-text="人工打印小票"
+					  :disabled="permissionBoolean"
 					 >
 					</el-switch>
 				</span>
-				<span v-if="buttonRole.confPermission==0">
+			</div>
+			
+			<div style="margin-left: 43px; margin-top: 20px;">
+				<span>
 					<el-switch
 					  style="display: block"
-					  v-model="dataForm.printXp"
+					  v-model="dataForm.editDjXp"
+					  @change="editDjXpChange"
 					  inactive-color="#ff4949"
 					  active-color="#13ce66"
-					  inactive-text="登记完成自动打印小票"
-					  active-text="人工打印小票"
-					  :disabled="true"
+					  inactive-text="修改登记自动打印小票"
+					  active-text="修改登记不打印小票"
+					  :disabled="permissionBoolean"
 					 >
 					</el-switch>
 				</span>
 			</div>
 			
 			<div style="margin-left: 57px; margin-top: 20px;">
-				<span v-if="buttonRole.confPermission==1">
+				<span>
 					<el-switch
 					  style="display: block"
 					  v-model="dataForm.printFormat"
@@ -104,18 +87,7 @@
 					  active-color="#13ce66"
 					  inactive-text="打印格式：热敏打印"
 					  active-text="打印格式：A4打印"
-					 >
-					</el-switch>
-				</span>
-				<span v-if="buttonRole.confPermission==0">
-					<el-switch
-					  style="display: block"
-					  v-model="dataForm.printFormat"
-					  inactive-color="#ff4949"
-					  active-color="#13ce66"
-					  inactive-text="打印格式：热敏打印"
-					  active-text="打印格式：A4打印"
-					  :disabled="true"
+					  :disabled="permissionBoolean"
 					 >
 					</el-switch>
 				</span>
@@ -124,7 +96,7 @@
 		
 		<el-card shadow="always" style="width: 500px;margin-top: 40px;" >
 			<div style="margin-left: 42px;">
-				<span v-if="buttonRole.confPermission==1">
+				<span>
 					<el-switch
 					  style="display: block"
 					  v-model="dataForm.fpZw"
@@ -133,25 +105,14 @@
 					  active-color="#13ce66"
 					  inactive-text="登记完成自动分配座位"
 					  active-text="登记完成不自动分配座位"
-					 >
-					</el-switch>
-				</span>
-				<span v-if="buttonRole.confPermission==0">
-					<el-switch
-					  style="display: block"
-					  v-model="dataForm.fpZw"
-					  inactive-color="#ff4949"
-					  active-color="#13ce66"
-					  inactive-text="登记完成自动分配座位"
-					  active-text="登记完成不自动分配座位"
-					  :disabled="true"
+					  :disabled="permissionBoolean"
 					 >
 					</el-switch>
 				</span>
 			</div>
 		
 			<div style="margin-top: 20px;">
-				<span v-if="buttonRole.confPermission==1">
+				<span>
 					<el-switch
 					  style="display: block"
 					  v-model="dataForm.saveHjdj"
@@ -164,25 +125,43 @@
 					 >
 					</el-switch>
 				</span>
-				<span v-if="buttonRole.confPermission==0">
-					<el-switch
-					  style="display: block"
-					  v-model="dataForm.saveHjdj"
-					  inactive-color="#ff4949"
-					  active-color="#13ce66"
-					  inactive-text="座位不够，可以继续提交登记"
-					  active-text="座位不够，不让登记"
-					  :disabled="true"
-					 >
-					</el-switch>
+			</div>
+		</el-card>
+		
+		<el-card shadow="always" style="width: 500px;margin-top: 40px;" >
+			<div style="margin-left: 18px;">
+				<span style="color: red;">
+					配置会见类型不记录罪犯会见次数 
+				</span>
+				<span style="margin-left: 10px;">
+					<el-button v-if="buttonRole.confPermission==1" size="mini" type="info" icon="el-icon-setting" @click="openHjType">配置</el-button>
 				</span>
 			</div>
 		</el-card>
+		
+		<!-- 添加角色 -->
+		<el-dialog title="添加会见类型" :visible.sync="dialogHjTypeVisible" width="740px" :modal-append-to-body="false">
+			<el-card style="width: 540px; margin-left: 10%;">
+				<el-transfer
+				    filterable
+				    :filter-method="hjTypeFilter"
+				    filter-placeholder="请输入关键字搜索"
+				    v-model="hjTypeValue"
+				    :data="hjTypeData"
+				    :titles="['未拥有类型', '拥有类型']">
+				</el-transfer>
+		    </el-card>
+		    <div slot="footer" class="dialog-footer">
+		        <el-button @click="dialogHjTypeVisible = false">取 消</el-button>
+		        <el-button type="primary" @click="updateHjType">确 定</el-button>
+	        </div>
+		</el-dialog>
+		
 	</div>
 </template>
 
 <script>
-import { FindConf, EditConf } from '@/api/confSet'
+import { FindConf, EditConf, GetCheckedHjType } from '@/api/confSet'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -200,10 +179,14 @@ export default {
       	hjdjSwitch: true,
       	hjNotice: true,
       	printXp: true,
+      	editDjXp:true,
       	printFormat:true,
       	fpZw: true,
       	saveHjdj: true,
+      	hjTypes: undefined,
       },
+      
+      permissionBoolean:true,
       
       saveHjdjBoolean:false,
       
@@ -213,6 +196,42 @@ export default {
       	confPermission: 0,
       },
       
+      hjTypeData:[
+        {
+      		key: 1,
+      		label: '亲属会见'
+      	},
+      	{
+      		key: 2,
+      		label: '监护人会见'
+      	},
+      	{
+      		key: 3,
+      		label: '律师会见'
+      	},
+      	{
+      		key: 4,
+      		label: '使领馆探视'
+      	},
+      	{
+      		key: 5,
+      		label: '提审会见'
+      	},
+      	{
+      		key: 6,
+      		label: '公务会见'
+      	},
+      	{
+      		key: 9,
+      		label: '特批会见'
+      	},
+      	{
+      		key: 99,
+      		label: '其他会见'
+      	},
+      ],
+      hjTypeValue:[],
+      dialogHjTypeVisible:false,
     }
   },
   filters: {
@@ -290,6 +309,19 @@ export default {
 		    });
     	})
     },
+    editDjXpChange(){
+    	let param = {
+    		id:this.dataForm.id,
+    		editDjXp: this.dataForm.editDjXp==true?0:1
+    	}
+    	EditConf(param).then(res =>{
+    		Message({
+		        message: res.errMsg,
+			    type: 'success',
+			    duration: 5 * 1000
+		    });
+    	})
+    },
     printFormatChange(){
     	let param = {
     		id:this.dataForm.id,
@@ -339,19 +371,43 @@ export default {
     	let roles = sessionStorage.getItem("roles")
     	if(roles.includes('admin')){
     		this.buttonRole.confPermission= 1
+    		this.permissionBoolean=false
     	}else{
     		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
-    		let noticeSet = buttonRoles.noticeSet
-    		if(noticeSet.length>0){
-    			for(let value of noticeSet){
+    		let confSet = buttonRoles.confSet
+    		if(confSet.length>0){
+    			for(let value of confSet){
     				if(value=='confPermission'){
     					this.buttonRole.confPermission= 1
+    					this.permissionBoolean=false
     				}
     			}
     		}
     	}
     },
-    
+    openHjType(){
+    	this.dialogHjTypeVisible = true
+    	GetCheckedHjType({}).then(res => {
+	 		this.hjTypeValue = res.list
+	 	})
+    },
+    updateHjType(){
+    	let hjTypeValue = this.hjTypeValue.join()
+		let param = {
+			id:this.dataForm.id,
+			hjTypes: hjTypeValue
+		}
+		EditConf(param).then(res =>{
+    		Message({
+		        message: res.errMsg,
+			    type: 'success',
+			    duration: 5 * 1000
+		    });
+    	})
+    },
+    hjTypeFilter(query, item){ //穿梭框搜索功能
+	  	return item.label.indexOf(query) > -1;
+	},
 	dateFormats: function (val) {
 		if(!val){
 			return undefined
