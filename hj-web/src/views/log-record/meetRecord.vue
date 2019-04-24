@@ -446,68 +446,45 @@
     <!-- 复听详情  结束  -->
     
     <!-- 其他详情  开始  -->
-    <el-dialog title="其他详情" :visible.sync="dialogOtherInfoVisible" width="900px" :modal-append-to-body="false">
-      <el-card class="box-card">
-	      <el-table :key='otherInfoTableKey' :data="otherInfoList" v-loading="otherInfoListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-		      style="width: 100%">
-		      <el-table-column width="160" align="center" label="会见登记人">
-		        <template slot-scope="scope">
-		          <span>{{scope.row.djUser}}</span>
-		        </template>
-		      </el-table-column>
-		      <el-table-column width="160" align="center" label="登记时间">
-		        <template slot-scope="scope">
-		          <span>{{scope.row.djTime | dateFormat}}</span>
-		        </template>
-		      </el-table-column>
-		      <el-table-column width="" align="center" label="会见室审核人">
-		        <template slot-scope="scope">
-		          <span>{{scope.row.frInUser}}</span>
-		        </template>
-		      </el-table-column>
-		      <el-table-column width="180" align="center" label="到达进入时间">
-		        <template slot-scope="scope">
-		          <span>{{scope.row.frInTime | dateFormat}}</span>
-		        </template>
-		      </el-table-column>
-		      <el-table-column width="180" align="center" label="会见说明">
-		        <template slot-scope="scope">
-		          <span>{{scope.row.hjInfo}}</span>
-		        </template>
-		      </el-table-column>
-		    </el-table>
-		  </el-card>
+    <el-dialog title="其他详情" :visible.sync="dialogOtherInfoVisible" width="1000px" :modal-append-to-body="false">
+      <el-table :key='otherInfoTableKey' :data="otherInfoList" v-loading="otherInfoListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
+	      style="width: 100%">
+	      <el-table-column width="160" align="center" label="操作人编号">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.userNo}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="160" align="center" label="操作人姓名">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.userName}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="160" align="center" label="操作类型">
+	        <template slot-scope="scope">
+	          <span v-if="scope.row.type==1">监听</span>
+	          <span v-else-if="scope.row.type==2">停止监听</span>
+	          <span v-else-if="scope.row.type==3">切断</span>
+	          <span v-else-if="scope.row.type==4">插话</span>
+	          <span v-else-if="scope.row.type==5">注释</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="300" align="center" label="操作摘要">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.writeTxt}}</span>
+	        </template>
+	      </el-table-column>
+	      <el-table-column width="160" align="center" label="操作时间">
+	        <template slot-scope="scope">
+	          <span>{{scope.row.createTime | dateFormat}}</span>
+	        </template>
+	      </el-table-column>
+	    </el-table>
 		  
-	    <el-card class="box-card">
-	    	<el-table :key='otherQsInfoTableKey' :data="otherQsInfoList" v-loading="otherQsInfoListLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-		      style="width: 100%">
-		      <el-table-column width="160" align="center" label="亲属姓名">
-		        <template slot-scope="scope">
-		          <span>{{scope.row.qsName}}</span>
-		        </template>
-		      </el-table-column>
-		      <el-table-column width="160" align="center" label="身份证号码">
-		        <template slot-scope="scope">
-		          <span>{{scope.row.qsSfz}}</span>
-		        </template>
-		      </el-table-column>
-		      <el-table-column width="" align="center" label="关系">
-		        <template slot-scope="scope">
-		          <span>{{scope.row.gx}}</span>
-		        </template>
-		      </el-table-column>
-		      <el-table-column width="180" align="center" label="性别">
-		        <template slot-scope="scope">
-		          <span>{{scope.row.xb}}</span>
-		        </template>
-		      </el-table-column>
-		      <el-table-column width="180" align="center" label="照片">
-		        <template slot-scope="scope">
-		          <span>{{scope.row.zp}}</span>
-		        </template>
-		      </el-table-column>
-		    </el-table>
-	    </el-card>
+	    <!-- 分页 -->
+	    <div class="pagination-container">
+	      <el-pagination background @size-change="handleOtherInfoSizeChange" @current-change="handleOtherInfoCurrentChange" :current-page="otherInfoListQuery.pageNum" :page-sizes="[10,20,30, 50]" :page-size="otherInfoListQuery.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="otherInfoTotal">
+	      </el-pagination>
+	    </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogOtherInfoVisible = false">关闭</el-button>
       </span>
@@ -520,13 +497,14 @@
 
 <script>
 import { findPojo, findOne, findJqList, GetZwList, GetZs, AddRecordFlag, GetZsAllPojo, GetRatingState, UpdateRatingState, 
-	GetRatingStateAllPojo, GetAllAssessmentPojo, GetOtherInfo, exportExcel, DownVideo, DownAudio, DownTest } from '@/api/meetRecord'
+	GetRatingStateAllPojo, GetAllAssessmentPojo, GetOtherInfoPojo, exportExcel, DownVideo, DownAudio, DownTest } from '@/api/meetRecord'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime } from '@/utils'
 import { Message, MessageBox } from 'element-ui'
 import Vue from 'vue'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'meetRecord',
@@ -770,11 +748,13 @@ export default {
 		  dialogOtherInfoVisible: false,
 		  otherInfoTableKey: 0,
 		  otherInfoList: null,
+		  otherInfoTotal: null,
 		  otherInfoListLoading: true,
-		  
-		  otherQsInfoTableKey: 1,
-		  otherQsInfoList: null,
-		  otherQsInfoListLoading: true,
+		  otherInfoListQuery: {
+		    pageNum: 1,
+		    pageSize: 10,
+		    callId: undefined
+		  },
 		  /**  其他详情  结束 */
 		 
 		  //按钮权限   1：有权限， 0：无权限
@@ -897,8 +877,10 @@ export default {
     	}else{
     		if(this.ie==1){
     			console.log(row.callVideofile1Url)
-    			console.log(row.callVideofile2Url)
-    			window.open("/static/html/video.html?callRecfileUrl="+row.callVideofile1Url,"","width=1000,height=500,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
+    			//console.log(row.callVideofile2Url)
+    			var fileUrl = escape(row.callVideofile1Url)
+    			console.log(fileUrl)
+    			window.open("/static/html/video.html?callRecfileUrl="+fileUrl,"","width=1000,height=500,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
     		}
     		console.log(this.ie)
     		//this.dialogPlayVisible =true
@@ -1119,8 +1101,11 @@ export default {
     palyTape(row) {
     	this.callRecfileUrl = row.callRecfileUrl
     	if(this.ie==1){
+    	var httpPath = process.env.BASE_API
+    	var tokenValue = getToken()
+    	console.log(httpPath)
 //  		var str = '<embed id=\"audio1\" src=\"'+this.callRecfileUrl+'\" autostart=true loop=false mastersound height=40 width=300 />'
-    		window.open("/static/html/audio.html?callRecfileUrl="+row.callRecfileUrl,"","width=360,height=116,left=900,top=620,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
+    		window.open("/static/html/audio.html?id="+row.webid+"&httpPath="+httpPath+"&token="+tokenValue,"","width=360,height=116,left=900,top=620,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
     	}else{
     		this.dialogTapeVisible = true
     	}
@@ -1233,17 +1218,26 @@ export default {
    
     /** 其它详情 开始 */
     openOtherInfo(row) {
+    	this.otherInfoListQuery.callId=row.callId
+    	this.getOtherInfoList()
     	this.dialogOtherInfoVisible = true
-    	let param ={
-    		webid: row.webid
-    	}
-    	GetOtherInfo(param).then(res => {
-    		this.otherInfoList = res.jlHjDjList
-    		this.otherQsInfoList = jlHjDjQsList
-    		
-    	})
-    	this.otherInfoListLoading = false
-    	this.otherQsInfoListLoading = false
+    },
+    getOtherInfoList(){ // 获取所有注释
+    	GetOtherInfoPojo(this.otherInfoListQuery).then(res => {
+    		 this.otherInfoList = res.pojo.list
+      	 this.otherInfoTotal = res.pojo.count
+      	 this.otherInfoListLoading = false
+      }).catch(error => {
+         this.otherInfoListLoading = false
+      })
+    },
+    handleOtherInfoSizeChange(val) {
+      this.otherInfoListQuery.pageSize = val
+      this.getOtherInfoList()
+    },
+    handleOtherInfoCurrentChange(val) {
+      this.otherInfoListQuery.pageNum = val
+      this.getOtherInfoList()
     },
     /** 其它详情 结束 */
     

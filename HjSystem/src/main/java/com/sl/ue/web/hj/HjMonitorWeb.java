@@ -44,8 +44,8 @@ public class HjMonitorWeb extends Result{
 	 * L_晓天  @2018年12月28日
 	 */
 	@RequestMapping("/updateYJ")
-	public String updateYJ(Integer webid, Integer state){
-		return sysHjLineSQL.updateYJ(webid, state);
+	public String updateYJ(Integer webid, String monitorCallid, Long hjid, Integer state){
+		return sysHjLineSQL.updateYJ(webid, monitorCallid, hjid, state);
 	}
 	
 	/**
@@ -61,8 +61,8 @@ public class HjMonitorWeb extends Result{
 	 * L_晓天  @2018年11月20日
 	 */
 	@RequestMapping("/addMonitorFlag")
-	public String addMonitorFlag(String monitorCallid, String writeTxt){
-		return sysHjLineSQL.addMonitorFlag(monitorCallid, writeTxt);
+	public String addMonitorFlag(String monitorCallid, Long hjid, String writeTxt){
+		return sysHjLineSQL.addMonitorFlag(monitorCallid, hjid, writeTxt);
 	}
 	
 	/**
@@ -72,5 +72,10 @@ public class HjMonitorWeb extends Result{
 	@RequestMapping("/qieduanHj")
 	public String qieduanHj(Long hjid){
 		return sysHjLineSQL.qieduanHj(hjid);
+	}
+	
+	@RequestMapping("/requestCH")
+	public String requestCH(String monitorCallid, Long hjid, Integer vocId){
+		return sysHjLineSQL.requestCH(monitorCallid, hjid, vocId);
 	}
 }

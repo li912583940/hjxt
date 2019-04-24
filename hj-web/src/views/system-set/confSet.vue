@@ -386,9 +386,10 @@ export default {
     	}
     },
     openHjType(){
+    	this.hjTypeValue=[] //先清空
     	this.dialogHjTypeVisible = true
     	GetCheckedHjType({}).then(res => {
-	 		this.hjTypeValue = res.list
+	 		this.hjTypeValue = res.data
 	 	})
     },
     updateHjType(){
@@ -404,6 +405,7 @@ export default {
 			    duration: 5 * 1000
 		    });
     	})
+		this.dialogHjTypeVisible = false
     },
     hjTypeFilter(query, item){ //穿梭框搜索功能
 	  	return item.label.indexOf(query) > -1;

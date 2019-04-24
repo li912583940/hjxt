@@ -20,3 +20,7 @@ export const AddMonitorFlag = params => { return request.post('/hjMonitor/addMon
 
 // 切断
 export const QieduanHj = params => { return request.post('/hjMonitor/qieduanHj', params ).then(res => res) }
+
+//插话
+export const RequestCH = params => { return request.post('/hjMonitor/requestCH', params ).then(res => res) }
+

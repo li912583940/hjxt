@@ -12,12 +12,14 @@ import org.springframework.stereotype.Service;
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
 import com.sl.ue.entity.jl.vo.JlHjMonVO;
 import com.sl.ue.entity.jl.vo.JlHjMonitorTimeAddVO;
+import com.sl.ue.entity.jl.vo.JlMonitorVocVO;
 import com.sl.ue.entity.sys.vo.SysHjLineVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlHjDjService;
 import com.sl.ue.service.jl.JlHjMonService;
 import com.sl.ue.service.jl.JlHjMonitorTimeAddService;
+import com.sl.ue.service.jl.JlMonitorVocService;
 import com.sl.ue.service.sys.SysHjLineService;
 import com.sl.ue.service.sys.SysUserService;
 import com.sl.ue.util.Constants;
@@ -33,6 +35,8 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 	private JlHjMonService jlHjMonSQL;
 	@Autowired
 	private JlHjDjService jlHjDjSQL;
+	@Autowired
+	private JlMonitorVocService jlMonitorVocSQL;
 	
 	@Override
 	public Map<String, Object> findPojoMonitor(Integer pageSize, Integer pageNum) {
@@ -117,7 +121,7 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 		return result.toResult();
 	}
 	
-	public String updateYJ(Integer webid, Integer state){
+	public String updateYJ(Integer webid, String monitorCallid, Long hjid, Integer state){
 		Result result = new Result();
 		if(webid == null){
 			result.error(Result.error_102, "webid为NULL");
@@ -129,12 +133,27 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 			result.error(Result.error_103, "查询不到此记录");
 			return result.toResult();
 		}
+		SysUserVO user = TokenUser.getUser();
+		JlHjMonVO jlHjMon = new JlHjMonVO();
+		jlHjMon.setCallId(monitorCallid);
+		jlHjMon.setHjid(hjid);
+		jlHjMon.setUserNo(user.getUserNo());
+		jlHjMon.setUserName(user.getUserName());
+		jlHjMon.setCreateTime(new Date());
 		if(state==1){
-			SysUserVO user = TokenUser.getUser();
+			jlHjMon.setType(1);
+			
 			sysHjLine.setMonitorYj(user.getUserName());
-		}else{
+		}else if(state==2){
+			jlHjMon.setType(2);
+			
+			sysHjLine.setMonitorYj("");
+		}else if(state==3){
+			jlHjMon.setType(3);
+			
 			sysHjLine.setMonitorYj("");
 		}
+		jlHjMonSQL.add(jlHjMon);
 		this.edit(sysHjLine);
 		return result.toResult();
 	}
@@ -156,7 +175,7 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 		return result.toResult();
 	}
 	
-	public String addMonitorFlag(String monitorCallid, String writeTxt){
+	public String addMonitorFlag(String monitorCallid, Long hjid, String writeTxt){
 		Result result = new Result();
 		if(StringUtils.isBlank(monitorCallid)){
 			result.error(Result.error_102);
@@ -170,13 +189,13 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 		if(jlHjMonList.size()>0){
 			jlHjMon = jlHjMonList.get(0);
 			jlHjMon.setWriteTxt(writeTxt);
-			jlHjMon.setWriteTxtLx("有摘要");
-			jlHjMon.setCreateTime(new Date());
 			jlHjMonSQL.edit(jlHjMon);
 		}else{
 			jlHjMon.setUserName(sysUser.getUserName());
+			jlHjMon.setHjid(hjid);
+			jlHjMon.setType(5);
 			jlHjMon.setWriteTxt(writeTxt);
-			jlHjMon.setWriteTxtLx("有摘要");
+			jlHjMon.setCreateTime(new Date());
 			jlHjMonSQL.add(jlHjMon);
 		}
 		return result.toResult();
@@ -213,6 +232,29 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 		sysHjLine1.setLeftJoinWhere(" AND hjid is null");
 		Integer kuanjian = this.count(sysHjLine1);
 		result.putJson("kuanjian", kuanjian);
+		return result.toResult();
+	}
+	
+	public String requestCH(String monitorCallid, Long hjid, Integer vocId){
+		Result result = new Result();
+		JlMonitorVocVO jlMonitorVoc = new JlMonitorVocVO();
+		jlMonitorVoc.setVocId(vocId);
+		List<JlMonitorVocVO> vocList = jlMonitorVocSQL.findList(jlMonitorVoc);
+		if(vocList.size()==0){
+			result.error(Result.error_103, "查询不到插话记录");
+			return result.toResult();
+		}
+		jlMonitorVoc=vocList.get(0);
+		SysUserVO user = TokenUser.getUser();
+		JlHjMonVO jlHjMon = new JlHjMonVO();
+		jlHjMon.setCallId(monitorCallid);
+		jlHjMon.setHjid(hjid);
+		jlHjMon.setType(4);
+		jlHjMon.setWriteTxt(jlMonitorVoc.getVocInfo());
+		jlHjMon.setUserNo(user.getUserNo());
+		jlHjMon.setUserName(user.getUserName());
+		jlHjMon.setCreateTime(new Date());
+		jlHjMonSQL.add(jlHjMon);
 		return result.toResult();
 	}
 }

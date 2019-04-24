@@ -108,7 +108,7 @@
 
 <script>
 	
-import { findPojo, UpdateSJ, UpdateYJ, GetMonitorVocList, AddMonitorFlag, GetZs, QieduanHj } from '@/api/meetMonitor'
+import { findPojo, UpdateSJ, UpdateYJ, GetMonitorVocList, AddMonitorFlag, GetZs, QieduanHj, RequestCH } from '@/api/meetMonitor'
 import {findList as GetHjServerList} from '@/api/sysParam'
 
 import moment from 'moment';
@@ -155,10 +155,13 @@ export default {
       dialogCHVisible: false,
       
       dataFormCH: {
+      	webid: undefined,
       	frName: undefined,
       	serverName: undefined,
       	lineNo:undefined,
       	vocId: undefined,
+      	monitorCallid: undefined,
+      	hjid: undefined
       },
       rulesCH: {
         vocId: [{ required: true, message: '请选择一条内容', trigger: 'blur' }]
@@ -168,6 +171,7 @@ export default {
       /** 注释开始 */
       dialogZSVisible: false, 
       dataFormZS: {
+      	hjid: undefined,
       	monitorCallid: undefined,
       	frName: undefined,
       	writeTxt: undefined,
@@ -267,7 +271,13 @@ export default {
     		document.getElementById(row.jy).ListenStop(this.jtState);
     	}
     	if(row.monitorState=='通话'){
-    		UpdateYJ({webid:row.webid, state:1}).then(res =>{
+    		let param ={
+    			webid:row.webid,
+    			monitorCallid: row.monitorCallid,
+    			hjid: row.hjid,
+    			state:1
+    		}
+    		UpdateYJ(param).then(res =>{
     			this.getList()
     		})
     		
@@ -285,7 +295,13 @@ export default {
    
     /** 停止监听 开始 */
     jiantingStop(row){
-    	UpdateYJ({webid:row.webid, state:0}).then(res =>{
+    	let param ={
+    		webid:row.webid,
+    		monitorCallid: row.monitorCallid,
+    		hjid: row.hjid,
+    		state:2
+    	}
+    	UpdateYJ(param).then(res =>{
 				this.getList()
 			})
     	document.getElementById(row.jy).ListenStop(row.lineNo);
@@ -307,7 +323,13 @@ export default {
 					hjid:row.hjid
 				}
 				QieduanHj(param).then(res => {
-					UpdateYJ({webid:row.webid, state:0}).then(res =>{
+					let param ={
+		    		webid:row.webid,
+		    		monitorCallid: row.monitorCallid,
+		    		hjid: row.hjid,
+		    		state:3
+		    	}
+					UpdateYJ(param).then(res =>{
 	    			this.getList()
 	    		})
 					
@@ -372,8 +394,10 @@ export default {
 				this.$refs['dataFormCH'].resetFields();
 			}
 			this.dataFormCH.serverName = undefined
-	      	this.dataFormCH.lineNo = undefined
-	    },
+	    this.dataFormCH.lineNo = undefined
+	    this.dataFormCH.monitorCallid = undefined
+	    this.dataFormCH.hjid = undefined
+	   },
 		chahua(row){
 			if(!row.monitorCallid){
 				Message({
@@ -385,21 +409,27 @@ export default {
 			}
 			this.resetFormCH()
 			this.dialogCHVisible = true
+			this.dataFormCH.webid = row.webid
 			this.dataFormCH.frName = row.monitorFr
 			this.dataFormCH.serverName = row.jy
-	      	this.dataFormCH.lineNo = row.lineNo
+	    this.dataFormCH.lineNo = row.lineNo
+	    this.dataFormCH.monitorCallid = row.monitorCallid
+	    this.dataFormCH.hjid = row.hjid
 		},
 		updateCH(){
 			var serverName = this.dataFormCH.serverName
-			console.log(serverName)
 			var lineNo = this.dataFormCH.lineNo 
 			var vocId = this.dataFormCH.vocId
 			
 			this.$refs['dataFormCH'].validate((valid) => {
-		        if (valid) {
-		           document.getElementById(serverName).InsertVoc(lineNo,vocId);
-		        }
-		    })
+        if (valid) {
+          document.getElementById(serverName).InsertVoc(lineNo,vocId);
+          
+          RequestCH(this.dataFormCH).then(res =>{
+          	
+          })
+        }
+	    })
 			
 			this.dialogCHVisible = false
 		},
@@ -408,19 +438,21 @@ export default {
 		/** 注释 开始 */
 		//重置表单
 		resetFormZS() {
+			this.dataFormZS.hjid = undefined
 			this.dataFormZS.monitorCallid = undefined
 			this.dataFormZS.frName = undefined
 			this.dataFormZS.writeTxt = undefined
 	      	
-	    },
-	    getZs(monitorCallid){ //获取注释
-	    	GetZs({monitorCallid: monitorCallid}).then(res => {
-	    		this.dataFormZS.writeTxt = res.data.writeTxt
-	    	})
-	    },
+	  },
+	  getZs(monitorCallid){ //获取注释
+    	GetZs({monitorCallid: monitorCallid}).then(res => {
+    		this.dataFormZS.writeTxt = res.data.writeTxt
+    	})
+	  },
 		zhushi(row){
 			this.resetFormZS()
 			this.dialogZSVisible = true
+			this.dataFormZS.hjid = row.hjid
 			this.dataFormZS.monitorCallid = row.monitorCallid
 			this.dataFormZS.frName = row.monitorFr
 			
@@ -429,10 +461,10 @@ export default {
 		updateZS(){
 			AddMonitorFlag(this.dataFormZS).then(res => {
 				Message({
-		          message: res.errMsg,
-		          type: 'success',
-		          duration: 5 * 1000
-		        });
+          message: res.errMsg,
+          type: 'success',
+          duration: 5 * 1000
+        });
 			})
 			this.dialogZSVisible = false
 		},

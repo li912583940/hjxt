@@ -16,14 +16,17 @@ public class JlHjMon implements java.io.Serializable {
 	private Long webid;
 	@DbField("Call_ID")
 	private String callId;
+	@DbField("HJID")
+	private Long hjid;
+	/**  操作类型。1:监听，2：停止监听，3：切断，4：插话，5注释  */
+	@DbField("type")
+	private Integer type;
 	@DbField("User_No")
 	private String userNo;
 	@DbField("User_Name")
 	private String userName;
 	@DbField("Write_Txt")
 	private String writeTxt;
-	@DbField("Write_Txt_Lx")
-	private String writeTxtLx;
 	@DbField("Create_Time")
 	private Date createTime;
 
@@ -44,6 +47,22 @@ public class JlHjMon implements java.io.Serializable {
 
 	public void setCallId(String callId) {
 		this.callId = callId;
+	}
+
+	public Long getHjid() {
+		return hjid;
+	}
+
+	public void setHjid(Long hjid) {
+		this.hjid = hjid;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 
 	public String getUserNo() {
@@ -68,14 +87,6 @@ public class JlHjMon implements java.io.Serializable {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
-	}
-
-	public String getWriteTxtLx() {
-		return writeTxtLx;
-	}
-
-	public void setWriteTxtLx(String writeTxtLx) {
-		this.writeTxtLx = writeTxtLx;
 	}
 
 	public Date getCreateTime() {

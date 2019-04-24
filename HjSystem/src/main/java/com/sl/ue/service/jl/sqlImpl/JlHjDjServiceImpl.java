@@ -260,7 +260,18 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 				c.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天 
 				String ymd = DateUtil.getFormat(c.getTime(), "yyyy-MM-dd");
 				ymd+=" 00:00:00";
-				jlHjRecQuery.setLeftJoinWhere(" AND a.Call_Time_Start>'"+ymd+"' AND a.HJ_Type=1");
+				
+				StringBuffer leftJoinTable = new StringBuffer();
+				StringBuffer leftJoinWhere = new StringBuffer();
+				
+				leftJoinWhere.append(" AND a.Call_Time_Start>'"+ymd+"'");
+				if(sysConf != null && StringUtils.isNotBlank(sysConf.getHjTypes())){
+					leftJoinTable.append(" LEFT JOIN JL_HJ_DJ b ON a.HJID=b.HJID");
+					
+					leftJoinWhere.append(" AND b.HJ_Type not in ("+sysConf.getHjTypes()+")");
+				}
+				jlHjRecQuery.setLeftJoinTable(leftJoinTable.toString());
+				jlHjRecQuery.setLeftJoinWhere(leftJoinWhere.toString());
 				int count = jlHjRecSQL.count(jlHjRecQuery); // 犯人当月会见次数
 				if(jlJb.getHjCount()<=count){
 					// 查看 《罪犯本月会见次数已用完》是否开始了审批，如果没有开启，直接返回提示信息

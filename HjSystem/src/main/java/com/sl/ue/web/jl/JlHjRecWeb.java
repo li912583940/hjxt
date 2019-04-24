@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.sl.ue.entity.jl.vo.JlHjRecVO;
+import com.sl.ue.entity.sys.vo.SysHjServerVO;
 import com.sl.ue.service.jl.JlHjRecService;
+import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
 
 /**
@@ -107,14 +109,6 @@ public class JlHjRecWeb extends Result{
 		return jlHjRecSQL.updateRatingState(webid, recRatingState, writeTxt);
 	}
 	
-	/**
-	 * 说明 [获取当前会见记录的其它详情]
-	 * L_晓天  @2018年11月30日
-	 */
-	@RequestMapping("/getOtherInfo")
-	public String getOtherInfo(Long webid){
-		return jlHjRecSQL.getOtherInfo(webid);
-	}
 	
 	/**
 	 * 说明 [导出excel]
@@ -161,5 +155,17 @@ public class JlHjRecWeb extends Result{
 	@RequestMapping("/downTest")
 	public void downTest(Long webid, HttpServletRequest request, HttpServletResponse response){
 		jlHjRecSQL.downTest(webid, request, response);
+	}
+	
+	@RequestMapping("/getFileUrl")
+	//@IgnoreSecurity
+	public String getFileUrl(Long id){
+		return jlHjRecSQL.getFileUrl(id);
+	}
+	
+	@RequestMapping("/recAssessment")
+	//@IgnoreSecurity
+	public String recAssessment(Long id){
+		return jlHjRecSQL.recAssessment(id);
 	}
 }

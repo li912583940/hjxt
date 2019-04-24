@@ -4,23 +4,82 @@
 		<meta charset="UTF-8">
 		<title></title>
 		
-		<script   language="javascript">
-
-		function aaa(){
-			var urlinfo=window.location.href;
+		
+		<script type="text/javascript" >
+			document.oncontextmenu=function(e){return false;};
+			document.onselectstart=function(e){return false;};
+			
+			
+			var httpUrl="";
+			var callLen = 0;
+			var callLenStart=0;
+			var webid=0;
+			var tokenV = "";
+			
+			function aa(){
+				var urlinfo=window.location.href;
 				var len=urlinfo.length;
 				var offset=urlinfo.indexOf("?");
 				var newsidinfo=urlinfo.substr(offset,len)
-				var newsids=newsidinfo.split("=");
-				var newsid=newsids[1];
-				var newsname=newsids[0];
+				var as1 = newsidinfo.split("&");
+				var ids=as1[0].split("=");
+				var idKey = ids[0]
+				var idValue = ids[1]
+				var httpPaths = as1[1].split("=");
+				var httpPathKey=httpPaths[0];
+				var httpPathValue=httpPaths[1];
+				var tokens = as1[2].split("=");
+				var tokenKey=tokens[0];
+				var tokenValue=tokens[1];
 				
-				document.getElementById("Mediaplayer").url=newsid
-		} 
-		
-	</script>
+				httpUrl = httpPathValue;
+				webid = idValue;
+				tokenV = tokenValue;
+				
+				$.ajax({
+				      type:"POST",
+				      url:httpPathValue+"/jlHjRec/getFileUrl",
+				      beforeSend: function(request) {
+			          	request.setRequestHeader("X-Token",tokenValue);
+			          },
+				      contentType: 'application/x-www-form-urlencoded;charset=UTF-8',  
+				      data:{id:idValue},
+				      dataType:"json",
+				      success:function(data){
+				      	document.getElementById("Mediaplayer").url=data.callUrl
+				      	callLen=data.callLen
+				      }
+				});	
+				
+				callLenStart = (new Date()).getTime();
+					
+			} 
+			
+			window.setInterval(refreshMeetInfo3, 5000);
+			function refreshMeetInfo3() {
+				var callLenEnd = (new Date()).getTime();
+				var callGap = (callLenEnd-callLenStart)/1000;
+				if(callLen!=0 && (callGap/callLen)>0.9){
+					$.ajax({
+				      type:"POST",
+				      url:httpUrl+"/jlHjRec/recAssessment",
+				      beforeSend: function(request) {
+			          	request.setRequestHeader("X-Token",tokenV);
+			          },
+				      contentType: 'application/x-www-form-urlencoded;charset=UTF-8',  
+				      data:{id:webid},
+				      dataType:"json"
+					});
+				}
+				
+			}
+			
+			
+			
+		</script>
 	</head>
-	<body onload="aaa()" oncontextmenu=self.event.returnValue=false>
+	<body onload="aa();">
+		<script src="./jquery-3.4.0.min.js" type="text/javascript" ></script>
 		<div><object name="Mediaplayer" id="Mediaplayer" width="350" height="100" classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6">
 				    <param name="AutoStart" value="1" />
 				    <!--是否name动播放-->
@@ -54,7 +113,7 @@
 				    <!--是否静音-->
 				    <param name="uiMode" value="Full" />
 				    <!--播放器显示模式:Full显示全部;mini最简化;None不显示播放控制,只显示视频窗口;invisible全部不显示-->
-				    <param name="windowlessVideo" value="0" />
+				    <param name="windowlessVideo" value="1" />
 				    <!--如果是0可以允许全屏,否则只能在窗口中查看-->
 				    <param name="fullScreen" value="0" />
 				    <!--开始播放是否自动全屏-->
@@ -67,6 +126,6 @@
 				    <param name="SAMIFilename" value />
 				    <!--字幕ID-->
      		</object>
-	</div>
+		</div>
 	</body>
 </html>

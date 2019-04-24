@@ -21,7 +21,7 @@ public interface SysHjLineService extends BaseService<SysHjLineVO>{
 	 * @return
 	 * L_晓天  @2018年12月28日
 	 */
-	public String updateYJ(Integer webid, Integer state);
+	public String updateYJ(Integer webid, String monitorCallid, Long hjid, Integer state);
 	
 	/**
 	 * 说明 [获取当前用户在此次通话的注释]
@@ -33,7 +33,7 @@ public interface SysHjLineService extends BaseService<SysHjLineVO>{
 	 * 说明 [监听注释]
 	 * L_晓天  @2018年11月21日
 	 */
-	public String addMonitorFlag(String monitorCallid, String writeTxt);
+	public String addMonitorFlag(String monitorCallid, Long hjid, String writeTxt);
 	
 	/**
 	 * 说明 [切断]
@@ -47,4 +47,14 @@ public interface SysHjLineService extends BaseService<SysHjLineVO>{
 	 * L_晓天  @2019年4月17日
 	 */
 	public String getSurplusZwCount();
+	
+	/**
+	 * 说明 [插话]
+	 * @param monitorCallid
+	 * @param hjid
+	 * @param writeTxt
+	 * @return
+	 * L_晓天  @2019年4月24日
+	 */
+	public String requestCH(String monitorCallid, Long hjid, Integer vocId);
 }

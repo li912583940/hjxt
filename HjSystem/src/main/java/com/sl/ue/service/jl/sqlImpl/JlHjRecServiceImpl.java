@@ -34,6 +34,7 @@ import com.sl.ue.entity.jl.vo.JlHjDjQsVO;
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
 import com.sl.ue.entity.jl.vo.JlHjInfoVO;
 import com.sl.ue.entity.jl.vo.JlHjMonVO;
+import com.sl.ue.entity.jl.vo.JlHjRecAssessmentInfoVO;
 import com.sl.ue.entity.jl.vo.JlHjRecRatingInfoVO;
 import com.sl.ue.entity.jl.vo.JlHjRecVO;
 import com.sl.ue.entity.sys.vo.SysHjServerVO;
@@ -43,6 +44,8 @@ import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlHjDjQsService;
 import com.sl.ue.service.jl.JlHjDjService;
 import com.sl.ue.service.jl.JlHjInfoService;
+import com.sl.ue.service.jl.JlHjMonService;
+import com.sl.ue.service.jl.JlHjRecAssessmentInfoService;
 import com.sl.ue.service.jl.JlHjRecRatingInfoService;
 import com.sl.ue.service.jl.JlHjRecService;
 import com.sl.ue.service.sys.SysHjServerService;
@@ -71,6 +74,10 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 	private JlHjDjService jlHjDjSQL;
 	@Autowired
 	private SysLogService sysLogSQL;
+	@Autowired
+	private JlHjMonService jlHjMonSQL;
+	@Autowired
+	private JlHjRecAssessmentInfoService jlHjRecAssessmentInfoSQL;
 	
 	@Override
 	public Map<String, Object> findPojoLeft(JlHjRecVO model, Integer pageSize, Integer pageNum) {
@@ -313,27 +320,6 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 		return result.toResult();
 	}
 	
-    public String getOtherInfo(Long webid){
-    	Result result = new Result();
-		if(webid == null){
-			result.error(Result.error_102);
-			return result.toResult();
-		}
-		JlHjRecVO jlHjRec = this.findOne(webid);
-		
-		if(jlHjRec.getHjid() != null){
-			JlHjDjVO jlHjDj = new JlHjDjVO();
-			jlHjDj.setHjid(jlHjRec.getHjid());
-			List<JlHjDjVO> jlHjDjList = jlHjDjSQL.findList(jlHjDj);
-			result.putJson("jlHjDjList", jlHjDjList);
-			
-			JlHjDjQsVO jlHjDjQs = new JlHjDjQsVO();
-			jlHjDjQs.setHjId(jlHjRec.getHjid());
-			List<JlHjDjQsVO> qsList = jlHjDjQsSQL.findList(jlHjDjQs);
-			result.putData("jlHjDjQsList", qsList);
-		}
-		return result.toResult();
-	}
     
     public void exportExcel(JlHjRecVO model, HttpServletRequest request, HttpServletResponse response){
     	StringBuffer leftJoinField = new StringBuffer();
@@ -753,5 +739,49 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 			}
 		}
     
+    }
+    
+    public String getFileUrl(Long id){
+    	Result result =new Result();
+    	JlHjRecVO model = this.findOne(id);
+		List<SysHjServerVO> sysHjServerList = sysHjServerSQL.findList(new SysHjServerVO());
+		for(SysHjServerVO hjServer: sysHjServerList){
+			if(model.getJy().equals(hjServer.getServerName())){
+				if(StringUtils.isNotBlank(model.getCallRecfile())){
+					//先查看文件是否存在， 不存在就直接提示了
+					File file = new File(model.getCallRecfile());
+					if(file.exists()){
+						String end =model.getCallRecfile().replace("\\", "/");
+        				end = end.substring(end.indexOf("/")+1);
+        				end = end.substring(end.indexOf("/"));
+        				String url = hjServer.getRecurl()+"/file"+end;
+        				result.putJson("callUrl",url);
+        				result.putJson("callLen",model.getCallTimeLen() );
+					}
+				}
+			}
+		}
+		return result.toResult();
+    }
+    
+    public String recAssessment(Long id){
+    	Result result = new Result();
+    	SysUserVO sysUser = TokenUser.getUser();
+    	JlHjRecVO model = this.findOne(id);
+    	JlHjRecAssessmentInfoVO JlHjRecAssessmentInfo = new JlHjRecAssessmentInfoVO();
+    	JlHjRecAssessmentInfo.setCallId(model.getCallId());
+    	JlHjRecAssessmentInfo.setUserNo(sysUser.getUserNo());
+    	List<JlHjRecAssessmentInfoVO>  aiList = jlHjRecAssessmentInfoSQL.findList(JlHjRecAssessmentInfo);
+    	if(aiList.size()==0){
+    		JlHjRecAssessmentInfo.setUserName(sysUser.getUserName());
+        	JlHjRecAssessmentInfo.setCreateTime(new Date());
+        	jlHjRecAssessmentInfoSQL.add(JlHjRecAssessmentInfo);
+        	
+        	if(model.getRecAssessmentState()!=1){
+        		model.setRecAssessmentState(1);
+            	this.edit(model);
+        	}
+    	}
+    	return result.toResult();
     }
 }

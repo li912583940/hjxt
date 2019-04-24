@@ -1,5 +1,6 @@
 package com.sl.ue.web.sys;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +45,14 @@ public class SysConfWeb extends Result{
     public String getCheckedHjType(){
     	SysConfVO model = null;
     	List<SysConfVO> list = sysConfSQL.findList(new SysConfVO());
+    	List<Integer> reList = new ArrayList<>();
     	if(list.size()>0){
     		model = list.get(0);
-    		this.putData(model.getHjTypes().split(","));
-    	}else{
-    		String[] str = {};
-    		this.putData(str);
+    		for(String s : model.getHjTypes().split(",")){
+    			reList.add(Integer.parseInt(s));
+    		}
     	}
+    	this.putJson(reList);
     	return this.toResult();
     }
 }

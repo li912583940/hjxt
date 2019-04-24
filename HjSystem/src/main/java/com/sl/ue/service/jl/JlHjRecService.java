@@ -36,11 +36,6 @@ public interface JlHjRecService extends BaseService<JlHjRecVO>{
 	 */
 	public String updateRatingState(Long webid, Integer recRatingState, String writeTxt);
 	
-	/**
-	 * 说明 [获取当前会见记录的其它详情]
-	 * L_晓天  @2018年11月30日
-	 */
-	public String getOtherInfo(Long webid);
 	
 	/**
 	 * 说明 [导出excel]
@@ -66,4 +61,8 @@ public interface JlHjRecService extends BaseService<JlHjRecVO>{
 	public void downAudio(Long webid, HttpServletRequest request, HttpServletResponse response);
 	
 	public void downTest(Long webid, HttpServletRequest request, HttpServletResponse response);
+	
+	public String getFileUrl(Long id);
+	
+	public String recAssessment(Long id);
 }

@@ -35,7 +35,7 @@ export const GetRatingStateAllPojo = params => { return request.get('/jlHjRecRat
 export const GetAllAssessmentPojo = params => { return request.get('/jlHjRecAssessmentInfo/findPojo', { params: params } ).then(res => res) }
 
 // 获取当前会见记录的其它详情
-export const GetOtherInfo = params => { return request.get('/jlHjRec/getOtherInfo', { params: params } ).then(res => res) }
+export const GetOtherInfoPojo = params => { return request.get('/jlHjMon/findPojo', { params: params } ).then(res => res) }
 
 // 导出EXCEL
 export function exportExcel(param) {
