@@ -603,6 +603,10 @@ export default {
 	    })
     	RequestEditDj(this.dataForm).then(res =>{
     		this.getList()
+    		
+    		if(res.hjid){
+	    		this.printXp(res.hjid)
+	    	}
     	})
     	this.dialogDjVisible=false
     	loading.close();
@@ -630,9 +634,6 @@ export default {
 				      duration: 5 * 1000
 			      });
           }
-          if(res.hjid){
-		    		this.printXp(res.hjid)
-		    	}
           this.getList()
 	    	}).catch(error => {
 	    		this.listLoading = false;

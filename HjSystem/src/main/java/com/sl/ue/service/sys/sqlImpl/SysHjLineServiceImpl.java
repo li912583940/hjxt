@@ -14,6 +14,7 @@ import com.sl.ue.entity.jl.vo.JlHjMonVO;
 import com.sl.ue.entity.jl.vo.JlHjMonitorTimeAddVO;
 import com.sl.ue.entity.jl.vo.JlMonitorVocVO;
 import com.sl.ue.entity.sys.vo.SysHjLineVO;
+import com.sl.ue.entity.sys.vo.SysHjVideoVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlHjDjService;
@@ -21,8 +22,10 @@ import com.sl.ue.service.jl.JlHjMonService;
 import com.sl.ue.service.jl.JlHjMonitorTimeAddService;
 import com.sl.ue.service.jl.JlMonitorVocService;
 import com.sl.ue.service.sys.SysHjLineService;
+import com.sl.ue.service.sys.SysHjVideoService;
 import com.sl.ue.service.sys.SysUserService;
 import com.sl.ue.util.Constants;
+import com.sl.ue.util.StringUtil;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.token.TokenUser;
 
@@ -37,18 +40,31 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 	private JlHjDjService jlHjDjSQL;
 	@Autowired
 	private JlMonitorVocService jlMonitorVocSQL;
+	@Autowired
+	private SysHjVideoService sysHjVideoSQL;
 	
 	@Override
 	public Map<String, Object> findPojoMonitor(Integer pageSize, Integer pageNum) {
 		SysUserVO sysUser = TokenUser.getUser();
 		
 		StringBuffer leftJoinField = new StringBuffer();
-		leftJoinField.append(",b.IP AS ip");
-		leftJoinField.append(",b.Port AS port");
-		leftJoinField.append(",b.AudioPort AS audioPort");
+		leftJoinField.append(",b.QS_Info1 AS qsInfo1");
+		leftJoinField.append(",b.QS_Info2 AS qsInfo2");
+		leftJoinField.append(",b.QS_Info3 AS qsInfo3");
+		leftJoinField.append(",b.QS_Info4 AS qsInfo4");
+		leftJoinField.append(",b.QS_Info5 AS qsInfo5");
+		leftJoinField.append(",b.QS_Info6 AS qsInfo6");
+		leftJoinField.append(",b.QS_Info7 AS qsInfo7");
+		leftJoinField.append(",b.QS_Info8 AS qsInfo8");
+		leftJoinField.append(",b.QS_Info9 AS qsInfo9");
+		
+		leftJoinField.append(",c.FR_No AS frNo");
+		leftJoinField.append(",c.Info_ZM AS infoZm");
 		
 		StringBuffer leftJoinTable = new StringBuffer();
-		leftJoinTable.append(" LEFT JOIN SYS_HJ_SERVER AS b ON a.JY=b.Server_Name");
+		leftJoinTable.append(" LEFT JOIN JL_HJ_DJ b ON a.HJID=b.HJID");
+		leftJoinTable.append(" LEFT JOIN JL_FR c ON b.FR_No=c.FR_No");
+		
 		
 		SysHjLineVO sysHjLine = new SysHjLineVO();
 		sysHjLine.setLeftJoinField(leftJoinField.toString());
@@ -56,13 +72,42 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 		Map<String, Object> map = this.findPojo(sysHjLine, pageSize, pageNum, "ASC");
 		List<SysHjLineVO> list = (List<SysHjLineVO>) map.get("list");
 		for(SysHjLineVO t : list){
-			JlHjMonVO jlHjMon = new JlHjMonVO();
-			jlHjMon.setCallId(t.getMonitorCallid());
-			jlHjMon.setUserNo(sysUser.getUserNo());
-			List<JlHjMonVO> jlHjMonList = jlHjMonSQL.findList(jlHjMon);
-			if(jlHjMonList.size()>0){
-				t.setWriteTxt(jlHjMonList.get(0).getWriteTxt());
+			String qsInfos = "";
+			if(StringUtils.isNotBlank(t.getQsInfo1())){
+				qsInfos=t.getQsInfo1();
 			}
+			if(StringUtils.isNotBlank(t.getQsInfo2())){
+				qsInfos+=","+t.getQsInfo2();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo3())){
+				qsInfos+=","+t.getQsInfo3();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo4())){
+				qsInfos+=","+t.getQsInfo4();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo5())){
+				qsInfos+=","+t.getQsInfo5();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo6())){
+				qsInfos+=","+t.getQsInfo6();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo7())){
+				qsInfos+=","+t.getQsInfo7();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo8())){
+				qsInfos+=","+t.getQsInfo8();
+			}
+			if(StringUtils.isNotBlank(t.getQsInfo9())){
+				qsInfos+=","+t.getQsInfo9();
+			}
+			t.setQsInfos(qsInfos);
+//			JlHjMonVO jlHjMon = new JlHjMonVO();
+//			jlHjMon.setCallId(t.getMonitorCallid());
+//			jlHjMon.setUserNo(sysUser.getUserNo());
+//			List<JlHjMonVO> jlHjMonList = jlHjMonSQL.findList(jlHjMon);
+//			if(jlHjMonList.size()>0){
+//				t.setWriteTxt(jlHjMonList.get(0).getWriteTxt());
+//			}
 //			if(StringUtils.isNotBlank(t.getMonitorQs())){
 //				String[] ss = t.getMonitorQs().split(";");
 //				List<String> ls = new ArrayList<String>();
@@ -255,6 +300,15 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 		jlHjMon.setUserName(user.getUserName());
 		jlHjMon.setCreateTime(new Date());
 		jlHjMonSQL.add(jlHjMon);
+		return result.toResult();
+	}
+	
+	public String getSpMonitor(Integer id){
+		Result result = new Result();
+		SysHjLineVO sysHjLine = this.findOne(id);
+		result.putJson("sysHjLine", sysHjLine);
+		SysHjVideoVO sysHjVideo = sysHjVideoSQL.findOne(sysHjLine.getVideochan1Server());
+		result.putJson("sysHjVideo", sysHjVideo);
 		return result.toResult();
 	}
 }

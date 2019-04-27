@@ -55,13 +55,32 @@
 					
 			} 
 			
-			window.setInterval(refreshMeetInfo3, 5000);
-			function refreshMeetInfo3() {
+//			window.setInterval(refreshMeetInfo3, 5000);
+//			function refreshMeetInfo3() {
+//				var callLenEnd = (new Date()).getTime();
+//				var callGap = (callLenEnd-callLenStart)/1000;
+//				if(callLen!=0 && (callGap/callLen)>0.9){
+//					$.ajax({
+//				      type:"POST",
+//				      url:httpUrl+"/jlHjRec/recAssessment",
+//				      beforeSend: function(request) {
+//			          	request.setRequestHeader("X-Token",tokenV);
+//			          },
+//				      contentType: 'application/x-www-form-urlencoded;charset=UTF-8',  
+//				      data:{id:webid},
+//				      dataType:"json"
+//					});
+//				}
+//				
+//			}
+			
+			function bb(){
 				var callLenEnd = (new Date()).getTime();
 				var callGap = (callLenEnd-callLenStart)/1000;
 				if(callLen!=0 && (callGap/callLen)>0.9){
 					$.ajax({
 				      type:"POST",
+				      async: false,
 				      url:httpUrl+"/jlHjRec/recAssessment",
 				      beforeSend: function(request) {
 			          	request.setRequestHeader("X-Token",tokenV);
@@ -75,10 +94,10 @@
 			}
 			
 			
-			
+	
 		</script>
 	</head>
-	<body onload="aa();">
+	<body onload="aa();" onunload="bb();">
 		<script src="./jquery-3.4.0.min.js" type="text/javascript" ></script>
 		<div><object name="Mediaplayer" id="Mediaplayer" width="350" height="100" classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6">
 				    <param name="AutoStart" value="1" />

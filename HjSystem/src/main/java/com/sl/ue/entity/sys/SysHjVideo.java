@@ -19,13 +19,13 @@ public class SysHjVideo implements java.io.Serializable {
 	@DbField("Port")
 	private Integer port;
 	@DbField("LoginUser")
-	private String loginUser;
+	private String loginuser;
 	@DbField("LoginPwd")
-	private String loginPwd;
+	private String loginpwd;
 	@DbField("VideoPath")
-	private String videoPath;
+	private String videopath;
 	@DbField("VideoUrl")
-	private String videoUrl;
+	private String videourl;
 
 
 	public String getServerName() {
@@ -52,36 +52,38 @@ public class SysHjVideo implements java.io.Serializable {
 		this.port = port;
 	}
 
-	public String getLoginUser() {
-		return this.loginUser;
+	public String getLoginuser() {
+		return loginuser;
 	}
 
-	public void setLoginUser(String loginUser) {
-		this.loginUser = loginUser;
+	public void setLoginuser(String loginuser) {
+		this.loginuser = loginuser;
 	}
 
-	public String getLoginPwd() {
-		return this.loginPwd;
+	public String getLoginpwd() {
+		return loginpwd;
 	}
 
-	public void setLoginPwd(String loginPwd) {
-		this.loginPwd = loginPwd;
+	public void setLoginpwd(String loginpwd) {
+		this.loginpwd = loginpwd;
 	}
 
-	public String getVideoPath() {
-		return this.videoPath;
+	public String getVideopath() {
+		return videopath;
 	}
 
-	public void setVideoPath(String videoPath) {
-		this.videoPath = videoPath;
+	public void setVideopath(String videopath) {
+		this.videopath = videopath;
 	}
 
-	public String getVideoUrl() {
-		return this.videoUrl;
+	public String getVideourl() {
+		return videourl;
 	}
 
-	public void setVideoUrl(String videoUrl) {
-		this.videoUrl = videoUrl;
+	public void setVideourl(String videourl) {
+		this.videourl = videourl;
 	}
+
+	
 
 }

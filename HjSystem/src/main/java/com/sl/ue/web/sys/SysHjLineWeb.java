@@ -89,4 +89,9 @@ public class SysHjLineWeb extends Result{
 	public String getSurplusZwCount(){
 		return sysHjLineSQL.getSurplusZwCount();
 	}
+    
+    @RequestMapping("/getSpMonitor")
+    public String getSpMonitor(Integer id){
+    	return sysHjLineSQL.getSpMonitor(id);
+    }
 }

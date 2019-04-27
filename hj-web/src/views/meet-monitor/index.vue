@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间"  border fit highlight-current-row
-      style="width: 1351px">
+      style="width: 1801px">
       <el-table-column width="100" align="center" label="座位号">
         <template slot-scope="scope">
           <span>{{scope.row.zw}}</span>
@@ -14,9 +14,14 @@
           <span v-if="scope.row.monitorState =='应答'" style="color:#409EFF;">应答</span>
         </template>
       </el-table-column>
-      <el-table-column width="90" align="center" :label="$t('currency.jqName')">
+      <el-table-column width="120" align="center" :label="$t('currency.jqName')">
         <template slot-scope="scope">
           <span>{{scope.row.monitorJq}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="120" align="center" :label="$t('currency.frNo')">
+        <template slot-scope="scope">
+          <span>{{scope.row.frNo}}</span>
         </template>
       </el-table-column>
       <el-table-column width="120" align="center" :label="$t('currency.frName')">
@@ -26,7 +31,12 @@
       </el-table-column>
       <el-table-column width="300" align="center" label="亲属信息">
         <template slot-scope="scope">
-          <span>{{scope.row.monitorQs}}</span>
+          <span>{{scope.row.qsInfos}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="300" align="center" label="罪名">
+        <template slot-scope="scope">
+          <span>{{scope.row.infoZm}}</span>
         </template>
       </el-table-column>
       <el-table-column width="100" align="center" label="剩余时间">
@@ -41,7 +51,8 @@
       </el-table-column>
       <el-table-column v-if="buttonRole.jiantingPermission==1 || buttonRole.qieduanPermission==1 || buttonRole.chahuaPermission==1 || buttonRole.zhushiPermission==1" align="center" :label="$t('criminal.actions')" width="420" fixed="right">
         <template slot-scope="scope">
-          <el-button v-if="jtState!=scope.row.lineNo && buttonRole.jiantingPermission==1" type="primary" size="mini" icon="el-icon-service" @click="jianting(scope.row)">监听</el-button>
+          <el-button v-if="jtState!=scope.row.lineNo && buttonRole.jiantingPermission==1" type="primary" size="mini" icon="el-icon-service" @click="jianting(scope.row)">监听音视频</el-button>
+           <el-button v-if="jtState!=scope.row.lineNo && buttonRole.jiantingPermission==1" type="primary" size="mini" icon="el-icon-service" @click="jiantingAudio(scope.row)">监听音频</el-button>
           <el-button v-if="jtState==scope.row.lineNo && buttonRole.jiantingPermission==1" size="mini" type="info" icon="el-icon-phone" @click="jiantingStop(scope.row)">停止监听</el-button>
           <el-button v-if="jtState==scope.row.lineNo && buttonRole.qieduanPermission==1" size="mini" type="danger" icon="el-icon-phone" @click="qieduan(scope.row)">切断</el-button>
           <el-button v-if="jtState==scope.row.lineNo && buttonRole.chahuaPermission==1" type="primary" size="mini" icon="el-icon-phone-outline" @click="chahua(scope.row)">插话</el-button>
@@ -103,6 +114,8 @@
       </div>
     </el-dialog>
     
+    <div id="info2"></div>
+    
   </div>
 </template>
 
@@ -114,7 +127,7 @@ import {findList as GetHjServerList} from '@/api/sysParam'
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
 import { Message, MessageBox } from 'element-ui'
-
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'criminal',
@@ -266,7 +279,37 @@ export default {
     	}
     },
     /** 监听 开始 */
-    jianting(row){
+    jianting(row){ //监听音视频
+    	if(this.jtState!=null){
+    		document.getElementById(row.jy).ListenStop(this.jtState);
+    	}
+    	if(row.monitorState=='通话'){
+    		let param ={
+    			webid:row.webid,
+    			monitorCallid: row.monitorCallid,
+    			hjid: row.hjid,
+    			state:1
+    		}
+    		UpdateYJ(param).then(res =>{
+    			this.getList()
+    		})
+    		
+    		document.getElementById(row.jy).ListenTele(row.lineNo);
+    		this.jtState = row.lineNo
+    		
+    		var httpPath = process.env.BASE_API
+    		var tokenValue = getToken()
+    		window.open("/static/html/spMonitor.html?id="+row.webid+"&httpPath="+httpPath+"&token="+tokenValue,"","width=780,height=420,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
+				
+    	}else{
+    		Message({
+	        message: '当前线路不在通话状态',
+		      type: 'error',
+		      duration: 5 * 1000
+	      });
+    	}
+    },
+    jiantingAudio(row){ //监听音频
     	if(this.jtState!=null){
     		document.getElementById(row.jy).ListenStop(this.jtState);
     	}

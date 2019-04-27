@@ -57,4 +57,6 @@ public interface SysHjLineService extends BaseService<SysHjLineVO>{
 	 * L_晓天  @2019年4月24日
 	 */
 	public String requestCH(String monitorCallid, Long hjid, Integer vocId);
+	
+	public String getSpMonitor(Integer id);
 }

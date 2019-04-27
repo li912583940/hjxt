@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-table :key='tableKey' :data="list"   border fit highlight-current-row
-      style="width: 1771px">
+      style="width: 2071px">
       <el-table-column width="280" align="center" label="审批名称">
         <template slot-scope="scope">
           <span>{{scope.row.setName}}</span>
@@ -26,6 +26,11 @@
       <el-table-column min-width="280" align="center" label="亲属信息">
         <template slot-scope="scope">
           <span>{{scope.row.qsInfo}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="300" align="center" label="审批描述">
+        <template slot-scope="scope">
+          <span>{{scope.row.explain}}</span>
         </template>
       </el-table-column>
       <el-table-column width="120" align="center" label="亲属附件">

@@ -1,7 +1,6 @@
 package com.sl.ue.service.jl.sqlImpl;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,6 +8,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +22,7 @@ import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -29,31 +32,29 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.sl.ue.entity.jl.vo.JlFrVO;
-import com.sl.ue.entity.jl.vo.JlHjDjQsVO;
-import com.sl.ue.entity.jl.vo.JlHjDjVO;
 import com.sl.ue.entity.jl.vo.JlHjInfoVO;
-import com.sl.ue.entity.jl.vo.JlHjMonVO;
 import com.sl.ue.entity.jl.vo.JlHjRecAssessmentInfoVO;
 import com.sl.ue.entity.jl.vo.JlHjRecRatingInfoVO;
 import com.sl.ue.entity.jl.vo.JlHjRecVO;
+import com.sl.ue.entity.sys.vo.SysHjLineVO;
 import com.sl.ue.entity.sys.vo.SysHjServerVO;
+import com.sl.ue.entity.sys.vo.SysHjVideoVO;
 import com.sl.ue.entity.sys.vo.SysLogVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.base.impl.BaseSqlImpl;
-import com.sl.ue.service.jl.JlHjDjQsService;
-import com.sl.ue.service.jl.JlHjDjService;
 import com.sl.ue.service.jl.JlHjInfoService;
-import com.sl.ue.service.jl.JlHjMonService;
 import com.sl.ue.service.jl.JlHjRecAssessmentInfoService;
 import com.sl.ue.service.jl.JlHjRecRatingInfoService;
 import com.sl.ue.service.jl.JlHjRecService;
+import com.sl.ue.service.sys.SysHjLineService;
 import com.sl.ue.service.sys.SysHjServerService;
+import com.sl.ue.service.sys.SysHjVideoService;
 import com.sl.ue.service.sys.SysLogService;
 import com.sl.ue.util.Config;
 import com.sl.ue.util.Constants;
 import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.StringUtil;
+import com.sl.ue.util.business.RecordFileThread;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.WebContextUtil;
 import com.sl.ue.util.http.token.JqRoleManager;
@@ -69,23 +70,20 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 	@Autowired
 	private JlHjRecRatingInfoService jlHjRecRatingInfoSQL;
 	@Autowired
-	private JlHjDjQsService jlHjDjQsSQL;
-	@Autowired
-	private JlHjDjService jlHjDjSQL;
-	@Autowired
 	private SysLogService sysLogSQL;
 	@Autowired
-	private JlHjMonService jlHjMonSQL;
-	@Autowired
 	private JlHjRecAssessmentInfoService jlHjRecAssessmentInfoSQL;
-	
+	@Autowired
+	private SysHjLineService sysHjLineSQL;
+	@Autowired
+	private SysHjVideoService sysHjVideoSQL;
 	@Override
 	public Map<String, Object> findPojoLeft(JlHjRecVO model, Integer pageSize, Integer pageNum) {
 		StringBuffer leftJoinField = new StringBuffer();
 		StringBuffer leftJoinTable = new StringBuffer();
 		StringBuffer leftJoinWhere = new StringBuffer();
 		
-		leftJoinField.append(",b.FR_GJ as frGj");
+		leftJoinField.append(",b.Info_JG as infoJg");
 		leftJoinField.append(",b.info_hkfl as infoHkfl");
 		leftJoinField.append(",c.HJ_Type as hjType");
 		
@@ -110,10 +108,10 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     		leftJoinWhere.append(" AND (a.QS_Info1 LIKE '%"+str+"%' OR a.QS_Info2 LIKE '%"+str+"%' OR a.QS_Info3 LIKE '%"+str+"%')");
     		model.setQsName(null);
     	}
-    	if(StringUtils.isNotBlank(model.getFrGj())){
-    		String str = model.getFrGj();
-    		leftJoinWhere.append(" AND b.FR_GJ LIKE '%"+str+"%'");
-    		model.setFrGj(null);
+    	if(StringUtils.isNotBlank(model.getInfoJg())){
+    		String str = model.getInfoJg();
+    		leftJoinWhere.append(" AND b.Info_JG LIKE '%"+str+"%'");
+    		model.setInfoJg(null);
     	}
     	if(StringUtils.isNotBlank(model.getInfoHkfl())){
     		String str = model.getInfoHkfl();
@@ -132,12 +130,12 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     	List<SysHjServerVO> sysHjServerList = sysHjServerSQL.findList(new SysHjServerVO());
     	
     	String callRecPath = Config.getPropertiesValue("callRecfile");
-    	String callVideoPath1 = Config.getPropertiesValue("callVideofile1");
-    	String callVideoPath2 = Config.getPropertiesValue("callVideofile2");
+//    	String callVideoPath1 = Config.getPropertiesValue("callVideofile1");
+//    	String callVideoPath2 = Config.getPropertiesValue("callVideofile2");
     	for(JlHjRecVO hjRec : list){
     		hjRec.setCallRecfileUrl("");
-    		hjRec.setCallVideofile1Url("");
-    		hjRec.setCallVideofile2Url("");
+//    		hjRec.setCallVideofile1Url("");
+//    		hjRec.setCallVideofile2Url("");
     		
     		// 录音 录像文件路径处理
     		for(SysHjServerVO hjServer: sysHjServerList){
@@ -153,28 +151,28 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
             				hjRec.setCallRecfileUrl(url);
     					}
     				}
-    				if(StringUtils.isNotBlank(hjRec.getCallVideofile1())){
-    					File file = new File(hjRec.getCallVideofile1());
-    					if(file.exists()){
-    						String end = hjRec.getCallVideofile1().replace("\\", "/");
-        					end = end.substring(end.indexOf("/")+1);
-            				end = end.substring(end.indexOf("/"));
-            				String url = hjServer.getRecurl()+callVideoPath1+end;
-            				hjRec.setCallVideofile1Url(url);
-    					}
-    					
-    				}
-    				if(StringUtils.isNotBlank(hjRec.getCallVideofile2())){
-    					File file = new File(hjRec.getCallVideofile2());
-    					if(file.exists()){
-    						String end = hjRec.getCallVideofile2().replace("\\", "/");
-        					end = end.substring(end.indexOf("/")+1);
-            				end = end.substring(end.indexOf("/"));
-            				String url = hjServer.getRecurl()+callVideoPath2+end;
-            				hjRec.setCallVideofile2Url(url);
-    					}
-    					
-    				}
+//    				if(StringUtils.isNotBlank(hjRec.getCallVideofile1())){
+//    					File file = new File(hjRec.getCallVideofile1());
+//    					if(file.exists()){
+//    						String end = hjRec.getCallVideofile1().replace("\\", "/");
+//        					end = end.substring(end.indexOf("/")+1);
+//            				end = end.substring(end.indexOf("/"));
+//            				String url = hjServer.getRecurl()+callVideoPath1+end;
+//            				hjRec.setCallVideofile1Url(url);
+//    					}
+//    					
+//    				}
+//    				if(StringUtils.isNotBlank(hjRec.getCallVideofile2())){
+//    					File file = new File(hjRec.getCallVideofile2());
+//    					if(file.exists()){
+//    						String end = hjRec.getCallVideofile2().replace("\\", "/");
+//        					end = end.substring(end.indexOf("/")+1);
+//            				end = end.substring(end.indexOf("/"));
+//            				String url = hjServer.getRecurl()+callVideoPath2+end;
+//            				hjRec.setCallVideofile2Url(url);
+//    					}
+//    					
+//    				}
     			}
     		}
     		
@@ -326,7 +324,7 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 		StringBuffer leftJoinTable = new StringBuffer();
 		StringBuffer leftJoinWhere = new StringBuffer();
 		
-		leftJoinField.append(",b.FR_GJ as frGj");
+		leftJoinField.append(",b.Info_JG as infoJg");
 		leftJoinField.append(",b.info_hkfl as infoHkfl");
 		leftJoinField.append(",c.HJ_Type as hjType");
 		
@@ -351,10 +349,10 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     		leftJoinWhere.append(" AND (a.QS_Info1 LIKE '%"+str+"%' OR a.QS_Info2 LIKE '%"+str+"%' OR a.QS_Info3 LIKE '%"+str+"%')");
     		model.setQsName(null);
     	}
-    	if(StringUtils.isNotBlank(model.getFrGj())){
-    		String str = model.getFrGj();
-    		leftJoinWhere.append(" AND b.FR_GJ LIKE '%"+str+"%'");
-    		model.setFrGj(null);
+    	if(StringUtils.isNotBlank(model.getInfoJg())){
+    		String str = model.getInfoJg();
+    		leftJoinWhere.append(" AND b.Info_JG LIKE '%"+str+"%'");
+    		model.setInfoJg(null);
     	}
     	if(StringUtils.isNotBlank(model.getInfoHkfl())){
     		String str = model.getInfoHkfl();
@@ -424,7 +422,24 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 				cell3.setCellValue(jlHjRec.getZw());
 				
 				HSSFCell cell4 = row2.createCell(4);
-				cell4.setCellValue(jlHjRec.getHjType()==1?"严见":"宽见");
+				if(jlHjRec.getHjType()==1){
+					cell4.setCellValue("亲属会见");
+				}else if(jlHjRec.getHjType()==2){
+					cell4.setCellValue("监护人会见");
+				}else if(jlHjRec.getHjType()==3){
+					cell4.setCellValue("律师会见");
+				}else if(jlHjRec.getHjType()==4){
+					cell4.setCellValue("使领馆探视");
+				}else if(jlHjRec.getHjType()==5){
+					cell4.setCellValue("提审会见");
+				}else if(jlHjRec.getHjType()==6){
+					cell4.setCellValue("公务会见");
+				}else if(jlHjRec.getHjType()==9){
+					cell4.setCellValue("特批会见");
+				}else if(jlHjRec.getHjType()==99){
+					cell4.setCellValue("其他会见");
+				}
+				
 				
 				HSSFCell cell5 = row2.createCell(5);
 				cell5.setCellValue(jlHjRec.getJqName());
@@ -551,55 +566,201 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     		result.error(Result.error_103,"数据库查询不到此记录");
     		return;
     	}
+    	SysUserVO user = TokenUser.getUser();
+    	SysLogVO sysLog = new SysLogVO();
+    	sysLog.setType("严重");
+		sysLog.setOp("下载录音录像");
+		sysLog.setInfo("下载罪犯编号: "+jlHjRec.getFrNo()+"，罪犯姓名: "+jlHjRec.getFrName()+"；时间: "+jlHjRec.getCallTimeStart()+" 的录音录像");
+		sysLog.setModel("会见记录");
+		sysLog.setUserNo(user.getUserNo());
+		sysLog.setUserName(user.getUserName());
+		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLog.setUserIp(request.getRemoteAddr());
+		sysLogSQL.add(sysLog);
+		
+    	String callRecPath = Config.getPropertiesValue("callRecfile");
+    	String callVideoPath1 = Config.getPropertiesValue("callVideofile1");
+    	String callVideoPath2 = Config.getPropertiesValue("callVideofile2");
+    	
+    	String fileDir = "D:/temporary";
+    	File dirFile = new File(fileDir);
+    	if(!dirFile.exists()){
+    		dirFile.mkdir();
+    	}
+    	
+    	String hjServerPath = ""; //录音文件网络地址
+    	List<SysHjServerVO> list = sysHjServerSQL.findList(new SysHjServerVO());
+    	for(SysHjServerVO hjServer : list){
+    		if(hjServer.getServerName().equals(jlHjRec.getJy())){
+    			hjServerPath = hjServer.getRecurl();
+    		}
+    	}
+    	
+    	String hjVideoPath = ""; //录像文件网络地址
+    	SysHjLineVO sysHjLine = new SysHjLineVO();
+    	sysHjLine.setLineNo(jlHjRec.getLineNo());	
+    	sysHjLine.setJy(jlHjRec.getJy());
+    	List<SysHjLineVO> sysHjLineList = sysHjLineSQL.findList(sysHjLine);
+    	if(sysHjLineList.size()>0){
+    		sysHjLine = sysHjLineList.get(0);
+    		SysHjVideoVO sysHjVideo =sysHjVideoSQL.findOne(sysHjLine.getVideochan1Server());
+    		hjVideoPath = sysHjVideo.getVideourl();
+    	}
+    	
     	List<File> fileList = new ArrayList();
     	if(StringUtils.isNotBlank(jlHjRec.getCallRecfile())){
-    		File file = new File(jlHjRec.getCallRecfile());
-    		if(file.exists()){
-    			fileList.add(file);
-    		}
+    		String end =jlHjRec.getCallRecfile().replace("\\", "/");
+			end = end.substring(end.indexOf("/")+1);
+			end = end.substring(end.indexOf("/"));
+			String fileUrl = hjServerPath+callRecPath+end;
+            try
+            {
+                URL url =new URL(fileUrl); // 创建URL
+                String fileExt = jlHjRec.getCallRecfile().substring(jlHjRec.getCallRecfile().indexOf(".")+1);
+                String fileName = fileDir+"/"+System.currentTimeMillis()+"."+fileExt;
+                File file1 = new File(fileName);
+                FileUtils.copyURLToFile(url, file1);
+                fileList.add(file1);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+    		
     	}
     	if(StringUtils.isNotBlank(jlHjRec.getCallVideofile1())){
-    		File file = new File(jlHjRec.getCallVideofile1());
-    		if(file.exists()){
-    			fileList.add(file);
-    		}
+    		String end =jlHjRec.getCallVideofile1().replace("\\", "/");
+			end = end.substring(end.indexOf("/")+1);
+			end = end.substring(end.indexOf("/"));
+			String fileUrl = hjVideoPath + callVideoPath1 + end;
+            try
+            {
+                URL url =new URL(fileUrl); // 创建URL
+                String fileExt = jlHjRec.getCallVideofile1().substring(jlHjRec.getCallVideofile1().indexOf(".")+1);
+                String fileName = fileDir+"/"+System.currentTimeMillis()+"."+fileExt;
+                File file1 = new File(fileName);
+                FileUtils.copyURLToFile(url, file1);
+                fileList.add(file1);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+    		
     	}
     	if(StringUtils.isNotBlank(jlHjRec.getCallVideofile2())){
-    		File file = new File(jlHjRec.getCallVideofile2());
-    		if(file.exists()){
-    			fileList.add(file);
-    		}
+    		String end =jlHjRec.getCallVideofile2().replace("\\", "/");
+			end = end.substring(end.indexOf("/")+1);
+			end = end.substring(end.indexOf("/"));
+			String fileUrl = hjVideoPath + callVideoPath2 + end;
+            try
+            {
+                URL url =new URL(fileUrl); // 创建URL
+                String fileExt = jlHjRec.getCallVideofile2().substring(jlHjRec.getCallVideofile2().indexOf(".")+1);
+                String fileName = fileDir+"/"+System.currentTimeMillis()+"."+fileExt;
+                File file1 = new File(fileName);
+                FileUtils.copyURLToFile(url, file1);
+                fileList.add(file1);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+    		
     	}
     	if(fileList.size()==0){
     		return;
     	}
     	ZipOutputStream zos =null;
-    	response.setHeader("Cache-Control","no-cache");//设置头
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("application/octet-stream");
+    	String zipFilePath = fileDir+"/"+System.currentTimeMillis()+".zip";
     	try {
-    		zos = new ZipOutputStream(response.getOutputStream());
-    		for (File srcFile : fileList) {
-    			byte[] buf = new byte[1024*1024];
-                zos.putNextEntry(new ZipEntry(srcFile.getName()));
-                int len;
-                FileInputStream in = new FileInputStream(srcFile);
-                while ((len = in.read(buf)) != -1){
-                    zos.write(buf, 0, len);
-                }
-                zos.closeEntry();
-                in.close();
+			zos = new ZipOutputStream(new FileOutputStream(zipFilePath));
+			for (File srcFile : fileList) {
+				byte[] buf = new byte[10*1024*1024];
+	            zos.putNextEntry(new ZipEntry(srcFile.getName()));
+	            int len;
+	            FileInputStream in = new FileInputStream(srcFile);
+	            while ((len = in.read(buf)) != -1){
+	                zos.write(buf, 0, len);
+	            }
+	            zos.closeEntry();
+	            in.close();
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+    	
+		
+		OutputStream out = null;
+		BufferedInputStream in =null;
+    	try {
+    		// 处理不同浏览器中文名称编码
+        	String fileName="录音录像.zip";
+    		String userAgent=request.getHeader("USER-AGENT");
+    		if(userAgent.indexOf("Chrome")!=-1 || userAgent.indexOf("Safari")!=-1 || userAgent.indexOf("Firefox")!=-1){
+    			fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+    		}else{
+    			fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+    			//fileName = URLEncoder.encode(fileName,"UTF8");
     		}
+    		response.setHeader("Content-Disposition", "attachment;filename="+fileName);
+        	response.setHeader("Cache-Control","no-cache");//设置头
+    		response.setCharacterEncoding("UTF-8");
+    		response.setContentType("application/octet-stream");
+    		
+    		out = response.getOutputStream();
+    		File zipFile = new File(zipFilePath);
+    		
+    		fileList.add(zipFile);
+    		
+    		response.setHeader("Content-Length", zipFile.length()+"");//设置头
+    		
+    		in = new BufferedInputStream(new FileInputStream(zipFile));
+    		byte[] buf = new byte[10*1024*1024];
+    		int len;
+    		 while ((len = in.read(buf)) != -1){
+    			 out.write(buf, 0, len);
+             }
+    		 out.flush();
+//    		zos = new ZipOutputStream(response.getOutputStream());
+//    		for (File srcFile : fileList) {
+//    			byte[] buf = new byte[10*1024*1024];
+//                zos.putNextEntry(new ZipEntry(srcFile.getName()));
+//                int len;
+//                FileInputStream in = new FileInputStream(srcFile);
+//                while ((len = in.read(buf)) != -1){
+//                    zos.write(buf, 0, len);
+//                }
+//                zos.closeEntry();
+//                in.close();
+//    		}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}finally{
-			 if(zos != null){
+			// 启动线程  删除文件
+			if(fileList.size()>0){
+				RecordFileThread thread = new RecordFileThread(fileList);
+				thread.start();
+			}
+			try {
+				if(in!=null){
+					in.close();
+				}
+			}catch (IOException ex) {
+			}
+			if(out != null){
+				try {
+					out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+			}
+			if(zos != null){
                  try {
                      zos.close();
                  } catch (IOException e) {
                      e.printStackTrace();
                  }
-             }
+            }
+			 
+			
 		}
     }
     
@@ -619,14 +780,55 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 		sysLog.setUserNo(user.getUserNo());
 		sysLog.setUserName(user.getUserName());
 		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLog.setUserIp(request.getRemoteAddr());
 		sysLogSQL.add(sysLog);
-    	File file = null;
+		
+		
+		InputStream inputStream = null;
     	if(StringUtils.isNotBlank(jlHjRec.getCallRecfile())){
-    		file = new File(jlHjRec.getCallRecfile());
-    		if(!file.exists()){
-    			return;
+    		if("Server1".equals(jlHjRec.getJy())){
+    			File file = new File(jlHjRec.getCallRecfile());
+        		if(!file.exists()){
+        			return;
+        		}
+        		try {
+					inputStream = new FileInputStream(file);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+    		}else{
+    			String fileUrl="";
+	    		List<SysHjServerVO> list = sysHjServerSQL.findList(new SysHjServerVO());
+	    		for(SysHjServerVO hjServer : list){
+	    			if(hjServer.getServerName().equals(jlHjRec.getJy())){
+	    				String end =jlHjRec.getCallRecfile().replace("\\", "/");
+	        			end = end.substring(end.indexOf("/")+1);
+	        			end = end.substring(end.indexOf("/"));
+	        			fileUrl = hjServer.getRecurl()+"/file"+end;
+	    			}
+	    		}
+	    		int HttpResult; // 服务器返回的状态
+	            try
+	            {
+	                URL url =new URL(fileUrl); // 创建URL
+	                URLConnection urlconn = url.openConnection(); // 试图连接并取得返回状态码
+	                urlconn.connect();
+	                HttpURLConnection httpconn =(HttpURLConnection)urlconn;
+	                HttpResult = httpconn.getResponseCode();
+	                if(HttpResult != HttpURLConnection.HTTP_OK) {
+	                    System.out.print("无法连接到");
+	                } else {
+	                    inputStream = urlconn.getInputStream();
+	                }
+	            }
+	            catch (Exception e) {
+	                e.printStackTrace();
+	            }
+    			
     		}
     	}
+    	
+    	
     	OutputStream out = null;
 		BufferedInputStream in =null;
 		try {
@@ -644,8 +846,9 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("application/octet-stream");
 			out = response.getOutputStream();
-			in = new BufferedInputStream(new FileInputStream(file));
-			int l = 50*1024;//1M 默认，可在配置文件中设置此值大小
+			//in = new BufferedInputStream(new FileInputStream(file));
+			in = new BufferedInputStream(inputStream);
+			int l = 1024*1024;//1M 默认，可在配置文件中设置此值大小
 			//int byteCount = 0;
 			byte[] buffer = new byte[l];
 			int bytesRead = -1;//文件大小
@@ -684,13 +887,53 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     		result.error(Result.error_103,"数据库查询不到此记录");
     		return;
     	}
-    	File file = null;
-    	if(StringUtils.isNotBlank(jlHjRec.getCallVideofile1())){
-    		file = new File(jlHjRec.getCallVideofile1());
-    		if(!file.exists()){
-    			return;
-    		}
+    	InputStream inputStream = null;
+		if(StringUtils.isNotBlank(jlHjRec.getCallVideofile1())){
+			if("Server1".equals(jlHjRec.getJy())){
+				File file = new File(jlHjRec.getCallVideofile1());
+	    		if(!file.exists()){
+	    			return;
+	    		}
+	    		try {
+					inputStream = new FileInputStream(file);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+			}else{
+				String fileUrl="";
+	    		List<SysHjServerVO> list = sysHjServerSQL.findList(new SysHjServerVO());
+	    		for(SysHjServerVO hjServer : list){
+	    			if(hjServer.getServerName().equals(jlHjRec.getJy())){
+	    				String end =jlHjRec.getCallRecfile().replace("\\", "/");
+	        			end = end.substring(end.indexOf("/")+1);
+	        			end = end.substring(end.indexOf("/"));
+	        			fileUrl = hjServer.getRecurl()+"/file"+end;
+	    			}
+	    		}
+	    		int HttpResult; // 服务器返回的状态
+	            try
+	            {
+	                URL url =new URL(fileUrl); // 创建URL
+	                URLConnection urlconn = url.openConnection(); // 试图连接并取得返回状态码
+	                urlconn.connect();
+	                HttpURLConnection httpconn =(HttpURLConnection)urlconn;
+	                HttpResult = httpconn.getResponseCode();
+	                if(HttpResult != HttpURLConnection.HTTP_OK) {
+	                    System.out.print("无法连接到");
+	                } else {
+	                    inputStream = urlconn.getInputStream();
+	                }
+	            }
+	            catch (Exception e) {
+	                e.printStackTrace();
+	            }
+			}
+			
+    	}else{
+    		return;
     	}
+
+    	
     	OutputStream out = null;
 		BufferedInputStream in =null;
 		try {
@@ -708,7 +951,7 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("application/octet-stream");
 			out = response.getOutputStream();
-			in = new BufferedInputStream(new FileInputStream(file));
+			in = new BufferedInputStream(inputStream);
 			int l = 2*1024*1024;//1M 默认，可在配置文件中设置此值大小
 			//int byteCount = 0;
 			byte[] buffer = new byte[l];
@@ -744,23 +987,68 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     public String getFileUrl(Long id){
     	Result result =new Result();
     	JlHjRecVO model = this.findOne(id);
-		List<SysHjServerVO> sysHjServerList = sysHjServerSQL.findList(new SysHjServerVO());
-		for(SysHjServerVO hjServer: sysHjServerList){
-			if(model.getJy().equals(hjServer.getServerName())){
-				if(StringUtils.isNotBlank(model.getCallRecfile())){
-					//先查看文件是否存在， 不存在就直接提示了
-					File file = new File(model.getCallRecfile());
-					if(file.exists()){
-						String end =model.getCallRecfile().replace("\\", "/");
-        				end = end.substring(end.indexOf("/")+1);
-        				end = end.substring(end.indexOf("/"));
-        				String url = hjServer.getRecurl()+"/file"+end;
-        				result.putJson("callUrl",url);
-        				result.putJson("callLen",model.getCallTimeLen() );
-					}
-				}
+    	if(model == null){
+    		return result.toResult();
+    	}
+    	String callRecPath = Config.getPropertiesValue("callRecfile");
+    	String callVideoPath1 = Config.getPropertiesValue("callVideofile1");
+    	String callVideoPath2 = Config.getPropertiesValue("callVideofile2");
+    	
+    	String hjServerPath = ""; //录音文件网络地址
+    	List<SysHjServerVO> list = sysHjServerSQL.findList(new SysHjServerVO());
+    	for(SysHjServerVO hjServer : list){
+    		if(hjServer.getServerName().equals(model.getJy())){
+    			hjServerPath = hjServer.getRecurl();
+    		}
+    	}
+    	
+    	String hjVideoPath = ""; //录像文件网络地址
+    	SysHjLineVO sysHjLine = new SysHjLineVO();
+    	sysHjLine.setLineNo(model.getLineNo());	
+    	sysHjLine.setJy(model.getJy());
+    	List<SysHjLineVO> sysHjLineList = sysHjLineSQL.findList(sysHjLine);
+    	if(sysHjLineList.size()>0){
+    		sysHjLine = sysHjLineList.get(0);
+    		SysHjVideoVO sysHjVideo =sysHjVideoSQL.findOne(sysHjLine.getVideochan1Server());
+    		hjVideoPath = sysHjVideo.getVideourl();
+    	}
+    	
+    	if(StringUtils.isNotBlank(model.getCallRecfile())){
+			//先查看文件是否存在， 不存在就直接提示了
+			File file = new File(model.getCallRecfile());
+			if(file.exists()){
+				String end =model.getCallRecfile().replace("\\", "/");
+				end = end.substring(end.indexOf("/")+1);
+				end = end.substring(end.indexOf("/"));
+				String url = hjServerPath + callRecPath + end;
+				result.putJson("callUrl",url);
+				result.putJson("callLen",model.getCallTimeLen() );
 			}
 		}
+		
+		if(StringUtils.isNotBlank(model.getCallVideofile1())){
+			File file = new File(model.getCallVideofile1());
+			if(file.exists()){
+				String end = model.getCallVideofile1().replace("\\", "/");
+				end = end.substring(end.indexOf("/")+1);
+				end = end.substring(end.indexOf("/"));
+				String url = hjVideoPath + callVideoPath1 + end;
+				result.putJson("callVideo1Url", url);
+			}
+			
+		}
+		if(StringUtils.isNotBlank(model.getCallVideofile2())){
+			File file = new File(model.getCallVideofile2());
+			if(file.exists()){
+				String end = model.getCallVideofile2().replace("\\", "/");
+				end = end.substring(end.indexOf("/")+1);
+				end = end.substring(end.indexOf("/"));
+				String url = hjVideoPath + callVideoPath2 + end;
+				result.putJson("callVideo2Url", url);
+			}
+			
+		}
+    	
 		return result.toResult();
     }
     
@@ -768,6 +1056,9 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     	Result result = new Result();
     	SysUserVO sysUser = TokenUser.getUser();
     	JlHjRecVO model = this.findOne(id);
+    	if(model == null){
+    		return result.toResult();
+    	}
     	JlHjRecAssessmentInfoVO JlHjRecAssessmentInfo = new JlHjRecAssessmentInfoVO();
     	JlHjRecAssessmentInfo.setCallId(model.getCallId());
     	JlHjRecAssessmentInfo.setUserNo(sysUser.getUserNo());

@@ -531,7 +531,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 						
 					}else{
 						if(sysConf.getSaveHjdj()==0){ // 默认0; 当会见登记为自动分配座位时，即fp_zw=1。 0:座位不够，不让登记。1：座位不够，可以继续提交登记
-							jlHjSpSQL.deleteKey(addJlHjDj.getHjid());  //没有空闲座位直接删除
+							this.deleteKey(addJlHjDj.getHjid());  //没有空闲座位直接删除
 							result.error(Result.error_103,"登记失败，当前已没有空闲座位可供使用");
 						}else{
 							addHjDjLog(frNo, qsIds, hjsc, hjInfo, hjType, hjMode, callNo, tpQsNum, qzSp, request);
@@ -626,39 +626,39 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		}
 		list.add("本次会见时长: "+jlHjDj.getHjTime()/60+"分钟");
 		int i=0;
-		if(jlHjDj.getQsInfo1()!=null && jlHjDj.getQsInfo1()!=""){
+		if(StringUtils.isNotBlank(jlHjDj.getQsInfo1())){
 			i++;
 			list.add(i+"号亲属: "+jlHjDj.getQsInfo1());
 		}
-		if(jlHjDj.getQsInfo2()!=null && jlHjDj.getQsInfo2()!=""){
+		if(StringUtils.isNotBlank(jlHjDj.getQsInfo2())){
 			i++;
 			list.add(i+"号亲属: "+jlHjDj.getQsInfo2());
 		}
-		if(jlHjDj.getQsInfo3()!=null && jlHjDj.getQsInfo3()!=""){
+		if(StringUtils.isNotBlank(jlHjDj.getQsInfo3())){
 			i++;
 			list.add(i+"号亲属: "+jlHjDj.getQsInfo3());
 		}
-		if(jlHjDj.getQsInfo4()!=null && jlHjDj.getQsInfo4()!=""){
+		if(StringUtils.isNotBlank(jlHjDj.getQsInfo4())){
 			i++;
 			list.add(i+"号亲属: "+jlHjDj.getQsInfo4());
 		}
-		if(jlHjDj.getQsInfo5()!=null && jlHjDj.getQsInfo5()!=""){
+		if(StringUtils.isNotBlank(jlHjDj.getQsInfo5())){
 			i++;
 			list.add(i+"号亲属: "+jlHjDj.getQsInfo5());
 		}
-		if(jlHjDj.getQsInfo6()!=null && jlHjDj.getQsInfo6()!=""){
+		if(StringUtils.isNotBlank(jlHjDj.getQsInfo6())){
 			i++;
 			list.add(i+"号亲属: "+jlHjDj.getQsInfo6());
 		}
-		if(jlHjDj.getQsInfo7()!=null && jlHjDj.getQsInfo7()!=""){
+		if(StringUtils.isNotBlank(jlHjDj.getQsInfo7())){
 			i++;
 			list.add(i+"号亲属: "+jlHjDj.getQsInfo7());
 		}
-		if(jlHjDj.getQsInfo8()!=null && jlHjDj.getQsInfo8()!=""){
+		if(StringUtils.isNotBlank(jlHjDj.getQsInfo8())){
 			i++;
 			list.add(i+"号亲属: "+jlHjDj.getQsInfo8());
 		}
-		if(jlHjDj.getQsInfo9()!=null && jlHjDj.getQsInfo9()!=""){
+		if(StringUtils.isNotBlank(jlHjDj.getQsInfo9())){
 			i++;
 			list.add(i+"号亲属: "+jlHjDj.getQsInfo9());
 		}

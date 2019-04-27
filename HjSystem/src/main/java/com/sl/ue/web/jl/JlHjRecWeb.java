@@ -168,4 +168,11 @@ public class JlHjRecWeb extends Result{
 	public String recAssessment(Long id){
 		return jlHjRecSQL.recAssessment(id);
 	}
+	
+	@RequestMapping("/bb")
+	//@IgnoreSecurity
+	public String bb(){
+		System.out.println(76511);
+		return "";
+	}
 }

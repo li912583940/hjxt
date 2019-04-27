@@ -81,3 +81,5 @@ export function DownTest(param) {
     responseType:'blob'
   }).then(res => res)
 }
+
+export const RecAssessment = params => { return request.post('/jlHjRec/recAssessment', params ).then(res => res) }

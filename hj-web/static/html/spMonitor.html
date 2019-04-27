@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		
+		<script language="javascirpt" type="text/javascript">
+  
+	  		//var isSetDivInf = false;   //是否已经在控件中注册,默认为false
+			
+			
+			var httpUrl="";
+			var webid=0;
+			var tokenV = "";
+			
+			var lChannel;
+	      	var lChannel1;
+	      	var divIP;
+	      	var txtDivPort;
+	      	var txtLogName;
+	      	var txtLogPassWord;
+				      	
+				      	
+			function aa() {
+				var urlinfo=window.location.href;
+				var len=urlinfo.length;
+				var offset=urlinfo.indexOf("?");
+				var newsidinfo=urlinfo.substr(offset,len)
+				var as1 = newsidinfo.split("&");
+				var ids=as1[0].split("=");
+				var idKey = ids[0]
+				var idValue = ids[1]
+				var httpPaths = as1[1].split("=");
+				var httpPathKey=httpPaths[0];
+				var httpPathValue=httpPaths[1];
+				var tokens = as1[2].split("=");
+				var tokenKey=tokens[0];
+				var tokenValue=tokens[1];
+				
+				httpUrl = httpPathValue;
+				webid = idValue;
+				tokenV = tokenValue;
+				
+				$.ajax({
+				      type:"POST",
+				      url:httpPathValue+"/sysHjLine/getSpMonitor",
+				      beforeSend: function(request) {
+			          	request.setRequestHeader("X-Token",tokenValue);
+			          },
+				      contentType: 'application/x-www-form-urlencoded;charset=UTF-8',  
+				      data:{id:idValue},
+				      dataType:"json",
+				      success:function(data){
+				      	lChannel = data.sysHjLine.videochan1No;
+				      	lChannel1 = data.sysHjLine.videochan2No;
+				      	divIP = data.sysHjVideo.ip;
+				      	txtDivPort = data.sysHjVideo.port;
+				      	txtLogName = data.sysHjVideo.loginuser;
+				      	txtLogPassWord = data.sysHjVideo.loginpwd;
+				        
+				      }
+				});	
+				
+//			    var lChannel = document.getElementById("txtlChannel").value.replace(/^\s+|\s+$/g, "");
+//			    var lChannel1 = document.getElementById("txt2Channel").value.replace(/^\s+|\s+$/g, "");         //通道号
+//			    var divIP = document.getElementById("txtDivIP").value.replace(/^\s+|\s+$/g, "");              //硬盘录像机IP
+//			    var txtDivPort = document.getElementById("txtDivPort").value.replace(/^\s+|\s+$/g, "");       //硬盘录像机端口号
+//			    var txtLogName = document.getElementById("txtLogName").value.replace(/^\s+|\s+$/g, "");       //硬盘录像机登录用户名
+//			    var txtLogPassWord = document.getElementById("txtLogPassWord").value.replace(/^\s+|\s+$/g, ""); //硬盘录像机登录密码
+			     
+		        
+			}
+			function play(){
+				document.getElementById("video").Open(divIP, txtDivPort, txtLogName, txtLogPassWord,lChannel,lChannel1);
+			}
+			function stop(){
+				document.getElementById("video").Close();
+			}
+		</script>
+	</head>
+	<body onload="aa();" onunload="stop();">
+		<input type="button" value="开始" onclick="javascript:play();" />
+		<input type="button" value="停止" onclick="javascript:stop();" />
+		<script src="./jquery-3.4.0.min.js" type="text/javascript" ></script>
+		<object classid="CLSID:745473B3-810B-4EA7-8FC6-5E59115D80EB" width="750" height="330"  id="video"></object>
+		<!--<form action="" method="post">
+	 		<input type="hidden" id="txtlChannel" value="${videoChan1No}" />
+	 		<input type="hidden" id="txt2Channel" value="${videoChan2No}" />
+	 		<input type="hidden" id="txtDivIP" value="${sysHjVideo.ip}" />
+	 		<input type="hidden" id="txtDivPort" value="${sysHjVideo.port}" />
+	 		<input type="hidden" id=txtLogName value="${sysHjVideo.loginUser}" />
+	 		<input type="hidden" id=txtLogPassWord value="${sysHjVideo.loginPwd}" />
+		</form>-->
+	</body>
+</html>

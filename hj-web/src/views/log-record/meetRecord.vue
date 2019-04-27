@@ -39,7 +39,7 @@
         <el-option v-for="item in hjTypes" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入国籍" v-model="listQuery.frGj" clearable>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入国籍" v-model="listQuery.infoJg" clearable>
       </el-input>
       <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="输入户口" v-model="listQuery.infoHkfl" clearable>
       </el-input>
@@ -112,7 +112,7 @@
       </el-table-column>
       <el-table-column width="120" align="center" label="国籍">
         <template slot-scope="scope">
-          <span>{{scope.row.frGj}}</span>
+          <span>{{scope.row.infoJg}}</span>
         </template>
       </el-table-column>
       <el-table-column width="120" align="center" label="户口">
@@ -218,19 +218,9 @@
     		<el-row :gutter="12">
     			<el-col :span="8" :offset="1" style="margin-left: 50px;" >
 				    	<div>
-				    		<span v-if="ie==1">
-				    			<!--<span id="videoOcx"></span>-->
 				    			<video id="video1" width="360" height="240" controls="controls">
-					    			<source :src="callVideofile1Url" type="video/MPEG4" />
-					    			</video>
-					    	</span>
-					    	<span v-if="ie==0">
-					    		<video id="video1" width="360" height="240" controls="controls">
-					    			<!--<source :src="callVideofile1Url" type="video/ogg" />-->
 					    			<source :src="callVideofile1Url" type="video/mp4" />
-					    			<!--<audio :src="callRecfileUrl" controls="controls" controlsList="nodownload"></audio>-->
-					    		</video>
-					    	</span>
+					    			</video>
 				    	</div>
 				  </el-col>
 				  
@@ -243,33 +233,17 @@
 				    		</video>
 				    	</div>
 				  </el-col>
-				  
 		    </el-row>
+		    <div>
+		    	<audio id="audio2" :src="callRecfileUrl" autoplay controls="controls" controlsList="nodownload" />
+		    </div>
+		    
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogPlayVisible = false">关 闭</el-button>
       </div>
     </el-dialog>
     <!-- 播放录音录像 结束 -->
-
-		<!-- 下载录音录像  IE浏览器 -->
-    <el-dialog title="录音录像下载" :visible.sync="dialogPlayDownVisible" width="40%" :modal-append-to-body="false">
-    	<div style="position: relative;margin-top: 10px; margin-bottom: 30px; margin-left: 20%;">
-    		<span style="margin-left: 20px;">
-    			<el-button type="primary" size="mini" @click="down1(callVideofile1Url)">录像文件1</el-button>
-    		</span>
-    		<span style="margin-left: 20px;">
-    			<el-button type="primary" size="mini" @click="down2(callVideofile2Url)">录像文件2</el-button>
-    		</span>
-    		<span style="margin-left: 20px;">
-    			<el-button type="primary" size="mini" @click="down3(callRecfileUrl)">录音文件</el-button>
-    		</span>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogPlayDownVisible = false">关 闭</el-button>
-      </div>
-    </el-dialog>
-    <!-- 下载录音录像 结束 下载 IE浏览器 -->
     
     <!-- 注释 开始 -->
     <el-dialog title="注释" :visible.sync="dialogZSVisible"  width="600px" :modal-append-to-body="false">
@@ -497,7 +471,7 @@
 
 <script>
 import { findPojo, findOne, findJqList, GetZwList, GetZs, AddRecordFlag, GetZsAllPojo, GetRatingState, UpdateRatingState, 
-	GetRatingStateAllPojo, GetAllAssessmentPojo, GetOtherInfoPojo, exportExcel, DownVideo, DownAudio, DownTest } from '@/api/meetRecord'
+	GetRatingStateAllPojo, GetAllAssessmentPojo, GetOtherInfoPojo, exportExcel, DownVideo, DownAudio, RecAssessment, DownTest } from '@/api/meetRecord'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -528,7 +502,7 @@ export default {
         frNo: undefined,
         frName: undefined,
         qsName: undefined,
-        frGj: undefined,
+        infoJg: undefined,
         infoHkfl: undefined,
         recRatingState: undefined,
         zw: undefined,
@@ -659,7 +633,6 @@ export default {
 	    /** 播放录音录像 开始 */
 	    dialogPlayVisible: false,
 	    
-	    dialogPlayDownVisible: false,
 	    callRecfileUrl: undefined,
 	    callVideofile1Url: undefined,
 	    callVideofile2Url: undefined,
@@ -690,6 +663,9 @@ export default {
 		 
 		  /** 录音操作 开始 */
 		  dialogTapeVisible: false,
+		  audioStartTime: 0,
+		  audioCallLen: 0,
+		  webid: undefined,
 		  /** 录音操作 结束 */
 		 
 		  /** 录音评级 开始 */
@@ -876,20 +852,36 @@ export default {
 	      });
     	}else{
     		if(this.ie==1){
-    			console.log(row.callVideofile1Url)
-    			//console.log(row.callVideofile2Url)
-    			var fileUrl = escape(row.callVideofile1Url)
-    			console.log(fileUrl)
-    			window.open("/static/html/video.html?callRecfileUrl="+fileUrl,"","width=1000,height=500,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
+    			var httpPath = process.env.BASE_API
+    	  	var tokenValue = getToken()
+    	  	if(row.callVideofile1 && row.callVideofile2){
+    	  		window.open("/static/html/video.html?id="+row.webid+"&httpPath="+httpPath+"&token="+tokenValue,"","width=1000,height=500,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
+    	  	}else{
+    	  		window.open("/static/html/videoOne.html?id="+row.webid+"&httpPath="+httpPath+"&token="+tokenValue,"","width=1000,height=500,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
+    		
+    	  	}
+    		
+    		}else{
+    			Message({
+		        message: '当前播放录音录像只支持IE浏览器',
+			      type: 'error',
+			      duration: 5 * 1000
+		      });
     		}
-    		console.log(this.ie)
+				
     		//this.dialogPlayVisible =true
-    	  this.callVideofile1Url = row.callVideofile1Url
-    	  this.callVideofile2Url = row.callVideofile2Url
+//  	  this.callVideofile1Url = row.callVideofile1Url
+//  	  this.callVideofile2Url = row.callVideofile2Url
+//  	  this.callRecfileUrl = row.callRecfileUrl
     	}
     	
     },
     downVideo(row){
+    	Message({
+        message: '文件正在打包下载，请耐心等待，可能需要一分钟时间。',
+	      type: 'success',
+	      duration: 5 * 1000
+      });
     	let param={
     		webid: row.webid
     	}
@@ -913,6 +905,11 @@ export default {
 	    })
     },
     downAudio(row){
+    	Message({
+        message: '文件正在下载，请稍后。',
+	      type: 'success',
+	      duration: 5 * 1000
+      });
     	let param={
     		webid: row.webid
     	}
@@ -935,97 +932,7 @@ export default {
 	        console.log(error)
 	    })
     },
-    downRecord(row){ //下载录音录像
-    	var userAgent = navigator.userAgent.toLowerCase();
-    	if(userAgent.indexOf("chrome")>-1 || userAgent.indexOf("firefox")>-1) { 
-       	this.down1(row.callRecfileUrl).then(() => {
-	    		this.down2(row.callVideofile1Url).then(() => {
-	    			  this.down3(row.callVideofile2Url).then(() => {
-	    			})
-	    		})
-	    	})
-    		
-      }else{ // 如果是IE浏览器
-	 	    this.callRecfileUrl= row.callRecfileUrl
-		    this.callVideofile1Url= row.callVideofile1Url
-		    this.callVideofile2Url= row.callVideofile2Url
-        this.dialogPlayDownVisible = true
-      }
-    },
-    down1(pathUrl){
-    	return new Promise((resolve, reject) => {
-    		if(pathUrl=='' ){
-    			Message({
-		        message: '录像文件1已被删除，无法下载。',
-			      type: 'error',
-			      duration: 5 * 1000
-		      });
-    		}else{
-    			// 1 录像
-    			let fileName = pathUrl.substring(pathUrl.lastIndexOf("/")+1)
-		    	const downloadElement = document.createElement('a')
-		    	downloadElement.href = pathUrl
-		    	downloadElement.download=fileName
-		    	document.body.appendChild(downloadElement)
-		    	downloadElement.click()
-		    	document.body.removeChild(downloadElement)
-    		}
-	    	
-      	
-				resolve()
-      })
-    	
-    },
-    down2(pathUrl){
-    	return new Promise((resolve, reject) => {
-    		if(pathUrl=='' ){
-    			Message({
-		        message: '录像文件2已被删除，无法下载。',
-			      type: 'error',
-			      duration: 5 * 1000
-		      });
-    		}else{
-    			// 2 录像
-    			let fileName = pathUrl.substring(pathUrl.lastIndexOf("/")+1)
-		    	const downloadElement = document.createElement('a')
-		    	downloadElement.href = pathUrl
-		    	downloadElement.download=fileName
-		    	document.body.appendChild(downloadElement)
-		    	downloadElement.click()
-		    	document.body.removeChild(downloadElement)
-    		}
-	    	
-      	
-				resolve()
-      })
-    	
-    		
-    },
-    down3(pathUrl){
-    	return new Promise((resolve, reject) => {
-    		if(pathUrl=='' ){
-    			Message({
-		        message: '录音文件已被删除，无法下载。',
-			      type: 'error',
-			      duration: 5 * 1000
-		      });
-    		}else{
-    			// 3 录音
-    			let fileName = pathUrl.substring(pathUrl.lastIndexOf("/")+1)
-		    	const downloadElement = document.createElement('a')
-		    	downloadElement.href = pathUrl
-		    	downloadElement.download=fileName
-		    	document.body.appendChild(downloadElement)
-		    	downloadElement.click()
-		    	document.body.removeChild(downloadElement)
-    		}
-	    	
-      	
-				resolve()
-      })
-    	
-    	
-    },
+   
     closePlayDialog(){ 
     	var video1 = document.getElementById("video1")
     	if(video1.play){
@@ -1099,19 +1006,34 @@ export default {
     
     /** 录音操作 开始 */
     palyTape(row) {
+    	this.audioStartTime = 0
+    	this.audioCallLen= 0
+    	this.webid = undefined
+    	
     	this.callRecfileUrl = row.callRecfileUrl
     	if(this.ie==1){
     	var httpPath = process.env.BASE_API
     	var tokenValue = getToken()
-    	console.log(httpPath)
 //  		var str = '<embed id=\"audio1\" src=\"'+this.callRecfileUrl+'\" autostart=true loop=false mastersound height=40 width=300 />'
     		window.open("/static/html/audio.html?id="+row.webid+"&httpPath="+httpPath+"&token="+tokenValue,"","width=360,height=116,left=900,top=620,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
     	}else{
     		this.dialogTapeVisible = true
+    		this.audioStartTime=(new Date()).getTime()
+    		this.audioCallLen=row.callTimeLen
+    		this.webid = row.webid
     	}
     	
     },
     closeTapeDialog(){
+    	if(this.audioStartTime!=0 && this.audioCallLen!=0){
+    		var audioStartEnd = (new Date()).getTime();
+				var callGap = (audioStartEnd-this.audioStartTime)/1000;
+				if((callGap/this.audioCallLen)>0.9){
+					RecAssessment({id:this.webid}).then(res=>{
+						
+					})
+				}
+    	}
       var x = document.getElementById("audio1")
     	if(this.ie==1){
     		if(x.play){

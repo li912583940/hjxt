@@ -260,6 +260,7 @@ export default {
       	data.hjdjSwitch==0?this.dataForm.hjdjSwitch=true:this.dataForm.hjdjSwitch=false
       	data.hjNotice==0?this.dataForm.hjNotice=true:this.dataForm.hjNotice=false
       	data.printXp==0?this.dataForm.printXp=true:this.dataForm.printXp=false
+      	data.editDjXp==0?this.dataForm.editDjXp=true:this.dataForm.editDjXp=false
       	data.printFormat==0?this.dataForm.printFormat=true:this.dataForm.printFormat=false
       	data.fpZw==0?this.dataForm.fpZw=true:this.dataForm.fpZw=false
       	if(data.fpZw==0){
