@@ -148,6 +148,12 @@
 	  	 		<td>二代证验证软件</td>
 	  	 		<td><a href="/static/Drivers/二代证验证软件.rar"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
 	  	 	</tr>
+	  	 	<tr>
+	  	 		<td>13</td>
+	  	 		<td>全部</td>
+	  	 		<td>宇视NVR网页控件</td>
+	  	 		<td><a href="/static/Drivers/VideoOcx.rar"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 	</tr>
 	  	</table>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogDriverVisible = false">关 闭</el-button>

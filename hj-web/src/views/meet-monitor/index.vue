@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间"  border fit highlight-current-row
-      style="width: 1801px">
+      style="width: 1901px">
       <el-table-column width="100" align="center" label="座位号">
         <template slot-scope="scope">
           <span>{{scope.row.zw}}</span>
@@ -29,7 +29,7 @@
           <span>{{scope.row.monitorFr}}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300" align="center" label="亲属信息">
+      <el-table-column width="400" align="center" label="亲属信息">
         <template slot-scope="scope">
           <span>{{scope.row.qsInfos}}</span>
         </template>
@@ -51,8 +51,8 @@
       </el-table-column>
       <el-table-column v-if="buttonRole.jiantingPermission==1 || buttonRole.qieduanPermission==1 || buttonRole.chahuaPermission==1 || buttonRole.zhushiPermission==1" align="center" :label="$t('criminal.actions')" width="420" fixed="right">
         <template slot-scope="scope">
-          <el-button v-if="jtState!=scope.row.lineNo && buttonRole.jiantingPermission==1" type="primary" size="mini" icon="el-icon-service" @click="jianting(scope.row)">监听音视频</el-button>
-           <el-button v-if="jtState!=scope.row.lineNo && buttonRole.jiantingPermission==1" type="primary" size="mini" icon="el-icon-service" @click="jiantingAudio(scope.row)">监听音频</el-button>
+          <el-button v-if="jtState!=scope.row.lineNo && buttonRole.jiantingPermission==1 && scope.row.videochan1Server!=null" type="primary" size="mini" icon="el-icon-service" @click="jianting(scope.row)">监听音视频</el-button>
+           <el-button v-if="jtState!=scope.row.lineNo && buttonRole.jiantingPermission==1 && scope.row.lineType!=1" type="primary" size="mini" icon="el-icon-service" @click="jiantingAudio(scope.row)">监听音频</el-button>
           <el-button v-if="jtState==scope.row.lineNo && buttonRole.jiantingPermission==1" size="mini" type="info" icon="el-icon-phone" @click="jiantingStop(scope.row)">停止监听</el-button>
           <el-button v-if="jtState==scope.row.lineNo && buttonRole.qieduanPermission==1" size="mini" type="danger" icon="el-icon-phone" @click="qieduan(scope.row)">切断</el-button>
           <el-button v-if="jtState==scope.row.lineNo && buttonRole.chahuaPermission==1" type="primary" size="mini" icon="el-icon-phone-outline" @click="chahua(scope.row)">插话</el-button>

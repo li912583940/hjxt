@@ -256,9 +256,6 @@ export default {
       this.dialogStatus = 'create'
       this.resetForm('dataForm')
       this.dialogFormVisible = true
-//    this.$nextTick(() => {
-//      this.$refs['dataForm'].clearValidate()
-//    })
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
