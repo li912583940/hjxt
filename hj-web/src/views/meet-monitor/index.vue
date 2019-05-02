@@ -299,7 +299,8 @@ export default {
     		
     		var httpPath = process.env.BASE_API
     		var tokenValue = getToken()
-    		window.open("/static/html/spMonitor.html?id="+row.webid+"&httpPath="+httpPath+"&token="+tokenValue,"","width=780,height=420,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
+    		//window.open("/static/html/spMonitor.html?id="+row.webid+"&httpPath="+httpPath+"&token="+tokenValue,"","width=780,height=420,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
+				window.open("/static/html/yushi/yushiMonitor.html?id="+row.webid+"&httpPath="+httpPath+"&token="+tokenValue,"","width=820,height=305,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
 				
     	}else{
     		Message({
@@ -326,6 +327,8 @@ export default {
     		
     		document.getElementById(row.jy).ListenTele(row.lineNo);
     		this.jtState = row.lineNo
+    		
+    		
     	}else{
     		Message({
 	        message: '当前线路不在通话状态',

@@ -152,7 +152,7 @@
 	  	 		<td>13</td>
 	  	 		<td>全部</td>
 	  	 		<td>宇视NVR网页控件</td>
-	  	 		<td><a href="/static/Drivers/VideoOcx.rar"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 		<td><a href="/static/Drivers/VideoOcx_YuShi.zip"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
 	  	 	</tr>
 	  	</table>
       <div slot="footer" class="dialog-footer">

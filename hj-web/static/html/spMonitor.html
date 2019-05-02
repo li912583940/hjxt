@@ -13,12 +13,12 @@
 			var webid=0;
 			var tokenV = "";
 			
-			var lChannel;
-	      	var lChannel1;
-	      	var divIP;
-	      	var txtDivPort;
-	      	var txtLogName;
-	      	var txtLogPassWord;
+			var lChannel="";
+	      	var lChannel1="";
+	      	var divIP="";
+	      	var txtDivPort="";
+	      	var txtLogName="";
+	      	var txtLogPassWord="";
 				      	
 				      	
 			function aa() {
@@ -51,12 +51,12 @@
 				      data:{id:idValue},
 				      dataType:"json",
 				      success:function(data){
-				      	lChannel = data.sysHjLine.videochan1No;
-				      	lChannel1 = data.sysHjLine.videochan2No;
-				      	divIP = data.sysHjVideo.ip;
-				      	txtDivPort = data.sysHjVideo.port;
-				      	txtLogName = data.sysHjVideo.loginuser;
-				      	txtLogPassWord = data.sysHjVideo.loginpwd;
+				      	lChannel = String(data.sysHjLine.videochan1No);
+				      	lChannel1 = String(data.sysHjLine.videochan2No);
+				      	divIP = String(data.sysHjVideo.ip);
+				      	txtDivPort = String(data.sysHjVideo.port);
+				      	txtLogName = String(data.sysHjVideo.loginuser);
+				      	txtLogPassWord = String(data.sysHjVideo.loginpwd);
 				        
 				      }
 				});	
