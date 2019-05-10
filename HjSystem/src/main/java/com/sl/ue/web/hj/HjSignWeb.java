@@ -64,8 +64,8 @@ public class HjSignWeb extends Result{
 	 * L_晓天  @2018年11月9日
 	 */
 	@RequestMapping("/rgFpZw")
-	public String rgFpZw(Long hjId, Integer lineNo, HttpServletRequest request){
-		return jlHjDjSQL.rgFpZw(hjId, lineNo, request);
+	public String rgFpZw(Long hjId, Integer webid, HttpServletRequest request){
+		return jlHjDjSQL.rgFpZw(hjId, webid, request);
 	}
 	
 	/**
@@ -86,4 +86,14 @@ public class HjSignWeb extends Result{
 		return jlHjDjSQL.cancelGrantCall(hjId, request);
 	}
 	
+	/**
+	 * 说明 [播放罪犯及其家属前往指定窗口参加会见]
+	 * @param hjId
+	 * @return
+	 * L_晓天  @2019年5月10日
+	 */
+	@RequestMapping("/bofangTTS")
+	public String bofangTTS(Long hjid){
+		return jlHjDjSQL.bofangTTS(hjid);
+	}
 }

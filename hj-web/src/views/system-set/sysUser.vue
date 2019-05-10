@@ -63,8 +63,8 @@
             <el-option v-for="item in depts" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="重置密码">
-          <el-button type="info" @click="resetPassword">重置</el-button>
+        <el-form-item label="重置密码" v-if="isAdmin==1">
+          <el-button  type="info" @click="resetPassword">重置</el-button>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -160,7 +160,7 @@ export default {
       	deletePermission: 0,
       	addRolesPermission: 0
       },
-      
+      isAdmin: 0,
     }
   },
   filters: {
@@ -365,6 +365,7 @@ export default {
 	  setButtonRole() { //设置按钮的权限
     	let roles = sessionStorage.getItem("roles")
     	if(roles.includes('admin')){
+    		this.isAdmin = 1
     		this.buttonRole.addPermission= 1
     		this.buttonRole.editPermission= 1
     		this.buttonRole.deletePermission= 1

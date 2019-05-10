@@ -6,16 +6,19 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.sl.ue.entity.jl.vo.JlFrVO;
+import com.sl.ue.entity.jl.vo.JlQsVO;
 import com.sl.ue.entity.sys.vo.SysHjServerVO;
 import com.sl.ue.entity.sys.vo.SysLogVO;
 import com.sl.ue.entity.sys.vo.SysUserVO;
 import com.sl.ue.service.jl.JlFrService;
+import com.sl.ue.service.jl.JlQsService;
 import com.sl.ue.service.sys.SysHjServerService;
 import com.sl.ue.service.sys.SysLogService;
 import com.sl.ue.util.DateUtil;
@@ -33,6 +36,8 @@ public class JlFrWeb extends Result{
 	private SysLogService sysLogSQL;
     @Autowired
     private SysHjServerService sysHjServerSQL;
+    @Autowired
+    private JlQsService jlQsSQL;
     
     @RequestMapping("/findList")
     public String findList(JlFrVO model,Integer pageSize, Integer pageNum){
@@ -124,6 +129,13 @@ public class JlFrWeb extends Result{
 		sysLogSQL.add(sysLog);
 		
         jlFrSQL.deleteKey(id);
+        
+        if(StringUtils.isNotBlank(model.getFrNo())){
+        	JlQsVO jlQs = new JlQsVO();
+            jlQs.setFrNo(model.getFrNo());
+            jlQsSQL.delete(jlQs);
+        }
+        
         return this.toResult();
     }
 

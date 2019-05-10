@@ -168,9 +168,14 @@
     		<div style="margin-left: 10px;margin-top: 2px;">
     			<font size="4">
     				于{{jlHjDj.djTime | dateFormatYMD }}前往会见室窗口办理会见
-    				<span  v-if="jlHjDj.zw!=null" style="margin-left: 30px">
+    				<span  v-if="jlHjDj.zw!=null" style="margin-left: 30px;">
     					座位：{{jlHjDj.zw}}
     				</span>
+    			</font>
+    		</div>
+    		<div style="margin-left: 10px;margin-top: 2px;">
+    			<font size="4">
+    				说明：{{jlHjDj.hjInfo}}
     			</font>
     		</div>
     		<br></br>

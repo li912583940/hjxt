@@ -51,6 +51,7 @@ import com.sl.ue.entity.jl.vo.JlHjSpVO;
 import com.sl.ue.entity.jl.vo.JlJbVO;
 import com.sl.ue.entity.jl.vo.JlJqVO;
 import com.sl.ue.entity.jl.vo.JlQsVO;
+import com.sl.ue.entity.jl.vo.JlTtsVO;
 import com.sl.ue.entity.sys.vo.SysConfVO;
 import com.sl.ue.entity.sys.vo.SysHjLineVO;
 import com.sl.ue.entity.sys.vo.SysLogVO;
@@ -69,6 +70,8 @@ import com.sl.ue.service.jl.JlHjSpSetService;
 import com.sl.ue.service.jl.JlJbService;
 import com.sl.ue.service.jl.JlJqService;
 import com.sl.ue.service.jl.JlQsService;
+import com.sl.ue.service.jl.JlTtsService;
+import com.sl.ue.service.other.HttpAbmsDeptService;
 import com.sl.ue.service.sys.SysConfService;
 import com.sl.ue.service.sys.SysHjLineService;
 import com.sl.ue.service.sys.SysLogService;
@@ -115,7 +118,10 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 	private SysUserService sysUserSQL;
 	@Autowired
 	private SysLogService sysLogSQL;
-	
+	@Autowired
+	private HttpAbmsDeptService httpAbmsDeptSQL;
+	@Autowired
+	private JlTtsService jlTtsSQL;
 	@Override
 	public String addHjdj(
 			String frNo, // 罪犯编号
@@ -547,6 +553,11 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		} catch (Exception e) {
 			result.error(Result.error_103, "添加会见登记失败");
 			return result.toResult();
+		}
+		
+		// 将家属信息添加到AB门中
+		if(sysConf.getAbmsHttp()!=null && sysConf.getAbmsHttp()==1){
+			httpAbmsDeptSQL.httpToAbmsHjDj(addJlHjDj.getHjid());
 		}
 		
 		return result.toResult();
@@ -1071,7 +1082,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		return result.toResult();
 	}
 	
-	public String rgFpZw(Long hjId, Integer lineNo, HttpServletRequest request){
+	public String rgFpZw(Long hjId, Integer webid, HttpServletRequest request){
 		Result result = new Result();
 		
 //		SysParamVO sysParam = new SysParamVO();
@@ -1094,10 +1105,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			result.error(Result.error_103, "查询不到此条记录");
 			return result.toResult();
 		}
-		SysHjLineVO sysHjLine = new SysHjLineVO();
-		sysHjLine.setLineNo(lineNo);
-		List<SysHjLineVO> sysHjLineList = sysHjLineSQL.findList(sysHjLine);
-		sysHjLine = sysHjLineList.get(0);
+		SysHjLineVO sysHjLine = sysHjLineSQL.findOne(webid);
 		String jy = sysHjLine.getJy();
 		if(jlHjDj.getFpFlag() == 0){
 			Integer resu = (Integer) jdbcTemplate.execute(  // 调用存储过程 获取会见批次号
@@ -1108,7 +1116,7 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 					           CallableStatement cs = con.prepareCall(storedProc); 
 					           cs.setString(1, jlHjDj.getFrNo());// 设置输入参数的值   
 					           cs.setString(2, jy);// 设置输入参数的值   
-					           cs.setInt(3, lineNo);
+					           cs.setInt(3, sysHjLine.getLineNo());
 					           cs.registerOutParameter(4, java.sql.Types.INTEGER);// 注册输出参数的类型   
 					           return cs;   
 						}
@@ -1524,6 +1532,9 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		if(hjTime!=null){
 			model.setHjTime(hjTime*60);
 		}
+		if(hjType != 1 && hjType !=2 ){ //3个小时
+			model.setHjTime(180*60);
+		}
 		model.setHjType(hjType);
 		model.setHjMode(hjMode);
 		model.setHjInfo(hjInfo);
@@ -1835,6 +1846,74 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		} catch (DocumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		return result.toResult();
+	}
+	
+	public String bofangTTS(Long hjid){
+		Result result = new Result();
+		if(hjid==null){
+			result.error(Result.error_102);
+			return result.toResult();
+		}
+		
+		String http = Config.getPropertiesValue("file.http");
+		String path = Config.getPropertiesValue("file.file");
+		
+		JlTtsVO jlTts = jlTtsSQL.findOne(hjid);
+		if(jlTts != null){
+			if(jlTts.getTtsresult()==2){
+				result.putJson("url", http+path+"/tts"+"/"+hjid+".wav");
+				return result.toResult();
+			}
+		}
+		JlHjDjVO jlHjDj = this.findOne(hjid);
+		if(jlHjDj == null){
+			result.error(Result.error_103, "数据库查询不到此记录");
+			return result.toResult();
+		}
+		SysHjLineVO sysHjLine = new SysHjLineVO();
+		sysHjLine.setHjid(hjid);
+		List<SysHjLineVO> sysHjLineList = sysHjLineSQL.findList(sysHjLine);
+		if(sysHjLineList.size()>0){
+			sysHjLine = sysHjLineList.get(0);
+		}else{
+			result.error(Result.error_103, "当前登记还未分配座位");
+			return result.toResult();
+		}
+		StringBuffer str = new StringBuffer();
+		str.append("请");
+		String tts = Config.getPropertiesValue("tts");
+		String[] ttss = tts.split(",");
+		for(int i=0;i<ttss.length;i++){
+			if(ttss[i].equals("监区名称")){
+				str.append(jlHjDj.getJqName());
+			}else if(ttss[i].equals("罪犯编号")){
+				str.append("编号"+jlHjDj.getFrNo());
+			}else if(ttss[i].equals("罪犯姓名")){
+				str.append(jlHjDj.getFrName());
+			}
+		}
+		str.append("及其家属前往"+sysHjLine.getZw()+"号座位参加会见");
+		
+		jlTts.setTtsid(hjid+"");
+		jlTts.setTtstype(1);
+		jlTts.setTtsfile("@"+hjid);
+		jlTts.setTtstxt(str.toString());
+		jlTtsSQL.add(jlTts);
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		jlTts = jlTtsSQL.findOne(hjid);
+		if(jlTts != null){
+			if(jlTts.getTtsresult()==2){
+				result.putJson("url", http+path+"/tts"+"/"+hjid+".wav");
+				return result.toResult();
+			}
 		}
 		return result.toResult();
 	}

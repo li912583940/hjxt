@@ -107,12 +107,6 @@ public class JlHjRec implements java.io.Serializable {
 	private Date qsOutTime;
 	@DbField("TP_Info")
 	private String tpInfo;
-	@DbField("SP_Info")
-	private String spInfo;
-	@DbField("SP_Time")
-	private Date spTime;
-	@DbField("SP_User")
-	private String spUser;
 	@DbField("HJID")
 	private Long hjid;
 	@DbField("Import_Flag")
@@ -504,30 +498,6 @@ public class JlHjRec implements java.io.Serializable {
 
 	public void setTpInfo(String tpInfo) {
 		this.tpInfo = tpInfo;
-	}
-
-	public String getSpInfo() {
-		return this.spInfo;
-	}
-
-	public void setSpInfo(String spInfo) {
-		this.spInfo = spInfo;
-	}
-
-	public Date getSpTime() {
-		return this.spTime;
-	}
-
-	public void setSpTime(Date spTime) {
-		this.spTime = spTime;
-	}
-
-	public String getSpUser() {
-		return this.spUser;
-	}
-
-	public void setSpUser(String spUser) {
-		this.spUser = spUser;
 	}
 
 	public Long getHjid() {

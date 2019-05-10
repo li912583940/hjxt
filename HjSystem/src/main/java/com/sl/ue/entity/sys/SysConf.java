@@ -47,6 +47,10 @@ public class SysConf implements java.io.Serializable{
     @DbField("hj_types")
     private String hjTypes;
     
+    /** 是否开启AB门数据同步 0:不开启，1：开启  默认：0 */
+    @DbField("abms_http")
+    private Integer abmsHttp;
+    
     public Integer getId() {
         return this.id;
     }
@@ -117,6 +121,14 @@ public class SysConf implements java.io.Serializable{
 
 	public void setHjTypes(String hjTypes) {
 		this.hjTypes = hjTypes;
+	}
+
+	public Integer getAbmsHttp() {
+		return abmsHttp;
+	}
+
+	public void setAbmsHttp(Integer abmsHttp) {
+		this.abmsHttp = abmsHttp;
 	}
     
 	

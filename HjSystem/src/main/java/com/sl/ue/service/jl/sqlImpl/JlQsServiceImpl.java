@@ -56,11 +56,11 @@ public class JlQsServiceImpl extends BaseSqlImpl<JlQsVO> implements JlQsService{
 		
 		
 		StringBuffer where = new StringBuffer(); // sql条件
-		if(StringUtils.isNotBlank(model.getFrNo())){
-			String str = model.getFrNo();
-			where.append(" AND a.FR_No LIKE '%"+str+"%' ");
-			model.setFrNo(null);
-		}
+//		if(StringUtils.isNotBlank(model.getFrNo())){
+//			String str = model.getFrNo();
+//			where.append(" AND a.FR_No LIKE '%"+str+"%' ");
+//			model.setFrNo(null);
+//		}
     	if(StringUtils.isNotBlank(model.getFrName())){
     		String str = model.getFrName();
     		where.append(" AND (b.FR_Name LIKE '%"+str+"%' OR dbo.f_get_fryp(b.FR_Name,'"+str+"') =1 ) ");

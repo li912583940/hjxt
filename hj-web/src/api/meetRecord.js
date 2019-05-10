@@ -52,13 +52,12 @@ export const GetWeekCount = params => { return request.get('/jlHjRec/getWeekCoun
 
 // 下载音视频
 export function DownVideo(param) {
-  return request({
+return request({
     url: '/jlHjRec/downVideo',
     method: 'post',
     data: param,
-    timeout: 600000,
-    responseType:'blob'
-  }).then(res => res)
+    timeout: 600000
+}).then(res => res)
 }
 
 // 下载音频

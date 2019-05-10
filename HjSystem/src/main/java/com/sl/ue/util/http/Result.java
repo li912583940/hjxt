@@ -15,10 +15,10 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
  * @author lxt
  */
 public class Result {
-	public final static Integer error_0 = 0; // "正确"
-	public final static Integer error_100 = 100; // "系统异常"
+	public final static Integer error_0 = 0; 	 // 正确
+	public final static Integer error_100 = 100; // 系统异常
 	public final static Integer error_101 = 101; // 无效token
-	public final static Integer error_102 = 102; // "参数错误"
+	public final static Integer error_102 = 102; // 参数错误
 	public final static Integer error_103 = 103; // 业务错误
 	
 	final static Map<Integer, String> confMap = new ConcurrentHashMap<>(); // 状态码

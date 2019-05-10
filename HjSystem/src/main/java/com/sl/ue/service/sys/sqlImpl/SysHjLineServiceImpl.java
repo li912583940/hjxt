@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
 import com.sl.ue.entity.jl.vo.JlHjMonVO;
 import com.sl.ue.entity.jl.vo.JlHjMonitorTimeAddVO;
+import com.sl.ue.entity.jl.vo.JlHjRecVO;
 import com.sl.ue.entity.jl.vo.JlMonitorVocVO;
 import com.sl.ue.entity.sys.vo.SysHjLineVO;
 import com.sl.ue.entity.sys.vo.SysHjVideoVO;
@@ -20,11 +21,13 @@ import com.sl.ue.service.base.impl.BaseSqlImpl;
 import com.sl.ue.service.jl.JlHjDjService;
 import com.sl.ue.service.jl.JlHjMonService;
 import com.sl.ue.service.jl.JlHjMonitorTimeAddService;
+import com.sl.ue.service.jl.JlHjRecService;
 import com.sl.ue.service.jl.JlMonitorVocService;
 import com.sl.ue.service.sys.SysHjLineService;
 import com.sl.ue.service.sys.SysHjVideoService;
 import com.sl.ue.service.sys.SysUserService;
 import com.sl.ue.util.Constants;
+import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.StringUtil;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.token.TokenUser;
@@ -42,10 +45,12 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 	private JlMonitorVocService jlMonitorVocSQL;
 	@Autowired
 	private SysHjVideoService sysHjVideoSQL;
+	@Autowired
+	private JlHjRecService jlHjRecSQL;
 	
 	@Override
 	public Map<String, Object> findPojoMonitor(Integer pageSize, Integer pageNum) {
-		SysUserVO sysUser = TokenUser.getUser();
+		//SysUserVO sysUser = TokenUser.getUser();
 		
 		StringBuffer leftJoinField = new StringBuffer();
 		leftJoinField.append(",b.QS_Info1 AS qsInfo1");
@@ -246,17 +251,66 @@ public class SysHjLineServiceImpl extends BaseSqlImpl<SysHjLineVO> implements Sy
 		return result.toResult();
 	}
 	
-	public String qieduanHj(Long hjid){
+	public String qieduanHj(Long hjid, Integer lineId){
 		Result result = new Result();
-		if(hjid == null){
+		if(hjid == null || lineId==null){
 			result.error(Result.error_102);
 			return result.toResult();
 		}
 		JlHjDjVO jlHjDj = jlHjDjSQL.findOne(hjid);
+		
+		SysHjLineVO t = this.findOne(lineId);
+		if(t != null){
+			if(t.getLineType() == 1){ //宽见 
+				String sql = "update SYS_HJ_LINE set Monitor_State='空闲',Monitor_JQ='',Monitor_FR='',Monitor_QS='',"
+						+ "Monitor_CallID='',HJState=0,HJID=NULL,Monitor_Time='' where WebID="+lineId;
+				jdbcTemplate.execute(sql);
+				
+				JlHjRecVO jlHjRec = new JlHjRecVO();
+				jlHjRec.setCallId(jlHjDj.getCallId());
+				jlHjRec.setLineNo(t.getLineNo());
+				jlHjRec.setZw(t.getZw());
+				jlHjRec.setBoard(t.getBoard());
+				jlHjRec.setLine(t.getLine());
+				jlHjRec.setBoardJs(t.getBoardJs());
+				jlHjRec.setLineJs(t.getLineJs());
+				jlHjRec.setJy(t.getJy());
+				jlHjRec.setJqNo(jlHjDj.getJqNo());
+				jlHjRec.setJqName(jlHjDj.getJqName());
+				jlHjRec.setFrNo(jlHjDj.getFrNo());
+				jlHjRec.setFrName(jlHjDj.getFrName());
+				jlHjRec.setQsInfo1(jlHjDj.getQsInfo1());
+				jlHjRec.setQsInfo2(jlHjDj.getQsInfo2());
+				jlHjRec.setQsInfo3(jlHjDj.getQsInfo3());
+				jlHjRec.setQsInfo4(jlHjDj.getQsInfo4());
+				jlHjRec.setQsInfo5(jlHjDj.getQsInfo5());
+				jlHjRec.setQsInfo6(jlHjDj.getQsInfo6());
+				jlHjRec.setQsInfo7(jlHjDj.getQsInfo7());
+				jlHjRec.setQsInfo8(jlHjDj.getQsInfo8());
+				jlHjRec.setQsInfo9(jlHjDj.getQsInfo9());
+				jlHjRec.setYjNo(jlHjDj.getYjNo());
+				jlHjRec.setYjName(jlHjDj.getYjName());
+				jlHjRec.setMonitorFlag(jlHjDj.getMonitorFlag());
+				jlHjRec.setHjInfo(jlHjDj.getHjInfo());
+				jlHjRec.setHjType(jlHjDj.getHjType());
+				jlHjRec.setDjType(jlHjDj.getDjType());
+				jlHjRec.setCallTimeStart(DateUtil.getDefault(jlHjDj.getFpTime()));
+				jlHjRec.setCallTimeEnd(DateUtil.getDefault(new Date()));
+				long l = System.currentTimeMillis();
+				Long timeLen = (l-jlHjDj.getFpTime().getTime())/1000;
+				jlHjRec.setCallTimeLen(timeLen.intValue());
+				jlHjRec.setDjUser(jlHjDj.getDjUser());
+				jlHjRec.setDjTime(jlHjDj.getDjTime());
+				jlHjRec.setHjid(jlHjDj.getHjid());
+				jlHjRecSQL.add(jlHjRec);
+			}
+		}
+		
 		if(jlHjDj != null){
 			jlHjDj.setState(4);
 			jlHjDjSQL.edit(jlHjDj);
 		}
+		
 		return result.toResult();
 	}
 	

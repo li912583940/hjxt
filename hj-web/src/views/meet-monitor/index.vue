@@ -280,8 +280,10 @@ export default {
     },
     /** 监听 开始 */
     jianting(row){ //监听音视频
-    	if(this.jtState!=null){
-    		document.getElementById(row.jy).ListenStop(this.jtState);
+    	if(row.lineType==0){
+    		if(this.jtState!=null){
+	    		document.getElementById(row.jy).ListenStop(this.jtState);
+	    	}
     	}
     	if(row.monitorState=='通话'){
     		let param ={
@@ -294,13 +296,15 @@ export default {
     			this.getList()
     		})
     		
-    		document.getElementById(row.jy).ListenTele(row.lineNo);
+    		if(row.lineType==0){
+    			document.getElementById(row.jy).ListenTele(row.lineNo);
+    		}
     		this.jtState = row.lineNo
     		
     		var httpPath = process.env.BASE_API
     		var tokenValue = getToken()
-    		//window.open("/static/html/spMonitor.html?id="+row.webid+"&httpPath="+httpPath+"&token="+tokenValue,"","width=780,height=420,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
-				window.open("/static/html/yushi/yushiMonitor.html?id="+row.webid+"&httpPath="+httpPath+"&token="+tokenValue,"","width=820,height=305,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
+				window.open("/static/html/yushiPingtai/WebDemo(实况回放).html?id="+row.webid+"&httpPath="+httpPath+"&token="+tokenValue,
+				"","width=900,height=480,left=700,top=300,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
 				
     	}else{
     		Message({
@@ -350,7 +354,9 @@ export default {
     	UpdateYJ(param).then(res =>{
 				this.getList()
 			})
-    	document.getElementById(row.jy).ListenStop(row.lineNo);
+    	if(row.lineType==0){
+    		document.getElementById(row.jy).ListenStop(row.lineNo);
+    	}
     	this.jtState = null
     	Message({
         message: '停止监听',
@@ -366,7 +372,8 @@ export default {
 				type: 'warning'
 			}).then(() => {
 				let param = {
-					hjid:row.hjid
+					hjid:row.hjid,
+					lineId:row.webid
 				}
 				QieduanHj(param).then(res => {
 					let param ={
@@ -378,8 +385,9 @@ export default {
 					UpdateYJ(param).then(res =>{
 	    			this.getList()
 	    		})
-					
-					document.getElementById(row.jy).StopTele(row.lineNo);
+					if(row.lineType==0){
+						document.getElementById(row.jy).StopTele(row.lineNo);
+					}
 					
 					this.jtState = null
 					this.getList()

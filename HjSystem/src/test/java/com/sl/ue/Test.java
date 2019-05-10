@@ -1,5 +1,6 @@
 package com.sl.ue;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +14,8 @@ import com.sl.ue.util.DateUtil;
 public class Test {
 
 	public static void main(String[] args){
-		System.out.println(System.getProperty("java.endorsed.dirs"));
+		Date date = new Date();
+		System.out.println(date.getTime());
+		System.out.println(System.currentTimeMillis());
 	}
 }

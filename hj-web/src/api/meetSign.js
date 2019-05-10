@@ -20,3 +20,5 @@ export const GrantCall = params => { return request.post('/hjSign/grantCall', pa
 
 // 取消授权才能使用电话
 export const CancelGrantCall = params => { return request.post('/hjSign/cancelGrantCall', params ).then(res => res) }
+
+export const BofangTTS = params => { return request.post('/hjSign/bofangTTS', params ).then(res => res) }

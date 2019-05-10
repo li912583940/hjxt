@@ -39,7 +39,7 @@ public interface SysHjLineService extends BaseService<SysHjLineVO>{
 	 * 说明 [切断]
 	 * L_晓天  @2018年11月22日
 	 */
-	public String qieduanHj(Long hjid);
+	public String qieduanHj(Long hjid, Integer lineId);
 	
 	/**
 	 * 说明 [获取剩余座位数]

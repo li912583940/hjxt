@@ -34,7 +34,8 @@ export default {
     gxManage: 'Gx Manage', // 亲属关系
     deptManage: 'Dept Manage', // 部门管理
     confSet: 'Conf Set', //会见通知设置
-    sysParam: 'sys Param', // 系统参数
+    sysParam: 'Sys Param', // 系统参数
+    yjHtml: 'Yj Html', // 应急查询
     permission: 'Permission',
     pagePermission: 'Page Permission',
     directivePermission: 'Directive Permission',

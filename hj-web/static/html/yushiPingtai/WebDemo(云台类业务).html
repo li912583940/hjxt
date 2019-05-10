@@ -1,0 +1,1302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>云台类demo</title>
+<script language="javascript" src="md5.js"></script>
+<script>
+
+//工具函数---start
+function CreateEmptyString(l) {
+    var a = [];
+    for (var i = 0; i < l; i++) {
+        a[i] = '*';
+    }
+    return a.join('');
+}
+
+
+//向列表中添加表项
+function AddList(sel, text, value){
+    var option = document.createElement("option");
+    option.appendChild(document.createTextNode(text));
+    option.setAttribute("value",value); 
+    sel.appendChild(option);
+    return;
+}
+
+
+
+var IS_SHOW_DEBUG = 0;  //0-关闭, 1-开启
+
+function DebugAlert(str){
+    if(IS_SHOW_DEBUG == 1){
+        alert(str);
+    }
+}
+
+String.prototype.replaceAll = function(f, r) {
+    var s = new String(this);
+    while (s.indexOf(f) != -1) {
+        s = s.replace(f, r);
+    }
+    return s.toString();
+}
+
+/**
+ * 解析从控件返回的xml字符串
+ */
+function loadXML(xmlString){
+     if(!g_xmlActive){
+         return;
+     }
+     g_xmlActive.loadXML(xmlString);
+     if(0 == g_xmlActive.parseError.errorCode){
+         return g_xmlActive;
+     }
+     else{
+         alert("xml解析错误:" + g_xmlActive.parseError.reason);
+         return null;
+     } 
+} 
+
+function getElementById(dom, tagName){
+    for(var i = 0; i < dom.childNodes.length; i++){
+        var node = dom.childNodes[i];
+        if(node.baseName == tagName){
+            return node.nodeTypedValue;
+        }
+        else{
+            if(node.childNodes.length != 0){
+                getElementById(dom.childNodes[i], tagName);
+            }
+        }
+    }
+}
+
+//工具函数---end
+
+
+
+//全局变量---start
+
+var g_UserLoginId = '';
+var g_imosActivePlayer = null;
+var g_curFrameNum = '';
+var g_xmlActive = null;
+var g_isLogin = 1;
+
+//全局变量---end
+
+
+
+//================>功能函数---start
+//检查控件
+function InitPage(){
+    
+   g_imosActivePlayer = document.all.h3c_IMOS_ActiveX;
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+    }
+    
+    var xmldoc;
+    try{
+        xmldoc = new ActiveXObject("Microsoft.XMLDOM");
+        if(!xmldoc){
+           xmldoc = new ActiveXObject("MSXML2.DOMDocument.3.0");  
+        }
+    } 
+    catch(e){        
+    }
+    g_xmlActive = xmldoc;
+    if(!g_xmlActive){
+        alert("xml解析器获取错误，将导致某些功能不可用");
+    }
+    else{
+        g_xmlActive.async = "false";  
+    }
+}
+
+//登录    
+function DoLogin(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    var serverIP = document.getElementById("ServerIPText").value;
+    var userName = document.getElementById("UserNameText").value;
+    var passWd = document.getElementById("PassWordText").value.toString();
+    if(passWd == ""){
+        passWd = "";
+    }
+    //alert(typeof passWd);
+    g_isLogin = g_imosActivePlayer.IMOSAX_InitOCX(serverIP, "8800", userName, passWd, 1);
+    
+    //获取用户信息
+    var retStr = g_imosActivePlayer.IMOSAX_GetUserLoginInfo();
+    var userObj = loadXML(retStr);
+    g_UserLoginId = userObj.documentElement.selectNodes("//LOGININFO/UserLoginIDInfo/UserLoginCode")[0].text;
+    
+    var loginSt = document.getElementById("loginSt");
+	loginSt.innerText = "系统登录成功！用户名："+userName;
+}
+
+
+//退出登录
+function DoLogout(){
+    if(g_imosActivePlayer){
+        var flag = g_imosActivePlayer.IMOSAX_UnregOCX();
+        if(0 != flag){
+           //暂时不提示
+        }
+    }
+    var loginSt = document.getElementById("loginSt");
+	loginSt.innerText = "系统未登录！";
+}
+
+
+
+//启动实况
+function DoStartPlay(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    var cameraId = document.getElementById("CamIDText").value;
+    var frameNum = g_curFrameNum;
+    frameNum = parseInt(frameNum, 10);    
+    if(isNaN(frameNum) || frameNum < 1 || frameNum > 25){
+        alert("请先选择一个窗格");
+        return;
+    }
+    var flag = g_imosActivePlayer.IMOSAX_StartFrameLive (frameNum, cameraId);
+    if(0 == flag){
+        alert("实况播放成功");
+    }
+    else{
+        alert("播放实况失败，错误码：" + flag);
+    }
+}
+
+//释放实况
+function DoStopPlay(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    var frameNum = g_curFrameNum;
+    if(isNaN(frameNum) || frameNum < 1 || frameNum > 25){
+        alert("请选择一个窗格");
+        return;
+    }
+    var flag = g_imosActivePlayer.IMOSAX_StopFramelive(frameNum);
+    if(0 == flag){
+        alert("停止实况成功");
+    }
+    else{
+        alert("停止实况失败，错误码：" + flag);
+    }
+}
+
+
+//云台控制
+//开始云台控制 
+
+function DoStartPtzCtrl(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    var cameraId = document.getElementById("CamIDText").value;
+    
+    var flag = g_imosActivePlayer.IMOSAX_StartPtzCtrl(cameraId);
+    if(0 == flag){
+        alert("开始云台控制");
+    }
+    else{
+        alert("云台控制失败：" + flag);
+    }
+   
+}
+//结束云台控制
+function DoStopPtzCtrl(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    var cameraId = document.getElementById("CamIDText").value;
+    
+    var flag = g_imosActivePlayer.IMOSAX_StopPtzCtrl(cameraId);
+    if(0 == flag){
+        alert("结束云台控制");
+    }
+    else{
+        alert("结束云台控制失败：" + flag);
+    }
+   
+}
+//锁定云台
+function DoLockPtzCtrl(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    var cameraId = document.getElementById("CamIDText").value;
+    
+    var flag = g_imosActivePlayer.IMOSAX_LockPtzCtrl(cameraId);
+    if(0 == flag){
+        alert("锁定云台成功");
+    }
+    else{
+        alert("锁定云台失败：" + flag);
+    }
+
+}
+//解锁云台
+function DoUnlockPtzCtrl(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    var cameraId = document.getElementById("CamIDText").value;
+    
+    var flag = g_imosActivePlayer.IMOSAX_UnlockPtzCtrl(cameraId);
+    if(0 == flag){
+        alert("云台解锁成功");
+    }
+    else{
+        alert("云台解锁失败：" + flag);
+    }
+}
+//查询云台预置位列表
+function DoQueryPtzPresetList(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    var cameraId = document.getElementById("CamIDText").value;  
+    var resStr = g_imosActivePlayer.IMOSAX_QueryPtzPresetList(cameraId);
+    
+    alert(resStr);
+}
+//发送云台控制指令
+function DoStartPtz(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = parseInt(document.getElementById("PtzCmdText").value, 16);
+    var ptzSpeed = 6;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+
+}
+//添加云台预置位
+function DoAddPtzPreset(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    var cameraId = document.getElementById("CamIDText").value;
+    var presetValue = document.getElementById("PtzPreset").value;
+    var presetDesc = document.getElementById("PtzPresetDesc").value;
+    
+    var flag = g_imosActivePlayer.IMOSAX_AddPtzPreset(cameraId, presetValue, presetDesc);
+    if(0 == flag){
+        alert("添加云台预置位成功");
+    }
+    else{
+        alert("添加云台预置位失败：" + flag);
+    }
+    
+}
+//调用云台预置位
+function DoUsePtzPreset(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    var cameraId = document.getElementById("CamIDText").value;
+    var presetValue = document.getElementById("PtzPreset").value;
+    
+    var flag = g_imosActivePlayer.IMOSAX_UsePtzPreset(cameraId, presetValue);
+    if(0 == flag){
+        alert("调用成功");
+    }
+    else{
+        alert("调用失败：" + flag);
+    }
+
+}
+//删除云台预置位
+function DoDelPtzPreset(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    var cameraId = document.getElementById("CamIDText").value;
+    var presetValue = document.getElementById("PtzPreset").value;
+    
+    var flag = g_imosActivePlayer.IMOSAX_DelPtzPreset(cameraId, presetValue);
+    if(0 == flag){
+        alert("删除成功");
+    }
+    else{
+        alert("删除失败：" + flag);
+    }
+
+}
+//设置云台释放时间
+function DoSetPtzReleaseTime(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    
+    var ptzReleaseTime = document.getElementById("PtzReleaseTime").value;
+    
+    var flag = g_imosActivePlayer.IMOSAX_SetPtzReleaseTime(ptzReleaseTime);
+    if(0 == flag){
+        alert("设置成功");
+    }
+    else{
+        alert("设置失败：" + flag);
+    }
+}
+
+//查询云台释放时间
+function DoQueryPtzReleaseTime(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    
+    var time = g_imosActivePlayer.IMOSAX_QueryPtzReleaseTime();
+    alert(time);
+}
+
+function DoStopPtz(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0901;
+    var ptzSpeed = 6;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+
+//云台向上
+function DoPtzUp(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0402;
+   // var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+
+}
+//云台向上停止
+function DoPtzUpStop(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0401;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+
+}
+//云台向下
+function DoPtzDown(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0404;
+    // ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+
+}
+//云台向下停止
+function DoPtzDownStop(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0403;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+//云台向左
+function DoPtzLeft(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0504;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+
+}
+//云台向左停止
+function DoPtzLeftStop(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0503;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+//云台向右
+function DoPtzRight(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0502;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+//云台向右停止
+function DoPtzRightStop(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0501;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+
+}
+
+//左上
+function DoPtzLeftUp(){
+  if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0702;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+function DoPtzLeftUpStop(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0701;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+
+//右上
+function DoPtzRightUp(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0802;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+function DoPtzRightUpStop(){
+  if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0801;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+//左下
+function DoPtzLeftDown(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0704;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+function DoPtzLeftDownStop(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0703;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+
+//右下
+function DoPtzRightDown(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0804;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+function DoPtzRightDownStop(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0803;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+
+}
+//云台近聚焦
+function DoPtzFocusNear(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0202;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+//云台近聚焦停止
+function DoPtzFocusNearStop(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0201;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+//云台远聚焦
+function DoPtzFocusFar(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0204;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+//云台远聚焦停止
+function DoPtzFocusFarStop(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0203;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+
+//放大
+function DoPtzZoomTele(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0302;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+ 
+}
+function DoPtzZoomTeleStop(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0301;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+
+//缩小
+function DoPtzZoomWide(){
+  if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0304;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+function DoPtzZoomWideStop(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0303;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+
+//光圈开
+function DoPtzIrisOpen(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0104;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+function DoPtzIrisOpenStop(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0103;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+
+//光圈关
+function DoPtzIrisClose(){
+   if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0102;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+function DoPtzIrisCloseStop(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    //摄像机名称
+    var cameraId = document.getElementById("CamIDText").value;
+    var PtzCmd = 0x0101;
+    //var ptzSpeed = 6;
+    var ptzSpeed = document.getElementById("PtzSpeed").value;
+    var flag = g_imosActivePlayer.IMOSAX_SendPtzCtrlCommand(cameraId, PtzCmd, ptzSpeed, ptzSpeed, 0);
+    if(0 != flag){
+        alert("云台控制出错，错误码：" + flag);
+    }
+}
+
+//添加云台预置位1
+function DoAddPtzPreset1(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    var cameraId = document.getElementById("CamIDText").value;
+    var presetValue = document.getElementById("PtzPreset1").value;
+    var presetDesc = "";
+    
+    var flag = g_imosActivePlayer.IMOSAX_AddPtzPreset(cameraId, presetValue, presetDesc);
+    if(0 == flag){
+        alert("添加云台预置位成功");
+    }
+    else{
+        alert("添加云台预置位失败：" + flag);
+    }
+    
+}
+//调用云台预置位1
+function DoUsePtzPreset1(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    var cameraId = document.getElementById("CamIDText").value;
+    var presetValue = document.getElementById("PtzPreset1").value;
+    
+    var flag = g_imosActivePlayer.IMOSAX_UsePtzPreset(cameraId, presetValue);
+    if(0 == flag){
+        alert("调用成功");
+    }
+    else{
+        alert("调用失败：" + flag);
+    }
+
+}
+
+
+//抓拍
+
+//抓拍图片将保存在指定路径下, 以当天日期为名称的文件夹内
+
+function DoSnatch(){
+    var frameNum = g_curFrameNum;
+    frameNum = parseInt(frameNum, 10);    
+    if(isNaN(frameNum) || frameNum < 1 || frameNum > 25){
+        alert("请先选择一个窗格");
+        return;
+    }
+    var flag = g_imosActivePlayer.IMOSAX_SnatchOnce(frameNum);
+    if(0 != flag){
+         alert("抓拍失败，错误码：" + flag);
+    }
+
+}
+
+function DoStartSnatchSeries(){
+ var frameNum = g_curFrameNum;
+    frameNum = parseInt(frameNum, 10);    
+    if(isNaN(frameNum) || frameNum < 1 || frameNum > 25){
+        alert("请先选择一个窗格");
+        return;
+    }
+    var flag = g_imosActivePlayer.IMOSAX_StartSnatchSeries(frameNum);
+    if(0 != flag){
+         alert("连续截图失败，错误码：" + flag);
+    }
+    
+    else{
+        alert("连续截图成功！")
+    }
+ 
+ }
+ 
+ function DoStopSnatchSeries(){
+ var frameNum = g_curFrameNum;
+    frameNum = parseInt(frameNum, 10);    
+    if(isNaN(frameNum) || frameNum < 1 || frameNum > 25){
+        alert("请先选择一个窗格");
+        return;
+    }
+    var flag = g_imosActivePlayer.IMOSAX_StopSnatchSeries(frameNum);
+    if(0 != flag){
+         alert("停止连续截图失败，错误码：" + flag);
+    }
+    
+    else{
+        alert("停止连续截图成功！")
+    }
+ }
+ 
+
+
+//录像锁定
+function DoLockRecord(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    
+    if(g_isLogin){
+        alert("未登录，请先登录再使用本功能！");
+        return;
+    }
+   
+    var strCameraCode = document.getElementById("strCameraCode").value;
+    var strBeginTime = document.getElementById("strBeginTime").value;
+    var strEndTime = document.getElementById("strEndTime").value;
+    var strDes = document.getElementById("strDes").value;
+    var ulRet = g_imosActivePlayer.IMOSAX_LockRecord(strCameraCode, strBeginTime, strEndTime, strDes);
+    if(0 != ulRet){
+        alert("错误码" + ulRet);
+        return;
+    }
+    alert("录像锁定成功！");
+}
+
+//录像解锁
+function DoUnlockRecord(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    
+    if(g_isLogin){
+        alert("未登录，请先登录再使用本功能！");
+        return;
+    }
+   
+    var ulUnlockType = document.getElementById("ulUnlockType").value;
+    var strUnlockKey = document.getElementById("strUnlockKey").value;
+    var ulRet = g_imosActivePlayer.IMOSAX_UnlockRecord(ulUnlockType, strUnlockKey);
+    if(0 != ulRet){
+        alert("错误码" + ulRet);
+        return;
+    }
+    alert("录像解锁成功！");
+}
+
+//查询摄像机锁定的录像列表
+function DoQueryLockedRecordList(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    
+    if(g_isLogin){
+        alert("未登录，请先登录再使用本功能！");
+        return;
+    }
+   
+    var strCameraCode = document.getElementById("strCameraCode2").value;
+    var strXmlQueryPageInfo = document.getElementById("strXmlQueryPageInfo1").value;
+    var resStr = g_imosActivePlayer.IMOSAX_QueryLockedRecordList(strCameraCode, strXmlQueryPageInfo);
+    
+    alert(resStr);
+}
+
+//查询锁定的摄像机列表
+function DoQueryLockedCameraList(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    
+    if(g_isLogin){
+        alert("未登录，请先登录再使用本功能！");
+        return;
+    }
+   
+    var ulUnlockType = document.getElementById("ulUnlockType2").value;
+    var strUnlockKey = document.getElementById("strUnlockKey2").value;
+    var strXmlQueryPageInfo = document.getElementById("strXmlQueryPageInfo2").value;
+    var resStr = g_imosActivePlayer.IMOSAX_QueryLockedCameraList(ulUnlockType, strUnlockKey, strXmlQueryPageInfo);
+    
+    alert(resStr);
+}
+
+//查询摄像机角度和变倍
+function DoQueryDevInst(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    
+    if(g_isLogin){
+        alert("未登录，请先登录再使用本功能！");
+        return;
+    }
+   
+    var ulInstType = document.getElementById("ulInstType").value;
+    var strDevCode = document.getElementById("strDevCode").value;
+    var resStr = g_imosActivePlayer.IMOSAX_QueryDevInst(21, strDevCode);
+    
+    alert(resStr);
+}
+
+//用户发送云台控制指令
+function DoPtzCtrlCommand(){
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+        return;
+    }
+    
+    if(g_isLogin){
+        alert("未登录，请先登录再使用本功能！");
+        return;
+    }
+   
+    var ulPTZCmdID = parseInt(document.getElementById("ulPTZCmdID").value, 16);
+    var ulPTZCmdPara1 = document.getElementById("ulPTZCmdPara1").value;
+    var ulPTZCmdPara2 = document.getElementById("ulPTZCmdPara2").value;
+    var ulPTZCmdPara3 = document.getElementById("ulPTZCmdPara3").value;
+    var strPTZCamCode = document.getElementById("strPTZCamCode").value;
+    var resStr = g_imosActivePlayer.IMOSAX_PtzCtrlCommand(ulPTZCmdID, ulPTZCmdPara1, ulPTZCmdPara2, ulPTZCmdPara3, strPTZCamCode);
+    if(0 != resStr){
+        alert("错误码：" + resStr);
+        return;
+    }
+    alert("发送成功！");
+}
+
+
+//================>功能函数---end
+
+//================>事件处理函数event---start
+
+/**
+ * 窗格单击事件的处理函数
+ */
+function dealEventClickFrame(ulFrameNum, pcFrameInfo){
+    //当前窗格
+    g_curFrameNum = ulFrameNum;
+    pcFrameInfo = pcFrameInfo.replaceAll("\"", "\'");
+    var tmpXmlDoc = loadXML(pcFrameInfo);
+    if(!tmpXmlDoc){
+        return;
+    }
+    //将需要的数据从xml中获取，方便后续使用
+    var cameraID = tmpXmlDoc.selectNodes("//FrameInfo//CameraCode")[0];
+    if(cameraID){
+          document.getElementById("CamIDText").value = cameraID.text;
+        return;
+    }
+    else{
+            document.getElementById("CamIDText").value = "未启动";
+        }
+    
+}
+
+//================>事件处理函数event---end
+</script>
+
+</head>
+<body onload="InitPage()" onbeforeunload="DoLogout()" style="font-size:10pt">
+    <b>[基本参数] </b>
+    用户名:<input type=text id="UserNameText" value='loadmin' size=15></text>&nbsp;&nbsp;&nbsp;
+    密码:<input type=text id="PassWordText" value='admin_123' size=15></text>&nbsp;&nbsp;&nbsp;
+    服务器IP:<input type=text id="ServerIPText" value='208.208.81.25' size=15></text>&nbsp;&nbsp;&nbsp;
+    <hr>
+    <b>[使用流程] </b>
+    <input type=button onclick="DoLogin()" value="登录"></input>------->
+    业务操作------>
+    <input type=button onclick="DoLogout()" value="退出登录"></input>
+    <hr>
+    <b>[登录状态] </b>
+	<span id="loginSt">系统还未登录！</span>
+    <hr>
+    <p><b>[实况业务] </b>
+    摄像机ID:
+      <input type=text id="CamIDText" value='ec1501-ihf_1'>
+      </text>
+      &nbsp;&nbsp;&nbsp;&nbsp;  
+      <input type=button onclick="DoStartPlay()" value="启动播放">
+      </input>
+      &nbsp;&nbsp;&nbsp;
+      <input type=button onclick="DoStopPlay()" value="停止播放">
+      </input>
+    </p>
+    <hr> 
+    <b>[抓拍业务] </b>
+    <input type=button onclick="DoSnatch()" value="抓拍"></input>&nbsp;&nbsp;&nbsp;
+    <input type=button onclick="DoStartSnatchSeries()" value="连续抓拍"></input>&nbsp;&nbsp;&nbsp;
+    <input type=button onclick="DoStopSnatchSeries()" value="停止连续抓拍"></input>&nbsp;&nbsp;&nbsp;
+	<hr>
+    <p><b>[云台指令] </b>
+    控制指令:
+      <input type=text id="PtzCmdText" value="0x0402">
+      </text>
+      &nbsp;&nbsp;&nbsp;
+      <input type=button onclick="DoStartPtz()" value="启动">
+      </input>
+      &nbsp;&nbsp;&nbsp;
+      <input type=button onclick="DoStopPtz()" value="停止">
+      </input>
+      <br>
+      <font color="red"> 指令(0x0101:光圈关停止,0x0102:光圈关,0x0103:光圈开停止,0x0104:光圈开,0x0201:近聚焦停止,0x0202:近聚焦,0x0203:远聚焦停止,0x0204:远聚焦,0x0301:放大停止，0x0302:放大，0x0303:缩小停止，0x0304:缩小，0x0701:左上停止,0x0702:左上,0x0703:左下停止,0x0704:左下,0x0801:右上停止,0x0802:右上,0x803:右下停止,0x0804:右下,0x0A01:雨刷开,0x0A02:雨刷关,0x0B01:灯开,0x0B02:灯关,0x0C01:加热开,0x0C02:加热关,0x0D01:红外开,0x0D02:红外关)</font>
+    </p>
+    <hr>
+    <p><b>[云台预置位] </b>
+    &nbsp;&nbsp;&nbsp;
+     <input type=button onclick="DoQueryPtzPresetList()" value="查询预置位列表">
+     </input>
+    预置位编号:
+      <input type=text id="PtzPreset" value="1">
+      </text>
+      <font color="red"> (范围：1-255)</font>
+      &nbsp;&nbsp;&nbsp;
+    预置位描述:
+      <input type=text id="PtzPresetDesc" value="">
+      </text>
+      &nbsp;&nbsp;&nbsp;
+      <input type=button onclick="DoAddPtzPreset()" value="添加">
+      </input>
+      &nbsp;&nbsp;&nbsp;
+      <input type=button onclick="DoUsePtzPreset()" value="调用">
+      </input>
+      &nbsp;&nbsp;&nbsp;
+      <input type=button onclick="DoDelPtzPreset()" value="删除">
+      </input>
+    </p>
+    <hr>
+    <p><b>[云台释放] </b>
+    释放时间:
+      <input type=text id="PtzReleaseTime" value="100">
+      </text>
+      &nbsp;&nbsp;&nbsp;
+      <input type=button onclick="DoSetPtzReleaseTime()" value="设置">
+      </input>
+      &nbsp;&nbsp;&nbsp;
+      <input type=button onclick="DoQueryPtzReleaseTime()" value="查询">
+      </input>
+      <br /><font color="red">（注：参数为云台释放时间 取值范围（30-3600）单位秒）</font>
+    </p>
+    <hr>
+    <b>[查询云台参数] </b>   
+    参数类型：<input type=text id="ulInstType" value='21'>
+    摄像机编码：<input type=text id="strDevCode" value="hic6621ex_1">
+    <input type=button onclick="DoQueryDevInst()" value="查询"></input>
+    <br>
+    <font color="red">（注：参数类型为21时，查询结果中参数1为纬度、参数2为经度、参数3为云台zoom倍数；参数类型为22时，参数1为透雾开关、参数2为摄像机的角度值）</font>
+    <hr>
+    <b>[用户发送云台控制指令] </b>
+    云台控制命令类型：<input type=text id="ulPTZCmdID" value="2306">
+    参数值1：<input type=text id="ulPTZCmdPara1" value="0">
+    参数值2：<input type=text id="ulPTZCmdPara2" value="0">
+    参数值3：<input type=text id="ulPTZCmdPara3" value="0">
+    摄像机编码：<input type=text id="strPTZCamCode" value="hic6621ex_1">
+    <input type=button onclick="DoPtzCtrlCommand()" value="发送"></input>
+	<br>
+    <font color="red">（注：云台控制命令类型为2306时，参数1为经度纬度值（纬度在17500-27000间取值，对应-5.00度到90.00度；经度在0-36000间取值，对应0度到360.00度。参数1=纬度*65536+经度），参数值2为转动角速度（取值范围0-9级，0为使用默认速度），参数3为云台zoom倍数和速度（云台zoom 倍数的取值范围100-2000对应1-20倍，云台zoom 速度的取值为99级 1-99，参数3=倍数*65536+速度）；其它云台控制命令类型待定）</font>
+    <hr>
+     <p><b>[云台控制] </b>
+     &nbsp;&nbsp;&nbsp;
+      <input type=button onclick="DoStartPtzCtrl()" value="开始">
+      </input>
+      &nbsp;&nbsp;&nbsp;
+      <input type=button onclick="DoStopPtzCtrl()" value="结束">
+      </input>
+      &nbsp;&nbsp;&nbsp;
+       <input type=button onclick="DoLockPtzCtrl()" value="锁定">
+      </input>
+      &nbsp;&nbsp;&nbsp;
+      <input type=button onclick="DoUnlockPtzCtrl()" value="解锁">
+      </input>
+      &nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;
+       &nbsp;&nbsp;&nbsp;
+      <br>
+      &nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;
+       &nbsp;&nbsp;&nbsp;
+      <input type=button onmousedown="DoPtzLeftUp()" onmouseup="DoPtzLeftUpStop()" value="左上">
+      </input> 
+      <input type=button onmousedown="DoPtzUp()" onmouseup="DoPtzUpStop()" value=" 上 ">
+      </input>
+      <input type=button onmousedown="DoPtzRightUp()" onmouseup="DoPtzRightUpStop()" value="右上">
+      </input>
+      云台速度:
+      <input type=text id="PtzSpeed" value='6' size=6>
+      </text>
+      <input type=button onmousedown="DoPtzZoomTele()" onmouseup="DoPtzZoomTeleStop()" value="放大  ">
+      </input>
+      <input type=button onmousedown="DoPtzZoomWide()" onmouseup="DoPtzZoomWideStop()" value="缩小  ">
+      </input>
+      <br>
+       &nbsp;&nbsp;&nbsp;
+       &nbsp;&nbsp;&nbsp;
+       &nbsp;&nbsp;&nbsp;
+       &nbsp;&nbsp;&nbsp;
+    
+      <input type=button onmousedown="DoPtzLeft()" onmouseup="DoPtzLeftStop()" value=" 左 ">
+      </input>
+      <input type=button onclick="DoStopPtz()" value="停止">
+      </input>
+      <input type=button onmousedown="DoPtzRight()" onmouseup="DoPtzRightStop()" value=" 右 ">
+      </input>
+      预置点号:
+      <input type=text id="PtzPreset1" value='1' size=6>
+      </text>
+      <input type=button onmousedown="DoPtzFocusNear()" onmouseup="DoPtzFocusNearStop()" value="近聚焦">
+      </input>
+      <input type=button onmousedown="DoPtzFocusFar()" onmouseup="DoPtzFocusFarStop()" value="远聚焦">
+      </input>
+      <br>
+      &nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;
+
+     
+      <input type=button onmousedown="DoPtzLeftDown()" onmouseup="DoPtzLeftDownStop()" value="左下">
+      </input>
+      <input type=button onmousedown="DoPtzDown()" onmouseup="DoPtzDownStop()" value=" 下 ">
+      </input>
+      <input type=button onmousedown="DoPtzRightDown()" onmouseup="DoPtzRightDownStop()" value="右下">
+      </input>
+      <input type=button onclick="DoAddPtzPreset1()" value="设置 ">
+      </input>
+      <input type=button onclick="DoUsePtzPreset1()" value="调用 ">
+      </input>
+      <input type=button onmousedown="DoPtzIrisOpen()" onmouseup="DoPtzIrisOpenStop()" value="光圈开">
+      </input>
+      <input type=button onmousedown="DoPtzIrisClose()" onmouseup="DoPtzIrisCloseStop()" value="光圈关">
+      </input>
+      
+    </p>
+    <hr>
+    <table width=940>
+    <!-- 播放控件  begin -->
+    <tr><td>
+    <object  classid="clsid:067A4418-EBAC-4394-BFBE-8C533BA6503A" id="h3c_IMOS_ActiveX" events="true"  height="480"  width="640">
+    </object>
+    </table>
+</body>
+</html>
+<!--ActiveX控件事件, 初始化完成后会触发, 告知界面当前的播放器ID-->
+<script type="text/javascript" for= "h3c_IMOS_ActiveX" event="eventClickFrame(ulFrameNum,  pcFrameInfo)">
+    if(typeof dealEventClickFrame == "function"){
+        dealEventClickFrame(ulFrameNum,  pcFrameInfo);
+    }
+</script>
+<script type="text/javascript" for= "h3c_IMOS_ActiveX" event="eventVehicleInfo(strParams)">
+//    alert(strParams);
+</script>
+
+

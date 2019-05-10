@@ -1,0 +1,382 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>demo</title>
+<script language="javascript" src="md5.js"></script>
+<script>
+
+//工具函数---start
+function CreateEmptyString(l) {
+    var a = [];
+    for (var i = 0; i < l; i++) {
+        a[i] = '*';
+    }
+    return a.join('');
+}
+
+
+//向列表中添加表项
+function AddList(sel, text, value){
+    var option = document.createElement("option");
+    option.appendChild(document.createTextNode(text));
+    option.setAttribute("value",value); 
+    sel.appendChild(option);
+    return;
+}
+
+
+//去除时间格式内的HTTP关键字
+function FormatTime(time){
+    var tmp_string = time.split(' ');
+    var tmp_string_cp = tmp_string[1].split(':');
+    return tmp_string[0]+'%20'+tmp_string_cp[0]+'%3A'+tmp_string_cp[1]+'%3A'+ tmp_string_cp[2];
+}
+
+
+
+var IS_SHOW_DEBUG = 0;  //0-关闭, 1-开启
+var gdownloadID = 1;   //下载编码
+var gdownloadID2 = 1;
+
+function DebugAlert(str){
+    if(IS_SHOW_DEBUG == 1){
+        alert(str);
+    }
+}
+
+String.prototype.replaceAll = function(f, r) {
+    var s = new String(this);
+    while (s.indexOf(f) != -1) {
+        s = s.replace(f, r);
+    }
+    return s.toString();
+}
+
+/**
+ * 解析从控件返回的xml字符串
+ */
+function loadXML(xmlString){
+     if(!g_xmlActive){
+         return;
+     }
+     g_xmlActive.loadXML(xmlString);
+     if(0 == g_xmlActive.parseError.errorCode){
+         return g_xmlActive;
+     }
+     else{
+         alert("xml解析错误:" + g_xmlActive.parseError.reason);
+         return null;
+     } 
+} 
+
+function getElementById(dom, tagName){
+    for(var i = 0; i < dom.childNodes.length; i++){
+        var node = dom.childNodes[i];
+        if(node.baseName == tagName){
+            return node.nodeTypedValue;
+        }
+        else{
+            if(node.childNodes.length != 0){
+                getElementById(dom.childNodes[i], tagName);
+            }
+        }
+    }
+}
+
+//工具函数---end
+
+
+
+//全局变量---start
+
+var g_UserLoginId = '';
+var g_imosActivePlayer = null;
+var g_curFrameNum = '';
+var g_xmlActive = null;
+var g_isLogin = 1;
+
+
+
+//全局变量---end
+
+
+
+//================>功能函数---start
+
+/*** 获取IP端口  用户名密码 通道号 开始  ***/
+var httpUrl="";
+var webid=0;
+var tokenV = "";
+
+var lChannel;
+var lChannel1;
+var divIP;
+var txtDivPort;
+var txtLogName;
+var txtLogPassWord;
+
+var lineType;
+
+var jy;
+var lineNo;
+/*** 获取IP端口  用户名密码 通道号 结束  ***/
+
+//检查控件
+function InitPage(){
+    
+   g_imosActivePlayer = document.all.h3c_IMOS_ActiveX;
+   g_PlayFrame = document.all.Play_Frame;
+    if(!g_imosActivePlayer) {
+        alert("未安装控件，请先安装后再使用本页面");
+    }
+    
+    var xmldoc;
+    try{
+        xmldoc = new ActiveXObject("Microsoft.XMLDOM");
+        if(!xmldoc){
+           xmldoc = new ActiveXObject("MSXML2.DOMDocument.3.0");  
+        }
+    } 
+    catch(e){        
+    }
+    g_xmlActive = xmldoc;
+    if(!g_xmlActive){
+        alert("xml解析器获取错误，将导致某些功能不可用");
+    }
+    else{
+        g_xmlActive.async = "false";  
+    }
+    
+    /*** 获取IP端口  用户名密码 通道号 开始  ***/
+    var urlinfo=window.location.href;
+	var len=urlinfo.length;
+	var offset=urlinfo.indexOf("?");
+	var newsidinfo=urlinfo.substr(offset,len)
+	var as1 = newsidinfo.split("&");
+	var ids=as1[0].split("=");
+	var idKey = ids[0]
+	var idValue = ids[1]
+	var httpPaths = as1[1].split("=");
+	var httpPathKey=httpPaths[0];
+	var httpPathValue=httpPaths[1];
+	var tokens = as1[2].split("=");
+	var tokenKey=tokens[0];
+	var tokenValue=tokens[1];
+	
+	httpUrl = httpPathValue;
+	webid = idValue;
+	tokenV = tokenValue;
+	
+	$.ajax({
+	      type:"POST",
+	      url:httpPathValue+"/sysHjLine/getSpMonitor",
+	      beforeSend: function(request) {
+          	request.setRequestHeader("X-Token",tokenValue);
+          },
+	      contentType: 'application/x-www-form-urlencoded;charset=UTF-8',  
+	      data:{id:idValue},
+	      dataType:"json",
+	      success:function(data){
+	      	jy=String(data.sysHjLine.jy);
+	      	lineNo=String(data.sysHjLine.lineNo);
+	      	lineType = String(data.sysHjLine.lineType);
+	      	lChannel = String(data.sysHjLine.videochan1NoYushi);
+	      	lChannel1 = String(data.sysHjLine.videochan2NoYushi);
+	      	divIP = String(data.sysHjVideo.ip);
+	      	txtDivPort = String(data.sysHjVideo.port);
+	      	txtLogName = String(data.sysHjVideo.loginuser);
+	      	txtLogPassWord = String(data.sysHjVideo.loginpwd);
+	      	DoLogin();
+	      }
+	});	
+    /*** 获取IP端口  用户名密码 通道号 结束  ***/
+}
+
+//登录    
+function DoLogin(){
+    g_isLogin = g_imosActivePlayer.IMOSAX_InitOCX(divIP, txtDivPort, txtLogName, txtLogPassWord, 1);
+	if(0!=g_isLogin)
+    {
+        alert("IMOSAX_InitOCX Error:"+g_isLogin); 
+        return;
+    }
+    //获取用户信息
+    var retStr = g_imosActivePlayer.IMOSAX_GetUserLoginInfo();
+    var userObj = loadXML(retStr);
+    g_UserLoginId = userObj.documentElement.selectNodes("//LOGININFO/UserLoginIDInfo/UserLoginCode")[0].text;
+
+    retStr = g_imosActivePlayer.IMOSAX_SetSingleCfgParam("VideoDownloadPath ", "C:\\");
+
+	DoStartPlay();
+
+}
+
+
+//退出登录
+function DoLogout(){
+    if(!g_imosActivePlayer){
+      alert("未安装控件，请先安装后再使用本页面");
+      return;
+    }
+	
+	var flag = g_imosActivePlayer.IMOSAX_UnregOCX();
+	if(0 != flag){
+	  alert("IMOSAX_UnregOCX Error:"+flag); 
+	  return;
+	}	
+	
+	var loginSt = document.getElementById("loginSt");
+	loginSt.innerText = "系统未登录！";
+}
+
+//启动软解实况
+// 播放第一个摄像头画面
+function DoStartPlay(){  //亲属画面
+//    var cameraId = document.getElementById("CamIDText").value;
+//  var frameNum = g_curFrameNum;
+//  frameNum = parseInt(frameNum, 10);    
+//  if(isNaN(frameNum) || frameNum < 1 || frameNum > 25){
+//      alert("请先选择一个窗格");
+//      return;
+//  }
+    var flag = g_imosActivePlayer.IMOSAX_StartFrameLive (1, lChannel1);
+	if(lineType=='0'){
+		DoStopSound();
+	}
+    DoStartPlay2();
+	
+	
+//  if(0 == flag){
+//      alert("实况播放成功");
+//      
+//  }
+//  else{
+//      alert("播放实况失败，错误码：" + flag);
+//  }
+}
+
+// 播放第二个摄像头画面
+function DoStartPlay2(){ //犯人画面
+//    var cameraId = document.getElementById("CamIDText").value;
+//  var frameNum = g_curFrameNum;
+//  frameNum = parseInt(frameNum, 10);    
+//  if(isNaN(frameNum) || frameNum < 1 || frameNum > 25){
+//      alert("请先选择一个窗格");
+//      return;
+//  }
+	//var flag = g_imosActivePlayer.IMOSAX_StartFrameLive (frameNum, cameraId);
+    var flag = g_imosActivePlayer.IMOSAX_StartFrameLive (2, lChannel);
+	DoStopSound2();
+	
+    
+//  if(0 == flag){
+//      alert("实况播放成功");
+//      
+//  }
+//  else{
+//      alert("播放实况失败，错误码：" + flag);
+//  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+//音量调节
+function DoStopSound(){ //亲属侧
+
+    var flag = g_imosActivePlayer.IMOSAX_StopSound(1);
+   
+ 
+ }
+ 
+ function DoStopSound2(){ //犯人侧
+ 
+    var flag = g_imosActivePlayer.IMOSAX_StopSound(2);
+    
+ 
+ }
+ 
+ function DoPlaySound(){
+    //var flag = g_imosActivePlayer.IMOSAX_PlaySound(frameNum);
+    var flag = g_imosActivePlayer.IMOSAX_PlaySound(2);
+//  if(0 != flag){
+//       alert("开启声音失败，错误码：" + flag);
+//  }
+//  
+//  else{
+//      alert("开启声音成功！")
+//  }
+ }
+ 
+ 
+
+
+
+//================>事件处理函数event---start
+
+/**
+ * 窗格单击事件的处理函数
+ */
+function dealEventClickFrame(ulFrameNum, pcFrameInfo){
+    //当前窗格
+    g_curFrameNum = ulFrameNum;
+    pcFrameInfo = pcFrameInfo.replaceAll("\"", "\'");
+    var tmpXmlDoc = loadXML(pcFrameInfo);
+    if(!tmpXmlDoc){
+        return;
+    }
+    //将需要的数据从xml中获取，方便后续使用
+    var cameraID = tmpXmlDoc.selectNodes("//FrameInfo//CameraCode")[0];
+    if(cameraID){
+          document.getElementById("CamIDText").value = cameraID.text;
+        return;
+    }
+    else{
+            document.getElementById("CamIDText").value = "未启动";
+        }
+    
+}
+
+//================>事件处理函数event---end
+
+</script>
+
+</head>
+<body onload="InitPage()" onbeforeunload="DoLogout()" style="font-size:10pt">
+	<br/>
+	<table width=900>
+    <!-- 播放控件  begin -->
+    <tr><td>
+    <object  classid="clsid:067A4418-EBAC-4394-BFBE-8C533BA6503A" id="h3c_IMOS_ActiveX" events="true"  height="900"  width="880">
+    </object>
+    <!-- 播放控件  end -->    
+    </table>
+    <script src="../jquery-1.2.6.js" type="text/javascript" ></script>
+</body>
+</html>
+<!--ActiveX控件事件, 初始化完成后会触发, 告知界面当前的播放器ID-->
+<script type="text/javascript" for= "h3c_IMOS_ActiveX" event="eventClickFrame(ulFrameNum,  pcFrameInfo)">
+    if(typeof dealEventClickFrame == "function"){
+        dealEventClickFrame(ulFrameNum,  pcFrameInfo);
+    }
+</script>
+<script type="text/javascript" for= "h3c_IMOS_ActiveX" event="eventPostDownloadErr(pcDownloadCode, ulErrorCode)">
+    alert("下载错误"+ulErrorCode);
+</script>
+<script type="text/javascript" for= "h3c_IMOS_ActiveX" event="eventDownloadComplete(pcDownloadCode)">
+    alert("下载成功");
+</script>
+
+
+
+

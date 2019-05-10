@@ -67,7 +67,7 @@ public class SysHjServerWeb extends Result{
     	SysLogVO sysLog = new SysLogVO();
     	sysLog.setType("正常");
 		sysLog.setOp("编辑线路");
-		sysLog.setInfo("编辑线路: IP"+model.getIp()+"，端口："+model.getPort()+"，监听端口："+model.getAudioPort()+"，录音网络地址："+model.getRecurl());
+		sysLog.setInfo("编辑线路: IP"+model.getIp()+"，端口："+model.getPort()+"，监听端口："+model.getAudioport()+"，录音网络地址："+model.getRecurl());
 		sysLog.setModel("线路设置");
 		sysLog.setUserNo(user.getUserNo());
 		sysLog.setUserName(user.getUserName());

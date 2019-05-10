@@ -878,7 +878,7 @@ export default {
     },
     downVideo(row){
     	Message({
-        message: '文件正在打包下载，请耐心等待，可能需要一分钟时间。',
+        message: '文件正在打包下载，请不要重复点击下载以及关闭网页，可能需要几分钟时间。',
 	      type: 'success',
 	      duration: 5 * 1000
       });
@@ -887,22 +887,14 @@ export default {
     	}
     	let fileName = row.frName+"-"+row.frNo+"音视频.zip";
     	DownVideo(param).then(res =>{
-    		var blob = new Blob([res], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' })
-	     	if (window.navigator && window.navigator.msSaveOrOpenBlob) { // IE浏览器
-        	window.navigator.msSaveOrOpenBlob(blob, fileName);
-    		}else{ //非IE浏览器
-	     		var downloadElement = document.createElement('a')
-		     	var href = window.URL.createObjectURL(blob)
-		     	downloadElement.href = href
-		     	downloadElement.download = fileName
-		     	document.body.appendChild(downloadElement)
-		     	downloadElement.click()
-	     		document.body.removeChild(downloadElement) // 下载完成移除元素
-		     	window.URL.revokeObjectURL(href) // 释放掉blob对象
-	     	}
-    	}).catch(error => {
-	        console.log(error)
-	    })
+    		var downloadElement = document.createElement('a')
+		    downloadElement.href = res.fileUrl
+		    downloadElement.download = fileName
+		    document.body.appendChild(downloadElement)
+		    downloadElement.click()
+	      document.body.removeChild(downloadElement) // 下载完成移除元素
+		    window.URL.revokeObjectURL(href) // 释放掉blob对象
+    	})
     },
     downAudio(row){
     	Message({

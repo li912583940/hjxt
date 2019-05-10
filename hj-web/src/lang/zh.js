@@ -35,6 +35,7 @@ export default {
     deptManage: '部门管理',
     confSet: '会见配置',
     sysParam: '系统参数',
+    yjHtml: '应急查询',
     permission: '权限测试页',
     pagePermission: '页面权限',
     directivePermission: '指令权限',

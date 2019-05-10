@@ -70,8 +70,8 @@ public class HjMonitorWeb extends Result{
 	 * L_晓天  @2018年11月22日
 	 */
 	@RequestMapping("/qieduanHj")
-	public String qieduanHj(Long hjid){
-		return sysHjLineSQL.qieduanHj(hjid);
+	public String qieduanHj(Long hjid, Integer lineId){
+		return sysHjLineSQL.qieduanHj(hjid, lineId);
 	}
 	
 	@RequestMapping("/requestCH")

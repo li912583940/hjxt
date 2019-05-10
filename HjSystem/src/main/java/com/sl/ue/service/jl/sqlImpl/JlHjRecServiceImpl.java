@@ -54,7 +54,9 @@ import com.sl.ue.util.Config;
 import com.sl.ue.util.Constants;
 import com.sl.ue.util.DateUtil;
 import com.sl.ue.util.StringUtil;
+import com.sl.ue.util.business.RecFileManage;
 import com.sl.ue.util.business.RecordFileThread;
+import com.sl.ue.util.http.HttpFile;
 import com.sl.ue.util.http.Result;
 import com.sl.ue.util.http.WebContextUtil;
 import com.sl.ue.util.http.token.JqRoleManager;
@@ -559,30 +561,22 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     	return result.toResult();
     }
     
-    public void downVideo(Long webid, HttpServletRequest request, HttpServletResponse response){
+    public String downVideo(Long webid, HttpServletRequest request, HttpServletResponse response){
     	Result result = new Result();
     	JlHjRecVO jlHjRec = this.findOne(webid);
     	if(jlHjRec==null){
     		result.error(Result.error_103,"数据库查询不到此记录");
-    		return;
+    		return result.toResult();
     	}
-    	SysUserVO user = TokenUser.getUser();
-    	SysLogVO sysLog = new SysLogVO();
-    	sysLog.setType("严重");
-		sysLog.setOp("下载录音录像");
-		sysLog.setInfo("下载罪犯编号: "+jlHjRec.getFrNo()+"，罪犯姓名: "+jlHjRec.getFrName()+"；时间: "+jlHjRec.getCallTimeStart()+" 的录音录像");
-		sysLog.setModel("会见记录");
-		sysLog.setUserNo(user.getUserNo());
-		sysLog.setUserName(user.getUserName());
-		sysLog.setLogTime(DateUtil.getDefaultNow());
-		sysLog.setUserIp(request.getRemoteAddr());
-		sysLogSQL.add(sysLog);
+		
+		String fileDir = Config.getPropertiesValue("file.path")+"/recZip";
+		String fileFile = Config.getPropertiesValue("file.file");
+		String fileHtpp = Config.getPropertiesValue("file.http");
 		
     	String callRecPath = Config.getPropertiesValue("callRecfile");
     	String callVideoPath1 = Config.getPropertiesValue("callVideofile1");
     	String callVideoPath2 = Config.getPropertiesValue("callVideofile2");
     	
-    	String fileDir = "D:/temporary";
     	File dirFile = new File(fileDir);
     	if(!dirFile.exists()){
     		dirFile.mkdir();
@@ -666,10 +660,19 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     		
     	}
     	if(fileList.size()==0){
-    		return;
+    		result.error(Result.error_103, "文件被删除，已经不存在");
+    		return result.toResult();
     	}
     	ZipOutputStream zos =null;
-    	String zipFilePath = fileDir+"/"+System.currentTimeMillis()+".zip";
+    	String dateStr=jlHjRec.getCallTimeStart().substring(0,10);
+    	String zipFilePath = fileDir+"/"+jlHjRec.getFrNo()+"_"+jlHjRec.getFrName()+"_"+dateStr+".zip";
+    	File zipFile = new File(zipFilePath);
+    	if(zipFile.exists()){
+    		zipFile.delete();
+    	}
+    
+    	String fileUrlReturn = fileHtpp+fileFile+"/recZip"+"/"+jlHjRec.getFrNo()+"_"+jlHjRec.getFrName()+"_"+dateStr+".zip";
+    	result.putJson("fileUrl", fileUrlReturn);
     	try {
 			zos = new ZipOutputStream(new FileOutputStream(zipFilePath));
 			for (File srcFile : fileList) {
@@ -685,72 +688,13 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 			}
 		} catch (Exception e1) {
 			e1.printStackTrace();
-		}
-    	
-		
-		OutputStream out = null;
-		BufferedInputStream in =null;
-    	try {
-    		// 处理不同浏览器中文名称编码
-        	String fileName="录音录像.zip";
-    		String userAgent=request.getHeader("USER-AGENT");
-    		if(userAgent.indexOf("Chrome")!=-1 || userAgent.indexOf("Safari")!=-1 || userAgent.indexOf("Firefox")!=-1){
-    			fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
-    		}else{
-    			fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
-    			//fileName = URLEncoder.encode(fileName,"UTF8");
-    		}
-    		response.setHeader("Content-Disposition", "attachment;filename="+fileName);
-        	response.setHeader("Cache-Control","no-cache");//设置头
-    		response.setCharacterEncoding("UTF-8");
-    		response.setContentType("application/octet-stream");
-    		
-    		out = response.getOutputStream();
-    		File zipFile = new File(zipFilePath);
-    		
-    		fileList.add(zipFile);
-    		
-    		response.setHeader("Content-Length", zipFile.length()+"");//设置头
-    		
-    		in = new BufferedInputStream(new FileInputStream(zipFile));
-    		byte[] buf = new byte[10*1024*1024];
-    		int len;
-    		 while ((len = in.read(buf)) != -1){
-    			 out.write(buf, 0, len);
-             }
-    		 out.flush();
-//    		zos = new ZipOutputStream(response.getOutputStream());
-//    		for (File srcFile : fileList) {
-//    			byte[] buf = new byte[10*1024*1024];
-//                zos.putNextEntry(new ZipEntry(srcFile.getName()));
-//                int len;
-//                FileInputStream in = new FileInputStream(srcFile);
-//                while ((len = in.read(buf)) != -1){
-//                    zos.write(buf, 0, len);
-//                }
-//                zos.closeEntry();
-//                in.close();
-//    		}
-		} catch (Exception e) {
-			// TODO: handle exception
+			result.error(Result.error_103, "文件打包过程出错");
+			return result.toResult();
 		}finally{
-			// 启动线程  删除文件
+//			// 启动线程  删除文件
 			if(fileList.size()>0){
 				RecordFileThread thread = new RecordFileThread(fileList);
 				thread.start();
-			}
-			try {
-				if(in!=null){
-					in.close();
-				}
-			}catch (IOException ex) {
-			}
-			if(out != null){
-				try {
-					out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 			}
 			if(zos != null){
                  try {
@@ -759,9 +703,248 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
                      e.printStackTrace();
                  }
             }
-			 
-			
 		}
+    	SysUserVO user = TokenUser.getUser();
+    	SysLogVO sysLog = new SysLogVO();
+    	sysLog.setType("严重");
+		sysLog.setOp("下载录音录像");
+		sysLog.setInfo("下载罪犯编号: "+jlHjRec.getFrNo()+"，罪犯姓名: "+jlHjRec.getFrName()+"；时间: "+jlHjRec.getCallTimeStart()+" 的录音录像");
+		sysLog.setModel("会见记录");
+		sysLog.setUserNo(user.getUserNo());
+		sysLog.setUserName(user.getUserName());
+		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLog.setUserIp(request.getRemoteAddr());
+		sysLogSQL.add(sysLog);
+		
+		//将文件路径与创建时间存储起来  后面定时器需要删除的
+    	RecFileManage recFileManage = new RecFileManage();
+    	recFileManage.putRecFile(zipFilePath, System.currentTimeMillis());
+    	
+    	return result.toResult();
+		
+//		OutputStream out = null;
+//		BufferedInputStream in =null;
+//    	try {
+//    		// 处理不同浏览器中文名称编码
+//        	String fileName="录音录像.zip";
+//    		String userAgent=request.getHeader("USER-AGENT");
+//    		if(userAgent.indexOf("Chrome")!=-1 || userAgent.indexOf("Safari")!=-1 || userAgent.indexOf("Firefox")!=-1){
+//    			fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+//    		}else{
+//    			fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+//    			//fileName = URLEncoder.encode(fileName,"UTF8");
+//    		}
+//    		response.setHeader("Content-Disposition", "attachment;filename="+fileName);
+//        	response.setHeader("Cache-Control","no-cache");//设置头
+//    		response.setCharacterEncoding("UTF-8");
+//    		response.setContentType("application/octet-stream");
+//    		
+//    		out = response.getOutputStream();
+//    		File zipFile = new File(zipFilePath);
+//    		
+//    		fileList.add(zipFile);
+//    		
+//    		response.setHeader("Content-Length", zipFile.length()+"");//设置头
+//    		
+//    		in = new BufferedInputStream(new FileInputStream(zipFile));
+//    		byte[] buf = new byte[10*1024*1024];
+//    		int len;
+//    		 while ((len = in.read(buf)) != -1){
+//    			 out.write(buf, 0, len);
+//             }
+//    		 out.flush();
+//
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//		}finally{
+//			// 启动线程  删除文件
+//			if(fileList.size()>0){
+//				RecordFileThread thread = new RecordFileThread(fileList);
+//				thread.start();
+//			}
+//			try {
+//				if(in!=null){
+//					in.close();
+//				}
+//			}catch (IOException ex) {
+//			}
+//			if(out != null){
+//				try {
+//					out.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//			}
+//			if(zos != null){
+//                 try {
+//                     zos.close();
+//                 } catch (IOException e) {
+//                     e.printStackTrace();
+//                 }
+//            }
+//			 
+//			
+//		}
+    }
+    
+    public String downVideo1(Long webid, HttpServletRequest request, HttpServletResponse response){
+    	Result result = new Result();
+    	JlHjRecVO jlHjRec = this.findOne(webid);
+    	if(jlHjRec==null){
+    		result.error(Result.error_103,"数据库查询不到此记录");
+    		return result.toResult();
+    	}
+		
+		String fileDir = Config.getPropertiesValue("file.path")+"/recZip";
+		String fileFile = Config.getPropertiesValue("file.file");
+		String fileHtpp = Config.getPropertiesValue("file.http");
+		
+    	String callRecPath = Config.getPropertiesValue("callRecfile");
+    	String callVideoPath1 = Config.getPropertiesValue("callVideofile1");
+    	String callVideoPath2 = Config.getPropertiesValue("callVideofile2");
+    	
+    	File dirFile = new File(fileDir);
+    	if(!dirFile.exists()){
+    		dirFile.mkdir();
+    	}
+    	
+    	String hjServerPath = ""; //录音文件网络地址
+    	List<SysHjServerVO> list = sysHjServerSQL.findList(new SysHjServerVO());
+    	for(SysHjServerVO hjServer : list){
+    		if(hjServer.getServerName().equals(jlHjRec.getJy())){
+    			hjServerPath = hjServer.getRecurl();
+    		}
+    	}
+    	
+    	String hjVideoPath = ""; //录像文件网络地址
+    	SysHjLineVO sysHjLine = new SysHjLineVO();
+    	sysHjLine.setLineNo(jlHjRec.getLineNo());	
+    	sysHjLine.setJy(jlHjRec.getJy());
+    	List<SysHjLineVO> sysHjLineList = sysHjLineSQL.findList(sysHjLine);
+    	if(sysHjLineList.size()>0){
+    		sysHjLine = sysHjLineList.get(0);
+    		SysHjVideoVO sysHjVideo =sysHjVideoSQL.findOne(sysHjLine.getVideochan1Server());
+    		hjVideoPath = sysHjVideo.getVideourl();
+    	}
+    	
+    	List<File> fileList = new ArrayList();
+    	if(StringUtils.isNotBlank(jlHjRec.getCallRecfile())){
+    		String end =jlHjRec.getCallRecfile().replace("\\", "/");
+			end = end.substring(end.indexOf("/")+1);
+			end = end.substring(end.indexOf("/"));
+			String fileUrl = hjServerPath+callRecPath+end;
+            try
+            {
+                String fileExt = jlHjRec.getCallRecfile().substring(jlHjRec.getCallRecfile().indexOf(".")+1);
+                String fileName = fileDir+"/"+System.currentTimeMillis()+"."+fileExt;
+                HttpFile.downLoadFromUrl(fileUrl, fileName);
+                File file1 = new File(fileName);
+                fileList.add(file1);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+    		
+    	}
+    	if(StringUtils.isNotBlank(jlHjRec.getCallVideofile1())){
+    		String end =jlHjRec.getCallVideofile1().replace("\\", "/");
+			end = end.substring(end.indexOf("/")+1);
+			end = end.substring(end.indexOf("/"));
+			String fileUrl = hjVideoPath + callVideoPath1 + end;
+            try
+            {
+                String fileExt = jlHjRec.getCallVideofile1().substring(jlHjRec.getCallVideofile1().indexOf(".")+1);
+                String fileName = fileDir+"/"+System.currentTimeMillis()+"."+fileExt;
+                File file1 = new File(fileName);
+                HttpFile.downLoadFromUrl(fileUrl, fileName);
+                fileList.add(file1);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+    		
+    	}
+    	if(StringUtils.isNotBlank(jlHjRec.getCallVideofile2())){
+    		String end =jlHjRec.getCallVideofile2().replace("\\", "/");
+			end = end.substring(end.indexOf("/")+1);
+			end = end.substring(end.indexOf("/"));
+			String fileUrl = hjVideoPath + callVideoPath2 + end;
+            try
+            {
+                String fileExt = jlHjRec.getCallVideofile2().substring(jlHjRec.getCallVideofile2().indexOf(".")+1);
+                String fileName = fileDir+"/"+System.currentTimeMillis()+"."+fileExt;
+                HttpFile.downLoadFromUrl(fileUrl, fileName);
+                File file1 = new File(fileName);
+                fileList.add(file1);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+    		
+    	}
+    	if(fileList.size()==0){
+    		result.error(Result.error_103, "文件被删除，已经不存在");
+    		return result.toResult();
+    	}
+    	ZipOutputStream zos =null;
+    	String dateStr=jlHjRec.getCallTimeStart().substring(0,10);
+    	String zipFilePath = fileDir+"/"+jlHjRec.getFrNo()+"_"+jlHjRec.getFrName()+"_"+dateStr+".zip";
+    	File zipFile = new File(zipFilePath);
+    	if(zipFile.exists()){
+    		zipFile.delete();
+    	}
+    
+    	String fileUrlReturn = fileHtpp+fileFile+"/recZip"+"/"+jlHjRec.getFrNo()+"_"+jlHjRec.getFrName()+"_"+dateStr+".zip";
+    	result.putJson("fileUrl", fileUrlReturn);
+    	try {
+			zos = new ZipOutputStream(new FileOutputStream(zipFilePath));
+			for (File srcFile : fileList) {
+				byte[] buf = new byte[10*1024*1024];
+	            zos.putNextEntry(new ZipEntry(srcFile.getName()));
+	            int len;
+	            FileInputStream in = new FileInputStream(srcFile);
+	            while ((len = in.read(buf)) != -1){
+	                zos.write(buf, 0, len);
+	            }
+	            zos.closeEntry();
+	            in.close();
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			result.error(Result.error_103, "文件打包过程出错");
+			return result.toResult();
+		}finally{
+//			// 启动线程  删除文件
+			if(fileList.size()>0){
+				RecordFileThread thread = new RecordFileThread(fileList);
+				thread.start();
+			}
+			if(zos != null){
+                 try {
+                     zos.close();
+                 } catch (IOException e) {
+                     e.printStackTrace();
+                 }
+            }
+		}
+    	SysUserVO user = TokenUser.getUser();
+    	SysLogVO sysLog = new SysLogVO();
+    	sysLog.setType("严重");
+		sysLog.setOp("下载录音录像");
+		sysLog.setInfo("下载罪犯编号: "+jlHjRec.getFrNo()+"，罪犯姓名: "+jlHjRec.getFrName()+"；时间: "+jlHjRec.getCallTimeStart()+" 的录音录像");
+		sysLog.setModel("会见记录");
+		sysLog.setUserNo(user.getUserNo());
+		sysLog.setUserName(user.getUserName());
+		sysLog.setLogTime(DateUtil.getDefaultNow());
+		sysLog.setUserIp(request.getRemoteAddr());
+		sysLogSQL.add(sysLog);
+		
+		//将文件路径与创建时间存储起来  后面定时器需要删除的
+    	RecFileManage recFileManage = new RecFileManage();
+    	recFileManage.putRecFile(zipFilePath, System.currentTimeMillis());
+    	
+    	return result.toResult();
+
     }
     
     public void downAudio(Long webid, HttpServletRequest request, HttpServletResponse response){
@@ -783,6 +966,7 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 		sysLog.setUserIp(request.getRemoteAddr());
 		sysLogSQL.add(sysLog);
 		
+		String callRecPath = Config.getPropertiesValue("callRecfile");
 		
 		InputStream inputStream = null;
     	if(StringUtils.isNotBlank(jlHjRec.getCallRecfile())){
@@ -804,7 +988,7 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 	    				String end =jlHjRec.getCallRecfile().replace("\\", "/");
 	        			end = end.substring(end.indexOf("/")+1);
 	        			end = end.substring(end.indexOf("/"));
-	        			fileUrl = hjServer.getRecurl()+"/file"+end;
+	        			fileUrl = hjServer.getRecurl()+callRecPath+end;
 	    			}
 	    		}
 	    		int HttpResult; // 服务器返回的状态
@@ -1014,38 +1198,29 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
     	}
     	
     	if(StringUtils.isNotBlank(model.getCallRecfile())){
-			//先查看文件是否存在， 不存在就直接提示了
-			File file = new File(model.getCallRecfile());
-			if(file.exists()){
-				String end =model.getCallRecfile().replace("\\", "/");
-				end = end.substring(end.indexOf("/")+1);
-				end = end.substring(end.indexOf("/"));
-				String url = hjServerPath + callRecPath + end;
-				result.putJson("callUrl",url);
-				result.putJson("callLen",model.getCallTimeLen() );
-			}
+			String end =model.getCallRecfile().replace("\\", "/");
+			end = end.substring(end.indexOf("/")+1);
+			end = end.substring(end.indexOf("/"));
+			String url = hjServerPath + callRecPath + end;
+			result.putJson("callUrl", url);
+			result.putJson("callLen", model.getCallTimeLen() );
+			System.out.println("IE 播放录音地址："+url);
 		}
 		
 		if(StringUtils.isNotBlank(model.getCallVideofile1())){
-			File file = new File(model.getCallVideofile1());
-			if(file.exists()){
-				String end = model.getCallVideofile1().replace("\\", "/");
-				end = end.substring(end.indexOf("/")+1);
-				end = end.substring(end.indexOf("/"));
-				String url = hjVideoPath + callVideoPath1 + end;
-				result.putJson("callVideo1Url", url);
-			}
+			String end = model.getCallVideofile1().replace("\\", "/");
+			end = end.substring(end.indexOf("/")+1);
+			end = end.substring(end.indexOf("/"));
+			String url = hjVideoPath + callVideoPath1 + end;
+			result.putJson("callVideo1Url", url);
 			
 		}
 		if(StringUtils.isNotBlank(model.getCallVideofile2())){
-			File file = new File(model.getCallVideofile2());
-			if(file.exists()){
-				String end = model.getCallVideofile2().replace("\\", "/");
-				end = end.substring(end.indexOf("/")+1);
-				end = end.substring(end.indexOf("/"));
-				String url = hjVideoPath + callVideoPath2 + end;
-				result.putJson("callVideo2Url", url);
-			}
+			String end = model.getCallVideofile2().replace("\\", "/");
+			end = end.substring(end.indexOf("/")+1);
+			end = end.substring(end.indexOf("/"));
+			String url = hjVideoPath + callVideoPath2 + end;
+			result.putJson("callVideo2Url", url);
 			
 		}
     	

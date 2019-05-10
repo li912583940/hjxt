@@ -20,15 +20,15 @@ public class SysHjServer implements java.io.Serializable {
 	@DbField("Port")
 	private Integer port;
 	@DbField("AudioPort")
-	private Integer audioPort;
+	private Integer audioport;
 	@DbField("RecUrl")
 	private String recurl;
 	@DbField("HjIndexDate")
-	private Integer hjIndexDate;
+	private Integer hjindexdate;
 	@DbField("HjIndexCount")
-	private Integer hjIndexCount;
+	private Integer hjindexcount;
 	@DbField("ZwIndex")
-	private Integer zwIndex;
+	private Integer zwindex;
 
 
 
@@ -65,13 +65,6 @@ public class SysHjServer implements java.io.Serializable {
 		this.port = port;
 	}
 
-	public Integer getAudioPort() {
-		return this.audioPort;
-	}
-
-	public void setAudioPort(Integer audioPort) {
-		this.audioPort = audioPort;
-	}
 
 	public String getRecurl() {
 		return this.recurl;
@@ -81,28 +74,38 @@ public class SysHjServer implements java.io.Serializable {
 		this.recurl = recurl;
 	}
 
-	public Integer getHjIndexDate() {
-		return this.hjIndexDate;
+	public Integer getAudioport() {
+		return audioport;
 	}
 
-	public void setHjIndexDate(Integer hjIndexDate) {
-		this.hjIndexDate = hjIndexDate;
+	public void setAudioport(Integer audioport) {
+		this.audioport = audioport;
 	}
 
-	public Integer getHjIndexCount() {
-		return this.hjIndexCount;
+	public Integer getHjindexdate() {
+		return hjindexdate;
 	}
 
-	public void setHjIndexCount(Integer hjIndexCount) {
-		this.hjIndexCount = hjIndexCount;
+	public void setHjindexdate(Integer hjindexdate) {
+		this.hjindexdate = hjindexdate;
 	}
 
-	public Integer getZwIndex() {
-		return this.zwIndex;
+	public Integer getHjindexcount() {
+		return hjindexcount;
 	}
 
-	public void setZwIndex(Integer zwIndex) {
-		this.zwIndex = zwIndex;
+	public void setHjindexcount(Integer hjindexcount) {
+		this.hjindexcount = hjindexcount;
 	}
+
+	public Integer getZwindex() {
+		return zwindex;
+	}
+
+	public void setZwindex(Integer zwindex) {
+		this.zwindex = zwindex;
+	}
+
+	
 
 }

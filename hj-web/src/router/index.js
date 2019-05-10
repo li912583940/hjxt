@@ -316,6 +316,19 @@ export const asyncRouterMap = [
     ]
   },
  
+  { // 应急查询
+    path: '/yjHtml',
+    component: Layout,
+    meta: {
+      roles:'yjHtml'
+    },
+    children: [{
+      path: 'index',
+      component: () => import('@/views/yj-html/index'),
+      name: 'yjHtml',
+      meta: { title: 'yjHtml', icon: 'chart', roles:'yjHtml' }
+    }]
+  },
 
   { path: '*', redirect: '/404', hidden: true }
 ]

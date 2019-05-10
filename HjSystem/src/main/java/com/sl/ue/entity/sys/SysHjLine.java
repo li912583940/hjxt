@@ -71,8 +71,10 @@ public class SysHjLine implements java.io.Serializable {
 	private Integer videochan2No;
 	@DbField("model")
 	private Integer model; //特殊线路 0：正常，1：特殊，默认0
-	
-
+	@DbField("VideoChan1_No_YuShi")
+	private String videochan1NoYushi;
+	@DbField("VideoChan2_No_YuShi")
+	private String videochan2NoYushi;
 
 	public Integer getWebid() {
 		return webid;
@@ -312,6 +314,22 @@ public class SysHjLine implements java.io.Serializable {
 
 	public void setModel(Integer model) {
 		this.model = model;
+	}
+
+	public String getVideochan1NoYushi() {
+		return videochan1NoYushi;
+	}
+
+	public void setVideochan1NoYushi(String videochan1NoYushi) {
+		this.videochan1NoYushi = videochan1NoYushi;
+	}
+
+	public String getVideochan2NoYushi() {
+		return videochan2NoYushi;
+	}
+
+	public void setVideochan2NoYushi(String videochan2NoYushi) {
+		this.videochan2NoYushi = videochan2NoYushi;
 	}
 
 	

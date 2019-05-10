@@ -136,8 +136,8 @@ public class JlHjRecWeb extends Result{
 	 * L_晓天  @2019年4月9日
 	 */
 	@RequestMapping("/downVideo")
-	public void downVideo(Long webid, HttpServletRequest request, HttpServletResponse response){
-		jlHjRecSQL.downVideo(webid, request, response);
+	public String downVideo(Long webid, HttpServletRequest request, HttpServletResponse response){
+		return jlHjRecSQL.downVideo1(webid, request, response);
 	}
 	
 	/**
@@ -148,7 +148,6 @@ public class JlHjRecWeb extends Result{
 	 */
 	@RequestMapping("/downAudio")
 	public void downAudio(Long webid, HttpServletRequest request, HttpServletResponse response){
-		
 		jlHjRecSQL.downAudio(webid, request, response);
 	}
 	

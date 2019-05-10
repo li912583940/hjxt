@@ -2,7 +2,7 @@
   <div class="app-container">
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 2011px">
+      style="width: 2111px">
       <el-table-column v-if="buttonRole.distributionPermission==1 || buttonRole.cancelDistributionPermission==1 || buttonRole.artificialPermission==1" align="center" :label="$t('criminal.actions')" width="300" fixed="left" >
         <template slot-scope="scope">
           <el-button v-if="buttonRole.distributionPermission==1" type="primary" size="mini" @click="fpZw(scope.row)">自动分配</el-button>
@@ -83,18 +83,11 @@
           <span>{{scope.row.djTime | dateFormat}}</span>
         </template>
       </el-table-column>
-      <!--<el-table-column width="100" align="center" label="授权状态">
+      <el-table-column v-if="buttonRole.bofangTTSPermission==1" width="100" align="center" label="操作" fixed="right">
         <template slot-scope="scope">
-          <span v-if="scope.row.shState=='1'">已授权</span>
-          <span v-if="scope.row.shState=='0'">未授权</span>
+          <el-button v-if="buttonRole.bofangTTSPermission==1" type="primary" size="mini" @click="bofangTTS(scope.row)">语音播报</el-button>
         </template>
-      </el-table-column>-->
-      <!--<el-table-column v-if="buttonRole.grantPermission==1 || buttonRole.cancelGrantPermission==1" width="180" align="center" label="操作" fixed="right">
-        <template slot-scope="scope">
-          <el-button v-if="buttonRole.grantPermission==1" type="primary" size="mini" @click="grantCall(scope.row)">授权</el-button>
-          <el-button v-if="buttonRole.cancelGrantPermission==1" type="primary" size="mini" @click="cancelGrantCall(scope.row)">取消授权</el-button>
-        </template>
-      </el-table-column>-->
+      </el-table-column>
     </el-table>
 
 		<!-- 分页 -->
@@ -109,8 +102,8 @@
         <el-form-item label="服刑人员姓名" prop="frName">
           <el-input v-model="rgFpDataForm.frName" :disabled="true"></el-input>
         </el-form-item>
-        <el-form-item label="座位" prop="lineNo">
-          <el-select class="filter-item" v-model="rgFpDataForm.lineNo" placeholder="请选择座位">
+        <el-form-item label="座位" prop="webid">
+          <el-select class="filter-item" v-model="rgFpDataForm.webid" placeholder="请选择座位">
             <el-option v-for="item in zws" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -125,7 +118,7 @@
 </template>
 
 <script>
-import { findPojo, FpZw, QxFpZw, GetSurplusZw, RgFpZw, GrantCall, CancelGrantCall } from '@/api/meetSign'
+import { findPojo, FpZw, QxFpZw, GetSurplusZw, RgFpZw, GrantCall, CancelGrantCall, BofangTTS } from '@/api/meetSign'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -152,21 +145,20 @@ export default {
       	distributionPermission: 0, 
       	cancelDistributionPermission: 0,
       	artificialPermission: 0,
-      	//grantPermission : 0,
-      	//cancelGrantPermission: 0,
+      	bofangTTSPermission : 0,
       },
       
       rgFpDataForm: {
       	hjId: undefined,
       	frName: undefined,
-      	lineNo: undefined
+      	webid: undefined
       },
       
       zws:[],
       dialogRgFpVisible: false,
       
       rules: {
-        lineNo: [{ required: true, message: '请选择座位', trigger: 'blur' }]
+        webid: [{ required: true, message: '请选择座位', trigger: 'blur' }]
       },
      
     }
@@ -229,8 +221,7 @@ export default {
     		this.buttonRole.distributionPermission= 1
     		this.buttonRole.cancelDistributionPermission= 1
     		this.buttonRole.artificialPermission= 1
-    		//this.buttonRole.grantPermission= 1
-    		//this.buttonRole.cancelGrantPermission= 1
+    		this.buttonRole.bofangTTSPermission= 1
     	}else{
     		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
     		let meetSign = buttonRoles.meetSign
@@ -242,12 +233,9 @@ export default {
     					this.buttonRole.cancelDistributionPermission= 1
     				}else if(value=='artificialPermission'){
     					this.buttonRole.artificialPermission= 1
+    				}else if(value=='bofangTTSPermission'){
+    					this.buttonRole.bofangTTSPermission= 1
     				}
-//  				else if(value=='grantPermission'){
-//  					this.buttonRole.grantPermission= 1
-//  				}else if(value=='cancelGrantPermission'){
-//  					this.buttonRole.cancelGrantPermission= 1
-//  				}
     			}
     		}
     	}
@@ -298,7 +286,7 @@ export default {
     		let sysHjLineList = res.sysHjLineList
     		for(let x of sysHjLineList){
     			let value = {}
-    			value.id= x.lineNo
+    			value.id= x.webid
     			value.name = x.zw
     			this.zws.push(value)
     		}
@@ -356,7 +344,28 @@ export default {
     	})
     	
     },
-    
+    bofangTTS(row){
+    	const loading = this.$loading({
+	      lock: true,
+	      text: 'Loading',
+	      spinner: 'el-icon-loading',
+	      background: 'rgba(0, 0, 0, 0.7)'
+	    })
+    	
+    	let param={
+    		hjid:row.hjid
+    	}
+    	BofangTTS(param).then(res=>{
+    		loading.close();
+    		Message({
+          message: '播放成功',
+          type: 'success',
+          duration: 5 * 1000
+	      });
+    	}).catch(error =>{
+    		loading.close();
+    	})
+    },
 		dateFormats: function (val) {
 			if(!val){
 				return undefined

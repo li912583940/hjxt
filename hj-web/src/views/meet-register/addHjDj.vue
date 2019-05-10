@@ -30,7 +30,7 @@
       </el-select>
       <el-input style="width: 200px;"  placeholder="输入会见说明" v-model="formdata.hjInfo" clearable>
       </el-input>
-      
+      <el-button class="filter-item" type="primary" v-waves  @click="openFaceCollection">人脸采集</el-button>
     </div>
     
 		<!-- 服刑人员开始 -->
@@ -311,9 +311,14 @@
     		<div style="margin-left: 10px;margin-top: 2px;">
     			<font size="4">
     				于{{jlHjDj.djTime | dateFormatYMD }}前往会见室窗口办理会见
-    				<span  v-if="jlHjDj.zw!=null" style="margin-left: 30px">
+    				<span  v-if="jlHjDj.zw!=null" style="margin-left: 30px;">
     					座位：{{jlHjDj.zw}}
     				</span>
+    			</font>
+    		</div>
+    		<div style="margin-left: 10px;margin-top: 2px;">
+    			<font size="4">
+    				说明：{{jlHjDj.hjInfo}}
     			</font>
     		</div>
     		<br></br>
@@ -867,6 +872,10 @@ export default {
 			this.dialogFormVisible = true
     },
     
+    openFaceCollection(){
+    	window.open("http://10.41.71.61/abms/card/record/guest",
+				"","width=1000,height=505,left=1120,top=720,dependent=yes,scroll:no,toolbar=no,menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no")
+    },
     print(){
     	var newstr = document.getElementsByClassName('wrap')[0].innerHTML
     	document.body.innerHTML = newstr

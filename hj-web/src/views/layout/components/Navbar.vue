@@ -114,45 +114,39 @@
 	  	 	</tr>
 	  	 	<tr>
 	  	 		<td>7</td>
-	  	 		<td>WindowsServer2003</td>
-	  	 		<td>IE8-WindowsServer2003-x86-CHS</td>
-	  	 		<td><a href="/static/Drivers/IE8-WindowsServer2003-x86-CHS.exe"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
-	  	 	</tr>
-	  	 	<tr>
-	  	 		<td>8</td>
-	  	 		<td>WindowsXP-x86</td>
-	  	 		<td>IE8-WindowsXP-x86-CHS</td>
-	  	 		<td><a href="/static/Drivers/IE8-WindowsXP-x86-CHS.exe"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
-	  	 	</tr>
-	  	 	<tr>
-	  	 		<td>9</td>
 	  	 		<td>win7(XP)-32位</td>
 	  	 		<td>身份证读卡器驱动</td>
 	  	 		<td><a href="/static/Drivers/USBDrv3.0-Win32.msi"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
 	  	 	</tr>
 	  	 	<tr>
-	  	 		<td>10</td>
+	  	 		<td>8</td>
 	  	 		<td>64位</td>
 	  	 		<td>身份证读卡器驱动</td>
 	  	 		<td><a href="/static/Drivers/Win7_64bit.rar"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
 	  	 	</tr>
 	  	 	<tr>
-	  	 		<td>11</td>
+	  	 		<td>9</td>
 	  	 		<td>win10-32位</td>
 	  	 		<td>身份证读卡器驱动</td>
 	  	 		<td><a href="/static/Drivers/二代证读验机具USB驱动.rar"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
 	  	 	</tr>
 	  	 	<tr>
-	  	 		<td>12</td>
+	  	 		<td>10</td>
 	  	 		<td>全部</td>
 	  	 		<td>二代证验证软件</td>
 	  	 		<td><a href="/static/Drivers/二代证验证软件.rar"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
 	  	 	</tr>
 	  	 	<tr>
-	  	 		<td>13</td>
+	  	 		<td>11</td>
 	  	 		<td>全部</td>
-	  	 		<td>宇视NVR网页控件</td>
-	  	 		<td><a href="/static/Drivers/VideoOcx_YuShi.zip"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 		<td>宇视网页插件SDK</td>
+	  	 		<td><a href="/static/Drivers/NetSDK.zip"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
+	  	 	</tr>
+	  	 	<tr>
+	  	 		<td>12</td>
+	  	 		<td>全部</td>
+	  	 		<td>文本编辑器</td>
+	  	 		<td><a href="/static/Drivers/npp_7.4.2_Installer.zip"><el-button type="primary"  size="mini" v-waves icon="el-icon-download">下载</el-button></a></td>
 	  	 	</tr>
 	  	</table>
       <div slot="footer" class="dialog-footer">

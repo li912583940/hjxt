@@ -1,7 +1,6 @@
 package com.sl.ue.entity.jl.vo;
 
 import com.sl.ue.entity.jl.JlHjDj;
-import com.sl.ue.util.anno.DbField;
 
 public class JlHjDjVO extends JlHjDj{
 
