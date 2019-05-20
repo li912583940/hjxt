@@ -2,7 +2,7 @@
   <div class="app-container">
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 2111px">
+      style="width: 2171px">
       <el-table-column v-if="buttonRole.distributionPermission==1 || buttonRole.cancelDistributionPermission==1 || buttonRole.artificialPermission==1" align="center" :label="$t('criminal.actions')" width="300" fixed="left" >
         <template slot-scope="scope">
           <el-button v-if="buttonRole.distributionPermission==1" type="primary" size="mini" @click="fpZw(scope.row)">自动分配</el-button>
@@ -83,9 +83,10 @@
           <span>{{scope.row.djTime | dateFormat}}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.bofangTTSPermission==1" width="100" align="center" label="操作" fixed="right">
+      <el-table-column v-if="buttonRole.bofangTTSPermission==1" width="160" align="center" label="语音播报" fixed="right">
         <template slot-scope="scope">
-          <el-button v-if="buttonRole.bofangTTSPermission==1" type="primary" size="mini" @click="bofangTTS(scope.row)">语音播报</el-button>
+          <el-button v-if="buttonRole.bofangTTSPermission==1" type="primary" size="mini" @click="hechengTTS(scope.row)">合成</el-button>
+          <el-button v-if="buttonRole.bofangTTSPermission==1" type="primary" size="mini" @click="bofangTTS(scope.row)">播放</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -114,11 +115,58 @@
       </div>
 		</el-dialog>
 
+		<object name="audioTts" id="audioTts" width="0" height="0" classid="CLSID:6BF52A52-394A-11d3-B153-00C04F79FAA6">
+				    <param name="AutoStart" value="1" />
+				    <!--是否name动播放-->
+				    <param name="Balance" value="0" />
+				    <!--调整左右声道平衡,同上面旧播放器代码-->
+				    <param name="enabled" value="1" />
+				    <!--播放器是否可人为控制-->
+				    <param name="EnableContextMenu" value="1" />
+				    <!--是否启用上下文菜单-->
+				    <param name="url" value="" />
+				    <!--播放的文件地址-->
+				    <param name="PlayCount" value="1" />
+				    <!--播放次数控制,为整数-->
+				    <param name="rate" value="1" />
+				    <!--播放速率控制,1为正常,允许小数,1.0-2.0-->
+				    <param name="currentPosition" value="0" />
+				    <!--控件设置:当前位置-->
+				    <param name="currentMarker" value="0" />
+				    <!--控件设置:当前标记-->
+				    <param name="defaultFrame" value="" />
+				    <!--显示默认框架-->
+				    <param name="invokeURLs" value="0" />
+				    <!--脚本命令设置:是否调用URL-->
+				    <param name="baseURL" value="" />
+				    <!--脚本命令设置:被调用的URL-->
+				    <param name="stretchToFit" value="0" />
+				    <!--是否按比例伸展-->
+				    <param name="volume" value="50" />
+				    <!--默认声音大小0%-100%,50则为50%-->
+				    <param name="mute" value="0" />
+				    <!--是否静音-->
+				    <param name="uiMode" value="Full" />
+				    <!--播放器显示模式:Full显示全部;mini最简化;None不显示播放控制,只显示视频窗口;invisible全部不显示-->
+				    <param name="windowlessVideo" value="1" />
+				    <!--如果是0可以允许全屏,否则只能在窗口中查看-->
+				    <param name="fullScreen" value="0" />
+				    <!--开始播放是否自动全屏-->
+				    <param name="enableErrorDialogs" value="0" />
+				    <!--是否启用错误提示报告-->
+				    <param name="SAMIStyle" value />
+				    <!--SAMI样式-->
+				    <param name="SAMILang" value />
+				    <!--SAMI语言-->
+				    <param name="SAMIFilename" value />
+				    <!--字幕ID-->
+     		</object>
+     		
   </div>
 </template>
 
 <script>
-import { findPojo, FpZw, QxFpZw, GetSurplusZw, RgFpZw, GrantCall, CancelGrantCall, BofangTTS } from '@/api/meetSign'
+import { findPojo, FpZw, QxFpZw, GetSurplusZw, RgFpZw, GrantCall, CancelGrantCall, HechengTTS, BofangTTS } from '@/api/meetSign'
 
 import moment from 'moment';
 import waves from '@/directive/waves' // 水波纹指令
@@ -161,6 +209,7 @@ export default {
         webid: [{ required: true, message: '请选择座位', trigger: 'blur' }]
       },
      
+      
     }
   },
   filters: {
@@ -344,26 +393,28 @@ export default {
     	})
     	
     },
-    bofangTTS(row){
-    	const loading = this.$loading({
-	      lock: true,
-	      text: 'Loading',
-	      spinner: 'el-icon-loading',
-	      background: 'rgba(0, 0, 0, 0.7)'
-	    })
-    	
+    hechengTTS(row){
     	let param={
     		hjid:row.hjid
     	}
-    	BofangTTS(param).then(res=>{
-    		loading.close();
+    	HechengTTS(param).then(res=>{
     		Message({
-          message: '播放成功',
+          message: '请等待2秒之后点击播放按钮',
           type: 'success',
           duration: 5 * 1000
 	      });
     	}).catch(error =>{
-    		loading.close();
+    	})
+    },
+    bofangTTS(row){
+    	let param={
+    		hjid:row.hjid
+    	}
+    	BofangTTS(param).then(res=>{
+    		if(res.url){
+    			document.getElementById("audioTts").url=res.url
+    		}
+    	}).catch(error =>{
     	})
     },
 		dateFormats: function (val) {

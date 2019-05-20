@@ -109,10 +109,8 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 						continue;
 					}
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			try {
+				
+				
 				boolean jq_qx = false;
 				String jq_name = "";
 				for(Field field : fields){
@@ -165,35 +163,38 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 					
 				}
 				/** 监区权限 结束 */
+				
+				// 如果是复合主键
+				if(id_fields.length()>id_field.length()){
+					// TODO 暂时不用
+					id_fields = "("+id_fields+")";
+				}
+				// 最特殊情况  表中没有主键  --没有主键的表不能称之为表了
+				if(StringUtils.isBlank(id_field)){
+					//随便取一个字段
+					id_field = d_id_field;
+				}
+				String table_fileds_str = StringUtil.lastComma(table_fileds.toString());
+				//如果属性上没有字段注解，sql查询字段就设置为*
+				if(StringUtils.isBlank(table_fileds_str)){
+					table_fileds_str = "*";
+				}
+				String sql = "select a.*"+leftJoinField+" from " + tableName+" a "+leftJoinTable+" where 1=1 " + where_fields.toString()+" "+leftJoinWhere+" ORDER BY a."+id_field+" "+sort;
+				if(pageSize != null && pageNum != null){
+					int startNum = (pageNum-1)*pageSize;
+					int endNum = pageNum*pageSize;
+					sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" "+sort+") AS rowid,a.* "+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
+							+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
+				}
+				//System.out.println("执行查询list语句: [ "+sql+" ]");
+				//System.out.println("参数："+params);
+				RowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazzVO);
+				List<T> list = (List<T>)jdbcTemplate.query(sql, params.toArray(), rowMapper);
+				return list;
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			// 如果是复合主键
-			if(id_fields.length()>id_field.length()){
-				// TODO 暂时不用
-				id_fields = "("+id_fields+")";
-			}
-			// 最特殊情况  表中没有主键  --没有主键的表不能称之为表了
-			if(StringUtils.isBlank(id_field)){
-				//随便取一个字段
-				id_field = d_id_field;
-			}
-			String table_fileds_str = StringUtil.lastComma(table_fileds.toString());
-			//如果属性上没有字段注解，sql查询字段就设置为*
-			if(StringUtils.isBlank(table_fileds_str)){
-				table_fileds_str = "*";
-			}
-			String sql = "select a.*"+leftJoinField+" from " + tableName+" a "+leftJoinTable+" where 1=1 " + where_fields.toString()+" "+leftJoinWhere+" ORDER BY a."+id_field+" "+sort;
-			if(pageSize != null && pageNum != null){
-				int startNum = (pageNum-1)*pageSize;
-				int endNum = pageNum*pageSize;
-				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" "+sort+") AS rowid,a.* "+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
-						+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
-			}
-			//System.out.println("执行查询list语句: [ "+sql+" ]");
-			//System.out.println("参数："+params);
-			RowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazzVO);
-			List<T> list = (List<T>)jdbcTemplate.query(sql, params.toArray(), rowMapper);
-			return list;
+			
 		}
 		return null;
 	}
@@ -255,10 +256,7 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 						continue;
 					}
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			} 
-			try {
+			
 				boolean jq_qx = false;
 				String jq_name = "";
 				for(Field field : fields){
@@ -310,48 +308,51 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				}
 				/** 监区权限 结束 */
 				
+				
+				// 如果是复合主键
+				if(id_fields.length()>id_field.length()){
+					// TODO 暂时不用
+					id_fields = "("+id_fields+")";
+				}
+				// 最特殊情况  表中没有主键  --没有主键的表不能称之为表了
+				if(StringUtils.isBlank(id_field)){
+					//随便取一个字段
+					id_field = d_id_field;
+				}
+				String table_fileds_str = StringUtil.lastComma(table_fileds.toString());
+				//如果属性上没有字段注解，sql查询字段就设置为*
+				if(StringUtils.isBlank(table_fileds_str)){
+					table_fileds_str = "*";
+				}
+				
+				String sql = "select a.*"+leftJoinField+" from " + tableName+" a "+leftJoinTable+" where 1=1 " + where_fields.toString()+" "+leftJoinWhere+" ORDER BY a."+id_field+" "+sort;
+				if(pageSize != null && pageNum != null){
+					int startNum = (pageNum-1)*pageSize;
+					int endNum = pageNum*pageSize;
+					sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" "+sort+") AS rowid,a.* "+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
+							+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
+				}
+				//System.out.println("执行查询pojo语句: [ "+sql+" ]");
+				//System.out.println("参数："+params);
+				RowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazzVO);
+				List<T> list = (List<T>)jdbcTemplate.query(sql, params.toArray(), rowMapper);
+				resultMap.put("list", list);
+			
+				
+				String countSql = "select ISNULL(count(*),0) AS count from " + tableName+" a "+leftJoinTable+"  where 1=1 " + where_fields.toString()+" "+leftJoinWhere;
+				//System.out.println("执行查询count语句: [ "+countSql+" ]");
+				//System.out.println("参数："+params);
+				SqlRowSet rowSet = jdbcTemplate.queryForRowSet(countSql, params.toArray());
+				Integer count = 0 ;
+				while(rowSet.next()) {
+					count = rowSet.getInt("count");
+				}
+				resultMap.put("count", count);
+				return resultMap;
 			} catch (Exception e) {
-			}
-			// 如果是复合主键
-			if(id_fields.length()>id_field.length()){
-				// TODO 暂时不用
-				id_fields = "("+id_fields+")";
-			}
-			// 最特殊情况  表中没有主键  --没有主键的表不能称之为表了
-			if(StringUtils.isBlank(id_field)){
-				//随便取一个字段
-				id_field = d_id_field;
-			}
-			String table_fileds_str = StringUtil.lastComma(table_fileds.toString());
-			//如果属性上没有字段注解，sql查询字段就设置为*
-			if(StringUtils.isBlank(table_fileds_str)){
-				table_fileds_str = "*";
+				e.printStackTrace();
 			}
 			
-			String sql = "select a.*"+leftJoinField+" from " + tableName+" a "+leftJoinTable+" where 1=1 " + where_fields.toString()+" "+leftJoinWhere+" ORDER BY a."+id_field+" "+sort;
-			if(pageSize != null && pageNum != null){
-				int startNum = (pageNum-1)*pageSize;
-				int endNum = pageNum*pageSize;
-				sql = "select * from (select ROW_NUMBER() OVER(ORDER BY a."+id_field+" "+sort+") AS rowid,a.* "+leftJoinField+" from "+tableName+" a "+leftJoinTable+" where 1=1 "+where_fields.toString()+" "+leftJoinWhere+" ) t"
-						+" where t.rowid>"+startNum+" AND t.rowid<="+endNum;
-			}
-			//System.out.println("执行查询pojo语句: [ "+sql+" ]");
-			//System.out.println("参数："+params);
-			RowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazzVO);
-			List<T> list = (List<T>)jdbcTemplate.query(sql, params.toArray(), rowMapper);
-			resultMap.put("list", list);
-		
-			
-			String countSql = "select ISNULL(count(*),0) AS count from " + tableName+" a "+leftJoinTable+"  where 1=1 " + where_fields.toString()+" "+leftJoinWhere;
-			//System.out.println("执行查询count语句: [ "+countSql+" ]");
-			//System.out.println("参数："+params);
-			SqlRowSet rowSet = jdbcTemplate.queryForRowSet(countSql, params.toArray());
-			Integer count = 0 ;
-			while(rowSet.next()) {
-				count = rowSet.getInt("count");
-			}
-			resultMap.put("count", count);
-			return resultMap;
 		}
 		return null;
 	}
@@ -433,17 +434,20 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				}
 				/** 监区权限 结束 */
 				
+				String countSql = "select ISNULL(count(*),0) AS count from " + tableName+" a "+leftJoinTable+"  where 1=1 " + where_fields.toString()+" "+leftJoinWhere;
+				//System.out.println("执行查询count语句: [ "+countSql+" ]");
+				//System.out.println("参数："+params);
+				SqlRowSet rowSet = jdbcTemplate.queryForRowSet(countSql, params.toArray());
+				Integer count = 0 ;
+				while(rowSet.next()) {
+					count = rowSet.getInt("count");
+				}
+				return count;
+				
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			String countSql = "select ISNULL(count(*),0) AS count from " + tableName+" a "+leftJoinTable+"  where 1=1 " + where_fields.toString()+" "+leftJoinWhere;
-			//System.out.println("执行查询count语句: [ "+countSql+" ]");
-			//System.out.println("参数："+params);
-			SqlRowSet rowSet = jdbcTemplate.queryForRowSet(countSql, params.toArray());
-			Integer count = 0 ;
-			while(rowSet.next()) {
-				count = rowSet.getInt("count");
-			}
-			return count;
+			
 		}
 		return 0;
 	
@@ -466,10 +470,14 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			List<Object> params = new ArrayList<>();
 			params.add(key);
 			RowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazzVO);
-			//System.out.println("执行查询单条记录语句：[ "+sql+" ]");
-			//System.out.println("参数："+params);
-			T t = jdbcTemplate.queryForObject(sql, params.toArray(), rowMapper);
-			return t;
+			System.out.println("执行查询单条记录语句：[ "+sql+" ]");
+			System.out.println("参数："+params);
+			try {
+				T t = jdbcTemplate.queryForObject(sql, params.toArray(), rowMapper);
+				return t;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}
@@ -516,49 +524,52 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 						psList.add(map);
 					}
 				}
-			}catch(Exception e){
-			}
-			sql.append(StringUtil.lastComma(table_field.toString()))
+				sql.append(StringUtil.lastComma(table_field.toString()))
 				.append(")")
 				.append(" values(")
 				.append(StringUtil.lastComma(table_value.toString()))
 				.append(")");
-			//System.out.println("执行新增语句：[ "+sql+" ]");
-			//System.out.println("参数："+params);
-			if(isInc == true){
-				KeyHolder keyHolder = new GeneratedKeyHolder();
-				Number id = null;
-				final String sqlStr = sql.toString();
-				jdbcTemplate.update(new PreparedStatementCreator(){  
-					public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-						 PreparedStatement ps = con.prepareStatement(sqlStr,PreparedStatement.RETURN_GENERATED_KEYS);
-						 addPs(ps,psList);
-				         return ps;  
-					}  
-			    }, keyHolder);
-				id =  keyHolder.getKey();
-				if(id != null){
-					idField.setAccessible(true);
-					try {
-						if(idField.getType()==Long.class){
-							idField.set(model, id.longValue());
-						}else if(idField.getType()==Integer.class){
-							idField.set(model, id.intValue());
+				
+				//System.out.println("执行新增语句：[ "+sql+" ]");
+				//System.out.println("参数："+params);
+				if(isInc == true){
+					KeyHolder keyHolder = new GeneratedKeyHolder();
+					Number id = null;
+					final String sqlStr = sql.toString();
+					jdbcTemplate.update(new PreparedStatementCreator(){  
+						public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+							 PreparedStatement ps = con.prepareStatement(sqlStr,PreparedStatement.RETURN_GENERATED_KEYS);
+							 addPs(ps,psList);
+					         return ps;  
+						}  
+				    }, keyHolder);
+					id =  keyHolder.getKey();
+					if(id != null){
+						idField.setAccessible(true);
+						try {
+							if(idField.getType()==Long.class){
+								idField.set(model, id.longValue());
+							}else if(idField.getType()==Integer.class){
+								idField.set(model, id.intValue());
+							}
+							
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
-						
-					} catch (Exception e) {
-						e.printStackTrace();
+						return model;
 					}
+						
+				}else{
+					jdbcTemplate.update(sql.toString(), params.toArray());
 					return model;
 				}
-					
-			}else{
-				jdbcTemplate.update(sql.toString(), params.toArray());
+				
+				//jdbcTemplate.update(sql.toString(), params.toArray());
 				return model;
+			}catch(Exception e){
+				e.printStackTrace();
 			}
 			
-			//jdbcTemplate.update(sql.toString(), params.toArray());
-			return model;
 		}
 		return null;
 	}
@@ -596,13 +607,16 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 				sql.append(StringUtil.lastComma(up_field.toString()))
 					.append(" where "+id_field+"=?");
 				params.add(idField.get(model));
+				
+				//System.out.println("执行update语句：["+sql+" ]");
+				//System.out.println("参数："+params);
+				jdbcTemplate.update(sql.toString(),params.toArray());
+				return model;
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			//System.out.println("执行update语句：["+sql+" ]");
-			//System.out.println("参数："+params);
-			jdbcTemplate.update(sql.toString(),params.toArray());
-			return model;
+			
 		}
 		return null;
 	}
@@ -626,7 +640,12 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			sql.append("delete from "+tableName+" where "+id_filed+"=?");
 			//System.out.println("执行删除语句：[ "+sql+" ]");
 			//System.out.println("参数："+params);
-			jdbcTemplate.update(sql.toString(), params.toArray());
+			try {
+				jdbcTemplate.update(sql.toString(), params.toArray());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 	}
 
@@ -656,7 +675,12 @@ public abstract class BaseSqlImpl<T> implements BaseService<T>{
 			sql.append("delete from "+tableName+" where 1=1 "+StringUtil.lastComma(where_field.toString()));
 			//System.out.println("执行删除语句：[ "+ sql+" ]");
 			//System.out.println("参数："+params);
-			jdbcTemplate.update(sql.toString(), params.toArray());
+			try {
+				jdbcTemplate.update(sql.toString(), params.toArray());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 	
 	}

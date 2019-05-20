@@ -196,7 +196,7 @@ export default {
     		this.buttonRole.deletePermission= 1
     	}else{
     		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
-    		let deptManage = buttonRoles.reldeptManageatives
+    		let deptManage = buttonRoles.deptManage
     		if(deptManage.length>0){
     			for(let value of deptManage){
     				if(value=='addPermission'){

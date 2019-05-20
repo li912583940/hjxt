@@ -42,7 +42,7 @@ public class CorsFilter implements Filter{
 		 		response.setHeader("Access-Control-Allow-Origin", "*");  
 		 	}
 	        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");  
-	        response.setHeader("Access-Control-Allow-Headers", "X-Token,Content-Type,XFILENAME,XFILECATEGORY,XFILESIZE");
+	        response.setHeader("Access-Control-Allow-Headers", "X-Token,x-requested-with,Content-Type,XFILENAME,XFILECATEGORY,XFILESIZE");
 	        response.setHeader("Cache-Control", "no-cache");
 	        response.setHeader("Pragma", "no-cache");
 	        //response.setHeader("Access-Control-Max-Age", String.valueOf(Constants.TOKEN_EXPIRES_HOURS*60*60));  

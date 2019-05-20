@@ -139,7 +139,26 @@
 			</div>
 		</el-card>
 		
-		<!-- 添加角色 -->
+		<!-- 配置AB门 -->
+		<el-card shadow="always" style="width: 500px;margin-top: 40px;" >
+			<div style="margin-left: 18px;">
+				<span>
+					<el-switch
+					  style="display: block"
+					  v-model="dataForm.abmsHttp"
+					  @change="abmsHttpChange"
+					  inactive-color="#ff4949"
+					  active-color="#13ce66"
+					  inactive-text="关闭AB门数据推送"
+					  active-text="开启AB门数据推送"
+					  :disabled="permissionBoolean"
+					 >
+					</el-switch>
+				</span>
+			</div>
+		</el-card>
+		
+		<!-- 添加会见类型 -->
 		<el-dialog title="添加会见类型" :visible.sync="dialogHjTypeVisible" width="740px" :modal-append-to-body="false">
 			<el-card style="width: 540px; margin-left: 10%;">
 				<el-transfer
@@ -184,6 +203,7 @@ export default {
       	fpZw: true,
       	saveHjdj: true,
       	hjTypes: undefined,
+      	abmsHttp: true,
       },
       
       permissionBoolean:true,
@@ -269,6 +289,7 @@ export default {
       		this.saveHjdjBoolean=false
       	}
       	data.saveHjdj==0?this.dataForm.saveHjdj=true:this.dataForm.saveHjdj=false
+      	data.abmsHttp==0?this.dataForm.abmsHttp=true:this.dataForm.abmsHttp=false
       })
     },
     hjdjSwitchChange(){
@@ -410,6 +431,20 @@ export default {
     },
     hjTypeFilter(query, item){ //穿梭框搜索功能
 	  	return item.label.indexOf(query) > -1;
+	},
+	
+	abmsHttpChange(){
+		let param = {
+    		id:this.dataForm.id,
+    		abmsHttp: this.dataForm.abmsHttp==true?0:1
+    	}
+    	EditConf(param).then(res =>{
+    		Message({
+		        message: res.errMsg,
+			    type: 'success',
+			    duration: 5 * 1000
+		    });
+    	})
 	},
 	dateFormats: function (val) {
 		if(!val){

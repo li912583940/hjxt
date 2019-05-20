@@ -179,7 +179,7 @@
 			<object :id="item.serverName" :name="item.serverName" codebase="../../../ocx/TeleQqOcx.ocx#version=1,0,0,1" classid="clsid:561E476B-6C4F-4FCC-A8CE-A85C7F781620" width="0px" height="0px">
 			</object>
 		</div>
-		<audio id="audio1" :src="wavUrl"></audio>
+		<audio id="audio1" :src="wavUrl" controls="controls" hidden></audio>
 	
 		<!-- 拍照-->
 		<!--<object id="camera" classid="clsid:792FD9B8-5917-45D2-889D-C49FD174D4E0"

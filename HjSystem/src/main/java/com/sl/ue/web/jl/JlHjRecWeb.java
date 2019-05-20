@@ -137,7 +137,7 @@ public class JlHjRecWeb extends Result{
 	 */
 	@RequestMapping("/downVideo")
 	public String downVideo(Long webid, HttpServletRequest request, HttpServletResponse response){
-		return jlHjRecSQL.downVideo1(webid, request, response);
+		return jlHjRecSQL.downVideo(webid, request, response);
 	}
 	
 	/**

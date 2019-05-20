@@ -705,6 +705,15 @@ export default {
       	if(res.hjid){
 	    		this.printXp(res.hjid)
 	    	}
+      	if(res.abmsCode){
+    			if(res.abmsCode!=0){
+    				Message({
+			        message: '亲属数据提交至AB门失败',
+				      type: 'error',
+				      duration: 5 * 1000
+			      });
+    			}
+    		}
     		//history.go(-1) 
     		//let timestamp=new Date().getTime()
     		//this.$router.push({ path: '/meetRegister/index', query: {refreshZ:timestamp} })

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sl.ue.entity.jl.vo.JlHjDjVO;
 import com.sl.ue.service.jl.JlHjDjService;
+import com.sl.ue.util.anno.IgnoreSecurity;
 import com.sl.ue.util.http.Result;
 
 /**
@@ -86,6 +87,11 @@ public class HjSignWeb extends Result{
 		return jlHjDjSQL.cancelGrantCall(hjId, request);
 	}
 	
+	@RequestMapping("/hechengTTS")
+	@IgnoreSecurity
+	public String hechengTTS(Long hjid){
+		return jlHjDjSQL.hechengTTS(hjid);
+	}
 	/**
 	 * 说明 [播放罪犯及其家属前往指定窗口参加会见]
 	 * @param hjId
@@ -93,6 +99,7 @@ public class HjSignWeb extends Result{
 	 * L_晓天  @2019年5月10日
 	 */
 	@RequestMapping("/bofangTTS")
+	@IgnoreSecurity
 	public String bofangTTS(Long hjid){
 		return jlHjDjSQL.bofangTTS(hjid);
 	}

@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.sl.ue.entity.jl.vo.JlTtsVO;
 import com.sl.ue.entity.sys.vo.SysAccessTokenVO;
+import com.sl.ue.service.jl.JlTtsService;
 import com.sl.ue.service.other.HttpAbmsDeptService;
 import com.sl.ue.service.sys.SysAccessTokenService;
 import com.sl.ue.util.Config;
@@ -25,6 +27,8 @@ public class QuartzTimer {
 
 	@Autowired
 	private HttpAbmsDeptService httpAbmsDeptSQL;
+	@Autowired
+	private JlTtsService jlTtsSQL;
 	/**
 	 * 说明 [每天凌晨1点执行]
 	 * @作者 LXT @2018年9月26日
@@ -98,5 +102,24 @@ public class QuartzTimer {
 	@Scheduled(cron = "0 0 2 * * ?")
     public void httpGetDept(){
 		httpAbmsDeptSQL.syncAbmsDept();
+    }
+	
+	/**
+	 * 说明 [每天2点35清理合成语音]
+	 * L_晓天  @2019年5月11日
+	 */
+	@Scheduled(cron = "0 35 2 * * ?")
+    public void clearTTS(){
+		jlTtsSQL.delete(new JlTtsVO());
+		
+		String fileDir = Config.getPropertiesValue("file.path")+"/tts";
+		File file = new File(fileDir);
+		File[] files = file.listFiles();
+		for(int i=0;i<files.length;i++){
+			File f = files[i];
+			if(f.exists()){
+				f.delete();
+			}
+		}
     }
 }

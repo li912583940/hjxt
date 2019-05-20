@@ -612,6 +612,15 @@ export default {
     		if(res.hjid){
 	    		this.printXp(res.hjid)
 	    	}
+    		if(res.abmsCode){
+    			if(res.abmsCode!=0){
+    				Message({
+			        message: '亲属数据提交至AB门失败',
+				      type: 'error',
+				      duration: 5 * 1000
+			      });
+    			}
+    		}
     	})
     	this.dialogDjVisible=false
     	loading.close();

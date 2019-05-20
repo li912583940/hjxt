@@ -557,7 +557,10 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		
 		// 将家属信息添加到AB门中
 		if(sysConf.getAbmsHttp()!=null && sysConf.getAbmsHttp()==1){
-			httpAbmsDeptSQL.httpToAbmsHjDj(addJlHjDj.getHjid());
+			String abmsResult =  httpAbmsDeptSQL.httpToAbmsHjDj(addJlHjDj.getHjid());
+			JSONObject json = JSONObject.parseObject(abmsResult);
+			Integer abmsCode = json.getInteger("errCode");
+			result.putJson("abmsCode", abmsCode);
 		}
 		
 		return result.toResult();
@@ -1106,6 +1109,10 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			return result.toResult();
 		}
 		SysHjLineVO sysHjLine = sysHjLineSQL.findOne(webid);
+		if(sysHjLine == null){
+			result.error(Result.error_103, "查询不到此条记录");
+			return result.toResult();
+		}
 		String jy = sysHjLine.getJy();
 		if(jlHjDj.getFpFlag() == 0){
 			Integer resu = (Integer) jdbcTemplate.execute(  // 调用存储过程 获取会见批次号
@@ -1482,6 +1489,10 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		Result result = new Result();
 		
 		JlHjDjVO jlHjDj = this.findOne(hjid);
+		if(jlHjDj == null){
+			result.error(Result.error_103, "查询不到此记录");
+			return result.toResult();
+		}
 		if(StringUtils.isNotBlank(jlHjDj.getFrNo())){
 			JlQsVO jlQs = new JlQsVO();
 			jlQs.setFrNo(jlHjDj.getFrNo());
@@ -1691,6 +1702,14 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 			}
 			result.msg("修改登记成功");
 		}
+		// 将家属信息添加到AB门中
+		if(sysConf.getAbmsHttp()!=null && sysConf.getAbmsHttp()==1){
+			String abmsResult =  httpAbmsDeptSQL.httpToAbmsHjDj(model.getHjid());
+			JSONObject json = JSONObject.parseObject(abmsResult);
+			Integer abmsCode = json.getInteger("errCode");
+			result.putJson("abmsCode", abmsCode);
+		}
+				
 		this.edit(model);
 		return result.toResult();
 	}
@@ -1850,23 +1869,14 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		return result.toResult();
 	}
 	
-	public String bofangTTS(Long hjid){
+	public String hechengTTS(Long hjid){
+
 		Result result = new Result();
 		if(hjid==null){
 			result.error(Result.error_102);
 			return result.toResult();
 		}
-		
-		String http = Config.getPropertiesValue("file.http");
-		String path = Config.getPropertiesValue("file.file");
-		
-		JlTtsVO jlTts = jlTtsSQL.findOne(hjid);
-		if(jlTts != null){
-			if(jlTts.getTtsresult()==2){
-				result.putJson("url", http+path+"/tts"+"/"+hjid+".wav");
-				return result.toResult();
-			}
-		}
+
 		JlHjDjVO jlHjDj = this.findOne(hjid);
 		if(jlHjDj == null){
 			result.error(Result.error_103, "数据库查询不到此记录");
@@ -1883,37 +1893,56 @@ public class JlHjDjServiceImpl extends BaseSqlImpl<JlHjDjVO> implements JlHjDjSe
 		}
 		StringBuffer str = new StringBuffer();
 		str.append("请");
-		String tts = Config.getPropertiesValue("tts");
-		String[] ttss = tts.split(",");
-		for(int i=0;i<ttss.length;i++){
-			if(ttss[i].equals("监区名称")){
-				str.append(jlHjDj.getJqName());
-			}else if(ttss[i].equals("罪犯编号")){
-				str.append("编号"+jlHjDj.getFrNo());
-			}else if(ttss[i].equals("罪犯姓名")){
-				str.append(jlHjDj.getFrName());
-			}
-		}
-		str.append("及其家属前往"+sysHjLine.getZw()+"号座位参加会见");
+		str.append(jlHjDj.getFrName());
+		str.append("及其家属前往"+sysHjLine.getZw()+"号座位会见");
 		
-		jlTts.setTtsid(hjid+"");
-		jlTts.setTtstype(1);
-		jlTts.setTtsfile("@"+hjid);
-		jlTts.setTtstxt(str.toString());
-		jlTtsSQL.add(jlTts);
-		
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		JlTtsVO jlTts = jlTtsSQL.findOne(hjid);
+		if(jlTts!=null){
+			jlTts.setTtsresult(0);
+			jlTts.setTtstxt(str.toString());
+			jlTtsSQL.edit(jlTts);
+		}else{
+			JlTtsVO jlTtsAdd = new JlTtsVO();
+			jlTtsAdd.setTtsid(hjid+"");
+			jlTtsAdd.setTtstype(1);
+			jlTtsAdd.setTtsfile("@"+hjid);
+			jlTtsAdd.setTtstxt(str.toString());
+			jlTtsSQL.add(jlTtsAdd);
 		}
-		jlTts = jlTtsSQL.findOne(hjid);
+		return result.toResult();
+	
+	}
+	
+	public String bofangTTS(Long hjid){
+		Result result = new Result();
+		if(hjid==null){
+			result.error(Result.error_102);
+			return result.toResult();
+		}
+		SysHjLineVO sysHjLine = new SysHjLineVO();
+		sysHjLine.setHjid(hjid);
+		List<SysHjLineVO> sysHjLineList = sysHjLineSQL.findList(sysHjLine);
+		if(sysHjLineList.size()>0){
+		}else{
+			result.error(Result.error_103, "当前登记还未分配座位");
+			return result.toResult();
+		}
+		
+		String http = Config.getPropertiesValue("file.http");
+		String path = Config.getPropertiesValue("file.file");
+
+		
+		JlTtsVO jlTts = jlTtsSQL.findOne(hjid);
 		if(jlTts != null){
 			if(jlTts.getTtsresult()==2){
 				result.putJson("url", http+path+"/tts"+"/"+hjid+".wav");
-				return result.toResult();
+			}else if(jlTts.getTtsresult()==0){
+				result.error(Result.error_103, "请稍等，语音还未合成成功");
+			}else{
+				result.error(Result.error_103, "语音合成失败，请重新尝试合成");
 			}
+		}else{
+			result.error(Result.error_103, "请先合成语音");
 		}
 		return result.toResult();
 	}

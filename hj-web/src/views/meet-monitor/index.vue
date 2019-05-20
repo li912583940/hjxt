@@ -136,6 +136,7 @@ export default {
   },
   data() {
     return {
+    	
       tableKey: 0,
       list: null,
       total: null,
@@ -254,7 +255,6 @@ export default {
     		this.buttonRole.jiantingPermission= 1
     		this.buttonRole.qieduanPermission= 1
     		this.buttonRole.chahuaPermission= 1
-    		//this.buttonRole.updateTimePermission= 1
     		this.buttonRole.zhushiPermission= 1
     	}else{
     		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
@@ -267,11 +267,7 @@ export default {
     					this.buttonRole.qieduanPermission= 1
     				}else if(value=='chahuaPermission'){
     					this.buttonRole.chahuaPermission= 1
-    				}
-//  				else if(value=='updateTimePermission'){
-//  					this.buttonRole.updateTimePermission= 1
-//  				}
-    				else if(value=='zhushiPermission'){
+    				}else if(value=='zhushiPermission'){
     					this.buttonRole.zhushiPermission= 1
     				}
     			}
@@ -331,8 +327,6 @@ export default {
     		
     		document.getElementById(row.jy).ListenTele(row.lineNo);
     		this.jtState = row.lineNo
-    		
-    		
     	}else{
     		Message({
 	        message: '当前线路不在通话状态',
@@ -358,6 +352,7 @@ export default {
     		document.getElementById(row.jy).ListenStop(row.lineNo);
     	}
     	this.jtState = null
+    	
     	Message({
         message: '停止监听',
 	      type: 'success',
@@ -390,6 +385,7 @@ export default {
 					}
 					
 					this.jtState = null
+					
 					this.getList()
 					
 					Message({

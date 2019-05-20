@@ -115,7 +115,9 @@ public class JlHjRec implements java.io.Serializable {
 	private Integer recRatingState;
 	@DbField("Rec_Assessment_State")
 	private Integer recAssessmentState;
-	
+	/** 向省局推送会见记录，0：未推送，1：已推送。默认：0 */
+	@DbField("sync_state")
+	private Integer syncState;
 
 	public Long getWebid() {
 		return webid;
@@ -522,6 +524,14 @@ public class JlHjRec implements java.io.Serializable {
 
 	public void setRecAssessmentState(Integer recAssessmentState) {
 		this.recAssessmentState = recAssessmentState;
+	}
+
+	public Integer getSyncState() {
+		return syncState;
+	}
+
+	public void setSyncState(Integer syncState) {
+		this.syncState = syncState;
 	}
 
 

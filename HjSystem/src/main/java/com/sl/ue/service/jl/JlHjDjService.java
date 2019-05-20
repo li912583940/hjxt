@@ -154,5 +154,7 @@ public interface JlHjDjService extends BaseService<JlHjDjVO>{
 	 */
 	public String syncQs(String frNo);
 	
+	public String hechengTTS(Long hjid);
+	
 	public String bofangTTS(Long hjid);
 }

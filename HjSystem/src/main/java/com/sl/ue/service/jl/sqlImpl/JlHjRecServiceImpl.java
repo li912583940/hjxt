@@ -609,6 +609,7 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 			String fileUrl = hjServerPath+callRecPath+end;
             try
             {
+            	fileUrl = fileUrl.replaceAll(" ", "%20");
                 URL url =new URL(fileUrl); // 创建URL
                 String fileExt = jlHjRec.getCallRecfile().substring(jlHjRec.getCallRecfile().indexOf(".")+1);
                 String fileName = fileDir+"/"+System.currentTimeMillis()+"."+fileExt;
@@ -628,6 +629,7 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 			String fileUrl = hjVideoPath + callVideoPath1 + end;
             try
             {
+            	fileUrl = fileUrl.replaceAll(" ", "%20");
                 URL url =new URL(fileUrl); // 创建URL
                 String fileExt = jlHjRec.getCallVideofile1().substring(jlHjRec.getCallVideofile1().indexOf(".")+1);
                 String fileName = fileDir+"/"+System.currentTimeMillis()+"."+fileExt;
@@ -647,6 +649,7 @@ public class JlHjRecServiceImpl extends BaseSqlImpl<JlHjRecVO> implements JlHjRe
 			String fileUrl = hjVideoPath + callVideoPath2 + end;
             try
             {
+            	fileUrl = fileUrl.replaceAll(" ", "%20");
                 URL url =new URL(fileUrl); // 创建URL
                 String fileExt = jlHjRec.getCallVideofile2().substring(jlHjRec.getCallVideofile2().indexOf(".")+1);
                 String fileName = fileDir+"/"+System.currentTimeMillis()+"."+fileExt;

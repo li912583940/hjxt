@@ -12,7 +12,7 @@
     </div>
 
     <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row
-      style="width: 981px">
+      :style="widthVar">
       <el-table-column width="80" align="center"  :label="$t('criminal.id')">
         <template slot-scope="scope">
           <span>{{scope.row.webid}}</span>
@@ -33,7 +33,7 @@
           <span>{{scope.row.deptName}}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttonRole.editPermission==1 || buttonRole.deletePermission==1 || buttonRole.addRolesPermission==1" align="center" :label="$t('criminal.actions')" width="300">
+      <el-table-column v-if="buttonRole.editPermission==1 || buttonRole.deletePermission==1 || buttonRole.addRolesPermission==1" align="center" :label="$t('criminal.actions')" :width="columnVar">
         <template slot-scope="scope">
         	<span v-if="scope.row.isSuper==1">超级管理员不能更改</span>
           <el-button v-if="scope.row.isSuper==0 && buttonRole.editPermission==1" type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(scope.row)">编辑</el-button>
@@ -109,6 +109,8 @@ export default {
   },
   data() {
     return {
+    	widthVar:'width: 981px',
+    	columnVar: 0,
     	/**------------用户增删改查开始-1-----------*/
       tableKey: 0,
       list: null,
@@ -370,21 +372,38 @@ export default {
     		this.buttonRole.editPermission= 1
     		this.buttonRole.deletePermission= 1
     		this.buttonRole.addRolesPermission=1
+    		this.columnVar=300
     	}else{
     		let buttonRoles = JSON.parse(sessionStorage.getItem("buttonRoles"))
     		let sysUser = buttonRoles.sysUser
     		if(sysUser.length>0){
+    			let w = 681
+    			let d = 0
     			for(let value of sysUser){
     				if(value=='addPermission'){
     					this.buttonRole.addPermission= 1
     				}else if(value=='editPermission'){
     					this.buttonRole.editPermission= 1
+    					w+=100
+    					d+=100
     				}else if(value=='deletePermission'){
     					this.buttonRole.deletePermission= 1
+    					w+=100
+    					d+=100
     				}else if(value=='addRolesPermission'){
     					this.buttonRole.addRolesPermission= 1
+    					w+=120
+    					d+=120
     				}
     			}
+    			
+    			if(d>300){
+    				this.columnVar=300
+    			}else{
+    				this.widthVar='width: '+w+'px'
+    				this.columnVar=d
+    			}
+    			
     		}
     	}
     },
